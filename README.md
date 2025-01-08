@@ -6,21 +6,29 @@ A monorepo project with a **Spring Boot** backend and a **Next.js** frontend.
 
 ## **Getting Started**
 
-### **Prerequisites**
+### **Backend**
 
-Make sure you have the following installed:
+1. Navigate to the `backend` folder:
+   ```bash
+   cd backend
+   ```
+2. Run the Spring Boot application:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
 
-- **Java 17** (or compatible version)
-- **Node.js** (v18+ recommended) and npm or yarn
-- **Maven** (for Spring Boot) or use the wrapper (`./mvnw`)
-- **MySQL** (optional, if the backend is configured to use a database)
+### **Frontend**
+
+1. Navigate to the `frontend` folder:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies and start the development server:
+   ```bash
+   npm install
+   npm run dev
+   ```
 
 ---
 
-### **Project Structure**
-
-```plaintext
-rm-app/
-├── frontend/   # Next.js frontend
-├── backend/    # Spring Boot backend
-```
+The backend will run on `http://localhost:8080` and the frontend on `http://localhost:3000`.
