@@ -11,6 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+// FIXME: should display error message when validation fails
 public class AuthRequest {
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
