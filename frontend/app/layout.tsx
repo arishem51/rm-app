@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Inter, Fira_Code } from "next/font/google";
+import Head from "next/head";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -25,6 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Head>
+        <title>Rice Management App</title>
+        <meta
+          name="description"
+          content="A Rice Management System by Group 4, FPT University"
+        />
+      </Head>
       <body className={`${inter.variable} ${firaCode.variable} antialiased`}>
         <ThemeProvider
           attribute="class"

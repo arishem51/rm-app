@@ -1,7 +1,6 @@
 package com.example.backend.controllers;
 
 import com.example.backend.entities.User;
-import com.example.backend.enums.Role;
 import com.example.backend.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
