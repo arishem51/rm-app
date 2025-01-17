@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.backend.dto.AuthRequest;
+import com.example.backend.dto.SignUpRequest;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.entities.User;
 import com.example.backend.services.AuthService;
@@ -29,7 +29,7 @@ public class AuthController {
 
     @Operation(summary = "Register a new user", description = "Register a new user with a username and password.")
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<User>> register(@Valid @RequestBody AuthRequest request) {
+    public ResponseEntity<BaseResponse<User>> register(@Valid @RequestBody SignUpRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 

@@ -98,7 +98,7 @@ const AuthForm: FC<Props> = ({
             </div>
           )}
           <Button type="submit" className="w-full">
-            Login
+            {isSignUp ? "Sign Up" : "Sign In"}
           </Button>
           {children}
         </div>
