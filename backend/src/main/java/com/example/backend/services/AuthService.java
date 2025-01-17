@@ -1,13 +1,18 @@
 package com.example.backend.services;
 
-import java.util.Optional;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.BaseResponse;
-import com.example.backend.dto.auth.SignInRequest;
-import com.example.backend.dto.auth.SignUpRequest;
+import com.example.backend.dto.auth.request.SignInRequest;
+import com.example.backend.dto.auth.request.SignUpRequest;
+import com.example.backend.dto.auth.response.SignInResponse;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 
@@ -18,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     public BaseResponse<User> signUp(SignUpRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -35,11 +42,20 @@ public class AuthService {
         return new BaseResponse<User>(user, "Create user successfully!");
     }
 
-    public BaseResponse<User> signIn(SignInRequest request) {
-        Optional<User> user = userRepository.findByUsername(request.getUsername());
-        if (user.isEmpty()) {
-            return new BaseResponse<>(null, "Invalid username or password!");
+    public BaseResponse<SignInResponse> signIn(SignInRequest request) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String username = userDetails.getUsername();
+            String token = jwtService.createToken(username);
+            User user = userRepository.findByUsername(username).get();
+            return new BaseResponse<SignInResponse>(new SignInResponse(token, user), "Sign In successfully!");
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Invalid username or password!");
         }
-        return new BaseResponse<User>(user.get(), "Sign In successfully!");
     }
 }

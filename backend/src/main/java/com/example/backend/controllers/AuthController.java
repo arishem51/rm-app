@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.BaseResponse;
-import com.example.backend.dto.auth.SignInRequest;
-import com.example.backend.dto.auth.SignUpRequest;
+import com.example.backend.dto.auth.request.SignInRequest;
+import com.example.backend.dto.auth.request.SignUpRequest;
+import com.example.backend.dto.auth.response.SignInResponse;
 import com.example.backend.entities.User;
 import com.example.backend.services.AuthService;
 
@@ -36,7 +37,7 @@ public class AuthController {
 
     @Operation(summary = "Register a new user", description = "Register a new user with a username and password.")
     @PostMapping("/sign-in")
-    public ResponseEntity<BaseResponse<User>> signIn(@Valid @RequestBody SignInRequest request) {
+    public ResponseEntity<BaseResponse<SignInResponse>> signIn(@Valid @RequestBody SignInRequest request) {
         return ResponseEntity.ok(authService.signIn(request));
     }
 
