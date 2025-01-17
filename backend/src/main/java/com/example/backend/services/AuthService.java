@@ -1,10 +1,13 @@
 package com.example.backend.services;
 
+import java.util.Optional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.backend.dto.AuthRequest;
 import com.example.backend.dto.BaseResponse;
+import com.example.backend.dto.auth.SignInRequest;
+import com.example.backend.dto.auth.SignUpRequest;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 
@@ -16,7 +19,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public BaseResponse<User> register(AuthRequest request) {
+    public BaseResponse<User> signUp(SignUpRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             return new BaseResponse<>(null, "Username is already taken!");
         }
@@ -30,5 +33,13 @@ public class AuthService {
 
         userRepository.save(user);
         return new BaseResponse<User>(user, "Create user successfully!");
+    }
+
+    public BaseResponse<User> signIn(SignInRequest request) {
+        Optional<User> user = userRepository.findByUsername(request.getUsername());
+        if (user.isEmpty()) {
+            return new BaseResponse<>(null, "Invalid username or password!");
+        }
+        return new BaseResponse<User>(user.get(), "Sign In successfully!");
     }
 }
