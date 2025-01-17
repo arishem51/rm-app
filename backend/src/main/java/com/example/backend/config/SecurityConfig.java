@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.example.backend.constants.SecurityConstants;
 import com.example.backend.services.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,13 +46,15 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/v3/api-docs/**",
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html")
+                                .requestMatchers(SecurityConstants.PUBLIC_ENDPOINTS)
                                 .permitAll()
                                 .requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
+                .authenticationProvider(daoAuthenticationProvider()).addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable());
+
         return http.build();
     }
 }
