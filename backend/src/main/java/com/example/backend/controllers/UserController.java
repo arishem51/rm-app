@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.BaseResponse;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 
@@ -21,16 +22,17 @@ public class UserController {
     private final UserRepository userRepository;
 
     @Operation(summary = "Get all users", description = "Fetch a list of all registered users.")
-    @GetMapping("/api/users")
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Operation(summary = "Current user", description = "Get current user by client token.")
-    @GetMapping("/api/me")
-    public User getMe(@RequestHeader("Authorization") String authorizationHeader) {
+    @GetMapping("/me")
+    public BaseResponse<User> getMe() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
+        return new BaseResponse<>(user, "Success!");
     }
 
     @Operation(summary = "Get a user by ID", description = "Fetch a user by their ID.")
