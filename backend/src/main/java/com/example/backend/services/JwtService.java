@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import java.time.Duration;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -7,10 +8,8 @@ import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -22,8 +21,23 @@ public class JwtService {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecretKey));
     }
 
+    private long getMilliseconds(long amount, String unit) {
+        switch (unit.toLowerCase()) {
+            case "seconds":
+                return Duration.ofSeconds(amount).toMillis();
+            case "minutes":
+                return Duration.ofMinutes(amount).toMillis();
+            case "hours":
+                return Duration.ofHours(amount).toMillis();
+            case "days":
+                return Duration.ofDays(amount).toMillis();
+            default:
+                throw new IllegalArgumentException("Invalid time unit: " + unit);
+        }
+    }
+
     public String createToken(String username) {
-        long expirationTimeMillis = 1000 * 60;
+        long expirationTimeMillis = getMilliseconds(1, "days");
         return Jwts.builder().issuedAt(new Date()).expiration(new Date(System.currentTimeMillis()
                 + expirationTimeMillis)).subject(username).signWith(getJwtKey(), Jwts.SIG.HS256).compact();
     }

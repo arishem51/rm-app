@@ -2,8 +2,13 @@ package com.example.backend.controllers;
 
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,17 +16,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "User Management", description = "Operations related to users")
+@RequiredArgsConstructor
 public class UserController {
     private final UserRepository userRepository;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     @Operation(summary = "Get all users", description = "Fetch a list of all registered users.")
-    @GetMapping
+    @GetMapping("/api/users")
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Operation(summary = "Current user", description = "Get current user by client token.")
+    @GetMapping("/api/me")
+    public User getMe(@RequestHeader("Authorization") String authorizationHeader) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 
     @Operation(summary = "Get a user by ID", description = "Fetch a user by their ID.")
