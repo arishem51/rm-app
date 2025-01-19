@@ -1,14 +1,12 @@
 "use client";
 
-import { redirect } from "next/navigation";
-import { useHydrateAtoms } from "jotai/utils";
 import { userAtom } from "@/store/user";
+import { useAtom } from "jotai";
+import { redirect } from "next/navigation";
 
-//FIXME: Should fix this component, should hydrate in a provider
 const RedirectToSignIn = () => {
-  useHydrateAtoms([
-    [userAtom, { user: undefined, showToastErrorSignIn: true }],
-  ]);
+  const [atom, setAtom] = useAtom(userAtom);
+  setAtom({ ...atom, showToastErrorSignIn: true });
   return redirect("/auth/sign-in");
 };
 

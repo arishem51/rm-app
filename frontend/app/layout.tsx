@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Inter, Fira_Code } from "next/font/google";
 import Head from "next/head";
 import { Toaster } from "@/components/ui/toaster";
+import { AtomProvider } from "@/components/atom-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -41,7 +42,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <AtomProvider>{children}</AtomProvider>
         </ThemeProvider>
         <Toaster />
       </body>
