@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Inter, Fira_Code } from "next/font/google";
 import Head from "next/head";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -36,12 +37,13 @@ export default function RootLayout({
       <body className={`${inter.variable} ${firaCode.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
           {children}
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );

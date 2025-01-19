@@ -39,7 +39,6 @@ export async function getMe() {
   }).then(async (res) => {
     return res.json();
   });
-  console.log(response);
   if (!response.data) {
     return null;
   }

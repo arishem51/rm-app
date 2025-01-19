@@ -1,14 +1,14 @@
 import { LoadingFullScreen } from "@/components/loading/loading-full-screen";
 import { getMe } from "@/server/actions";
-import { redirect } from "next/navigation";
 import { ReactNode, Suspense } from "react";
+import RedirectToSignIn from "./redirect-to-sign-in";
 
 type Props = { children: ReactNode };
 
 const Main = async ({ children }: Props) => {
   const me = await getMe();
   if (!me) {
-    return redirect("/auth/sign-in");
+    return <RedirectToSignIn />;
   }
   return <main>{children}</main>;
 };

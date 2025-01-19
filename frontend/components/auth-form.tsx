@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { FC, Fragment, ReactNode } from "react";
+import { FC, Fragment, ReactNode, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -23,6 +23,9 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { signIn } from "@/server/actions";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { useAtom } from "jotai";
+import { userAtom } from "@/store/user";
 
 type Props = {
   title?: string;
@@ -43,7 +46,7 @@ const AuthForm: FC<Props> = ({
     password: string;
     name: string;
     phoneNumber: string;
-    role: "OWNER" | "EMPLOYEE";
+    role: "OWNER" | "STAFF";
   }>({
     defaultValues: {
       username: "",
@@ -53,6 +56,20 @@ const AuthForm: FC<Props> = ({
       role: "OWNER",
     },
   });
+  const { toast } = useToast();
+  const [atom, setAtom] = useAtom(userAtom);
+
+  useEffect(() => {
+    if (atom.showToastErrorSignIn) {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: "Credentials expired, please sign in again.",
+      });
+      setAtom({ user: undefined, showToastErrorSignIn: false });
+    }
+  }, [atom.showToastErrorSignIn, setAtom, toast]);
+
   const isSignUp = type === "sign-up";
   const onSubmit = form.handleSubmit(async ({ username, password }) => {
     try {
@@ -109,12 +126,19 @@ const AuthForm: FC<Props> = ({
               <div className="flex">
                 <Label htmlFor="password">Password</Label>
                 {!isSignUp && (
-                  <Link
-                    href="/"
-                    className="text-sm ml-auto hover:underline underline-offset-4"
+                  <span
+                    className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer"
+                    onClick={() => {
+                      toast({
+                        variant: "default",
+                        title: "Feature not available!",
+                        description:
+                          "Please contact the admin to reset your password.",
+                      });
+                    }}
                   >
                     Forgot you password?
-                  </Link>
+                  </span>
                 )}
               </div>
               <Input
@@ -138,7 +162,7 @@ const AuthForm: FC<Props> = ({
                       <SelectContent>
                         <SelectGroup>
                           <SelectItem value="OWNER">Owner</SelectItem>
-                          <SelectItem value="EMPLOYEE">Employee</SelectItem>
+                          <SelectItem value="STAFF">Staff</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
