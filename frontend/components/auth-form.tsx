@@ -73,7 +73,6 @@ const AuthForm: FC<Props> = ({
   const onSubmit = form.handleSubmit(async ({ username, password }) => {
     try {
       const result = await signIn({ username, password });
-
       if (result.data) {
         setAtom({
           user: result.data.user,

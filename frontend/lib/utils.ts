@@ -10,13 +10,16 @@ export function cn(...inputs: ClassValue[]) {
 
 export const apiClient = new Api({
   baseUrl: "http://localhost:8080",
+  baseApiParams: {
+    format: "json",
+  },
   customFetch: async (url, init) => {
     const options = init ? init : {};
     options.headers = {
       ...options.headers,
-
       "Authorization-Provider": "microsoft",
       "Accept-Language": "vi-VN",
+      format: "json",
     };
     const token = globalStore.get(userAtom)?.token;
     if (token) {

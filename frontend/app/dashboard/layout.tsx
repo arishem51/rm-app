@@ -7,7 +7,7 @@ type Props = { children: ReactNode };
 
 const Main = async ({ children }: Props) => {
   const me = await getMe();
-  if (!me) {
+  if (!me?.data) {
     return <RedirectToSignIn />;
   }
   return <main>{children}</main>;
