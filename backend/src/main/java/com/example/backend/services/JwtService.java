@@ -37,7 +37,7 @@ public class JwtService {
     }
 
     public String createToken(String username) {
-        long expirationTimeMillis = getMilliseconds(1, "days");
+        long expirationTimeMillis = getMilliseconds(10, "hours");
         return Jwts.builder().issuedAt(new Date()).expiration(new Date(System.currentTimeMillis()
                 + expirationTimeMillis)).subject(username).signWith(getJwtKey(), Jwts.SIG.HS256).compact();
     }
