@@ -1,12 +1,29 @@
 import { atom } from "jotai";
 import { User } from "@/types/Api";
+import { globalStore } from ".";
 
-export const userAtom = atom<{
+type UserAtomType = {
   user?: User;
   showToastErrorSignIn: boolean;
   token?: string;
-}>({
-  token: "",
+};
+
+const localUserAtom = atom<UserAtomType>({
   user: undefined,
   showToastErrorSignIn: false,
+  token: undefined,
 });
+
+globalStore.sub(localUserAtom, () => {
+  if (process.env.NODE_ENV === "development") {
+    console.log("localUserAtom updated");
+  }
+});
+
+export const userAtom = atom(
+  (get) => get(localUserAtom),
+  (get, set, update: Partial<UserAtomType>) => {
+    set(localUserAtom, { ...get(localUserAtom), ...update });
+    globalStore.set(localUserAtom, { ...get(localUserAtom), ...update });
+  }
+);

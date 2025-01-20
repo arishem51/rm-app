@@ -20,11 +20,12 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Controller, useForm } from "react-hook-form";
-import { signIn } from "@/server/actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAtom } from "jotai";
 import { userAtom } from "@/store/user";
+import { apiClient } from "@/lib/utils";
+import { setTokenAfterSignIn } from "@/server/actions";
 
 type Props = {
   title?: string;
@@ -72,12 +73,19 @@ const AuthForm: FC<Props> = ({
   const isSignUp = type === "sign-up";
   const onSubmit = form.handleSubmit(async ({ username, password }) => {
     try {
-      const result = await signIn({ username, password });
-      if (result.data) {
+      const { data } = await apiClient.api.signIn({ username, password });
+      if (data.data) {
+        if (data.data.token) {
+          setTokenAfterSignIn(data.data.token);
+        }
         setAtom({
-          user: result.data.user,
+          user: data.data.user,
           showToastErrorSignIn: false,
-          token: result.data.token,
+          token: data.data.token,
+        });
+        toast({
+          title: "Sign in successfully!",
+          description: "Welcome to Rice Management App.",
         });
         router.replace("/dashboard");
       }

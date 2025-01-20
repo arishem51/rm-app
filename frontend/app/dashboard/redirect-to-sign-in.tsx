@@ -9,7 +9,8 @@ import { useEffect } from "react";
 const RedirectToSignIn = () => {
   const [atom, setAtom] = useAtom(userAtom);
   useEffect(() => {
-    setAtom((prev) => ({ ...prev, showToastErrorSignIn: true }));
+    //FIXME: just show error when token expired!
+    setAtom({ showToastErrorSignIn: true });
   }, [setAtom]);
 
   if (atom.showToastErrorSignIn) {

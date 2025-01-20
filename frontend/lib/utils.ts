@@ -17,8 +17,6 @@ export const apiClient = new Api({
     const options = init ? init : {};
     options.headers = {
       ...options.headers,
-      "Authorization-Provider": "microsoft",
-      "Accept-Language": "vi-VN",
       format: "json",
     };
     const token = globalStore.get(userAtom)?.token;
