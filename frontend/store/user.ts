@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { User } from "@/types/Api";
 import { globalStore } from ".";
 
@@ -27,3 +27,7 @@ export const userAtom = atom(
     globalStore.set(localUserAtom, { ...get(localUserAtom), ...update });
   }
 );
+
+export const useUserAtom = () => useAtom(userAtom);
+export const useSetUserAtom = () => useSetAtom(userAtom);
+export const useUserAtomValue = () => useAtomValue(userAtom);

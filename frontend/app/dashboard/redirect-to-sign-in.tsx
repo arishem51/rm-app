@@ -1,17 +1,21 @@
 "use client";
 
 import { LoadingFullScreen } from "@/components/loading/loading-full-screen";
-import { userAtom } from "@/store/user";
-import { useAtom } from "jotai";
+import { useUserAtom } from "@/store/user";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
-const RedirectToSignIn = () => {
-  const [atom, setAtom] = useAtom(userAtom);
+const RedirectToSignIn = ({
+  showToastSignIn,
+}: {
+  showToastSignIn?: boolean;
+}) => {
+  const [atom, setAtom] = useUserAtom();
   useEffect(() => {
-    //FIXME: just show error when token expired!
-    setAtom({ showToastErrorSignIn: true });
-  }, [setAtom]);
+    if (showToastSignIn) {
+      setAtom({ showToastErrorSignIn: true });
+    }
+  }, [setAtom, showToastSignIn]);
 
   if (atom.showToastErrorSignIn) {
     return redirect("/auth/sign-in");

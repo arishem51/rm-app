@@ -18,7 +18,7 @@ export async function setTokenAfterSignIn(token: string) {
 
 export async function getMe() {
   try {
-    const { data } = await apiClient.api.getMe({
+    const { data, status } = await apiClient.api.getMe({
       headers: {
         Authorization: "Bearer " + (await cookies()).get(COOKIE_TOKEN)?.value,
       },
@@ -26,7 +26,7 @@ export async function getMe() {
     if (!data.data) {
       return null;
     }
-    return data;
+    return { data, status };
   } catch {
     return null;
   }
@@ -34,10 +34,5 @@ export async function getMe() {
 
 export async function signOut() {
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_TOKEN, "", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    maxAge: 0,
-  });
+  cookieStore.delete(COOKIE_TOKEN);
 }

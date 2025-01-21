@@ -21,8 +21,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { useAtom } from "jotai";
-import { userAtom } from "@/store/user";
+import { useUserAtom } from "@/store/user";
 import { apiClient } from "@/lib/utils";
 import { setTokenAfterSignIn } from "@/server/actions";
 
@@ -94,7 +93,7 @@ const AuthForm: FC<Props> = ({
     ),
   });
   const { toast } = useToast();
-  const [atom, setAtom] = useAtom(userAtom);
+  const [atom, setAtom] = useUserAtom();
 
   useEffect(() => {
     if (atom.showToastErrorSignIn) {
