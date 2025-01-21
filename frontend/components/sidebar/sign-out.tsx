@@ -13,7 +13,10 @@ const DropdownSignOut = () => {
     return redirect("/auth/sign-in");
   };
   return (
-    <DropdownMenuItem onClick={() => handleSignOut()}>
+    <DropdownMenuItem
+      onClick={() => handleSignOut()}
+      className="cursor-pointer"
+    >
       <span>Sign out</span>
     </DropdownMenuItem>
   );
