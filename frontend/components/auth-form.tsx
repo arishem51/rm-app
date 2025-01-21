@@ -7,7 +7,6 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FC, Fragment, ReactNode, useEffect } from "react";
@@ -19,13 +18,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAtom } from "jotai";
 import { userAtom } from "@/store/user";
 import { apiClient } from "@/lib/utils";
 import { setTokenAfterSignIn } from "@/server/actions";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Form,
+} from "./ui/form";
+
+const signInSchemaFields = {
+  username: z
+    .string()
+    .min(3, { message: "Username must be between 3 and 20 characters" })
+    .max(20, { message: "Username must be between 3 and 20 characters" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" }),
+};
+
+const signUpSchemaFields = {
+  ...signInSchemaFields,
+  phoneNumber: z
+    .string()
+    .regex(/^[0-9]{10,12}$/, {
+      message: "Phone number must be 10-12 digits long",
+    })
+    .nonempty({ message: "Phone number is required" }),
+  name: z.string().nonempty({ message: "Name is required" }),
+  role: z.enum(["OWNER", "STAFF"]),
+};
 
 type Props = {
   title?: string;
@@ -40,6 +73,7 @@ const AuthForm: FC<Props> = ({
   children,
   type = "sign-in",
 }) => {
+  const isSignUp = type === "sign-up";
   const router = useRouter();
   const form = useForm<{
     username: string;
@@ -55,6 +89,9 @@ const AuthForm: FC<Props> = ({
       phoneNumber: "",
       role: "OWNER",
     },
+    resolver: zodResolver(
+      z.object(isSignUp ? signUpSchemaFields : signInSchemaFields)
+    ),
   });
   const { toast } = useToast();
   const [atom, setAtom] = useAtom(userAtom);
@@ -70,126 +107,183 @@ const AuthForm: FC<Props> = ({
     }
   }, [atom.showToastErrorSignIn, setAtom, toast]);
 
-  const isSignUp = type === "sign-up";
-  const onSubmit = form.handleSubmit(async ({ username, password }) => {
+  const onSubmit = form.handleSubmit(async (formData) => {
+    const { username, password } = formData;
     try {
-      const { data } = await apiClient.api.signIn({ username, password });
-      if (data.data) {
-        if (data.data.token) {
-          setTokenAfterSignIn(data.data.token);
+      if (isSignUp) {
+        await apiClient.api.signUp(formData);
+      } else {
+        const { data } = await apiClient.api.signIn({
+          username,
+          password,
+        });
+        if (data.data) {
+          if (data.data.token) {
+            setTokenAfterSignIn(data.data.token);
+          }
+          setAtom({
+            user: data.data.user,
+            showToastErrorSignIn: false,
+            token: data.data.token,
+          });
         }
-        setAtom({
-          user: data.data.user,
-          showToastErrorSignIn: false,
-          token: data.data.token,
-        });
-        toast({
-          title: "Sign in successfully!",
-          description: "Welcome to Rice Management App.",
-        });
-        router.replace("/dashboard");
       }
-    } catch (error) {
-      console.log(error);
+      toast({
+        title: isSignUp ? "Sign up successfully!" : "Sign in successfully!",
+        description: isSignUp
+          ? "You can sign in to the app now!"
+          : "Welcome to Rice Management App.",
+      });
+      setTimeout(
+        () => {
+          router.replace(isSignUp ? "/auth/sign-in" : "/dashboard");
+        },
+        isSignUp ? 500 : 0
+      );
+    } catch {
+      toast({
+        variant: "destructive",
+        title: isSignUp ? "Sign up failed!" : "Sign in failed!",
+        description: isSignUp
+          ? "Something went wrong!"
+          : "Please check your username and password.",
+      });
     }
   });
 
   return (
-    <form onSubmit={onSubmit}>
-      <Card className="mx-auto max-w-sm ">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {isSignUp && (
-              <Fragment>
-                <div className="space-y-1">
-                  <Label htmlFor="username">Name</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Your name"
-                    {...form.register("name")}
+    <Form {...form}>
+      <form onSubmit={onSubmit}>
+        <Card className="mx-auto max-w-sm ">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {isSignUp && (
+                <Fragment>
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Your Name" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          This is your public display name.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="phoneNumber">Phone number</Label>
-                  <Input
-                    id="phoneNumber"
-                    type="text"
-                    placeholder="(+84) 123 456 78"
-                    {...form.register("phoneNumber")}
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            placeholder="(+84) 123 456 78"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-              </Fragment>
-            )}
-            <div className="space-y-1">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="Username"
-                {...form.register("username")}
-              />
-            </div>
-            <div className="space-y-1">
-              <div className="flex">
-                <Label htmlFor="password">Password</Label>
-                {!isSignUp && (
-                  <span
-                    className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer"
-                    onClick={() => {
-                      toast({
-                        variant: "default",
-                        title: "Feature not available!",
-                        description:
-                          "Please contact the admin to reset your password.",
-                      });
-                    }}
-                  >
-                    Forgot you password?
-                  </span>
+                </Fragment>
+              )}
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="*********"
-                {...form.register("password")}
               />
-            </div>
-            {isSignUp && (
               <div className="space-y-1">
-                <Label htmlFor="username">Role</Label>
-                <Controller
-                  name="role"
+                <FormField
                   control={form.control}
+                  name="password"
                   render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="OWNER">Owner</SelectItem>
-                          <SelectItem value="STAFF">Staff</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    <FormItem className="flex-1">
+                      <FormLabel className="flex justify-between">
+                        Password
+                        {!isSignUp && (
+                          <span
+                            className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white"
+                            onClick={() => {
+                              toast({
+                                variant: "default",
+                                title: "Feature not available!",
+                                description:
+                                  "Please contact the admin to reset your password.",
+                              });
+                            }}
+                          >
+                            Forgot you password?
+                          </span>
+                        )}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="*********"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
               </div>
-            )}
-            <Button type="submit" className="w-full">
-              {isSignUp ? "Sign Up" : "Sign In"}
-            </Button>
-            {children}
-          </div>
-        </CardContent>
-      </Card>
-    </form>
+              {isSignUp && (
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Role</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="OWNER">Owner</SelectItem>
+                              <SelectItem value="STAFF">Staff</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              <Button type="submit" className="w-full">
+                {isSignUp ? "Sign Up" : "Sign In"}
+              </Button>
+              {children}
+            </div>
+          </CardContent>
+        </Card>
+      </form>
+    </Form>
   );
 };
 
