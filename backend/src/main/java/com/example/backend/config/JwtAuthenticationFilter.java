@@ -40,8 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .anyMatch(item -> path.startsWith(item.replace("/**", "")));
     }
 
-    private void sendResponse(HttpServletResponse response, String message) throws IOException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+    private void sendResponse(HttpServletResponse response, String message, int statusCode) throws IOException {
+        response.setStatus(statusCode);
         response.setContentType("application/json");
         BaseResponse<Object> errorResponse = new BaseResponse<>(null, message);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            sendResponse(response, "Authorization header is missing!");
+            sendResponse(response, "Authorization header is missing!", HttpStatus.UNAUTHORIZED.value());
             return;
         }
 
@@ -75,16 +75,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             username = jwtService.getUsernameByToken(token);
             userDetails = userDetailsService.loadUserByUsername(username);
         } catch (ExpiredJwtException e) {
-            sendResponse(response, "Token expired!");
+            sendResponse(response, "Token expired!", HttpStatus.UNAUTHORIZED.value());
             return;
         } catch (MalformedJwtException e) {
-            sendResponse(response, "Invalid token!");
+            sendResponse(response, "Invalid token!", HttpStatus.BAD_REQUEST.value());
             return;
         } catch (UsernameNotFoundException e) {
-            sendResponse(response, "User not found!");
+            sendResponse(response, "User not found!", HttpStatus.NOT_FOUND.value());
             return;
         } catch (Exception e) {
-            sendResponse(response, "Something went wrong!");
+            sendResponse(response, "Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR.value());
             return;
         }
 

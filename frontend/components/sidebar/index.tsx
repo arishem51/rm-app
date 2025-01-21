@@ -5,7 +5,6 @@ import {
   Inbox,
   Search,
   Settings,
-  User2,
 } from "lucide-react";
 
 import {
@@ -26,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import DropdownSignOut from "./sign-out";
+import UserFooter from "./user-footer";
 
 // Menu items.
 const items = [
@@ -84,7 +84,7 @@ export function AppSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> Username
+                  <UserFooter />
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
