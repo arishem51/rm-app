@@ -18,15 +18,16 @@ export async function setTokenAfterSignIn(token: string) {
 
 export async function getMe() {
   try {
+    const token = (await cookies()).get(COOKIE_TOKEN)?.value;
     const { data, status } = await apiClient.api.getMe({
       headers: {
-        Authorization: "Bearer " + (await cookies()).get(COOKIE_TOKEN)?.value,
+        Authorization: "Bearer " + token,
       },
     });
     if (!data.data) {
       return null;
     }
-    return { data, status };
+    return { data, status, token };
   } catch {
     return null;
   }
