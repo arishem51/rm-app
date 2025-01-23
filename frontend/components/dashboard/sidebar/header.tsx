@@ -11,7 +11,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { AppPathURL } from "@/lib/helpers";
-import { ChevronsUpDown, GalleryVerticalEnd } from "lucide-react";
+import {
+  ChevronsUpDown,
+  GalleryVerticalEnd,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import Link from "next/link";
 
 const Header = () => {
@@ -34,6 +38,7 @@ const Header = () => {
                 <span>Dashboard</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
+                <SquareArrowOutUpRight />
                 <Link href={AppPathURL.home} className="w-full">
                   Landing Page
                 </Link>

@@ -4,8 +4,13 @@ import { signOut } from "@/server/actions";
 import { useSetUserAtom } from "@/store/user";
 import { redirect } from "next/navigation";
 import { DropdownMenuItem } from "../../ui/dropdown-menu";
+import { ReactNode } from "react";
 
-const DropdownSignOut = () => {
+type Props = {
+  children?: ReactNode;
+};
+
+const DropdownSignOut = ({ children }: Props) => {
   const setUser = useSetUserAtom();
   const handleSignOut = async () => {
     await signOut();
@@ -17,7 +22,7 @@ const DropdownSignOut = () => {
       onClick={() => handleSignOut()}
       className="cursor-pointer"
     >
-      <span>Sign out</span>
+      {children}
     </DropdownMenuItem>
   );
 };

@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
+import { SquareArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { Fragment } from "react";
 
 export default function Page() {
   return (
@@ -12,8 +14,11 @@ export default function Page() {
           tracking, and sales efficiently.
         </p>
         <div className="mt-6">
-          <Button>
-            <Link href="/dashboard">Get Started</Link>
+          <Button asChild>
+            <Link href="/dashboard" className="flex items-center">
+              Get Started
+              <SquareArrowUpRight />
+            </Link>
           </Button>
         </div>
       </main>
