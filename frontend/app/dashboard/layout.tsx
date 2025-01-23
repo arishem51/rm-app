@@ -11,7 +11,7 @@ type Props = { children: ReactNode };
 const Main = async ({ children }: Props) => {
   const query = await getMe();
   return (
-    <main>
+    <main className="w-full">
       <ClientCompDashboard meQuery={query}>{children}</ClientCompDashboard>
     </main>
   );

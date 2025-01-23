@@ -20,6 +20,7 @@ import {
   CollapsibleTrigger,
 } from "../../ui/collapsible";
 import { AppPathURL } from "@/lib/helpers";
+import SidebarHeader from "./header";
 
 type Item = {
   title: string;
@@ -52,6 +53,7 @@ const items: Item[] = [
 export function AppSidebar() {
   return (
     <Sidebar>
+      <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
