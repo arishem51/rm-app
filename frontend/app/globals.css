@@ -155,3 +155,32 @@ h6 {
 #__next {
   isolation: isolate;
 }
+
+/* Apply to body and all scrollable elements */
+body {
+  overflow: auto;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  /* neutral-800 */
+  background: #262626;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  /* neutral-700 */
+  background: #404040;
+}
