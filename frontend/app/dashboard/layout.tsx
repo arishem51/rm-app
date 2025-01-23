@@ -1,15 +1,20 @@
 import { LoadingFullScreen } from "@/components/loading/loading-full-screen";
 import { getMe } from "@/server/actions";
 import { ReactNode, Suspense } from "react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/dashboard/sidebar";
 import ClientCompDashboard from "@/components/dashboard/client-comp-dashboard";
+import Header from "@/components/dashboard/header";
 
 type Props = { children: ReactNode };
 
 const Main = async ({ children }: Props) => {
   const query = await getMe();
-  return <ClientCompDashboard meQuery={query}>{children}</ClientCompDashboard>;
+  return (
+    <main>
+      <ClientCompDashboard meQuery={query}>{children}</ClientCompDashboard>
+    </main>
+  );
 };
 
 export default async function Layout({ children }: Props) {
@@ -18,7 +23,7 @@ export default async function Layout({ children }: Props) {
       <SidebarProvider>
         <AppSidebar />
         <Main>
-          <SidebarTrigger />
+          <Header />
           {children}
         </Main>
       </SidebarProvider>

@@ -19,6 +19,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../../ui/collapsible";
+import { AppPathURL } from "@/lib/helpers";
 
 type Item = {
   title: string;
@@ -31,13 +32,13 @@ type Item = {
 const items: Item[] = [
   {
     title: "Home",
-    url: "/",
+    url: AppPathURL.dashboard.home,
     icon: Home,
   },
   {
     title: "Users",
     icon: User2,
-    url: "/users",
+    url: AppPathURL.dashboard.users,
     children: [],
     // children: [
     //   {
