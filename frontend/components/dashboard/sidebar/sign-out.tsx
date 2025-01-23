@@ -3,7 +3,7 @@
 import { signOut } from "@/server/actions";
 import { useSetUserAtom } from "@/store/user";
 import { redirect } from "next/navigation";
-import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { DropdownMenuItem } from "../../ui/dropdown-menu";
 
 const DropdownSignOut = () => {
   const setUser = useSetUserAtom();

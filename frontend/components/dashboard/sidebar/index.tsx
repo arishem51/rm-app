@@ -18,7 +18,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../ui/collapsible";
+} from "../../ui/collapsible";
 
 type Item = {
   title: string;
@@ -35,9 +35,9 @@ const items: Item[] = [
     icon: Home,
   },
   {
-    title: "Account Management",
+    title: "Users",
     icon: User2,
-    url: "/account-management",
+    url: "/users",
     children: [],
     // children: [
     //   {

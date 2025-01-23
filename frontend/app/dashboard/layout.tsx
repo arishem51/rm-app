@@ -2,8 +2,8 @@ import { LoadingFullScreen } from "@/components/loading/loading-full-screen";
 import { getMe } from "@/server/actions";
 import { ReactNode, Suspense } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar";
-import ClientCompDashboard from "./client-comp-dashboard";
+import { AppSidebar } from "@/components/dashboard/sidebar";
+import ClientCompDashboard from "@/components/dashboard/client-comp-dashboard";
 
 type Props = { children: ReactNode };
 
