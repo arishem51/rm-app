@@ -71,6 +71,48 @@ export interface SignInResponse {
   user?: User;
 }
 
+export interface BaseResponsePageUser {
+  data?: PageUser;
+  message?: string;
+}
+
+export interface PageUser {
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  size?: number;
+  content?: User[];
+  /** @format int32 */
+  number?: number;
+  sort?: SortObject;
+  /** @format int32 */
+  numberOfElements?: number;
+  pageable?: PageableObject;
+  empty?: boolean;
+}
+
+export interface PageableObject {
+  /** @format int64 */
+  offset?: number;
+  sort?: SortObject;
+  paged?: boolean;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
+  unpaged?: boolean;
+}
+
+export interface SortObject {
+  empty?: boolean;
+  sorted?: boolean;
+  unsorted?: boolean;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -361,23 +403,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of all registered users.
-     *
-     * @tags User Management
-     * @name GetAllUsers
-     * @summary Get all users
-     * @request GET:/api/users/users
-     * @secure
-     */
-    getAllUsers: (params: RequestParams = {}) =>
-      this.request<User[], any>({
-        path: `/api/users/users`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
      * @description Get current user by client token.
      *
      * @tags User Management
@@ -390,6 +415,38 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<BaseResponseUser, any>({
         path: `/api/users/me`,
         method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch a list of all registered users.
+     *
+     * @tags User Management
+     * @name GetAllUsers
+     * @summary Get all users
+     * @request GET:/api/users/
+     * @secure
+     */
+    getAllUsers: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePageUser, any>({
+        path: `/api/users/`,
+        method: "GET",
+        query: query,
         secure: true,
         ...params,
       }),

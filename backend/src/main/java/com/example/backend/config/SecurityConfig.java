@@ -60,12 +60,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(
-                        auth -> auth
-                                .requestMatchers(SecurityConstants.PUBLIC_ENDPOINTS)
-                                .permitAll()
-                                .requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
+        http.csrf(csrf -> csrf.disable()).cors();
+        http.authorizeHttpRequests(
+                auth -> auth
+                        .requestMatchers(SecurityConstants.PUBLIC_ENDPOINTS)
+                        .permitAll()
+                        .requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
                 .authenticationProvider(daoAuthenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
