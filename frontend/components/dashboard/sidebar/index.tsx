@@ -18,7 +18,9 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../ui/collapsible";
+} from "../../ui/collapsible";
+import { AppPathURL } from "@/lib/helpers";
+import SidebarHeader from "./header";
 
 type Item = {
   title: string;
@@ -31,13 +33,13 @@ type Item = {
 const items: Item[] = [
   {
     title: "Home",
-    url: "/",
+    url: AppPathURL.dashboard.home,
     icon: Home,
   },
   {
-    title: "Account Management",
+    title: "Users",
     icon: User2,
-    url: "/account-management",
+    url: AppPathURL.dashboard.users,
     children: [],
     // children: [
     //   {
@@ -51,6 +53,7 @@ const items: Item[] = [
 export function AppSidebar() {
   return (
     <Sidebar>
+      <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>

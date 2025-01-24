@@ -1,4 +1,4 @@
-import { ChevronUp } from "lucide-react";
+import { ChevronUp, LogOut, User2 } from "lucide-react";
 import {
   SidebarFooter,
   SidebarMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "../../ui/dropdown-menu";
 import DropdownSignOut from "./sign-out";
 import UserFooter from "./user-footer";
 
@@ -21,7 +21,7 @@ const Footer = () => {
         <SidebarMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuButton>
+              <SidebarMenuButton className="h-auto">
                 <UserFooter />
                 <ChevronUp className="ml-auto" />
               </SidebarMenuButton>
@@ -31,9 +31,13 @@ const Footer = () => {
               className="w-[--radix-popper-anchor-width]"
             >
               <DropdownMenuItem className="cursor-pointer">
+                <User2 />
                 <span>Account</span>
               </DropdownMenuItem>
-              <DropdownSignOut />
+              <DropdownSignOut>
+                <LogOut />
+                <span>Sign Out</span>
+              </DropdownSignOut>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>

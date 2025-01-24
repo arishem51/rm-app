@@ -1,7 +1,3 @@
 export default async function Page() {
-  return (
-    <div>
-      dashboard
-    </div>
-  );
+  return <div className="flex justify-center">Dashboard</div>;
 }
