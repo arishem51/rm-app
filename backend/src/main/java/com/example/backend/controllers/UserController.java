@@ -1,6 +1,7 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dto.BaseResponse;
+import com.example.backend.dto.PaginateResponse;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,9 +23,11 @@ public class UserController {
 
     @Operation(summary = "Get all users", description = "Fetch a list of all registered users.")
     @GetMapping("/")
-    public BaseResponse<Page<User>> getAllUsers(@RequestParam(defaultValue = "0") int page,
+    public BaseResponse<PaginateResponse<User>> getUsers(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize) {
-        return new BaseResponse<>(userRepository.findAll(PageRequest.of(page, pageSize)), "Success!");
+        Page<User> users = userRepository.findAll(PageRequest.of(page, pageSize));
+        PaginateResponse<User> response = new PaginateResponse<>(users);
+        return new BaseResponse<PaginateResponse<User>>(response, "Success!");
     }
 
     @Operation(summary = "Current user", description = "Get current user by client token.")
