@@ -35,9 +35,9 @@ const Users = () => {
   const [filter, setFilter] = useState({
     page: 0,
   });
-  const {
-    data: { data },
-  } = useSuspenseQuery(ApiQuery.users.getUsers(filter));
+  const { data: { data } = {} } = useSuspenseQuery(
+    ApiQuery.users.getUsers(filter)
+  );
   const user = useUserAtomValue();
   const isAdmin = user.user?.role === "ADMIN";
 

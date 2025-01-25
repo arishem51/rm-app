@@ -20,7 +20,16 @@ export const { api: apiClient } = new Api({
       ...options.headers,
       format: "json",
     };
-    const token = globalStore.get(userAtom)?.token;
+    let token;
+
+    if (typeof window === "undefined") {
+      // Running on the server: Get token from cookies
+      const { cookies } = await import("next/headers");
+      token = (await cookies()).get("token")?.value;
+    } else {
+      // Running on the client: Get token from globalStore
+      token = globalStore.get(userAtom)?.token;
+    }
     if (token) {
       options.headers = {
         ...options.headers,
