@@ -8,8 +8,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
+
+import javax.management.RuntimeErrorException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -49,4 +55,17 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
     }
+
+    @Operation(summary = "Get a user by username", description = "Fetch a user by their username.")
+    @GetMapping("/{username}")
+    public User getUserByName(@PathVariable String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found)"));
+    }
+
+    @Operation(summary = "Update a user", description = "Update a user by their name.")
+    @PutMapping("/{username}")
+    public void updateUser(@PathVariable String username) {
+        
+    }
+
 }
