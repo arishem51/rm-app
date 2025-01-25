@@ -11,6 +11,10 @@ const Page = async () => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="px-4">
+        <h1 className="text-3xl font-bold mt-2">User management</h1>
+        <p className="text-sm  text-neutral-400 my-1">
+          Manage users member and their information here.
+        </p>
         <Suspense fallback={<div>User loading!</div>}>
           <Users />
         </Suspense>

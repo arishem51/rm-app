@@ -57,7 +57,6 @@ export const createQuery = <T, K>(
       ],
       queryFn: async () => {
         const { data } = await method(params);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
         return data;
       },
       ...config,
