@@ -2,20 +2,15 @@ package com.example.backend.controllers;
 
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
+import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashMap;
-
-import javax.management.RuntimeErrorException;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -63,9 +58,9 @@ public class UserController {
     }
 
     @Operation(summary = "Update a user", description = "Update a user by their name.")
-    @PutMapping("/{username}")
-    public void updateUser(@PathVariable String username) {
-        
+    @PutMapping("/{id}")
+    public void updateUser(@PathVariable String username, @RequestBody UpdateUserRequest request) {
+
     }
 
 }
