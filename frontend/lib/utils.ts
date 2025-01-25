@@ -48,6 +48,7 @@ export const createQuery = <T, K>(
   return (params: K = undefined as K) => {
     const config =
       typeof queryConfig === "function" ? queryConfig(params) : queryConfig;
+    console.log(config);
     return queryOptions<T>({
       queryKey: [
         method.name,
