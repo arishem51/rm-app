@@ -110,9 +110,9 @@ const AuthForm: FC<Props> = ({
     const { username, password } = formData;
     try {
       if (isSignUp) {
-        await apiClient.api.signUp(formData);
+        await apiClient.signUp(formData);
       } else {
-        const { data } = await apiClient.api.signIn({
+        const { data } = await apiClient.signIn({
           username,
           password,
         });

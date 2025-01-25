@@ -71,46 +71,21 @@ export interface SignInResponse {
   user?: User;
 }
 
-export interface BaseResponsePageUser {
-  data?: PageUser;
+export interface BaseResponsePaginateResponseUser {
+  data?: PaginateResponseUser;
   message?: string;
 }
 
-export interface PageUser {
-  /** @format int64 */
-  totalElements?: number;
+export interface PaginateResponseUser {
   /** @format int32 */
-  totalPages?: number;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  size?: number;
-  content?: User[];
-  /** @format int32 */
-  number?: number;
-  sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  empty?: boolean;
-}
-
-export interface PageableObject {
-  /** @format int64 */
-  offset?: number;
-  sort?: SortObject;
-  paged?: boolean;
+  pageSize?: number;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
-  pageSize?: number;
-  unpaged?: boolean;
-}
-
-export interface SortObject {
-  empty?: boolean;
-  sorted?: boolean;
-  unsorted?: boolean;
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: User[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -423,12 +398,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Fetch a list of all registered users.
      *
      * @tags User Management
-     * @name GetAllUsers
+     * @name GetUsers
      * @summary Get all users
      * @request GET:/api/users/
      * @secure
      */
-    getAllUsers: (
+    getUsers: (
       query?: {
         /**
          * @format int32
@@ -443,7 +418,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePageUser, any>({
+      this.request<BaseResponsePaginateResponseUser, any>({
         path: `/api/users/`,
         method: "GET",
         query: query,

@@ -3,12 +3,13 @@ import { twMerge } from "tailwind-merge";
 import { Api } from "@/types/Api";
 import { globalStore } from "@/store";
 import { userAtom } from "@/store/user";
+import { UnusedSkipTokenOptions, queryOptions } from "@tanstack/react-query";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const apiClient = new Api({
+export const { api: apiClient } = new Api({
   baseUrl: "http://localhost:8080",
   baseApiParams: {
     format: "json",
@@ -29,3 +30,37 @@ export const apiClient = new Api({
     return fetch(url, options);
   },
 });
+
+const serialize = <T>(record?: Record<string, string | number | T>) => {
+  const result: Record<string, string> = {};
+  for (const key in record) {
+    result[key] = String(record[key]);
+  }
+  return result;
+};
+
+export const createQuery = <T, K>(
+  method: (args: K) => Promise<{ data: T }>,
+  queryConfig?:
+    | ((params: K) => UnusedSkipTokenOptions<T>)
+    | UnusedSkipTokenOptions<T>
+) => {
+  return (params: K = undefined as K) => {
+    const config =
+      typeof queryConfig === "function" ? queryConfig(params) : queryConfig;
+    return queryOptions<T>({
+      queryKey: [
+        method.name,
+        typeof params === "object"
+          ? serialize(params as Record<string, unknown>)
+          : params,
+      ],
+      queryFn: async () => {
+        const { data } = await method(params);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        return data;
+      },
+      ...config,
+    });
+  };
+};
