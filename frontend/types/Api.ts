@@ -71,6 +71,23 @@ export interface SignInResponse {
   user?: User;
 }
 
+export interface BaseResponsePaginateResponseUser {
+  data?: PaginateResponseUser;
+  message?: string;
+}
+
+export interface PaginateResponseUser {
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: User[];
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -361,23 +378,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of all registered users.
-     *
-     * @tags User Management
-     * @name GetAllUsers
-     * @summary Get all users
-     * @request GET:/api/users/users
-     * @secure
-     */
-    getAllUsers: (params: RequestParams = {}) =>
-      this.request<User[], any>({
-        path: `/api/users/users`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
      * @description Get current user by client token.
      *
      * @tags User Management
@@ -390,6 +390,38 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<BaseResponseUser, any>({
         path: `/api/users/me`,
         method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch a list of all registered users.
+     *
+     * @tags User Management
+     * @name GetUsers
+     * @summary Get all users
+     * @request GET:/api/users/
+     * @secure
+     */
+    getUsers: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseUser, any>({
+        path: `/api/users/`,
+        method: "GET",
+        query: query,
         secure: true,
         ...params,
       }),

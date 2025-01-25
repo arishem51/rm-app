@@ -19,7 +19,7 @@ export async function setTokenAfterSignIn(token: string) {
 export async function getMe() {
   try {
     const token = (await cookies()).get(COOKIE_TOKEN)?.value;
-    const { data, status } = await apiClient.api.getMe({
+    const { data, status } = await apiClient.getMe({
       headers: {
         Authorization: "Bearer " + token,
       },

@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Inter, Fira_Code } from "next/font/google";
 import Head from "next/head";
-import { Toaster } from "@/components/ui/toaster";
-import { Provider } from "jotai";
+import Providers from "@/components/providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -36,12 +34,7 @@ export default function RootLayout({
         />
       </Head>
       <body className={`${inter.variable} ${firaCode.variable} antialiased`}>
-        <Provider>
-          <ThemeProvider attribute="class" defaultTheme="dark">
-            {children}
-          </ThemeProvider>
-        </Provider>
-        <Toaster />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
