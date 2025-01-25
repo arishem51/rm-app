@@ -14,12 +14,6 @@ const localUserAtom = atom<UserAtomType>({
   token: undefined,
 });
 
-globalStore.sub(localUserAtom, () => {
-  if (process.env.NODE_ENV === "development") {
-    console.log("localUserAtom updated");
-  }
-});
-
 export const userAtom = atom(
   (get) => get(localUserAtom),
   (get, set, update: Partial<UserAtomType>) => {
