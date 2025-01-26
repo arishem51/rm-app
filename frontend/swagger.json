@@ -13,6 +13,24 @@
     }
   ],
   "paths": {
+    "/api/users/{id}": {
+      "put": {
+        "tags": ["User Management"],
+        "summary": "Update a user",
+        "description": "Update a user by their name.",
+        "operationId": "updateUser",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
     "/api/auth/sign-up": {
       "post": {
         "tags": ["Authentication"],
@@ -65,45 +83,6 @@
             }
           }
         }
-      }
-    },
-    "/api/users/{id}": {
-      "get": {
-        "tags": ["User Management"],
-        "summary": "Get a user by ID",
-        "description": "Fetch a user by their ID.",
-        "operationId": "getUserById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/User" } }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["User Management"],
-        "summary": "Delete a user",
-        "description": "Delete a user by their ID.",
-        "operationId": "deleteUser",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": { "200": { "description": "OK" } }
       }
     },
     "/api/users/me": {
@@ -161,6 +140,15 @@
   },
   "components": {
     "schemas": {
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "password": { "type": "string" },
+          "role": { "type": "string", "enum": ["OWNER", "STAFF", "ADMIN"] }
+        }
+      },
       "SignUpRequest": {
         "type": "object",
         "properties": {
@@ -185,7 +173,18 @@
         "type": "object",
         "properties": {
           "data": { "$ref": "#/components/schemas/User" },
-          "message": { "type": "string" }
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
         }
       },
       "User": {
@@ -216,7 +215,18 @@
         "type": "object",
         "properties": {
           "data": { "$ref": "#/components/schemas/SignInResponse" },
-          "message": { "type": "string" }
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
         }
       },
       "SignInResponse": {
@@ -230,7 +240,18 @@
         "type": "object",
         "properties": {
           "data": { "$ref": "#/components/schemas/PaginateResponseUser" },
-          "message": { "type": "string" }
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
         }
       },
       "PaginateResponseUser": {

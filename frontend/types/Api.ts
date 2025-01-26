@@ -9,6 +9,13 @@
  * ---------------------------------------------------------------
  */
 
+export interface UpdateUserRequest {
+  name?: string;
+  phoneNumber?: string;
+  password?: string;
+  role?: "OWNER" | "STAFF" | "ADMIN";
+}
+
 export interface SignUpRequest {
   /**
    * @minLength 3
@@ -33,6 +40,13 @@ export interface SignUpRequest {
 export interface BaseResponseUser {
   data?: User;
   message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface User {
@@ -64,6 +78,13 @@ export interface SignInRequest {
 export interface BaseResponseSignInResponse {
   data?: SignInResponse;
   message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface SignInResponse {
@@ -74,6 +95,13 @@ export interface SignInResponse {
 export interface BaseResponsePaginateResponseUser {
   data?: PaginateResponseUser;
   message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface PaginateResponseUser {
@@ -306,6 +334,25 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
     /**
+     * @description Update a user by their name.
+     *
+     * @tags User Management
+     * @name UpdateUser
+     * @summary Update a user
+     * @request PUT:/api/users/{id}
+     * @secure
+     */
+    updateUser: (id: string, data: UpdateUserRequest, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/users/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Sign up a new user with a username and password.
      *
      * @tags Authentication
@@ -340,40 +387,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Fetch a user by their ID.
-     *
-     * @tags User Management
-     * @name GetUserById
-     * @summary Get a user by ID
-     * @request GET:/api/users/{id}
-     * @secure
-     */
-    getUserById: (id: number, params: RequestParams = {}) =>
-      this.request<User, any>({
-        path: `/api/users/${id}`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Delete a user by their ID.
-     *
-     * @tags User Management
-     * @name DeleteUser
-     * @summary Delete a user
-     * @request DELETE:/api/users/{id}
-     * @secure
-     */
-    deleteUser: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/users/${id}`,
-        method: "DELETE",
-        secure: true,
         ...params,
       }),
 

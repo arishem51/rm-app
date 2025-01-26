@@ -1,19 +1,6 @@
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import { getMe } from "./server/actions";
+import { NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  const token = (await cookies()).get("token")?.value;
-  if (
-    token &&
-    (request.url.includes("/auth/sign-in") ||
-      request.url.includes("/auth/sign-up"))
-  ) {
-    const me = await getMe();
-    if (me?.data) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-  }
+export async function middleware() {
   return NextResponse.next();
 }
 

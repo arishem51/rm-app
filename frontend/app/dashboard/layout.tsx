@@ -1,32 +1,26 @@
-import { LoadingFullScreen } from "@/components/loading/loading-full-screen";
-import { getMe } from "@/server/actions";
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/dashboard/sidebar";
-import ClientCompDashboard from "@/components/dashboard/client-comp-dashboard";
 import Header from "@/components/dashboard/header";
+import { getMe } from "@/server/actions";
+import { redirect } from "next/navigation";
 
 type Props = { children: ReactNode };
 
-const Main = async ({ children }: Props) => {
-  const query = await getMe();
-  return (
-    <main className="w-full">
-      <ClientCompDashboard meQuery={query}>{children}</ClientCompDashboard>
-    </main>
-  );
-};
-
 export default async function Layout({ children }: Props) {
+  //FIXME: make sure getMe is cached
+  const query = await getMe();
+  if (!query?.data) {
+    return redirect("/auth/sign-in");
+  }
+
   return (
-    <Suspense fallback={<LoadingFullScreen />}>
-      <SidebarProvider>
-        <AppSidebar />
-        <Main>
-          <Header />
-          {children}
-        </Main>
-      </SidebarProvider>
-    </Suspense>
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="w-full">
+        <Header />
+        {children}
+      </main>
+    </SidebarProvider>
   );
 }

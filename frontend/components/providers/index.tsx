@@ -8,7 +8,7 @@ type ProviderProps = {
   children?: ReactNode;
 };
 
-const Providers = ({ children }: ProviderProps) => {
+const Providers = async ({ children }: ProviderProps) => {
   return (
     <Fragment>
       <Toaster />

@@ -18,17 +18,28 @@ export async function setTokenAfterSignIn(token: string) {
 
 export async function getMe() {
   try {
-    const token = (await cookies()).get(COOKIE_TOKEN)?.value;
-    const { data, status } = await apiClient.getMe({
+    const cookieStore = await cookies();
+    const token = cookieStore.get(COOKIE_TOKEN)?.value;
+    if (!token) {
+      return null;
+    }
+    const { data, status, ok } = await apiClient.getMe({
       headers: {
         Authorization: "Bearer " + token,
       },
     });
+    if (!ok && data.errorCode === "TOKEN_EXPIRED") {
+      return {
+        data: null,
+        status,
+      };
+    }
     if (!data.data) {
       return null;
     }
     return { data, status, token };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return null;
   }
 }

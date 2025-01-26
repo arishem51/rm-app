@@ -22,6 +22,8 @@ export const userAtom = atom(
   }
 );
 
-export const useUserAtom = () => useAtom(userAtom);
-export const useSetUserAtom = () => useSetAtom(userAtom);
-export const useUserAtomValue = () => useAtomValue(userAtom);
+export const useUserAtom = () => useAtom(userAtom, { store: globalStore });
+export const useSetUserAtom = () =>
+  useSetAtom(userAtom, { store: globalStore });
+export const useUserAtomValue = () =>
+  useAtomValue(userAtom, { store: globalStore });
