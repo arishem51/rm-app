@@ -4,6 +4,7 @@ import { Api } from "@/types/Api";
 import { globalStore } from "@/store";
 import { userAtom } from "@/store/user";
 import { UnusedSkipTokenOptions, queryOptions } from "@tanstack/react-query";
+import { redirect } from "next/navigation";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -37,8 +38,18 @@ export const { api: apiClient } = new Api({
       };
     }
     const response = await fetch(url, options);
-    if (!response.ok && response.status === 401) {
-      console.log(response);
+    if (
+      !response.ok &&
+      response.status === 401 &&
+      token &&
+      typeof window !== "undefined"
+    ) {
+      globalStore.set(userAtom, {
+        token: "",
+        user: undefined,
+        showToastErrorSignIn: true,
+      });
+      redirect("/auth/sign-in");
     }
     return response;
   },
