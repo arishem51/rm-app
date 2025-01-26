@@ -34,12 +34,20 @@ public class AuthController {
     @Operation(summary = "Sign up a new user", description = "Sign up a new user with a username and password.")
     @PostMapping("/sign-up")
     public ResponseEntity<BaseResponse<User>> signUp(@Valid @RequestBody SignUpRequest request) {
-        return ResponseEntity.ok(authService.signUp(request));
+        BaseResponse<User> response = authService.signUp(request);
+        if (response.getData() == null) {
+            return ResponseEntity.badRequest().body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Sign in a user", description = "Perform authentication on a user to sign in!.")
     @PostMapping("/sign-in")
     public ResponseEntity<BaseResponse<SignInResponse>> signIn(@Valid @RequestBody SignInRequest request) {
+        BaseResponse<SignInResponse> response = authService.signIn(request);
+        if (response.getData() == null) {
+            return ResponseEntity.badRequest().body(response);
+        }
         return ResponseEntity.ok(authService.signIn(request));
     }
 
