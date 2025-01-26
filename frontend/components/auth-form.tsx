@@ -24,7 +24,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useUserAtom } from "@/store/user";
 import { apiClient } from "@/lib/utils";
 import { setTokenAfterSignIn } from "@/server/actions";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -103,6 +102,10 @@ const AuthForm: FC<Props> = ({
         description: "Credentials expired, please sign in again.",
       });
       setAtom({ user: undefined, showToastErrorSignIn: false });
+      fetch(`${window.origin}/api/auth`, {
+        method: "POST",
+        credentials: "include",
+      });
     }
   }, [atom.showToastErrorSignIn, setAtom, toast]);
 

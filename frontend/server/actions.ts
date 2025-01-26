@@ -8,13 +8,7 @@ const COOKIE_TOKEN = "token";
 
 export async function setTokenAfterSignIn(token: string) {
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_TOKEN, token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24, // 1 day expiration
-    path: "/",
-  });
+  cookieStore.set(COOKIE_TOKEN, token);
 }
 
 export async function getMe() {
