@@ -36,7 +36,11 @@ export const { api: apiClient } = new Api({
         Authorization: `Bearer ${token}`,
       };
     }
-    return fetch(url, options);
+    const response = await fetch(url, options);
+    if (!response.ok && response.status === 401) {
+      console.log(response);
+    }
+    return response;
   },
 });
 

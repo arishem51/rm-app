@@ -1,6 +1,7 @@
 "use server";
 
 import { apiClient } from "@/lib/utils";
+import { BaseResponseUser, HttpResponse } from "@/types/Api";
 import { cookies } from "next/headers";
 
 const COOKIE_TOKEN = "token";
@@ -23,23 +24,26 @@ export async function getMe() {
     if (!token) {
       return null;
     }
-    const { data, status, ok } = await apiClient.getMe({
+    const { data, status } = await apiClient.getMe({
       headers: {
         Authorization: "Bearer " + token,
       },
     });
-    if (!ok && data.errorCode === "TOKEN_EXPIRED") {
-      return {
-        data: null,
-        status,
-      };
-    }
+
     if (!data.data) {
       return null;
     }
     return { data, status, token };
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    if (
+      (e as HttpResponse<null, BaseResponseUser>).error.errorCode ===
+      "TOKEN_EXPIRED"
+    ) {
+      return {
+        data: null,
+        status: 401,
+      };
+    }
     return null;
   }
 }
