@@ -2,6 +2,7 @@ package com.example.backend.config;
 
 import com.example.backend.constants.SecurityConstants;
 import com.example.backend.dto.BaseResponse;
+import com.example.backend.enums.ErrorCode;
 import com.example.backend.services.JwtService;
 import com.example.backend.services.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void sendResponse(HttpServletResponse response, String message, int statusCode) throws IOException {
         response.setStatus(statusCode);
         response.setContentType("application/json");
-        BaseResponse<Object> errorResponse = new BaseResponse<>(null, message);
+        ErrorCode errorCode = ErrorCode.TOKEN_INVALID;
+        if (message.equals("Token expired!")) {
+            errorCode = ErrorCode.TOKEN_EXPIRED;
+        }
+        BaseResponse<Object> errorResponse = BaseResponse.error(message, errorCode);
         ObjectMapper objectMapper = new ObjectMapper();
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
@@ -58,6 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        System.out.println("JWT Authentication Filter");
 
         // Get Authorization header and validate
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
