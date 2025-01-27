@@ -8,7 +8,11 @@ const COOKIE_TOKEN = "token";
 
 export async function setTokenAfterSignIn(token: string) {
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_TOKEN, token);
+  cookieStore.set(COOKIE_TOKEN, token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+  });
 }
 
 export async function getMe() {

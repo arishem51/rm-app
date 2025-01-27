@@ -1,16 +1,12 @@
+import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
 import Users from "@/components/dashboard/users";
 import UsersLoading from "@/components/dashboard/users/loading";
-import { getQueryClient } from "@/lib/query-client";
 import { ApiQuery } from "@/services/query";
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { Suspense } from "react";
 
 const Page = async () => {
-  const queryClient = getQueryClient();
-  queryClient.prefetchQuery(ApiQuery.users.getUsers({ page: 0 }));
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationPrefetchQuery query={ApiQuery.users.getUsers({ page: 0 })}>
       <div className="px-4">
         <h1 className="text-3xl font-bold mt-2">User management</h1>
         <p className="text-sm  text-neutral-400 my-1">
@@ -20,7 +16,7 @@ const Page = async () => {
           <Users />
         </Suspense>
       </div>
-    </HydrationBoundary>
+    </HydrationPrefetchQuery>
   );
 };
 
