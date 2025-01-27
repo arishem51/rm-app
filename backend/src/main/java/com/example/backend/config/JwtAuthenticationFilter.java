@@ -64,8 +64,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("JWT Authentication Filter");
-
         // Get Authorization header and validate
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 

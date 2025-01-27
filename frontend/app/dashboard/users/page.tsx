@@ -1,12 +1,13 @@
 import Users from "@/components/dashboard/users";
 import UsersLoading from "@/components/dashboard/users/loading";
 import { getQueryClient } from "@/lib/query-client";
+import { ApiQuery } from "@/services/query";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { Suspense } from "react";
 
 const Page = async () => {
   const queryClient = getQueryClient();
-  // queryClient.prefetchQuery(ApiQuery.users.getUsers({ page: 0 }));
+  queryClient.prefetchQuery(ApiQuery.users.getUsers({ page: 0 }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
