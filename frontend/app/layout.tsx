@@ -28,7 +28,7 @@ export default async function RootLayout({
 }>) {
   //FIXME: make sure getMe is cached
   const query = await getMe();
-  console.log("123");
+  
 
   return (
     <html lang="en" suppressHydrationWarning>
