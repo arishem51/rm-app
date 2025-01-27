@@ -8,7 +8,11 @@ const COOKIE_TOKEN = "token";
 
 export async function setTokenAfterSignIn(token: string) {
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_TOKEN, token);
+  cookieStore.set(COOKIE_TOKEN, token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+  });
 }
 
 export async function getMe() {
@@ -30,7 +34,7 @@ export async function getMe() {
     return { data, status, token };
   } catch (e) {
     if (
-      (e as HttpResponse<null, BaseResponseUser>).error.errorCode ===
+      (e as HttpResponse<null, BaseResponseUser>)?.error?.errorCode ===
       "TOKEN_EXPIRED"
     ) {
       return {

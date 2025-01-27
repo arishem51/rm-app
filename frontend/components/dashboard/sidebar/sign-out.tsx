@@ -15,7 +15,7 @@ const DropdownSignOut = ({ children }: Props) => {
   const handleSignOut = async () => {
     await signOut();
     setUser({ token: "", user: undefined, showToastErrorSignIn: false });
-    return redirect("/auth/sign-in");
+    redirect("/auth/sign-in");
   };
   return (
     <DropdownMenuItem
