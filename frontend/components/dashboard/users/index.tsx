@@ -24,28 +24,30 @@ import { useState } from "react";
 import UserPagination from "./pagination";
 
 const Users = () => {
-  const [filter, setFilter] = useState({
-    page: 0,
-  });
+  const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useQuery(ApiQuery.users.getUsers(filter));
   const user = useUserAtomValue();
   const isAdmin = user.user?.role === "ADMIN";
 
   const handleNavigatePage = (page: number) => {
-    setFilter((prev) => ({ ...prev, page: prev.page + page }));
+    setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
   };
   const handleNavigateFullPage = (page: number) => {
     const isRight = page > 0;
-    setFilter((prev) => ({
-      ...prev,
+    setFilter({
       page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
-    }));
+      search: filter.search,
+    });
+  };
+
+  const handleSearch = (search: string) => {
+    setFilter({ page: 0, search });
   };
 
   return (
     <div className="mt-4">
       <div>
-        <UserSearch />
+        <UserSearch onSearch={handleSearch} />
       </div>
       <Table>
         <TableHeader>

@@ -3,7 +3,10 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
-const UserSearch = () => {
+type Props = {
+  onSearch: (search: string) => void;
+};
+const UserSearch = ({ onSearch }: Props) => {
   const [search, setSearch] = useState("");
 
   return (
@@ -16,7 +19,12 @@ const UserSearch = () => {
           setSearch(e.target.value);
         }}
       />
-      <Button size="icon">
+      <Button
+        size="icon"
+        onClick={() => {
+          onSearch(search);
+        }}
+      >
         <Search size={16} />
       </Button>
     </div>

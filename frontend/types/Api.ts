@@ -428,6 +428,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @default 10
          */
         pageSize?: number;
+        /** @default "" */
+        search?: string;
       },
       params: RequestParams = {},
     ) =>

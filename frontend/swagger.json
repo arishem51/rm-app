@@ -121,6 +121,12 @@
             "in": "query",
             "required": false,
             "schema": { "type": "integer", "format": "int32", "default": 10 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {
