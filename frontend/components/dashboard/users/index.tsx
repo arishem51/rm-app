@@ -39,6 +39,10 @@ const Users = () => {
   const user = useUserAtomValue();
   const isAdmin = user.user?.role === "ADMIN";
 
+  const handleNavigatePage = (page: number) => {
+    setFilter((prev) => ({ ...prev, page: prev.page + page }));
+  };
+
   return (
     <div className="mt-4">
       <div>
@@ -90,9 +94,12 @@ const Users = () => {
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavigatePage(-1);
+              }}
               className={
-                filter.page === 0 ? "pointer-events-none opacity-50" : undefined
+                filter.page === 0 ? "pointer-events-none opacity-50" : ""
               }
             />
           </PaginationItem>
@@ -118,7 +125,17 @@ const Users = () => {
             })
           )}
           <PaginationItem>
-            <PaginationNext href="#" />
+            <PaginationNext
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavigatePage(1);
+              }}
+              className={
+                filter.page === (data?.totalPages ?? 0) - 1
+                  ? "pointer-events-none opacity-50"
+                  : ""
+              }
+            />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
