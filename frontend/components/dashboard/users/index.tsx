@@ -17,19 +17,11 @@ import {
 import { ApiQuery } from "@/services/query";
 import { useUserAtomValue } from "@/store/user";
 import { useQuery } from "@tanstack/react-query";
-import { lowerCase, range, startCase } from "lodash";
+import { lowerCase, startCase } from "lodash";
 import { Ellipsis, Trash, UserPen } from "lucide-react";
 import UserSearch from "./UserSearch";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { useState } from "react";
+import UserPagination from "./pagination";
 
 const Users = () => {
   const [filter, setFilter] = useState({
@@ -41,6 +33,13 @@ const Users = () => {
 
   const handleNavigatePage = (page: number) => {
     setFilter((prev) => ({ ...prev, page: prev.page + page }));
+  };
+  const handleNavigateFullPage = (page: number) => {
+    const isRight = page > 0;
+    setFilter((prev) => ({
+      ...prev,
+      page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
+    }));
   };
 
   return (
@@ -90,55 +89,12 @@ const Users = () => {
           })}
         </TableBody>
       </Table>
-      <Pagination className="mt-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavigatePage(-1);
-              }}
-              className={
-                filter.page === 0 ? "pointer-events-none opacity-50" : ""
-              }
-            />
-          </PaginationItem>
-          {(data?.totalPages ?? 0) > 4 ? (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          ) : (
-            range(1, (data?.totalPages ?? 0) + 1).map((index) => {
-              return (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    isActive={filter.page === index - 1}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setFilter((prev) => ({ ...prev, page: index - 1 }));
-                    }}
-                  >
-                    {index}
-                  </PaginationLink>
-                </PaginationItem>
-              );
-            })
-          )}
-          <PaginationItem>
-            <PaginationNext
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavigatePage(1);
-              }}
-              className={
-                filter.page === (data?.totalPages ?? 0) - 1
-                  ? "pointer-events-none opacity-50"
-                  : ""
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <UserPagination
+        isLeftButtonDisabled={filter.page === 0}
+        isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
+        handleNavigateFullPage={handleNavigateFullPage}
+        handleNavigatePage={handleNavigatePage}
+      />
     </div>
   );
 };
