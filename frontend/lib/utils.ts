@@ -3,8 +3,9 @@ import { twMerge } from "tailwind-merge";
 import { Api } from "@/types/Api";
 import { globalStore } from "@/store";
 import { userAtom } from "@/store/user";
-import { UnusedSkipTokenOptions, queryOptions } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
+import { QueryConfigType } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -65,9 +66,7 @@ const serialize = <T>(record?: Record<string, string | number | T>) => {
 
 export const createQuery = <T, K>(
   method: (args: K) => Promise<{ data: T }>,
-  queryConfig?:
-    | ((params: K) => UnusedSkipTokenOptions<T>)
-    | UnusedSkipTokenOptions<T>
+  queryConfig?: ((params: K) => QueryConfigType<T>) | QueryConfigType<T>
 ) => {
   return (params: K = undefined as K) => {
     const config =
