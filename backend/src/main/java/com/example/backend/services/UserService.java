@@ -44,27 +44,27 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Page<User> findUsers(int page, int pageSize) {
-        return userRepository.findAll(PageRequest.of(page, pageSize));
+    public Page<User> findUsers(int page, int pageSize, String search) {
+        return search.isEmpty() ? userRepository.findAll(PageRequest.of(page, pageSize))
+                : userRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
     }
 
-    public ResponseEntity<String> updateUser(Long id, UpdateUserRequest request){
+    public ResponseEntity<String> updateUser(Long id, UpdateUserRequest request) {
         User user = userRepository.findById(id).orElse(null);
-        if(user == null){
+        if (user == null) {
             return ResponseEntity.status(404).body("User not found");
         }
-            //Update user's info
-            user.setUsername(request.getName()!= null ? request.getName() : user.getUsername());
-            user.setPassword(request.getPassword()!= null ? request.getPassword() : user.getPassword());
-            user.setPhoneNumber(request.getPhoneNumber()!= null ? request.getPhoneNumber() : user.getPhoneNumber());
-            user.setRole(request.getRole()!= null ? request.getRole() : user.getRole());
-            
-            //Save updated
-            userRepository.save(user);
+        // Update user's info
+        user.setUsername(request.getName() != null ? request.getName() : user.getUsername());
+        user.setPassword(request.getPassword() != null ? request.getPassword() : user.getPassword());
+        user.setPhoneNumber(request.getPhoneNumber() != null ? request.getPhoneNumber() : user.getPhoneNumber());
+        user.setRole(request.getRole() != null ? request.getRole() : user.getRole());
 
-            return ResponseEntity.ok("User updated successfully.");
-        
+        // Save updated
+        userRepository.save(user);
+
+        return ResponseEntity.ok("User updated successfully.");
+
     }
-    
 
 }
