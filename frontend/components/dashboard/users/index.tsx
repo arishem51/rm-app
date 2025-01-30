@@ -68,7 +68,9 @@ const Users = () => {
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.phoneNumber}</TableCell>
                 <TableCell>{startCase(lowerCase(user.role))}</TableCell>
-                {isAdmin && <TableCell>--/--</TableCell>}
+                {isAdmin && (
+                  <TableCell>{startCase(lowerCase(user.status))}</TableCell>
+                )}
                 <TableCell className="flex justify-end w-full">
                   <DropdownMenu>
                     <DropdownMenuTrigger>
