@@ -15,6 +15,7 @@ import com.example.backend.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,24 +28,30 @@ import lombok.*;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = true)
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @Schema(required = true)
     private String username;
 
     @Column(nullable = false)
+    @Schema(required = true)
     private String name; // New field for full name
 
     @Column(nullable = false, unique = true)
+    @Schema(required = true)
     private String phoneNumber; // New field for phone number
 
     @Column(nullable = false)
     @JsonIgnore
+    @Schema(required = true)
     private String password;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(required = true)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
@@ -54,10 +61,12 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Schema(required = true)
     private Role role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Schema(required = true)
     @Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
 

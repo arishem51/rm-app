@@ -51,16 +51,16 @@ export interface BaseResponseUser {
 
 export interface User {
   /** @format int64 */
-  id?: number;
-  username?: string;
-  name?: string;
-  phoneNumber?: string;
+  id: number;
+  username: string;
+  name: string;
+  phoneNumber: string;
   /** @format date-time */
-  createdAt?: string;
+  createdAt: string;
   /** @format date-time */
   updatedAt?: string;
-  role?: "OWNER" | "STAFF" | "ADMIN";
-  status?: "ACTIVE" | "INACTIVE";
+  role: "OWNER" | "STAFF" | "ADMIN";
+  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface SignInRequest {
