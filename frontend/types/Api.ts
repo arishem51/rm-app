@@ -60,6 +60,7 @@ export interface User {
   /** @format date-time */
   updatedAt?: string;
   role?: "OWNER" | "STAFF" | "ADMIN";
+  status?: "ACTIVE" | "INACTIVE";
 }
 
 export interface SignInRequest {

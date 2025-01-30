@@ -202,8 +202,18 @@
           "phoneNumber": { "type": "string" },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" },
-          "role": { "type": "string", "enum": ["OWNER", "STAFF", "ADMIN"] }
-        }
+          "role": { "type": "string", "enum": ["OWNER", "STAFF", "ADMIN"] },
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "name",
+          "phoneNumber",
+          "role",
+          "status",
+          "username"
+        ]
       },
       "SignInRequest": {
         "type": "object",
