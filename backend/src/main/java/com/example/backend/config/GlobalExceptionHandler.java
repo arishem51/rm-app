@@ -16,6 +16,7 @@ import com.example.backend.dto.BaseResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<BaseResponse<Map<String, String>>> handleValidationExceptions(
@@ -24,7 +25,7 @@ public class GlobalExceptionHandler {
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new BaseResponse<Map<String, String>>(errors, "Validation failed. Please check the input fields."));
     }
 

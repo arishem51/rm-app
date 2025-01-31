@@ -10,9 +10,9 @@ import com.example.backend.entities.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
-    boolean existsByUsername(String username);
+    Optional<User> findByPhoneNumber(String phoneNumber);
 
-    boolean existsByPhoneNumber(String phoneNumber);
+    boolean existsByUsername(String username);
 
     Page<User> findByNameContainingIgnoreCase(String search, PageRequest pageRequest);
 }

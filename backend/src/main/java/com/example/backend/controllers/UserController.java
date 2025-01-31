@@ -8,6 +8,7 @@ import com.example.backend.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -42,8 +43,14 @@ public class UserController {
 
     @Operation(summary = "Update a user", description = "Update a user by their name.")
     @PutMapping("/{id}")
-    public void updateUser(@PathVariable String username, @RequestBody UpdateUserRequest request) {
-
+    public ResponseEntity<BaseResponse<User>> updateUser(@PathVariable Long id,
+            @RequestBody @Valid UpdateUserRequest request) {
+        try {
+            User user = userService.updateUser(id, request);
+            return ResponseEntity.ok().body(BaseResponse.success(user, "Update user success!"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
 }

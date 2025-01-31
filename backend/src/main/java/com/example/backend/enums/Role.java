@@ -1,10 +1,16 @@
 package com.example.backend.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Role {
-    OWNER, STAFF, ADMIN;
+    @JsonProperty("OWNER")
+    OWNER,
+    @JsonProperty("STAFF")
+    STAFF,
+    @JsonProperty("ADMIN")
+    ADMIN;
 
     @JsonCreator
     public static Role fromString(String value) {
