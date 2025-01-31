@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Search, XIcon } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -9,22 +10,38 @@ type Props = {
 };
 const UserSearch = ({ onSearch, filterSearch }: Props) => {
   const [search, setSearch] = useState("");
+  const resetSearch = () => {
+    setSearch("");
+    onSearch("");
+  };
 
   return (
     <div className="flex items-center gap-2">
-      <Input
-        className="my-2 w-1/3"
-        placeholder="Search"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-        }}
-        onBlur={() => {
-          if (filterSearch && filterSearch !== search) {
-            setSearch(filterSearch);
-          }
-        }}
-      />
+      <div className="my-2 w-1/3 relative">
+        <Input
+          placeholder="Search"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          onBlur={() => {
+            if (filterSearch && filterSearch !== search) {
+              setSearch(filterSearch);
+            }
+          }}
+        />
+        <Button
+          size="icon"
+          className={cn(
+            "rounded-full h-4 w-4 absolute right-2 top-[50%] transform -translate-y-1/2",
+            search ? "block" : "hidden"
+          )}
+          variant="secondary"
+          onClick={resetSearch}
+        >
+          <XIcon />
+        </Button>
+      </div>
       <Button
         size="icon"
         onClick={() => {
