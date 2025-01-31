@@ -1,8 +1,5 @@
 package com.example.backend.dto.auth.request;
 
-import com.example.backend.enums.Role;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -17,8 +14,4 @@ public class SignUpRequest extends SignInRequest {
 
     @NotBlank(message = "Name is required")
     private String name;
-
-    @Schema(description = "User role", example = "OWNER", allowableValues = { "STAFF", "ADMIN", "OWNER" })
-    // FIXME: add validation for role
-    private Role role;
 }

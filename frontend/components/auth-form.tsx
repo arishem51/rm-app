@@ -10,14 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FC, Fragment, ReactNode, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -78,14 +70,12 @@ const AuthForm: FC<Props> = ({
     password: string;
     name: string;
     phoneNumber: string;
-    role: "OWNER" | "STAFF";
   }>({
     defaultValues: {
       username: "",
       password: "",
       name: "",
       phoneNumber: "",
-      role: "OWNER",
     },
     resolver: zodResolver(
       z.object(isSignUp ? signUpSchemaFields : signInSchemaFields)
@@ -249,34 +239,6 @@ const AuthForm: FC<Props> = ({
                   )}
                 />
               </div>
-              {isSignUp && (
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select a role" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectItem value="OWNER">Owner</SelectItem>
-                              <SelectItem value="STAFF">Staff</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
               <Button type="submit" className="w-full">
                 {isSignUp ? "Sign Up" : "Sign In"}
               </Button>

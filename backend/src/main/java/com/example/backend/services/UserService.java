@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.User;
+import com.example.backend.enums.Role;
 import com.example.backend.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class UserService {
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
-                .role(request.getRole())
+                .role(Role.OWNER)
                 .name(request.getName())
                 .build();
 

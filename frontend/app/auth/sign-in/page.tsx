@@ -8,10 +8,9 @@ export default function Page() {
         title="Sign In"
         description="Enter your username and password to sign in to your account"
       >
-        <div className="flex text-sm justify-between">
-          <span>Don&apos;t have an account?</span>
+        <div className="flex text-sm justify-center">
           <Link className="underline underline-offset-4" href="/auth/sign-up">
-            Sign up
+            Don&apos;t have an account? Sign up
           </Link>
         </div>
       </AuthForm>
