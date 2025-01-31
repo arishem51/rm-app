@@ -2,7 +2,6 @@ package com.example.backend.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
+import com.example.backend.enums.UserStatus;
 import com.example.backend.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class UserService {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username is already taken!");
         }
-        if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+        if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
             throw new IllegalArgumentException("Phone number is already taken!");
         }
 
@@ -50,22 +50,21 @@ public class UserService {
                 : userRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
     }
 
-    public ResponseEntity<String> updateUser(Long id, UpdateUserRequest request) {
+    public User updateUser(Long id, UpdateUserRequest request) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
-            return ResponseEntity.status(404).body("User not found");
+            throw new UsernameNotFoundException("User not found!");
         }
-        // Update user's info
-        user.setUsername(request.getName() != null ? request.getName() : user.getUsername());
-        user.setPassword(request.getPassword() != null ? request.getPassword() : user.getPassword());
-        user.setPhoneNumber(request.getPhoneNumber() != null ? request.getPhoneNumber() : user.getPhoneNumber());
-        user.setRole(request.getRole() != null ? request.getRole() : user.getRole());
-
-        // Save updated
+        user.setName(request.getName());
+        user.setPassword(user.getPassword());
+        if (userRepository.findByPhoneNumber(request.getPhoneNumber()).get().getId() != id) {
+            throw new IllegalArgumentException("Phone number is already taken!");
+        }
+        user.setPhoneNumber(request.getPhoneNumber());
+        // FIXME: just admin can update role to admin
+        user.setRole(Role.valueOf(request.getRole()));
+        user.setStatus(UserStatus.valueOf(request.getStatus()));
         userRepository.save(user);
-
-        return ResponseEntity.ok("User updated successfully.");
-
+        return user;
     }
-
 }
