@@ -36,8 +36,8 @@ const Users = () => {
 
   const [filter, setFilter] = useState(createFilterValue(0, ""));
   const { data: { data } = {} } = useQuery(ApiQuery.users.getUsers(filter));
-  const user = useUserAtomValue();
-  const isAdmin = user.user?.role === "ADMIN";
+  const userAtom = useUserAtomValue();
+  const isAdmin = userAtom.user?.role === "ADMIN";
 
   const handleNavigatePage = (page: number) => {
     setFilter((prev) => createFilterValue(prev.page + page, prev.search));
@@ -75,9 +75,16 @@ const Users = () => {
         <TableBody>
           {data?.data?.map((user) => {
             const isActive = user.status === "ACTIVE";
+            const isCurrentAccount = userAtom.user?.id === user.id;
+
             return (
               <TableRow key={user.id}>
-                <TableCell>{user.name}</TableCell>
+                <TableCell>
+                  {user.name}{" "}
+                  {isCurrentAccount && (
+                    <Badge className=" text-xs p-[4px] ml-0.5">Current</Badge>
+                  )}
+                </TableCell>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.phoneNumber}</TableCell>
                 <TableCell>{startCase(lowerCase(user.role))}</TableCell>
@@ -96,21 +103,23 @@ const Users = () => {
                   </TableCell>
                 )}
                 <TableCell className="flex justify-end w-full">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <Ellipsis size={16} />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem className="cursor-pointer">
-                        <UserPen />
-                        <span>Update</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Trash />
-                        <span>Delete</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  {!isCurrentAccount && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Ellipsis size={16} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <UserPen />
+                          <span>Update</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Trash />
+                          <span>Delete</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </TableCell>
               </TableRow>
             );
