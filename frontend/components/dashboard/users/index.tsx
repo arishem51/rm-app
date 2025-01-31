@@ -19,7 +19,7 @@ import { useUserAtomValue } from "@/store/user";
 import { useQuery } from "@tanstack/react-query";
 import { lowerCase, startCase } from "lodash";
 import { Ellipsis, Trash, UserPen } from "lucide-react";
-import UserSearch from "./UserSearch";
+import UserSearch from "./user-search";
 import { useCallback, useState } from "react";
 import UserPagination from "./pagination";
 import { Badge } from "@/components/ui/badge";
@@ -59,7 +59,7 @@ const Users = () => {
   return (
     <div className="mt-4">
       <div>
-        <UserSearch onSearch={handleSearch} />
+        <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
       </div>
       <Table>
         <TableHeader>

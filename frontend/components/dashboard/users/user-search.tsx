@@ -5,8 +5,9 @@ import { useState } from "react";
 
 type Props = {
   onSearch: (search: string) => void;
+  filterSearch?: string;
 };
-const UserSearch = ({ onSearch }: Props) => {
+const UserSearch = ({ onSearch, filterSearch }: Props) => {
   const [search, setSearch] = useState("");
 
   return (
@@ -17,6 +18,11 @@ const UserSearch = ({ onSearch }: Props) => {
         value={search}
         onChange={(e) => {
           setSearch(e.target.value);
+        }}
+        onBlur={() => {
+          if (filterSearch && filterSearch !== search) {
+            setSearch(filterSearch);
+          }
         }}
       />
       <Button
