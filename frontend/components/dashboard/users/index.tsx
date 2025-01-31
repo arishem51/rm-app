@@ -20,28 +20,40 @@ import { useQuery } from "@tanstack/react-query";
 import { lowerCase, startCase } from "lodash";
 import { Ellipsis, Trash, UserPen } from "lucide-react";
 import UserSearch from "./UserSearch";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import UserPagination from "./pagination";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const Users = () => {
-  const [filter, setFilter] = useState({ page: 0, search: "" });
+  const createFilterValue = useCallback(
+    (page: number, search: string) => ({
+      page,
+      search,
+    }),
+    []
+  );
+
+  const [filter, setFilter] = useState(createFilterValue(0, ""));
   const { data: { data } = {} } = useQuery(ApiQuery.users.getUsers(filter));
   const user = useUserAtomValue();
   const isAdmin = user.user?.role === "ADMIN";
 
   const handleNavigatePage = (page: number) => {
-    setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
+    setFilter((prev) => createFilterValue(prev.page + page, prev.search));
   };
   const handleNavigateFullPage = (page: number) => {
     const isRight = page > 0;
-    setFilter({
-      page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
-      search: filter.search,
-    });
+    setFilter(
+      createFilterValue(
+        isRight ? (data?.totalPages ?? 0) - 1 : 0,
+        filter.search
+      )
+    );
   };
 
   const handleSearch = (search: string) => {
-    setFilter({ page: 0, search });
+    setFilter(createFilterValue(0, search));
   };
 
   return (
@@ -62,6 +74,7 @@ const Users = () => {
         </TableHeader>
         <TableBody>
           {data?.data?.map((user) => {
+            const isActive = user.status === "ACTIVE";
             return (
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
@@ -69,7 +82,18 @@ const Users = () => {
                 <TableCell>{user.phoneNumber}</TableCell>
                 <TableCell>{startCase(lowerCase(user.role))}</TableCell>
                 {isAdmin && (
-                  <TableCell>{startCase(lowerCase(user.status))}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className={cn(
+                        isActive
+                          ? "bg-green-600 hover:bg-green-500 text-slate-100"
+                          : ""
+                      )}
+                      variant={isActive ? "default" : "destructive"}
+                    >
+                      {startCase(lowerCase(user.status))}
+                    </Badge>
+                  </TableCell>
                 )}
                 <TableCell className="flex justify-end w-full">
                   <DropdownMenu>
