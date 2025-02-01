@@ -25,7 +25,7 @@ const UserSearch = ({ onSearch, filterSearch }: Props) => {
             setSearch(e.target.value);
           }}
           onBlur={() => {
-            if (filterSearch && filterSearch !== search) {
+            if (filterSearch && !search) {
               setSearch(filterSearch);
             }
           }}
