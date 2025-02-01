@@ -26,9 +26,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  //FIXME: make sure getMe is cached
   const query = await getMe();
-  
 
   return (
     <html lang="en" suppressHydrationWarning>

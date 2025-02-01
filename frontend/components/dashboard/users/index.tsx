@@ -24,6 +24,7 @@ import UserPagination from "./pagination";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import useAppQuery from "@/hooks/use-app-query";
+import UsersEmptyState from "./empty-state";
 
 const Users = () => {
   const createFilterValue = useCallback(
@@ -62,71 +63,75 @@ const Users = () => {
       <div>
         <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Username</TableHead>
-            <TableHead>Phone number</TableHead>
-            <TableHead>Role</TableHead>
-            {isAdmin && <TableHead>Status</TableHead>}
-            <TableHead className="text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.data?.map((user) => {
-            const isActive = user.status === "ACTIVE";
-            const isCurrentAccount = userAtom.user?.id === user.id;
+      {(data?.data?.length || 0) > 0 ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Username</TableHead>
+              <TableHead>Phone number</TableHead>
+              <TableHead>Role</TableHead>
+              {isAdmin && <TableHead>Status</TableHead>}
+              <TableHead className="text-right">Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data?.data?.map((user) => {
+              const isActive = user.status === "ACTIVE";
+              const isCurrentAccount = userAtom.user?.id === user.id;
 
-            return (
-              <TableRow key={user.id}>
-                <TableCell>
-                  {user.name}{" "}
-                  {isCurrentAccount && (
-                    <Badge className=" text-xs p-[4px] ml-0.5">Current</Badge>
-                  )}
-                </TableCell>
-                <TableCell>{user.username}</TableCell>
-                <TableCell>{user.phoneNumber}</TableCell>
-                <TableCell>{startCase(lowerCase(user.role))}</TableCell>
-                {isAdmin && (
+              return (
+                <TableRow key={user.id}>
                   <TableCell>
-                    <Badge
-                      className={cn(
-                        isActive
-                          ? "bg-green-600 hover:bg-green-500 text-slate-100"
-                          : ""
-                      )}
-                      variant={isActive ? "default" : "destructive"}
-                    >
-                      {startCase(lowerCase(user.status))}
-                    </Badge>
+                    {user.name}{" "}
+                    {isCurrentAccount && (
+                      <Badge className=" text-xs p-[4px] ml-0.5">Current</Badge>
+                    )}
                   </TableCell>
-                )}
-                <TableCell className="flex justify-end w-full">
-                  {!isCurrentAccount && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Ellipsis size={16} />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem className="cursor-pointer">
-                          <UserPen />
-                          <span>Update</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer">
-                          <Trash />
-                          <span>Delete</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                  <TableCell>{user.username}</TableCell>
+                  <TableCell>{user.phoneNumber}</TableCell>
+                  <TableCell>{startCase(lowerCase(user.role))}</TableCell>
+                  {isAdmin && (
+                    <TableCell>
+                      <Badge
+                        className={cn(
+                          isActive
+                            ? "bg-green-600 hover:bg-green-500 text-slate-100"
+                            : ""
+                        )}
+                        variant={isActive ? "default" : "destructive"}
+                      >
+                        {startCase(lowerCase(user.status))}
+                      </Badge>
+                    </TableCell>
                   )}
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+                  <TableCell className="flex justify-end w-full">
+                    {!isCurrentAccount && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <Ellipsis size={16} />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem className="cursor-pointer">
+                            <UserPen />
+                            <span>Update</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="cursor-pointer">
+                            <Trash />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      ) : (
+        <UsersEmptyState />
+      )}
       <UserPagination
         isLeftButtonDisabled={filter.page === 0}
         isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
