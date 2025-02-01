@@ -10,31 +10,11 @@
  */
 
 export interface UpdateUserRequest {
-  name?: string;
-  phoneNumber?: string;
-  password?: string;
-  role?: "OWNER" | "STAFF" | "ADMIN";
-}
-
-export interface SignUpRequest {
-  /**
-   * @minLength 3
-   * @maxLength 20
-   */
-  username: string;
-  /**
-   * @minLength 6
-   * @maxLength 2147483647
-   */
-  password: string;
+  name: string;
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
-  name: string;
-  /**
-   * User role
-   * @example "OWNER"
-   */
-  role?: "STAFF" | "ADMIN" | "OWNER";
+  role: string;
+  status: string;
 }
 
 export interface BaseResponseUser {
@@ -61,6 +41,22 @@ export interface User {
   updatedAt?: string;
   role: "OWNER" | "STAFF" | "ADMIN";
   status: "ACTIVE" | "INACTIVE";
+}
+
+export interface SignUpRequest {
+  /**
+   * @minLength 3
+   * @maxLength 20
+   */
+  username: string;
+  /**
+   * @minLength 6
+   * @maxLength 2147483647
+   */
+  password: string;
+  /** @pattern ^[0-9]{10,12}$ */
+  phoneNumber: string;
+  name: string;
 }
 
 export interface SignInRequest {
@@ -343,8 +339,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/api/users/{id}
      * @secure
      */
-    updateUser: (id: string, data: UpdateUserRequest, params: RequestParams = {}) =>
-      this.request<void, any>({
+    updateUser: (id: number, data: UpdateUserRequest, params: RequestParams = {}) =>
+      this.request<BaseResponseUser, any>({
         path: `/api/users/${id}`,
         method: "PUT",
         body: data,

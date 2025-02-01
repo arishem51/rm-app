@@ -1,3 +1,5 @@
+import { User } from "@/types/Api";
+
 export const AppPathURL = {
   auth: {
     signIn: "/auth/signin",
@@ -9,3 +11,8 @@ export const AppPathURL = {
     users: "/dashboard/users",
   },
 } as const;
+
+export const UserStatus: Record<User["status"], User["status"]> = {
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+};

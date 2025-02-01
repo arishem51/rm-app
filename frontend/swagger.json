@@ -19,7 +19,14 @@
         "summary": "Update a user",
         "description": "Update a user by their name.",
         "operationId": "updateUser",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -28,7 +35,16 @@
           },
           "required": true
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseUser" }
+              }
+            }
+          }
+        }
       }
     },
     "/api/auth/sign-up": {
@@ -150,30 +166,11 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "phoneNumber": { "type": "string" },
-          "password": { "type": "string" },
-          "role": { "type": "string", "enum": ["OWNER", "STAFF", "ADMIN"] }
-        }
-      },
-      "SignUpRequest": {
-        "type": "object",
-        "properties": {
-          "username": { "type": "string", "maxLength": 20, "minLength": 3 },
-          "password": {
-            "type": "string",
-            "maxLength": 2147483647,
-            "minLength": 6
-          },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
-          "name": { "type": "string" },
-          "role": {
-            "type": "string",
-            "description": "User role",
-            "enum": ["STAFF", "ADMIN", "OWNER"],
-            "example": "OWNER"
-          }
+          "role": { "type": "string" },
+          "status": { "type": "string" }
         },
-        "required": ["name", "password", "phoneNumber", "username"]
+        "required": ["name", "phoneNumber", "role", "status"]
       },
       "BaseResponseUser": {
         "type": "object",
@@ -214,6 +211,20 @@
           "status",
           "username"
         ]
+      },
+      "SignUpRequest": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string", "maxLength": 20, "minLength": 3 },
+          "password": {
+            "type": "string",
+            "maxLength": 2147483647,
+            "minLength": 6
+          },
+          "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
+          "name": { "type": "string" }
+        },
+        "required": ["name", "password", "phoneNumber", "username"]
       },
       "SignInRequest": {
         "type": "object",

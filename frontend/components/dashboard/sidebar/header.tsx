@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { AppPathURL } from "@/lib/helpers";
+import { AppPathURL } from "@/lib/constants";
 import {
   ChevronsUpDown,
   GalleryVerticalEnd,

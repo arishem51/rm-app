@@ -19,7 +19,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../../ui/collapsible";
-import { AppPathURL } from "@/lib/helpers";
+import { AppPathURL } from "@/lib/constants";
 import SidebarHeader from "./header";
 
 type Item = {

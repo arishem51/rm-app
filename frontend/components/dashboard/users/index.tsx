@@ -1,12 +1,6 @@
 "use client";
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Table,
   TableBody,
   TableCell,
@@ -17,7 +11,6 @@ import {
 import { ApiQuery } from "@/services/query";
 import { useUserAtomValue } from "@/store/user";
 import { lowerCase, startCase } from "lodash";
-import { Ellipsis, Trash, UserPen } from "lucide-react";
 import UserSearch from "./user-search";
 import { useCallback, useState } from "react";
 import UserPagination from "./pagination";
@@ -25,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import useAppQuery from "@/hooks/use-app-query";
 import UsersEmptyState from "./empty-state";
+import UserActions from "./actions";
 
 const Users = () => {
   const createFilterValue = useCallback(
@@ -60,9 +54,7 @@ const Users = () => {
 
   return (
     <div className="mt-4">
-      <div>
-        <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
-      </div>
+      <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
       {(data?.data?.length || 0) > 0 ? (
         <Table>
           <TableHeader>
@@ -105,23 +97,9 @@ const Users = () => {
                       </Badge>
                     </TableCell>
                   )}
-                  <TableCell className="flex justify-end w-full">
+                  <TableCell className="flex w-full">
                     {!isCurrentAccount && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          <Ellipsis size={16} />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem className="cursor-pointer">
-                            <UserPen />
-                            <span>Update</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer">
-                            <Trash />
-                            <span>Delete</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <UserActions user={user} isAdmin={isAdmin} />
                     )}
                   </TableCell>
                 </TableRow>

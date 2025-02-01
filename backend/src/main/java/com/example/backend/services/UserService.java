@@ -55,15 +55,16 @@ public class UserService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found!");
         }
-        user.setName(request.getName());
-        user.setPassword(user.getPassword());
-        if (userRepository.findByPhoneNumber(request.getPhoneNumber()).get().getId() != id) {
+        if (request.getPhoneNumber() != null && !request.getPhoneNumber().isEmpty()
+                && userRepository.findByPhoneNumber(request.getPhoneNumber()).get().getId() != id) {
             throw new IllegalArgumentException("Phone number is already taken!");
         }
+
+        user.setName(request.getName() != null ? request.getName() : user.getName());
         user.setPhoneNumber(request.getPhoneNumber());
         // FIXME: just admin can update role to admin
-        user.setRole(Role.valueOf(request.getRole()));
-        user.setStatus(UserStatus.valueOf(request.getStatus()));
+        user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
+        user.setStatus(request.getStatus() != null ? UserStatus.valueOf(request.getStatus()) : user.getStatus());
         userRepository.save(user);
         return user;
     }
