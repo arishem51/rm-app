@@ -4,7 +4,7 @@ import { userAtom } from "@/store/user";
 import { useQueryClient } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 export default function Error({ error }: { error: Error }) {
-  console.log(error);
+  console.log("error", error);
   const queryClient = useQueryClient();
   queryClient.clear();
   globalStore.set(userAtom, {

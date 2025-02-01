@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table";
 import { ApiQuery } from "@/services/query";
 import { useUserAtomValue } from "@/store/user";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { lowerCase, startCase } from "lodash";
 import { Ellipsis, Trash, UserPen } from "lucide-react";
 import UserSearch from "./user-search";
@@ -35,7 +35,9 @@ const Users = () => {
   );
 
   const [filter, setFilter] = useState(createFilterValue(0, ""));
-  const { data: { data } = {} } = useQuery(ApiQuery.users.getUsers(filter));
+  const { data: { data } = {} } = useSuspenseQuery(
+    ApiQuery.users.getUsers(filter)
+  );
   const userAtom = useUserAtomValue();
   const isAdmin = userAtom.user?.role === "ADMIN";
 
