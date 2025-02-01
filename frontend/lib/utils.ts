@@ -4,7 +4,6 @@ import { Api } from "@/types/Api";
 import { globalStore } from "@/store";
 import { userAtom } from "@/store/user";
 import { queryOptions } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
 import { QueryConfigType } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -50,7 +49,6 @@ export const { api: apiClient } = new Api({
         user: undefined,
         showToastErrorSignIn: true,
       });
-      redirect("/auth/sign-in");
     }
     return response;
   },

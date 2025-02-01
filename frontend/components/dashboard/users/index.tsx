@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/table";
 import { ApiQuery } from "@/services/query";
 import { useUserAtomValue } from "@/store/user";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { lowerCase, startCase } from "lodash";
 import { Ellipsis, Trash, UserPen } from "lucide-react";
 import UserSearch from "./user-search";
@@ -24,6 +23,7 @@ import { useCallback, useState } from "react";
 import UserPagination from "./pagination";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import useAppQuery from "@/hooks/use-app-query";
 
 const Users = () => {
   const createFilterValue = useCallback(
@@ -35,9 +35,8 @@ const Users = () => {
   );
 
   const [filter, setFilter] = useState(createFilterValue(0, ""));
-  const { data: { data } = {} } = useSuspenseQuery(
-    ApiQuery.users.getUsers(filter)
-  );
+  const { data: { data } = {} } = useAppQuery(ApiQuery.users.getUsers(filter));
+
   const userAtom = useUserAtomValue();
   const isAdmin = userAtom.user?.role === "ADMIN";
 
