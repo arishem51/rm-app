@@ -16,3 +16,9 @@ export const UserStatus: Record<User["status"], User["status"]> = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
 };
+
+export const UserRole: Record<User["role"], User["role"]> = {
+  ADMIN: "ADMIN",
+  OWNER: "OWNER",
+  STAFF: "STAFF",
+};

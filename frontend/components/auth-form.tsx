@@ -40,14 +40,13 @@ const signInSchemaFields = {
 
 const signUpSchemaFields = {
   ...signInSchemaFields,
+  name: z.string().nonempty({ message: "Name is required" }),
   phoneNumber: z
     .string()
     .regex(/^[0-9]{10,12}$/, {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
-  name: z.string().nonempty({ message: "Name is required" }),
-  role: z.enum(["OWNER", "STAFF"]),
 };
 
 type Props = {

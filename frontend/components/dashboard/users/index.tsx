@@ -18,7 +18,11 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import useAppQuery from "@/hooks/use-app-query";
 import UsersEmptyState from "./empty-state";
-import UserActions from "./actions";
+import { UserPen } from "lucide-react";
+import UserUpdateModal from "./update-modal";
+import { DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { User } from "@/types/Api";
 
 const Users = () => {
   const createFilterValue = useCallback(
@@ -28,7 +32,7 @@ const Users = () => {
     }),
     []
   );
-
+  const [updatedUser, setUpdatedUser] = useState<User>();
   const [filter, setFilter] = useState(createFilterValue(0, ""));
   const { data: { data } = {} } = useAppQuery(ApiQuery.users.getUsers(filter));
 
@@ -53,7 +57,7 @@ const Users = () => {
   };
 
   return (
-    <div className="mt-4">
+    <UserUpdateModal user={updatedUser}>
       <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
       {(data?.data?.length || 0) > 0 ? (
         <Table>
@@ -77,7 +81,9 @@ const Users = () => {
                   <TableCell>
                     {user.name}{" "}
                     {isCurrentAccount && (
-                      <Badge className=" text-xs p-[4px] ml-0.5">Current</Badge>
+                      <Badge className=" text-xs p-[4px] py-0 ml-0.5">
+                        Current
+                      </Badge>
                     )}
                   </TableCell>
                   <TableCell>{user.username}</TableCell>
@@ -97,9 +103,20 @@ const Users = () => {
                       </Badge>
                     </TableCell>
                   )}
-                  <TableCell className="flex w-full">
+                  <TableCell className="flex justify-end w-full">
                     {!isCurrentAccount && (
-                      <UserActions user={user} isAdmin={isAdmin} />
+                      <DialogTrigger asChild>
+                        <Button
+                          size="icon"
+                          className="w-6 h-6"
+                          variant="outline"
+                          onClick={() => {
+                            setUpdatedUser(user);
+                          }}
+                        >
+                          <UserPen />
+                        </Button>
+                      </DialogTrigger>
                     )}
                   </TableCell>
                 </TableRow>
@@ -116,7 +133,7 @@ const Users = () => {
         handleNavigateFullPage={handleNavigateFullPage}
         handleNavigatePage={handleNavigatePage}
       />
-    </div>
+    </UserUpdateModal>
   );
 };
 

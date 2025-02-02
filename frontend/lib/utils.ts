@@ -66,7 +66,7 @@ export const createQuery = <T, K>(
   method: (args: K) => Promise<{ data: T }>,
   queryConfig?: ((params: K) => QueryConfigType<T>) | QueryConfigType<T>
 ) => {
-  return (params: K = undefined as K) => {
+  return (params: K = {} as K) => {
     const config =
       typeof queryConfig === "function" ? queryConfig(params) : queryConfig;
     return queryOptions<T>({
