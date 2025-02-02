@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -46,7 +47,7 @@ public class AuthController {
     public ResponseEntity<BaseResponse<SignInResponse>> signIn(@Valid @RequestBody SignInRequest request) {
         BaseResponse<SignInResponse> response = authService.signIn(request);
         if (response.getData() == null) {
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
         return ResponseEntity.ok(authService.signIn(request));
     }

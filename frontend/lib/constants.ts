@@ -22,3 +22,9 @@ export const UserRole: Record<User["role"], User["role"]> = {
   OWNER: "OWNER",
   STAFF: "STAFF",
 };
+
+export const ToastTitle = {
+  success: "Success.",
+  error: "Failed.",
+  somethingWentWrong: "Something went wrong!",
+} as const;

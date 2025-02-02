@@ -45,10 +45,10 @@ public class AuthService {
             String token = jwtService.createToken(username);
             User user = userService.findByUsername(username);
             return new BaseResponse<SignInResponse>(new SignInResponse(token, user), "Sign In successfully!");
-        } catch (DisabledException e) {
-            return new BaseResponse<SignInResponse>(null, "User is disabled!");
         } catch (BadCredentialsException e) {
             return new BaseResponse<SignInResponse>(null, "Invalid username or password!");
+        } catch (DisabledException e) {
+            return new BaseResponse<SignInResponse>(null, "User is disabled!");
         }
     }
 }

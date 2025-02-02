@@ -14,7 +14,6 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useUserAtom } from "@/store/user";
-import { apiClient } from "@/lib/utils";
 import { setTokenAfterSignIn } from "@/server/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,6 +26,8 @@ import {
   FormMessage,
   Form,
 } from "./ui/form";
+import { useSignIn, useSignUp } from "@/hooks/mutations/user";
+import { ToastTitle } from "@/lib/constants";
 
 const signInSchemaFields = {
   username: z
@@ -82,13 +83,15 @@ const AuthForm: FC<Props> = ({
   });
   const { toast } = useToast();
   const [atom, setAtom] = useUserAtom();
+  const { mutate: signIn } = useSignIn();
+  const { mutate: signUp } = useSignUp();
 
   useEffect(() => {
     if (atom.showToastErrorSignIn) {
       toast({
         variant: "destructive",
-        title: "Something went wrong.",
-        description: "Credentials expired, please sign in again.",
+        title: ToastTitle.somethingWentWrong,
+        description: "Credentials expired, please sign in again!",
       });
       setAtom({ user: undefined, showToastErrorSignIn: false });
       fetch(`${window.origin}/api/auth`, {
@@ -99,45 +102,53 @@ const AuthForm: FC<Props> = ({
   }, [atom.showToastErrorSignIn, setAtom, toast]);
 
   const onSubmit = form.handleSubmit(async (formData) => {
-    const { username, password } = formData;
-    try {
-      if (isSignUp) {
-        await apiClient.signUp(formData);
-      } else {
-        const { data } = await apiClient.signIn({
-          username,
-          password,
-        });
-        if (data.data) {
-          if (data.data.token) {
-            setTokenAfterSignIn(data.data.token);
-          }
-          setAtom({
-            user: data.data.user,
-            showToastErrorSignIn: false,
-            token: data.data.token,
+    if (isSignUp) {
+      signUp(formData, {
+        onError: () => {
+          toast({
+            variant: "destructive",
+            title: ToastTitle.error,
+            description: ToastTitle.somethingWentWrong,
           });
-        }
-      }
-      toast({
-        title: isSignUp ? "Sign up successfully!" : "Sign in successfully!",
-        description: isSignUp
-          ? "You can sign in to the app now!"
-          : "Welcome to Rice Management App.",
-      });
-      setTimeout(
-        () => {
-          router.replace(isSignUp ? "/auth/sign-in" : "/dashboard");
         },
-        isSignUp ? 500 : 0
-      );
-    } catch {
-      toast({
-        variant: "destructive",
-        title: isSignUp ? "Sign up failed!" : "Sign in failed!",
-        description: isSignUp
-          ? "Something went wrong!"
-          : "Please check your username and password.",
+        onSuccess: () => {
+          toast({
+            title: ToastTitle.success,
+            description: "Sign up success!",
+          });
+          setTimeout(() => {
+            router.replace("/auth/sign-in");
+          }, 500);
+        },
+      });
+    } else {
+      signIn(formData, {
+        onError: (e) => {
+          toast({
+            variant: "destructive",
+            title: ToastTitle.error,
+            description: e.message,
+          });
+        },
+        onSuccess({ data }) {
+          if (data.data) {
+            toast({
+              title: ToastTitle.success,
+              description: "Sign in success!",
+            });
+            setTimeout(() => {
+              router.replace("/dashboard");
+            }, 10);
+            if (data.data.token) {
+              setTokenAfterSignIn(data.data.token);
+            }
+            setAtom({
+              user: data.data.user,
+              showToastErrorSignIn: false,
+              token: data.data.token,
+            });
+          }
+        },
       });
     }
   });
