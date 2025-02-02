@@ -4,8 +4,8 @@ import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
-  const user = useUserAtomValue();
-  if (user) {
+  const userAtom = useUserAtomValue();
+  if (userAtom.user) {
     redirect("/dashboard");
   }
   return children;
