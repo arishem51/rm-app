@@ -64,19 +64,20 @@ const UserUpdateModal = ({ children, user }: Props) => {
   const { mutate: updateUser, isPending } = useUpdateUser();
   const queryClient = useQueryClient();
 
+  const { setValue } = form;
   useEffect(() => {
     if (user) {
-      form.setValue("name", user.name);
-      form.setValue("phoneNumber", user.phoneNumber);
-      form.setValue("role", user.role);
-      form.setValue("status", user.status);
+      setValue("name", user.name);
+      setValue("phoneNumber", user.phoneNumber);
+      setValue("role", user.role);
+      setValue("status", user.status);
     }
-  }, [form, user]);
+  }, [setValue, user]);
 
   const handleSubmit = form.handleSubmit((data: UpdateUserRequest) => {
-    if (user) {
+    if (user?.id) {
       updateUser(
-        { id: user?.id, ...data },
+        { id: user.id, ...data },
         {
           onSuccess: () => {
             toast({

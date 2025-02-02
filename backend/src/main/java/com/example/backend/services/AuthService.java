@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,8 @@ public class AuthService {
             String token = jwtService.createToken(username);
             User user = userService.findByUsername(username);
             return new BaseResponse<SignInResponse>(new SignInResponse(token, user), "Sign In successfully!");
+        } catch (DisabledException e) {
+            return new BaseResponse<SignInResponse>(null, "User is disabled!");
         } catch (BadCredentialsException e) {
             return new BaseResponse<SignInResponse>(null, "Invalid username or password!");
         }
