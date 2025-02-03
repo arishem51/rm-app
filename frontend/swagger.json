@@ -47,6 +47,70 @@
         }
       }
     },
+    "/api/users/": {
+      "get": {
+        "tags": ["User Management"],
+        "summary": "Get all users",
+        "description": "Fetch a list of all registered users.",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePaginateResponseUser"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["User Management"],
+        "summary": "Create a user",
+        "description": "Create a user by owner or admin.",
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateUserRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseUser" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/sign-up": {
       "post": {
         "tags": ["Authentication"],
@@ -118,46 +182,6 @@
           }
         }
       }
-    },
-    "/api/users/": {
-      "get": {
-        "tags": ["User Management"],
-        "summary": "Get all users",
-        "description": "Fetch a list of all registered users.",
-        "operationId": "getUsers",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 0 }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 10 }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "string", "default": "" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePaginateResponseUser"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -202,15 +226,22 @@
           "role": { "type": "string", "enum": ["OWNER", "STAFF", "ADMIN"] },
           "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
         },
-        "required": [
-          "createdAt",
-          "id",
-          "name",
-          "phoneNumber",
-          "role",
-          "status",
-          "username"
-        ]
+        "required": ["id", "name", "phoneNumber", "role", "status", "username"]
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string", "maxLength": 20, "minLength": 3 },
+          "password": {
+            "type": "string",
+            "maxLength": 2147483647,
+            "minLength": 6
+          },
+          "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
+          "name": { "type": "string" },
+          "role": { "type": "string" }
+        },
+        "required": ["name", "password", "phoneNumber", "role", "username"]
       },
       "SignUpRequest": {
         "type": "object",

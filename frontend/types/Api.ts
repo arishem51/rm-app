@@ -36,11 +36,28 @@ export interface User {
   name: string;
   phoneNumber: string;
   /** @format date-time */
-  createdAt: string;
+  createdAt?: string;
   /** @format date-time */
   updatedAt?: string;
   role: "OWNER" | "STAFF" | "ADMIN";
   status: "ACTIVE" | "INACTIVE";
+}
+
+export interface CreateUserRequest {
+  /**
+   * @minLength 3
+   * @maxLength 20
+   */
+  username: string;
+  /**
+   * @minLength 6
+   * @maxLength 2147483647
+   */
+  password: string;
+  /** @pattern ^[0-9]{10,12}$ */
+  phoneNumber: string;
+  name: string;
+  role: string;
 }
 
 export interface SignUpRequest {
@@ -350,6 +367,59 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch a list of all registered users.
+     *
+     * @tags User Management
+     * @name GetUsers
+     * @summary Get all users
+     * @request GET:/api/users/
+     * @secure
+     */
+    getUsers: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseUser, any>({
+        path: `/api/users/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Create a user by owner or admin.
+     *
+     * @tags User Management
+     * @name CreateUser
+     * @summary Create a user
+     * @request POST:/api/users/
+     * @secure
+     */
+    createUser: (data: CreateUserRequest, params: RequestParams = {}) =>
+      this.request<BaseResponseUser, any>({
+        path: `/api/users/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Sign up a new user with a username and password.
      *
      * @tags Authentication
@@ -400,40 +470,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<BaseResponseUser, any>({
         path: `/api/users/me`,
         method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Fetch a list of all registered users.
-     *
-     * @tags User Management
-     * @name GetUsers
-     * @summary Get all users
-     * @request GET:/api/users/
-     * @secure
-     */
-    getUsers: (
-      query?: {
-        /**
-         * @format int32
-         * @default 0
-         */
-        page?: number;
-        /**
-         * @format int32
-         * @default 10
-         */
-        pageSize?: number;
-        /** @default "" */
-        search?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<BaseResponsePaginateResponseUser, any>({
-        path: `/api/users/`,
-        method: "GET",
-        query: query,
         secure: true,
         ...params,
       }),

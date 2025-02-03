@@ -1,19 +1,9 @@
 "use client";
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FC, Fragment, ReactNode, useEffect } from "react";
+import { FC, Fragment, ReactNode } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { useUserAtom } from "@/store/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -25,9 +15,9 @@ import {
   FormMessage,
   Form,
 } from "./ui/form";
-import { useSignIn, useSignUp } from "@/hooks/mutations/user";
-import { ToastTitle } from "@/lib/constants";
-import { setTokenAfterSignIn } from "@/server/actions";
+
+import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 const signInSchemaFields = {
   username: z
@@ -50,27 +40,30 @@ const signUpSchemaFields = {
     .nonempty({ message: "Phone number is required" }),
 };
 
+type FormDataType = {
+  username: string;
+  password: string;
+  name: string;
+  phoneNumber: string;
+};
+
 type Props = {
-  title?: string;
-  description?: string;
   children?: ReactNode;
   type?: "sign-in" | "sign-up";
+  className?: string;
+  btnText?: string;
+  onSubmit: (data: FormDataType) => void;
 };
 
 const AuthForm: FC<Props> = ({
-  title,
-  description,
   children,
   type = "sign-in",
+  className,
+  btnText,
+  onSubmit,
 }) => {
   const isSignUp = type === "sign-up";
-  const router = useRouter();
-  const form = useForm<{
-    username: string;
-    password: string;
-    name: string;
-    phoneNumber: string;
-  }>({
+  const form = useForm<FormDataType>({
     defaultValues: {
       username: "",
       password: "",
@@ -81,179 +74,100 @@ const AuthForm: FC<Props> = ({
       z.object(isSignUp ? signUpSchemaFields : signInSchemaFields)
     ),
   });
-  const { toast } = useToast();
-  const [atom, setAtom] = useUserAtom();
-  const { mutate: signIn } = useSignIn();
-  const { mutate: signUp } = useSignUp();
 
-  useEffect(() => {
-    if (atom.showToastErrorSignIn) {
-      toast({
-        variant: "destructive",
-        title: ToastTitle.somethingWentWrong,
-        description: "Credentials expired, please sign in again!",
-      });
-      setAtom({ user: undefined, showToastErrorSignIn: false, token: "" });
-      fetch(`${window.origin}/api/auth`, {
-        method: "POST",
-        credentials: "include",
-      });
-    }
-  }, [atom.showToastErrorSignIn, setAtom, toast]);
-
-  const onSubmit = form.handleSubmit(async (formData) => {
-    if (isSignUp) {
-      signUp(formData, {
-        onError: () => {
-          toast({
-            variant: "destructive",
-            title: ToastTitle.error,
-            description: ToastTitle.somethingWentWrong,
-          });
-        },
-        onSuccess: () => {
-          toast({
-            title: ToastTitle.success,
-            description: "Sign up success!",
-          });
-          setTimeout(() => {
-            router.replace("/auth/sign-in");
-          }, 500);
-        },
-      });
-    } else {
-      signIn(formData, {
-        onError: (e) => {
-          toast({
-            variant: "destructive",
-            title: ToastTitle.error,
-            description: e.message,
-          });
-        },
-        onSuccess({ data }) {
-          if (data.data) {
-            toast({
-              title: ToastTitle.success,
-              description: "Sign in success!",
-            });
-
-            if (data.data.token) {
-              setTokenAfterSignIn(data.data.token);
-              setAtom({
-                user: data.data.user,
-                showToastErrorSignIn: false,
-                token: data.data.token,
-              });
-            }
-          }
-        },
-      });
-    }
+  const handleSubmit = form.handleSubmit(async (formData) => {
+    onSubmit(formData);
   });
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit}>
-        <Card className="mx-auto max-w-sm ">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {isSignUp && (
-                <Fragment>
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your Name" {...field} />
-                        </FormControl>
-                        <FormDescription>
-                          This is your public display name.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="phoneNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="tel"
-                            placeholder="(+84) 123 456 78"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Fragment>
+      <form className={cn(className, "space-y-4")} onSubmit={handleSubmit}>
+        {isSignUp && (
+          <Fragment>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your Name" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
               )}
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="space-y-1">
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel className="flex justify-between">
-                        Password
-                        {!isSignUp && (
-                          <span
-                            className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white"
-                            onClick={() => {
-                              toast({
-                                variant: "default",
-                                title: "Feature not available!",
-                                description:
-                                  "Please contact the admin to reset your password.",
-                              });
-                            }}
-                          >
-                            Forgot you password?
-                          </span>
-                        )}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="*********"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+            />
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="(+84) 123 456 78"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Fragment>
+        )}
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="Username" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="space-y-1">
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel className="flex justify-between">
+                  Password
+                  {!isSignUp && (
+                    <span
+                      className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white"
+                      onClick={() => {
+                        toast({
+                          variant: "default",
+                          title: "Feature not available!",
+                          description:
+                            "Please contact the admin to reset your password.",
+                        });
+                      }}
+                    >
+                      Forgot you password?
+                    </span>
                   )}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                {isSignUp ? "Sign Up" : "Sign In"}
-              </Button>
-              {children}
-            </div>
-          </CardContent>
-        </Card>
+                </FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="*********" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Button type="submit" className="w-full">
+          {btnText ? btnText : isSignUp ? "Sign Up" : "Sign In"}
+        </Button>
+        {children}
       </form>
     </Form>
   );

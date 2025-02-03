@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/utils";
 import {
   BaseResponseUser,
+  CreateUserRequest,
   HttpResponse,
   SignInRequest,
   SignUpRequest,
@@ -34,5 +35,19 @@ export const useSignUp = () =>
     mutationFn: async (props: SignUpRequest) => {
       const response = await apiClient.signUp(props);
       return response;
+    },
+  });
+
+export const useCreateUser = () =>
+  useMutation({
+    mutationFn: async (props: CreateUserRequest) => {
+      try {
+        const response = await apiClient.createUser(props);
+        return response;
+      } catch (error) {
+        throw new Error(
+          (error as HttpResponse<unknown, BaseResponseUser>).error.message
+        );
+      }
     },
   });

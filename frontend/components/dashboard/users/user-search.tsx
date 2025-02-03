@@ -16,8 +16,8 @@ const UserSearch = ({ onSearch, filterSearch }: Props) => {
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="my-2 w-1/3 relative">
+    <div className="flex items-center gap-2 w-1/2">
+      <div className="my-2 relative">
         <Input
           placeholder="Search"
           value={search}
@@ -44,11 +44,12 @@ const UserSearch = ({ onSearch, filterSearch }: Props) => {
       </div>
       <Button
         size="icon"
+        className="flex-shrink-0"
         onClick={() => {
           onSearch(search);
         }}
       >
-        <Search size={16} />
+        <Search />
       </Button>
     </div>
   );

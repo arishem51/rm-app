@@ -1,10 +1,10 @@
-import AuthForm from "@/components/auth-form";
+import AuthView from "@/components/auth/view";
 import Link from "next/link";
 
 export default function Page() {
   return (
     <div className="h-screen flex flex-col justify-center">
-      <AuthForm
+      <AuthView
         title="Sign In"
         description="Enter your username and password to sign in to your account"
       >
@@ -13,7 +13,7 @@ export default function Page() {
             Don&apos;t have an account? Sign up
           </Link>
         </div>
-      </AuthForm>
+      </AuthView>
     </div>
   );
 }
