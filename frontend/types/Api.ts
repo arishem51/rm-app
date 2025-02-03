@@ -29,6 +29,14 @@ export interface BaseResponseUser {
     | "INTERNAL_SERVER_ERROR";
 }
 
+export interface Shop {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  /** @uniqueItems true */
+  users?: User[];
+}
+
 export interface User {
   /** @format int64 */
   id: number;
@@ -41,6 +49,7 @@ export interface User {
   updatedAt?: string;
   role: "OWNER" | "STAFF" | "ADMIN";
   status: "ACTIVE" | "INACTIVE";
+  shop?: Shop;
 }
 
 export interface CreateUserRequest {

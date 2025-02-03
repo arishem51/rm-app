@@ -214,6 +214,18 @@
           }
         }
       },
+      "Shop": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "users": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/User" },
+            "uniqueItems": true
+          }
+        }
+      },
       "User": {
         "type": "object",
         "properties": {
@@ -224,7 +236,8 @@
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" },
           "role": { "type": "string", "enum": ["OWNER", "STAFF", "ADMIN"] },
-          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] },
+          "shop": { "$ref": "#/components/schemas/Shop" }
         },
         "required": ["id", "name", "phoneNumber", "role", "status", "username"]
       },
