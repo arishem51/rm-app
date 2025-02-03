@@ -79,7 +79,6 @@ const Users = () => {
               {data?.data?.map((user) => {
                 const isActive = user.status === "ACTIVE";
                 const isCurrentAccount = userAtom.user?.id === user.id;
-
                 return (
                   <TableRow key={user.id}>
                     <TableCell>

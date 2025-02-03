@@ -69,6 +69,10 @@ public class User implements UserDetails {
     @Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "shop_id", nullable = false)
+    private Shop shop;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
