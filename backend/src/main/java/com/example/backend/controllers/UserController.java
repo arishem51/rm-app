@@ -2,6 +2,7 @@ package com.example.backend.controllers;
 
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
+import com.example.backend.dto.auth.request.CreateUserRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.User;
 import com.example.backend.services.UserService;
@@ -48,6 +49,18 @@ public class UserController {
         try {
             User user = userService.updateUser(id, request);
             return ResponseEntity.ok().body(BaseResponse.success(user, "Update user success!"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Create a user", description = "Create a user by owner or admin.")
+    @PostMapping("/")
+    public ResponseEntity<BaseResponse<User>> createUser(
+            @RequestBody @Valid CreateUserRequest request) {
+        try {
+            User user = userService.createUser(request);
+            return ResponseEntity.ok().body(BaseResponse.success(user, "Create user success!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

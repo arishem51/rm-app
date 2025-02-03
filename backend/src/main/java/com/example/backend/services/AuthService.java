@@ -10,10 +10,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.BaseResponse;
+import com.example.backend.dto.auth.request.CreateUserRequest;
 import com.example.backend.dto.auth.request.SignInRequest;
 import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.response.SignInResponse;
 import com.example.backend.entities.User;
+import com.example.backend.enums.Role;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +28,10 @@ public class AuthService {
 
     public BaseResponse<User> signUp(SignUpRequest request) {
         try {
-            User user = userService.createUser(request);
+            CreateUserRequest userRequest = CreateUserRequest.builder().name(request.getName())
+                    .password(request.getPassword()).phoneNumber(request.getPhoneNumber()).role(Role.OWNER.name())
+                    .username(request.getUsername()).build();
+            User user = userService.createUser(userRequest);
             return new BaseResponse<User>(user, "Create user successfully!");
         } catch (IllegalArgumentException e) {
             return new BaseResponse<User>(null, e.getMessage());

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.backend.dto.auth.request.SignUpRequest;
+import com.example.backend.dto.auth.request.CreateUserRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
@@ -26,28 +26,32 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
     }
 
-    public User createUser(SignUpRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
+    private void validateCreateUser(String username, String phoneNumber) {
+        if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username is already taken!");
         }
-        if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+        if (userRepository.findByPhoneNumber(phoneNumber).isPresent()) {
             throw new IllegalArgumentException("Phone number is already taken!");
         }
-
-        User user = User.builder()
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .phoneNumber(request.getPhoneNumber())
-                .role(Role.OWNER)
-                .name(request.getName())
-                .build();
-
-        return userRepository.save(user);
     }
 
     public Page<User> findUsers(int page, int pageSize, String search) {
         return search.isEmpty() ? userRepository.findAll(PageRequest.of(page, pageSize))
                 : userRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
+    }
+
+    public User createUser(CreateUserRequest request) {
+        validateCreateUser(request.getUsername(), request.getPhoneNumber());
+        // FIXME: Validate just admin can create user role admin, owner can create user
+        // role owner/staff
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phoneNumber(request.getPhoneNumber())
+                .role(Role.valueOf(request.getRole()))
+                .name(request.getName())
+                .build();
+        return userRepository.save(user);
     }
 
     public User updateUser(Long id, UpdateUserRequest request) {
@@ -62,7 +66,7 @@ public class UserService {
 
         user.setName(request.getName() != null ? request.getName() : user.getName());
         user.setPhoneNumber(request.getPhoneNumber());
-        // FIXME: just admin can update role to admin
+        // FIXME: validate just admin can update role to admin
         user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
         user.setStatus(request.getStatus() != null ? UserStatus.valueOf(request.getStatus()) : user.getStatus());
         userRepository.save(user);

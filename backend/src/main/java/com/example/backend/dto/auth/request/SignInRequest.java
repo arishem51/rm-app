@@ -3,10 +3,14 @@ package com.example.backend.dto.auth.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+@NoArgsConstructor
 @Setter
 @Getter
+@SuperBuilder
 public class SignInRequest {
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
