@@ -14,7 +14,6 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useUserAtom } from "@/store/user";
-import { setTokenAfterSignIn } from "@/server/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -28,6 +27,7 @@ import {
 } from "./ui/form";
 import { useSignIn, useSignUp } from "@/hooks/mutations/user";
 import { ToastTitle } from "@/lib/constants";
+import { setTokenAfterSignIn } from "@/server/actions";
 
 const signInSchemaFields = {
   username: z
@@ -93,7 +93,7 @@ const AuthForm: FC<Props> = ({
         title: ToastTitle.somethingWentWrong,
         description: "Credentials expired, please sign in again!",
       });
-      setAtom({ user: undefined, showToastErrorSignIn: false });
+      setAtom({ user: undefined, showToastErrorSignIn: false, token: "" });
       fetch(`${window.origin}/api/auth`, {
         method: "POST",
         credentials: "include",
@@ -136,17 +136,15 @@ const AuthForm: FC<Props> = ({
               title: ToastTitle.success,
               description: "Sign in success!",
             });
-            setTimeout(() => {
-              router.replace("/dashboard");
-            }, 10);
+
             if (data.data.token) {
               setTokenAfterSignIn(data.data.token);
+              setAtom({
+                user: data.data.user,
+                showToastErrorSignIn: false,
+                token: data.data.token,
+              });
             }
-            setAtom({
-              user: data.data.user,
-              showToastErrorSignIn: false,
-              token: data.data.token,
-            });
           }
         },
       });

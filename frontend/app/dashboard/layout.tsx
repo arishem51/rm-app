@@ -11,7 +11,7 @@ export default async function Layout({ children }: Props) {
   //FIXME: make sure getMe is cached
   const query = await getMe();
   if (!query?.data) {
-    return redirect("/auth/sign-in");
+    redirect("/auth/sign-in");
   }
 
   return (
