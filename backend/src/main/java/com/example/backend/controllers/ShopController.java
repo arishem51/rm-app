@@ -34,15 +34,9 @@ public class ShopController {
         return ResponseEntity.ok(new BaseResponse<PaginateResponse<Shop>>(response, "Success!"));
     }
 
-    @Operation(summary = "Current shop", description = "Get current shop by client token.")
-    @GetMapping("/me")
-    public ResponseEntity<BaseResponse<User>> getMe() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Shop shop = (Shop) authentication.getPrincipal();
-        return ResponseEntity.ok(new BaseResponse<>(shop, "Success!"));
-    }
-
     
+
+
 
 
 }
