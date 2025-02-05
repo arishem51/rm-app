@@ -29,6 +29,12 @@ public class Shop {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    private String createBy;
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<User> users;
 }
