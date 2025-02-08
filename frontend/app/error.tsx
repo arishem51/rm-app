@@ -3,6 +3,7 @@ import { globalStore } from "@/store";
 import { userAtom } from "@/store/user";
 import { useQueryClient } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
+
 export default function Error({ error }: { error: Error }) {
   console.log("error", error);
   const queryClient = useQueryClient();

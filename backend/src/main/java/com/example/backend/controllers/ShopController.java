@@ -25,18 +25,17 @@ import lombok.RequiredArgsConstructor;
 public class ShopController {
     private final ShopService shopService;
 
-    @Operation(summary = "Get all shops", description = "Fetch a list of all registered shops.")
-    @GetMapping("/")
-    public ResponseEntity<BaseResponse<PaginateResponse<Shop>>> getShops(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search) {
-        Page<Shop> shops = shopService.findShops(page, pageSize, search);
-        PaginateResponse<Shop> response = new PaginateResponse<>(shops);
-        return ResponseEntity.ok(new BaseResponse<PaginateResponse<Shop>>(response, "Success!"));
-    }
-
-    
-
-
-
+    // @Operation(summary = "Get all shops", description = "Fetch a list of all
+    // registered shops.")
+    // @GetMapping("/")
+    // public ResponseEntity<BaseResponse<PaginateResponse<Shop>>>
+    // getShops(@RequestParam(defaultValue = "0") int page,
+    // @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue =
+    // "") String search) {
+    // Page<Shop> shops = shopService.findShops(page, pageSize, search);
+    // PaginateResponse<Shop> response = new PaginateResponse<>(shops);
+    // return ResponseEntity.ok(new BaseResponse<PaginateResponse<Shop>>(response,
+    // "Success!"));
+    // }
 
 }
