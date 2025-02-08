@@ -32,12 +32,12 @@ public class ShopController {
         return ResponseEntity.ok(new BaseResponse<PaginateResponse<Shop>>(response, "Success!"));
     }
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<Object>> createShop(@RequestBody CreateShopDTO shop, @CurrentUser User user) {
-        boolean isCreated = shopService.createShop(shop,user);
-        if (isCreated) {
-            return ResponseEntity.ok().body(BaseResponse.success(null, "Create success!"));
+    public ResponseEntity<BaseResponse<Shop>> createShop(@RequestBody CreateShopDTO shopDTO, @CurrentUser User user) {
+        Shop createdShop = shopService.createShop(shopDTO, user);
+        if (createdShop != null) {
+            return ResponseEntity.ok().body(BaseResponse.success(createdShop, "Create success!"));
         } else {
-            return ResponseEntity.badRequest().body(new BaseResponse<>(null, "Create failed!"));
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, "Name have exits!"));
         }
     }
 

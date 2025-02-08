@@ -20,19 +20,18 @@ public class ShopService {
         return null;
     }
 
-    public boolean createShop(CreateShopDTO shopDTO, User user) {
+    public Shop createShop(CreateShopDTO shopDTO, User user) {
         if (shopRepository.existsByName(shopDTO.getName())) {
-            return false;
+            return null;
         }
 
-        // Tạo Shop mới
-        Shop shop = new Shop();
-        shop.setName(shopDTO.getName());
-        shop.setAddress(shopDTO.getAddress());
-        shop.setCreateBy(user);
+        Shop shop = Shop.builder()
+                .name(shopDTO.getName())
+                .address(shopDTO.getAddress())
+                .createBy(user)
+                .build();
 
-        shopRepository.save(shop);
-        return true;
+        return shopRepository.save(shop);
     }
 
 
