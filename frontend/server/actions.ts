@@ -10,8 +10,6 @@ export async function setTokenAfterSignIn(token: string) {
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_TOKEN, token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "strict",
   });
 }
 
@@ -22,12 +20,11 @@ export async function getMe() {
     if (!token) {
       return null;
     }
-    const { data, status, ok } = await apiClient.getMe({
+    const { data, status } = await apiClient.getMe({
       headers: {
         Authorization: "Bearer " + token,
       },
     });
-    console.log(ok);
     if (!data.data) {
       return null;
     }
