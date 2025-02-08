@@ -69,8 +69,8 @@ public class User implements UserDetails {
     @Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "shop_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
     private Shop shop;
 
     @PrePersist
