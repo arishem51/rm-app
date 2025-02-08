@@ -2,7 +2,7 @@
 
 import { apiClient } from "@/lib/utils";
 import { BaseResponseUser, HttpResponse } from "@/types/Api";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 const COOKIE_TOKEN = "token";
 
@@ -22,17 +22,24 @@ export async function getMe() {
     if (!token) {
       return null;
     }
-    const { data, status } = await apiClient.getMe({
+    const { data, status, ok } = await apiClient.getMe({
       headers: {
         Authorization: "Bearer " + token,
       },
     });
-
+    console.log(ok);
     if (!data.data) {
       return null;
     }
     return { data, status, token };
   } catch (e) {
+    const headersList = await headers();
+    const host = headersList.get("X-Forwarded-Host");
+    const proto = headersList.get("X-Forwarded-Proto");
+    await fetch(`${proto}://${host}/api/auth`, {
+      method: "POST",
+      credentials: "include",
+    });
     if (
       (e as HttpResponse<null, BaseResponseUser>)?.error?.errorCode ===
       "TOKEN_EXPIRED"
