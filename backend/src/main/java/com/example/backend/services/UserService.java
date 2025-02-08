@@ -49,6 +49,7 @@ public class UserService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
                 .role(Role.valueOf(request.getRole()))
+                .status(UserStatus.ACTIVE)
                 .name(request.getName())
                 .build();
         return userRepository.save(user);

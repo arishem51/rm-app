@@ -60,17 +60,17 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Schema(required = true)
+   // @Schema(required = true)
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Schema(required = true)
-    @Builder.Default
+    @Column(nullable = true)
+    //@Schema(required = true)
+    //@Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "shop_id", nullable = false)
+    @ManyToOne()
+    @JoinColumn(name = "shop_id")
     private Shop shop;
 
     @PrePersist
