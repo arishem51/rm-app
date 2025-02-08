@@ -1,6 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getMe } from "./server/actions";
 
-export async function middleware() {
+export async function middleware(request: NextRequest) {
+  if (
+    request.url.includes("/auth/sign-in") ||
+    request.url.includes("/auth/sign-up")
+  ) {
+    const query = await getMe();
+    if (query?.data?.data) {
+      return NextResponse.redirect(request.nextUrl.origin + "/dashboard");
+    }
+  }
   return NextResponse.next();
 }
 

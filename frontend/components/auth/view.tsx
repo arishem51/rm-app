@@ -75,7 +75,7 @@ const AuthView: FC<Props> = ({
                   });
                   setTimeout(() => {
                     router.replace("/auth/sign-in");
-                  }, 500);
+                  }, 400);
                 },
               });
             } else {
@@ -101,6 +101,9 @@ const AuthView: FC<Props> = ({
                         showToastErrorSignIn: false,
                         token: data.data.token,
                       });
+                      setTimeout(() => {
+                        router.replace("/dashboard");
+                      }, 50);
                     }
                   }
                 },
