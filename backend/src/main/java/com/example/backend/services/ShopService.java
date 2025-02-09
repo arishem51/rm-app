@@ -7,9 +7,12 @@ import com.example.backend.repositories.ShopRepository;
 import com.example.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,12 @@ public class ShopService {
 
         return shopRepository.save(shop);
     }
+
+    public List<User> getStaffByShop(Long shopId) {
+        return userRepository.findByShopId(shopId);  // Tìm tất cả users theo shopId
+    }
+    
+    
 
 
 }
