@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useUserAtomValue } from "@/store/user";
 import AdminOverview from "./admin-overview";
+import CreateShopModal from "../shops/create-shop-modal";
 
 const Overview = () => {
   const { user } = useUserAtomValue();
@@ -13,7 +13,8 @@ const Overview = () => {
           You haven&apos;t register any shop yet, create a shop or join by an
           invite!
         </h1>
-        <Button>Create a shop!</Button>
+
+        <CreateShopModal />
       </div>
     );
   }
