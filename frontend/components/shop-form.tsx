@@ -46,11 +46,11 @@ const ShopModal = ({ onClose }: Props) => {
   const queryClient = useQueryClient();
 
   const handleSubmit = form.handleSubmit((data: CreateShopRequest) => {
-    data.create_by = userData?.id as number;
     createShop(
       { ...data },
       {
-        onSuccess: () => {
+        onSuccess: (res) => {
+          console.log("res: ", res);
           toast({
             variant: "default",
             title: "Success",

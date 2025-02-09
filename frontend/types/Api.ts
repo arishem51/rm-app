@@ -21,7 +21,6 @@ export interface CreateShopRequest {
   name: string;
   /** @pattern ^[0-9]{10,12}$ */
   address: string;
-  create_by: number;
 }
 
 export interface BaseResponseUser {
@@ -40,6 +39,7 @@ export interface Shop {
   /** @format int64 */
   id?: number;
   name?: string;
+  address?: string;
   /** @uniqueItems true */
   users?: User[];
 }
@@ -87,8 +87,6 @@ export interface CreateShopRequest {
    * @maxLength 255
    */
   address: string;
-
-  create_by: number;
 }
 
 export interface SignUpRequest {
@@ -501,7 +499,7 @@ export class Api<
      */
     createShop: (data: CreateShopRequest, params: RequestParams = {}) =>
       this.request<BaseResponseUser, any>({
-        path: `/api/shops/`,
+        path: `/api/shops/create`,
         method: "POST",
         body: data,
         secure: true,
