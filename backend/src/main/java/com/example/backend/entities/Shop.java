@@ -33,8 +33,9 @@ public class Shop {
 
     @Column(nullable = false)
     private String address;
-  
-    @Column(name = "create_by", nullable = false) 
+
+    @ManyToOne
+    @JoinColumn(name = "create_by", nullable = false)
     private User createBy;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
