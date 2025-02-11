@@ -17,6 +17,11 @@ export interface UpdateUserRequest {
   status: string;
 }
 
+export interface UpdateShopRequest {
+  name: string;
+  address: string;
+}
+
 export interface CreateShopRequest {
   name: string;
   /** @pattern ^[0-9]{10,12}$ */

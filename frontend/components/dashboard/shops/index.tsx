@@ -8,12 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ApiQuery } from "@/services/query";
 import { useUserAtomValue } from "@/store/user";
-import { lowerCase, startCase } from "lodash";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import useAppQuery from "@/hooks/use-app-query";
 import UsersEmptyState from "./empty-state";
 import { UserPen } from "lucide-react";

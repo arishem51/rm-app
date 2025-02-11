@@ -1,14 +1,5 @@
-import { useForm } from "react-hook-form";
-import { CreateShopRequest, User } from "@/types/Api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { useCreateShop } from "@/hooks/mutations/shop";
-import { useGetMe } from "@/hooks/mutations/user";
 import UserPagination from "../users/pagination";
 import UsersEmptyState from "../users/empty-state";
 import { Fragment, useCallback, useState } from "react";
@@ -27,26 +18,9 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { useUserAtomValue } from "@/store/user";
 import useAppQuery from "@/hooks/use-app-query";
 import { cn } from "@/lib/utils";
-import CreateUserModal from "../users/create-user-modal";
-import UserSearch from "./shop-search";
+import { User } from "@/types/Api";
 
-const schemaFields = {
-  name: z.string().nonempty({ message: "Name is required" }),
-  address: z.string().nonempty({ message: "Address is required" }),
-};
-
-type Props = {
-  onClose: () => void;
-};
-
-const ListUserContent = ({ onClose }: Props) => {
-  const form = useForm<CreateShopRequest>({
-    defaultValues: {
-      name: "",
-      address: "",
-    },
-    resolver: zodResolver(z.object(schemaFields)),
-  });
+const ListUserContent = () => {
   const createFilterValue = useCallback(
     (page: number, search: string) => ({
       page,
@@ -73,38 +47,8 @@ const ListUserContent = ({ onClose }: Props) => {
     );
   };
 
-  const handleSearch = (search: string) => {
-    setFilter(createFilterValue(0, search));
-  };
-  const { mutate: createShop, isPending } = useCreateShop();
-  const { data: userData } = useGetMe();
-  const queryClient = useQueryClient();
-
-  const handleSubmit = form.handleSubmit((data: CreateShopRequest) => {
-    createShop(
-      { ...data },
-      {
-        onSuccess: (res) => {
-          console.log("res: ", res);
-          toast({
-            variant: "default",
-            title: "Success",
-            description: "Create shop successfully",
-          });
-          onClose();
-          //   queryClient.invalidateQueries({
-          //     queryKey: ApiQuery.users.getShop().queryKey,
-          //   });
-        },
-      }
-    );
-  });
-
   return (
     <Fragment>
-      <CreateUserModal>
-        <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
-      </CreateUserModal>
       <UserUpdateModal user={updatedUser}>
         {(data?.data?.length || 0) > 0 ? (
           <Table>
@@ -143,7 +87,6 @@ const ListUserContent = ({ onClose }: Props) => {
                               ? "bg-green-600 hover:bg-green-500 text-slate-100"
                               : ""
                           )}
-                          variant={isActive ? "default" : "destructive"}
                         >
                           {startCase(lowerCase(user.status))}
                         </Badge>
