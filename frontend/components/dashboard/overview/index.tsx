@@ -7,7 +7,7 @@ import CreateShopModal from "../shops/create-shop-modal";
 const Overview = () => {
   const { user } = useUserAtomValue();
 
-  if (user?.role !== "ADMIN" && true) {
+  if (user?.role !== "ADMIN" && !user?.shopId) {
     return (
       <div className="flex items-center flex-col gap-2 mt-4">
         <h1>

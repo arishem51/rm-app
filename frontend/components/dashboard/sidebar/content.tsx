@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, Home, LucideIcon, User2 } from "lucide-react";
+import { ChevronsUpDown, Home, LucideIcon, Store, User2 } from "lucide-react";
 import Link from "next/link";
 import {
   Collapsible,
@@ -50,18 +50,25 @@ const Content = () => {
       ],
     },
     shop: {
-      title: "Shop",
+      title: "Shop Management",
       items: [],
     },
   };
 
   if (user?.role === "ADMIN") {
-    itemGroups.application.items.push({
-      title: "Users",
-      icon: User2,
-      url: AppPathURL.dashboard.users,
-      children: [],
-    });
+    itemGroups.application.items.push(
+      {
+        title: "Users",
+        icon: User2,
+        url: AppPathURL.dashboard.users,
+        children: [],
+      },
+      {
+        title: "Shops",
+        url: AppPathURL.dashboard.shops,
+        icon: Store,
+      }
+    );
   }
 
   const groups = Object.keys(itemGroups).map(

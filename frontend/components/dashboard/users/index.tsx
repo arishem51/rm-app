@@ -22,7 +22,7 @@ import { UserPen } from "lucide-react";
 import UserUpdateModal from "./update-user-modal";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { User } from "@/types/Api";
+import { User, UserDTO } from "@/types/Api";
 import CreateUserModal from "./create-user-modal";
 
 const Users = () => {
@@ -33,7 +33,7 @@ const Users = () => {
     }),
     []
   );
-  const [updatedUser, setUpdatedUser] = useState<User>();
+  const [updatedUser, setUpdatedUser] = useState<UserDTO>();
   const [filter, setFilter] = useState(createFilterValue(0, ""));
   const { data: { data } = {} } = useAppQuery(ApiQuery.users.getUsers(filter));
 

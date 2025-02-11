@@ -9,6 +9,7 @@ export const AppPathURL = {
   dashboard: {
     home: "/dashboard",
     users: "/dashboard/users",
+    shops: "/dashboard/shops",
   },
 } as const;
 

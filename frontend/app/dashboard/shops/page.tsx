@@ -5,8 +5,8 @@ import { ApiQuery } from "@/services/query";
 const ShopPage = async () => {
   return (
     <HydrationPrefetchQuery
+      query={ApiQuery.shops.getShops({ page: 0, search: "" })}
       awaitQuery
-      query={ApiQuery.users.getUsers({ page: 0, search: "" })}
     >
       <div className="px-4">
         <h1 className="text-3xl font-bold mt-2">Shop management</h1>

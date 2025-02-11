@@ -6,6 +6,7 @@ const Page = async () => {
   return (
     <HydrationPrefetchQuery
       query={ApiQuery.users.getUsers({ page: 0, search: "" })}
+      awaitQuery
     >
       <div className="px-4">
         <h1 className="text-3xl font-bold mt-2">User management</h1>

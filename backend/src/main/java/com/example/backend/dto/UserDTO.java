@@ -6,16 +6,25 @@ import java.time.LocalDateTime;
 
 import com.example.backend.entities.User;
 
+import jakarta.validation.constraints.NotNull;
+
 @Data
 @Builder
 public class UserDTO {
+    @NotNull
     private Long id;
+    @NotNull
     private String username;
+    @NotNull
     private String name;
+    @NotNull
     private String phoneNumber;
+    @NotNull
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    @NotNull
     private String role;
+    @NotNull
     private String status;
     private Long shopId;
 

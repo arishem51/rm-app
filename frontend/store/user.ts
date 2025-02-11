@@ -1,9 +1,9 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import { User } from "@/types/Api";
+import { UserDTO } from "@/types/Api";
 import { globalStore } from ".";
 
 type UserAtomType = {
-  user?: User;
+  user?: UserDTO;
   showToastErrorSignIn: boolean;
   token?: string;
 };

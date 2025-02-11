@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { UpdateUserRequest, User } from "@/types/Api";
+import { UpdateUserRequest, User, UserDTO } from "@/types/Api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { UserRole, UserStatus } from "@/lib/constants";
@@ -49,7 +49,7 @@ const schemaFields = {
 
 type Props = {
   children?: ReactNode;
-  user?: User;
+  user?: UserDTO;
 };
 
 const UserUpdateModal = ({ children, user }: Props) => {

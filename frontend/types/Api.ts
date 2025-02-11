@@ -103,6 +103,34 @@ export interface SignUpRequest {
   name: string;
 }
 
+export interface BaseResponseUserDTO {
+  data?: UserDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface UserDTO {
+  /** @format int64 */
+  id: number;
+  username: string;
+  name: string;
+  phoneNumber: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt?: string;
+  role: string;
+  status: string;
+  /** @format int64 */
+  shopId?: number;
+}
+
 export interface SignInRequest {
   /**
    * @minLength 3
@@ -130,11 +158,11 @@ export interface BaseResponseSignInResponse {
 
 export interface SignInResponse {
   token?: string;
-  user?: User;
+  user?: UserDTO;
 }
 
-export interface BaseResponsePaginateResponseUser {
-  data?: PaginateResponseUser;
+export interface BaseResponsePaginateResponseUserDTO {
+  data?: PaginateResponseUserDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -145,7 +173,7 @@ export interface BaseResponsePaginateResponseUser {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponseUser {
+export interface PaginateResponseUserDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -154,11 +182,11 @@ export interface PaginateResponseUser {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: User[];
+  data?: UserDTO[];
 }
 
-export interface BaseResponsePaginateResponseShop {
-  data?: PaginateResponseShop;
+export interface BaseResponsePaginateResponseShopDTO {
+  data?: PaginateResponseShopDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -169,7 +197,7 @@ export interface BaseResponsePaginateResponseShop {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponseShop {
+export interface PaginateResponseShopDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -178,7 +206,15 @@ export interface PaginateResponseShop {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: Shop[];
+  data?: ShopDTO[];
+}
+
+export interface ShopDTO {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  address?: string;
+  users?: UserDTO[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -443,7 +479,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponseUser, any>({
+      this.request<BaseResponsePaginateResponseUserDTO, any>({
         path: `/api/users/`,
         method: "GET",
         query: query,
@@ -498,7 +534,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     signUp: (data: SignUpRequest, params: RequestParams = {}) =>
-      this.request<BaseResponseUser, any>({
+      this.request<BaseResponseUserDTO, any>({
         path: `/api/auth/sign-up`,
         method: "POST",
         body: data,
@@ -536,7 +572,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     getMe: (params: RequestParams = {}) =>
-      this.request<BaseResponseUser, any>({
+      this.request<BaseResponseUserDTO, any>({
         path: `/api/users/me`,
         method: "GET",
         secure: true,
@@ -569,7 +605,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponseShop, any>({
+      this.request<BaseResponsePaginateResponseShopDTO, any>({
         path: `/api/shops/`,
         method: "GET",
         query: query,
