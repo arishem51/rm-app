@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.auth.request.CreateUserRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
+import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.enums.UserStatus;
@@ -56,10 +57,8 @@ public class UserService {
     }
 
     public User updateUser(Long id, UpdateUserRequest request) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found!");
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
         if (request.getPhoneNumber() != null && !request.getPhoneNumber().isEmpty()
                 && userRepository.findByPhoneNumber(request.getPhoneNumber()).get().getId() != id) {
             throw new IllegalArgumentException("Phone number is already taken!");
@@ -70,6 +69,18 @@ public class UserService {
         // FIXME: validate just admin can update role to admin
         user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
         user.setStatus(request.getStatus() != null ? UserStatus.valueOf(request.getStatus()) : user.getStatus());
+        userRepository.save(user);
+        return user;
+    }
+
+    public User updateShop(User user, Shop shop) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        if (shop == null) {
+            throw new IllegalArgumentException("Shop cannot be null");
+        }
+        user.setShop(shop);
         userRepository.save(user);
         return user;
     }

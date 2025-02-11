@@ -1,5 +1,6 @@
 package com.example.backend.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -39,5 +40,11 @@ public class Shop {
     private User createBy;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<User> users;
+    @Builder.Default
+    private Set<User> users = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "Shop{id=" + id + ", name='" + name + "', address='" + address + "'}";
+    }
 }

@@ -60,18 +60,25 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-   // @Schema(required = true)
+    @Schema(required = true)
     private Role role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
-    //@Schema(required = true)
-    //@Builder.Default
+    @Schema(required = true)
+    @Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
 
     @ManyToOne()
     @JoinColumn(name = "shop_id")
+    @JsonIgnore
+    @Schema(hidden = true)
     private Shop shop;
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", username='" + username + "'}";
+    }
 
     @PrePersist
     protected void onCreate() {

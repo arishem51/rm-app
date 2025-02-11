@@ -1,6 +1,5 @@
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
 import Shops from "@/components/dashboard/shops";
-import Users from "@/components/dashboard/users";
 import { ApiQuery } from "@/services/query";
 
 const ShopPage = async () => {

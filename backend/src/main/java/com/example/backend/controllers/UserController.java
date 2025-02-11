@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
 import com.example.backend.dto.auth.request.CreateUserRequest;
@@ -14,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,9 +35,7 @@ public class UserController {
 
     @Operation(summary = "Current user", description = "Get current user by client token.")
     @GetMapping("/me")
-    public ResponseEntity<BaseResponse<User>> getMe() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+    public ResponseEntity<BaseResponse<User>> getMe(@CurrentUser User user) {
         return ResponseEntity.ok(new BaseResponse<>(user, "Success!"));
     }
 

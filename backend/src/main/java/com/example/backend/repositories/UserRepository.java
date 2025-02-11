@@ -1,6 +1,6 @@
 package com.example.backend.repositories;
 
-import java.util.List; 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
     List<User> findByShopId(Long shopId);
-    
+
     Page<User> findByNameContainingIgnoreCase(String search, PageRequest pageRequest);
+
 }

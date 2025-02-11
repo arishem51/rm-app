@@ -5,7 +5,6 @@ import { ApiQuery } from "@/services/query";
 const Page = async () => {
   return (
     <HydrationPrefetchQuery
-      awaitQuery
       query={ApiQuery.users.getUsers({ page: 0, search: "" })}
     >
       <div className="px-4">
