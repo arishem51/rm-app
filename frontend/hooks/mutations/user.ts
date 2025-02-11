@@ -7,7 +7,7 @@ import {
   SignUpRequest,
   UpdateUserRequest,
 } from "@/types/Api";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useUpdateUser = () =>
   useMutation({
@@ -51,3 +51,14 @@ export const useCreateUser = () =>
       }
     },
   });
+
+export const useGetMe = () => {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const response = await apiClient.getMe();
+      console.log("API Response:", response);
+      return response.data.data;
+    },
+  });
+};
