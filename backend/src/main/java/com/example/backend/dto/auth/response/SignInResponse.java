@@ -1,6 +1,6 @@
 package com.example.backend.dto.auth.response;
 
-import com.example.backend.entities.User;
+import com.example.backend.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SignInResponse {
     private String token;
-    private User user;
+    private UserDTO user;
 }

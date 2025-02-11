@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
+import com.example.backend.dto.ShopDTO;
 import com.example.backend.entities.Shop;
 import com.example.backend.services.ShopService;
 
@@ -26,11 +27,11 @@ public class ShopController {
 
     @Operation(summary = "Get all shops", description = "Fetch a list of all registered shops.")
     @GetMapping("/")
-    public ResponseEntity<BaseResponse<PaginateResponse<Shop>>> getShops(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<BaseResponse<PaginateResponse<ShopDTO>>> getShops(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search) {
-        Page<Shop> shops = shopService.findShops(page, pageSize, search);
-        PaginateResponse<Shop> response = new PaginateResponse<>(shops);
-        return ResponseEntity.ok(new BaseResponse<PaginateResponse<Shop>>(response, "Success!"));
+        Page<ShopDTO> shops = shopService.findShops(page, pageSize, search);
+        PaginateResponse<ShopDTO> response = new PaginateResponse<>(shops);
+        return ResponseEntity.ok(new BaseResponse<PaginateResponse<ShopDTO>>(response, "Success!"));
     }
 
     @PostMapping("/create")

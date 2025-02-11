@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.BaseResponse;
+import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.auth.request.SignInRequest;
 import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.response.SignInResponse;
-import com.example.backend.entities.User;
 import com.example.backend.services.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +34,8 @@ public class AuthController {
 
     @Operation(summary = "Sign up a new user", description = "Sign up a new user with a username and password.")
     @PostMapping("/sign-up")
-    public ResponseEntity<BaseResponse<User>> signUp(@Valid @RequestBody SignUpRequest request) {
-        BaseResponse<User> response = authService.signUp(request);
+    public ResponseEntity<BaseResponse<UserDTO>> signUp(@Valid @RequestBody SignUpRequest request) {
+        BaseResponse<UserDTO> response = authService.signUp(request);
         if (response.getData() == null) {
             return ResponseEntity.badRequest().body(response);
         }

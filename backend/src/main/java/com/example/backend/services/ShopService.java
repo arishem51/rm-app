@@ -1,10 +1,12 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.CreateShopDTO;
+import com.example.backend.dto.ShopDTO;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.ShopRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
@@ -14,8 +16,10 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final UserService userService;
 
-    public Page<Shop> findShops(int page, int pageSize, String search) {
-        return null;
+    public Page<ShopDTO> findShops(int page, int pageSize, String search) {
+        Page<Shop> shopPage = search.isEmpty() ? shopRepository.findAll(PageRequest.of(page, pageSize))
+                : shopRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
+        return shopPage.map(ShopDTO::fromEntity);
     }
 
     public Shop createShop(CreateShopDTO shopDTO, User user) {

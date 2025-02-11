@@ -3,6 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
+import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.auth.request.CreateUserRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.User;
@@ -35,8 +36,8 @@ public class UserController {
 
     @Operation(summary = "Current user", description = "Get current user by client token.")
     @GetMapping("/me")
-    public ResponseEntity<BaseResponse<User>> getMe(@CurrentUser User user) {
-        return ResponseEntity.ok(new BaseResponse<>(user, "Success!"));
+    public ResponseEntity<BaseResponse<UserDTO>> getMe(@CurrentUser User user) {
+        return ResponseEntity.ok(new BaseResponse<>(UserDTO.fromEntity(user), "Success!"));
     }
 
     @Operation(summary = "Update a user", description = "Update a user by their name.")

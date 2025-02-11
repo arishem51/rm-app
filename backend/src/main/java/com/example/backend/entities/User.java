@@ -19,7 +19,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -68,10 +69,8 @@ public class User implements UserDetails {
     @Schema(required = true)
     @Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
-
     @ManyToOne()
     @JoinColumn(name = "shop_id")
-    @JsonIgnore
     @Schema(hidden = true)
     private Shop shop;
 
