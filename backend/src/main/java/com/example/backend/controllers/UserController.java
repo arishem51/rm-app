@@ -27,11 +27,11 @@ public class UserController {
 
     @Operation(summary = "Get all users", description = "Fetch a list of all registered users.")
     @GetMapping("/")
-    public ResponseEntity<BaseResponse<PaginateResponse<User>>> getUsers(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<BaseResponse<PaginateResponse<UserDTO>>> getUsers(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search) {
         Page<User> users = userService.findUsers(page, pageSize, search);
-        PaginateResponse<User> response = new PaginateResponse<>(users);
-        return ResponseEntity.ok(new BaseResponse<PaginateResponse<User>>(response, "Success!"));
+        PaginateResponse<UserDTO> response = new PaginateResponse<>(users.map(UserDTO::fromEntity));
+        return ResponseEntity.ok(new BaseResponse<PaginateResponse<UserDTO>>(response, "Success!"));
     }
 
     @Operation(summary = "Current user", description = "Get current user by client token.")

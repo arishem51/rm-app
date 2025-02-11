@@ -17,6 +17,7 @@ public class UserDTO {
     private LocalDateTime updatedAt;
     private String role;
     private String status;
+    private Long shopId;
 
     public static UserDTO fromEntity(User user) {
         return UserDTO.builder()
@@ -28,6 +29,7 @@ public class UserDTO {
                 .updatedAt(user.getUpdatedAt())
                 .role(user.getRole().toString())
                 .status(user.getStatus().toString())
+                .shopId(user.getShop() != null ? user.getShop().getId() : null)
                 .build();
     }
 }
