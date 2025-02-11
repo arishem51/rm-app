@@ -3,6 +3,9 @@ package com.example.backend.controllers;
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.CreateShopDTO;
 import com.example.backend.entities.User;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +44,10 @@ public class ShopController {
         }
     }
 
-    
+    @GetMapping("/shop/staff")
+    public List<User> getStaff(@RequestParam Long shopId){
+        return shopService.getStaffByShop(shopId);
+    }
 
 
 
