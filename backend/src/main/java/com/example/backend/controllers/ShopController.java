@@ -4,7 +4,9 @@ import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.CreateShopDTO;
 import com.example.backend.entities.User;
 
+import com.example.backend.enums.Role;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +45,26 @@ public class ShopController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
+    }
+    @Operation(summary = "Get shop by id", description = "Fetch shop details by shop id. Accessible only if the current user is an admin, staff or owner of the shop.")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<ShopDTO>> getShopById(@PathVariable("id") Long id, @CurrentUser User user) {
+        Shop shop = shopService.getShopById(id);
+        if (shop == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new BaseResponse<>(null, "Shop not found"));
+        }
+
+        // Kiểm tra quyền truy cập:
+        // Giả sử User có method getRole() trả về String (ví dụ: "ADMIN", "STAFF", "USER") và Shop có method getOwner()
+        if (user.getRole() != Role.ADMIN &&
+                user.getRole() != Role.STAFF &&
+                !shop.getCreateBy().getId().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new BaseResponse<>(null, "User không có quyền lấy thông tin của shop này"));
+        }
+
+        return ResponseEntity.ok(new BaseResponse<>(ShopDTO.fromEntity(shop), "Success!"));
     }
 
 }

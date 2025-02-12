@@ -55,5 +55,8 @@ public class ShopService {
         userService.updateShop(persistedUser, shop);
         return shop;
     }
+    public Shop getShopById(Long id) {
+        return shopRepository.findById(id).orElse(null);
+    }
 
 }
