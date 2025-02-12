@@ -34,7 +34,7 @@ const signUpSchemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
   phoneNumber: z
     .string()
-    .regex(/^[0-9]{10,12}$/, {
+    .regex(/^\d{10,12}$/, {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
@@ -138,11 +138,12 @@ const AuthForm: FC<Props> = ({
             name="password"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel className="flex justify-between">
-                  Password
+                <div className="flex justify-between">
+                  <FormLabel>Password</FormLabel>
                   {!isSignUp && (
-                    <span
-                      className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white"
+                    <Button
+                      type="button"
+                      variant="link"
                       onClick={() => {
                         toast({
                           variant: "default",
@@ -152,10 +153,12 @@ const AuthForm: FC<Props> = ({
                         });
                       }}
                     >
-                      Forgot you password?
-                    </span>
+                      <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white">
+                        Forgot you password?
+                      </span>
+                    </Button>
                   )}
-                </FormLabel>
+                </div>
                 <FormControl>
                   <Input type="password" placeholder="*********" {...field} />
                 </FormControl>
@@ -165,7 +168,7 @@ const AuthForm: FC<Props> = ({
           />
         </div>
         <Button type="submit" className="w-full">
-          {btnText ? btnText : isSignUp ? "Sign Up" : "Sign In"}
+          {btnText || isSignUp ? "Sign Up" : "Sign In"}
         </Button>
         {children}
       </form>
