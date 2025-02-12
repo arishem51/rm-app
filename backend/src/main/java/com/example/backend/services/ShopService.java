@@ -4,7 +4,12 @@ import com.example.backend.dto.CreateShopDTO;
 import com.example.backend.dto.ShopDTO;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
+import com.example.backend.enums.Role;
 import com.example.backend.repositories.ShopRepository;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,26 +27,33 @@ public class ShopService {
         return shopPage.map(ShopDTO::fromEntity);
     }
 
-    public Shop createShop(CreateShopDTO shopDTO, User user) {
+    public Shop createShop(CreateShopDTO shopDTO, User user) throws IllegalArgumentException {
         User persistedUser = userService.findByUsername(user.getUsername());
-        // This user already has a shop!
-        if (shopRepository.existsByName(shopDTO.getName()) && persistedUser.getShop() != null) {
-            return null;
+        if (persistedUser == null) {
+            throw new IllegalArgumentException("User not found.");
         }
+        if (persistedUser.getRole() != Role.OWNER) {
+            throw new IllegalArgumentException("Only owner can create shop.");
+        }
+        if (persistedUser.getShop() != null) {
+            throw new IllegalArgumentException("This user already has a shop.");
+        }
+        if (shopRepository.existsByName(shopDTO.getName())) {
+            throw new IllegalArgumentException("A shop with this name already exists.");
+        }
+        Set<User> users = new HashSet<>();
+        users.add(persistedUser);
         Shop shop = Shop.builder()
                 .name(shopDTO.getName())
                 .address(shopDTO.getAddress())
                 .createBy(
                         persistedUser)
+                .users(users)
                 .build();
 
         shopRepository.save(shop);
         userService.updateShop(persistedUser, shop);
         return shop;
     }
-
-    // public List<User> getStaffByShop(Long shopId) {
-    // return userRepository.findByShopId(shopId); // Tìm tất cả users theo shopId
-    // }
 
 }

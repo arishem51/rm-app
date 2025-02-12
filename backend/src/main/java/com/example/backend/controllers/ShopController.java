@@ -35,18 +35,14 @@ public class ShopController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<Shop>> createShop(@RequestBody CreateShopDTO shopDTO, @CurrentUser User user) {
-        Shop createdShop = shopService.createShop(shopDTO, user);
-        if (createdShop != null) {
-            return ResponseEntity.ok().body(BaseResponse.success(createdShop, "Create success!"));
-        } else {
-            return ResponseEntity.badRequest().body(new BaseResponse<>(null, "Name have exits!"));
+    public ResponseEntity<BaseResponse<ShopDTO>> createShop(@RequestBody CreateShopDTO shopDTO,
+            @CurrentUser User user) {
+        try {
+            Shop createdShop = shopService.createShop(shopDTO, user);
+            return ResponseEntity.ok().body(BaseResponse.success(ShopDTO.fromEntity(createdShop), "Create success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
     }
-
-    // @GetMapping("/shop/staff")
-    // public List<User> getStaff(@RequestParam Long shopId) {
-    // return shopService.getStaffByShop(shopId);
-    // }
 
 }

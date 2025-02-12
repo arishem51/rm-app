@@ -13,6 +13,7 @@ public class ShopDTO {
     private String name;
     private String address;
     private List<UserDTO> users;
+    private UserDTO createdBy;
 
     public static ShopDTO fromEntity(Shop shop) {
         return ShopDTO.builder()
@@ -20,6 +21,7 @@ public class ShopDTO {
                 .name(shop.getName())
                 .address(shop.getAddress())
                 .users(shop.getUsers().stream().map(UserDTO::fromEntity).toList())
+                .createdBy(UserDTO.fromEntity(shop.getCreateBy()))
                 .build();
     }
 }
