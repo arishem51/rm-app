@@ -5,6 +5,11 @@ import com.example.backend.dto.CreateShopDTO;
 import com.example.backend.entities.User;
 
 import com.example.backend.enums.Role;
+
+//code moi
+import com.example.backend.dto.UpdateShopDTO;
+
+import org.apache.commons.lang3.ObjectUtils.Null;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +59,8 @@ public class ShopController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new BaseResponse<>(null, "Shop not found"));
         }
-
+        
+        
         // Kiểm tra quyền truy cập:
         // Giả sử User có method getRole() trả về String (ví dụ: "ADMIN", "STAFF", "USER") và Shop có method getOwner()
         if (user.getRole() != Role.ADMIN &&
@@ -66,5 +72,27 @@ public class ShopController {
 
         return ResponseEntity.ok(new BaseResponse<>(ShopDTO.fromEntity(shop), "Success!"));
     }
+    
+    //code moi
+    //@PathVariable shopId: Lay ID shop tu url
+    //@RequestBody UpdateShopDTO: Nhan du lieu cap nhap tu client
+    //Kiem tra quyen: Chi cho phep admin/owner update
+    @PutMapping("/update/{shopId}")
+     public ResponseEntity<BaseResponse<ShopDTO>> updateShop(
+        @PathVariable Long shopId,
+        @RequestBody UpdateShopDTO shopDTO,
+        @CurrentUser User currentUser) {
+
+    try {
+        Shop updatedShop = shopService.updateShop(shopId, shopDTO, currentUser);
+        return ResponseEntity.ok(BaseResponse.success(ShopDTO.fromEntity(updatedShop), "Shop updated successfully!"));
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new BaseResponse<>(null, e.getMessage()));
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new BaseResponse<>(null, "Failed to update shop"));
+    }
+}
 
 }

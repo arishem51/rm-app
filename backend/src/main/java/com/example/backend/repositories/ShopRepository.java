@@ -13,7 +13,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     Optional<Shop> findByName(String name);
     Optional<Shop> findByAddress(String address);
     Optional<Shop> findByCreateBy(User createBy);
-
+    
     boolean existsByNameAndAddress(String name, String address);
     boolean existsById(Long id);
     boolean existsByName(String name);
