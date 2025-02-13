@@ -53,7 +53,7 @@ public class UserService {
         Role role = Role.valueOf(request.getRole());
         Shop shop = null;
         if (currentUser != null) {
-            currentUser.getShop();
+            shop = currentUser.getShop();
         }
 
         User user = User.builder()

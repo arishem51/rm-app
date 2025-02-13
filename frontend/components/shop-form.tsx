@@ -20,6 +20,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { useCreateShop } from "@/hooks/mutations/shop";
+import { useQueryClient } from "@tanstack/react-query";
+import { ApiQuery } from "@/services/query";
+import { useSetUserAtom } from "@/store/user";
+import { apiClient } from "@/lib/utils";
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
@@ -39,22 +43,28 @@ const ShopModal = ({ onClose }: Props) => {
     resolver: zodResolver(z.object(schemaFields)),
   });
   const { mutate: createShop, isPending } = useCreateShop();
+  const queryClient = useQueryClient();
+  const setUser = useSetUserAtom();
 
   const handleSubmit = form.handleSubmit((data: CreateShopDTO) => {
     createShop(
       { ...data },
       {
-        onSuccess: (res) => {
-          console.log("res: ", res);
+        onSuccess: async () => {
           toast({
             variant: "default",
             title: "Success",
             description: "Create shop successfully",
           });
           onClose();
-          //   queryClient.invalidateQueries({
-          //     queryKey: ApiQuery.users.getShop().queryKey,
-          //   });
+          queryClient.invalidateQueries({
+            queryKey: ApiQuery.shops.getShops().queryKey,
+          });
+          //FIXME: should migrate to useQuery
+          const user = await apiClient.getMe();
+          if (user.data) {
+            setUser({ user: user.data.data });
+          }
         },
       }
     );

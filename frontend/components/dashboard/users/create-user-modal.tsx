@@ -50,7 +50,9 @@ const CreateUserModal = ({ children, isAdmin = false }: Props) => {
                       description: "Create user success!",
                     });
                     queryClient.invalidateQueries({
-                      queryKey: ApiQuery.users.getUsers().queryKey,
+                      queryKey: isAdmin
+                        ? ApiQuery.users.getUsers().queryKey
+                        : ApiQuery.shops.getShopDetails().queryKey,
                     });
                     setOpen(false);
                   },
