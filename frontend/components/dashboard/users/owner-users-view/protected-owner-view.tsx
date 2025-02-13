@@ -14,23 +14,25 @@ import { lowerCase, startCase } from "lodash";
 import { Fragment, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import useAppQuery from "@/hooks/use-app-query";
-import UsersEmptyState from "./empty-state";
+import UsersEmptyState from "../empty-state";
 import { UserPen } from "lucide-react";
-import UserUpdateModal from "./update-user-modal";
+import UserUpdateModal from "../update-user-modal";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { UserDTO } from "@/types/Api";
-import CreateUserModal from "./create-user-modal";
-import UserSearch from "./user-search";
+import CreateUserModal from "../create-user-modal";
+import UserSearch from "../user-search";
 import { cn } from "@/lib/utils";
 
-const OwnerUsersView = () => {
+const ProtectedUserOwnerView = () => {
   const [filter, setFilter] = useState({ search: "" });
   const [updatedUser, setUpdatedUser] = useState<UserDTO>();
   const userAtom = useUserAtomValue();
-  const { data: { data } = {} } = useAppQuery(
-    ApiQuery.shops.getShopDetails(userAtom.user?.shopId)
-  );
+
+  const { data: { data } = {} } = useAppQuery({
+    ...ApiQuery.shops.getShopDetails(userAtom.user?.shopId),
+    enabled: !!userAtom.user?.shopId,
+  });
   const handleSearch = (search: string) => {
     setFilter({ search });
   };
@@ -113,4 +115,4 @@ const OwnerUsersView = () => {
   );
 };
 
-export default OwnerUsersView;
+export default ProtectedUserOwnerView;
