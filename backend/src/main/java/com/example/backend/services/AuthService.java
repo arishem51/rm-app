@@ -33,9 +33,9 @@ public class AuthService {
                     .password(request.getPassword()).phoneNumber(request.getPhoneNumber()).role(Role.OWNER.name())
                     .username(request.getUsername()).build();
             User user = userService.createUser(userRequest);
-            return new BaseResponse<UserDTO>(UserDTO.fromEntity(user), "Create user successfully!");
+            return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
         } catch (IllegalArgumentException e) {
-            return new BaseResponse<UserDTO>(null, e.getMessage());
+            return new BaseResponse<>(null, e.getMessage());
         }
     }
 
@@ -50,12 +50,12 @@ public class AuthService {
             String username = userDetails.getUsername();
             String token = jwtService.createToken(username);
             User user = userService.findByUsername(username);
-            return new BaseResponse<SignInResponse>(new SignInResponse(token, UserDTO.fromEntity(user)),
+            return new BaseResponse<>(new SignInResponse(token, UserDTO.fromEntity(user)),
                     "Sign In successfully!");
         } catch (BadCredentialsException e) {
-            return new BaseResponse<SignInResponse>(null, "Invalid username or password!");
+            return new BaseResponse<>(null, "Invalid username or password!");
         } catch (DisabledException e) {
-            return new BaseResponse<SignInResponse>(null, "User is disabled!");
+            return new BaseResponse<>(null, "User is disabled!");
         }
     }
 }

@@ -5,4 +5,5 @@ export const shops = {
   getShops: createQuery(apiClient.getShops, {
     placeholderData: keepPreviousData,
   }),
+  getShopDetails: createQuery(apiClient.getShopById),
 };

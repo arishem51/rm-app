@@ -7,6 +7,7 @@ import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.auth.request.CreateUserRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.User;
+import com.example.backend.enums.Role;
 import com.example.backend.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +29,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @Operation(summary = "Get all users", description = "Fetch a list of all registered users.")
     @GetMapping("/")
     public ResponseEntity<BaseResponse<PaginateResponse<UserDTO>>> getUsers(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search) {
+            @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search,
+            @CurrentUser User user) {
+        if (user.getRole() != Role.ADMIN) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new BaseResponse<PaginateResponse<UserDTO>>(null, "Permission denied!"));
+        }
         Page<User> users = userService.findUsers(page, pageSize, search);
         PaginateResponse<UserDTO> response = new PaginateResponse<>(users.map(UserDTO::fromEntity));
         return ResponseEntity.ok(new BaseResponse<PaginateResponse<UserDTO>>(response, "Success!"));
@@ -37,6 +48,7 @@ public class UserController {
     @Operation(summary = "Current user", description = "Get current user by client token.")
     @GetMapping("/me")
     public ResponseEntity<BaseResponse<UserDTO>> getMe(@CurrentUser User user) {
+        logger.log(Level.INFO, () -> "Get Me: ");
         return ResponseEntity.ok(new BaseResponse<>(UserDTO.fromEntity(user), "Success!"));
     }
 

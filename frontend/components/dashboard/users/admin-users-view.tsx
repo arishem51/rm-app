@@ -22,10 +22,10 @@ import { UserPen } from "lucide-react";
 import UserUpdateModal from "./update-user-modal";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { User, UserDTO } from "@/types/Api";
+import { UserDTO } from "@/types/Api";
 import CreateUserModal from "./create-user-modal";
 
-const Users = () => {
+const AdminUsersView = () => {
   const createFilterValue = useCallback(
     (page: number, search: string) => ({
       page,
@@ -35,10 +35,9 @@ const Users = () => {
   );
   const [updatedUser, setUpdatedUser] = useState<UserDTO>();
   const [filter, setFilter] = useState(createFilterValue(0, ""));
-  const { data: { data } = {} } = useAppQuery(ApiQuery.users.getUsers(filter));
 
   const userAtom = useUserAtomValue();
-  const isAdmin = userAtom.user?.role === "ADMIN";
+  const { data: { data } = {} } = useAppQuery(ApiQuery.users.getUsers(filter));
 
   const handleNavigatePage = (page: number) => {
     setFilter((prev) => createFilterValue(prev.page + page, prev.search));
@@ -59,7 +58,7 @@ const Users = () => {
 
   return (
     <Fragment>
-      <CreateUserModal>
+      <CreateUserModal isAdmin>
         <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
       </CreateUserModal>
       <UserUpdateModal user={updatedUser}>
@@ -71,7 +70,7 @@ const Users = () => {
                 <TableHead>Username</TableHead>
                 <TableHead>Phone number</TableHead>
                 <TableHead>Role</TableHead>
-                {isAdmin && <TableHead>Status</TableHead>}
+                <TableHead>Status</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -92,20 +91,18 @@ const Users = () => {
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.phoneNumber}</TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>
-                    {isAdmin && (
-                      <TableCell>
-                        <Badge
-                          className={cn(
-                            isActive
-                              ? "bg-green-600 hover:bg-green-500 text-slate-100"
-                              : ""
-                          )}
-                          variant={isActive ? "default" : "destructive"}
-                        >
-                          {startCase(lowerCase(user.status))}
-                        </Badge>
-                      </TableCell>
-                    )}
+                    <TableCell>
+                      <Badge
+                        className={cn(
+                          isActive
+                            ? "bg-green-600 hover:bg-green-500 text-slate-100"
+                            : ""
+                        )}
+                        variant={isActive ? "default" : "destructive"}
+                      >
+                        {startCase(lowerCase(user.status))}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="flex justify-end w-full">
                       {!isCurrentAccount && (
                         <DialogTrigger asChild>
@@ -141,4 +138,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default AdminUsersView;

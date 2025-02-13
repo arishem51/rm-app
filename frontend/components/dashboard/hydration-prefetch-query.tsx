@@ -12,7 +12,7 @@ import { ReactNode } from "react";
 type Props = {
   children?: ReactNode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  query: FetchQueryOptions<any>;
+  query: FetchQueryOptions<any> | null;
   awaitQuery?: boolean;
 };
 
@@ -24,7 +24,11 @@ const HydrationPrefetchQuery = async ({
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-  const runQuery = () => queryClient.prefetchQuery(query);
+  const runQuery = () => {
+    if (query) {
+      return queryClient.prefetchQuery(query);
+    }
+  };
   if (token) {
     if (awaitQuery) {
       await runQuery();

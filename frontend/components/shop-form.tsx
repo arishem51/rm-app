@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { CreateShopRequest } from "@/types/Api";
+import { CreateShopDTO } from "@/types/Api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -19,10 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
-import { ApiQuery } from "@/services/query";
 import { useCreateShop } from "@/hooks/mutations/shop";
-import { useGetMe } from "@/hooks/mutations/user";
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
@@ -34,7 +31,7 @@ type Props = {
 };
 
 const ShopModal = ({ onClose }: Props) => {
-  const form = useForm<CreateShopRequest>({
+  const form = useForm<CreateShopDTO>({
     defaultValues: {
       name: "",
       address: "",
@@ -42,10 +39,8 @@ const ShopModal = ({ onClose }: Props) => {
     resolver: zodResolver(z.object(schemaFields)),
   });
   const { mutate: createShop, isPending } = useCreateShop();
-  const { data: userData } = useGetMe();
-  const queryClient = useQueryClient();
 
-  const handleSubmit = form.handleSubmit((data: CreateShopRequest) => {
+  const handleSubmit = form.handleSubmit((data: CreateShopDTO) => {
     createShop(
       { ...data },
       {

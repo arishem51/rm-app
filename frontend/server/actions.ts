@@ -3,6 +3,7 @@
 import { apiClient } from "@/lib/utils";
 import { BaseResponseUser, HttpResponse } from "@/types/Api";
 import { cookies, headers } from "next/headers";
+import { cache } from "react";
 
 const COOKIE_TOKEN = "token";
 
@@ -13,7 +14,7 @@ export async function setTokenAfterSignIn(token: string) {
   });
 }
 
-export async function getMe() {
+export const getMe = cache(async () => {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(COOKIE_TOKEN)?.value;
@@ -48,8 +49,9 @@ export async function getMe() {
     }
     return null;
   }
-}
+});
 
+//FIXME: what is this function?
 export async function getUsers(
   page: number = 1,
   pageSize: number = 10,
