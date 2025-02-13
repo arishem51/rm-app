@@ -1,6 +1,13 @@
 "use client";
 
-import { ChevronsUpDown, Home, LucideIcon, Store, User2 } from "lucide-react";
+import {
+  ChevronsUpDown,
+  Home,
+  LucideIcon,
+  Store,
+  User2,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import {
   Collapsible,
@@ -18,7 +25,7 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { AppPathURL } from "@/lib/constants";
+import { AppPathURL, UserRole } from "@/lib/constants";
 import { useUserAtomValue } from "@/store/user";
 
 type Item = {
@@ -55,7 +62,7 @@ const Content = () => {
     },
   };
 
-  if (user?.role === "ADMIN") {
+  if (user?.role === UserRole.ADMIN) {
     itemGroups.application.items.push(
       {
         title: "Users",
@@ -69,6 +76,14 @@ const Content = () => {
         icon: Store,
       }
     );
+  }
+
+  if (user?.role === UserRole.OWNER) {
+    itemGroups.shop.items.push({
+      title: "Users",
+      url: AppPathURL.dashboard.users,
+      icon: Users,
+    });
   }
 
   const groups = Object.keys(itemGroups).map(

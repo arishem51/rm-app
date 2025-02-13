@@ -16,9 +16,10 @@ import { ApiQuery } from "@/services/query";
 
 type Props = {
   children?: ReactNode;
+  isAdmin?: boolean;
 };
 
-const CreateUserModal = ({ children }: Props) => {
+const CreateUserModal = ({ children, isAdmin = false }: Props) => {
   const { mutate } = useCreateUser();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -31,7 +32,10 @@ const CreateUserModal = ({ children }: Props) => {
           <AuthForm
             onSubmit={(formData) => {
               mutate(
-                { ...formData, role: UserRole.ADMIN },
+                {
+                  ...formData,
+                  role: isAdmin ? UserRole.ADMIN : UserRole.STAFF,
+                },
                 {
                   onError: (error) => {
                     toast({
@@ -46,7 +50,9 @@ const CreateUserModal = ({ children }: Props) => {
                       description: "Create user success!",
                     });
                     queryClient.invalidateQueries({
-                      queryKey: ApiQuery.users.getUsers().queryKey,
+                      queryKey: isAdmin
+                        ? ApiQuery.users.getUsers().queryKey
+                        : ApiQuery.shops.getShopDetails().queryKey,
                     });
                     setOpen(false);
                   },

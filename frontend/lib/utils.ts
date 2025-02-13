@@ -69,13 +69,19 @@ export const createQuery = <T, K>(
   return (params: K = {} as K) => {
     const config =
       typeof queryConfig === "function" ? queryConfig(params) : queryConfig;
-    return queryOptions<T>({
-      queryKey: [
-        method.name,
+    const queryKey: (string | K | Record<string, string>)[] = [method.name];
+    if (
+      (typeof params !== "object" && params) ||
+      Object.keys(params ?? {}).length > 0
+    ) {
+      queryKey.push(
         typeof params === "object"
-          ? serialize(params as Record<string, unknown>)
-          : params,
-      ],
+          ? serialize(params as Record<string, string>)
+          : params
+      );
+    }
+    return queryOptions<T>({
+      queryKey,
       queryFn: async () => {
         const { data } = await method(params);
         return data;

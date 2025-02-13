@@ -15,7 +15,6 @@ import {
   FormMessage,
   Form,
 } from "./ui/form";
-
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 
@@ -168,7 +167,7 @@ const AuthForm: FC<Props> = ({
           />
         </div>
         <Button type="submit" className="w-full">
-          {btnText || isSignUp ? "Sign Up" : "Sign In"}
+          {btnText ?? (isSignUp ? "Sign Up" : "Sign In")}
         </Button>
         {children}
       </form>

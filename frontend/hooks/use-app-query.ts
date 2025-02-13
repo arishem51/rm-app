@@ -15,8 +15,10 @@ function useAppQuery<
 >(options: UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>) {
   const { error, ...rest } = useQuery(options);
   if (error) {
-    const e = error as unknown as HttpResponse<null, BaseResponseUser>;
-    const { errorCode } = e.error;
+    const e = error as unknown as
+      | HttpResponse<null, BaseResponseUser>
+      | undefined;
+    const { errorCode } = e?.error ?? {};
     if (errorCode === "TOKEN_EXPIRED" || errorCode === "TOKEN_INVALID") {
       redirect("/auth/sign-in");
     }

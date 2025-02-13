@@ -2,10 +2,11 @@ package com.example.backend.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.dto.auth.request.CreateUserRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.Shop;
@@ -27,31 +28,42 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
     }
 
-    private void validateCreateUser(String username, String phoneNumber) {
-        if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username is already taken!");
-        }
-        if (userRepository.findByPhoneNumber(phoneNumber).isPresent()) {
-            throw new IllegalArgumentException("Phone number is already taken!");
-        }
-    }
-
     public Page<User> findUsers(int page, int pageSize, String search) {
         return search.isEmpty() ? userRepository.findAll(PageRequest.of(page, pageSize))
                 : userRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
     }
 
+    private void validateCreateUser(CreateUserRequest request, User currentUser) {
+        if (currentUser != null && Role.STAFF == currentUser.getRole()) {
+            throw new IllegalArgumentException("Only Admin/Owner can create staff user");
+        }
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new IllegalArgumentException("Username is already taken!");
+        }
+        if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+            throw new IllegalArgumentException("Phone number is already taken!");
+        }
+    }
+
     public User createUser(CreateUserRequest request) {
-        validateCreateUser(request.getUsername(), request.getPhoneNumber());
-        // FIXME: Validate just admin can create user role admin, owner can create user
-        // role owner/staff
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isUserLogged = authentication.getPrincipal() instanceof User;
+        User currentUser = isUserLogged ? (User) authentication.getPrincipal() : null;
+        validateCreateUser(request, currentUser);
+        Role role = Role.valueOf(request.getRole());
+        Shop shop = null;
+        if (currentUser != null) {
+            shop = currentUser.getShop();
+        }
+
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
-                .role(Role.valueOf(request.getRole()))
+                .role(role)
                 .status(UserStatus.ACTIVE)
                 .name(request.getName())
+                .shop(shop)
                 .build();
         return userRepository.save(user);
     }

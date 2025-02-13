@@ -5,7 +5,7 @@ import Header from "@/components/dashboard/header";
 import { getMe } from "@/server/actions";
 import { redirect } from "next/navigation";
 
-type Props = { children: ReactNode };
+type Props = Readonly<{ children: ReactNode }>;
 
 export default async function Layout({ children }: Props) {
   //FIXME: make sure getMe is cached

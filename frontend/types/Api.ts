@@ -43,6 +43,48 @@ export interface User {
   status: "ACTIVE" | "INACTIVE";
 }
 
+export interface UpdateShopDTO {
+  shopName?: string;
+  shopAddress?: string;
+}
+
+export interface BaseResponseShopDTO {
+  data?: ShopDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface ShopDTO {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  address?: string;
+  users?: UserDTO[];
+  createdBy?: UserDTO;
+}
+
+export interface UserDTO {
+  /** @format int64 */
+  id: number;
+  username: string;
+  name: string;
+  phoneNumber: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt?: string;
+  role: string;
+  status: string;
+  /** @format int64 */
+  shopId?: number;
+}
+
 export interface CreateUserRequest {
   /**
    * @minLength 3
@@ -63,28 +105,6 @@ export interface CreateUserRequest {
 export interface CreateShopDTO {
   name?: string;
   address?: string;
-}
-
-export interface BaseResponseShop {
-  data?: Shop;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface Shop {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  address?: string;
-  createBy?: User;
-  /** @uniqueItems true */
-  users?: User[];
 }
 
 export interface SignUpRequest {
@@ -113,22 +133,6 @@ export interface BaseResponseUserDTO {
     | "ACCESS_DENIED"
     | "BAD_REQUEST"
     | "INTERNAL_SERVER_ERROR";
-}
-
-export interface UserDTO {
-  /** @format int64 */
-  id: number;
-  username: string;
-  name: string;
-  phoneNumber: string;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt?: string;
-  role: string;
-  status: string;
-  /** @format int64 */
-  shopId?: number;
 }
 
 export interface SignInRequest {
@@ -207,14 +211,6 @@ export interface PaginateResponseShopDTO {
   /** @format int32 */
   totalPages?: number;
   data?: ShopDTO[];
-}
-
-export interface ShopDTO {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  address?: string;
-  users?: UserDTO[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -454,6 +450,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags Shop Management
+     * @name UpdateShop
+     * @request PUT:/api/shops/update/{shopId}
+     * @secure
+     */
+    updateShop: (shopId: number, data: UpdateShopDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseShopDTO, any>({
+        path: `/api/shops/update/${shopId}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Fetch a list of all registered users.
      *
      * @tags User Management
@@ -515,7 +529,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     createShop: (data: CreateShopDTO, params: RequestParams = {}) =>
-      this.request<BaseResponseShop, any>({
+      this.request<BaseResponseShopDTO, any>({
         path: `/api/shops/create`,
         method: "POST",
         body: data,
@@ -574,6 +588,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getMe: (params: RequestParams = {}) =>
       this.request<BaseResponseUserDTO, any>({
         path: `/api/users/me`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch shop details by shop id. Accessible only if the current user is an admin, staff or owner of the shop.
+     *
+     * @tags Shop Management
+     * @name GetShopById
+     * @summary Get shop by id
+     * @request GET:/api/shops/{id}
+     * @secure
+     */
+    getShopById: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseShopDTO, any>({
+        path: `/api/shops/${id}`,
         method: "GET",
         secure: true,
         ...params,

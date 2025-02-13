@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { UpdateUserRequest, User, UserDTO } from "@/types/Api";
+import { UpdateUserRequest, UserDTO } from "@/types/Api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { UserRole, UserStatus } from "@/lib/constants";
@@ -34,12 +34,13 @@ import { useUpdateUser } from "@/hooks/mutations/user";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
+import { useUserAtomValue } from "@/store/user";
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
   phoneNumber: z
     .string()
-    .regex(/^[0-9]{10,12}$/, {
+    .regex(/^\d{10,12}$/, {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
@@ -52,6 +53,7 @@ type Props = {
   user?: UserDTO;
 };
 
+//FIXME: Should update password
 const UserUpdateModal = ({ children, user }: Props) => {
   const [open, setOpen] = useState(false);
   const form = useForm<UpdateUserRequest>({
@@ -63,6 +65,7 @@ const UserUpdateModal = ({ children, user }: Props) => {
   });
   const { mutate: updateUser, isPending } = useUpdateUser();
   const queryClient = useQueryClient();
+  const { user: currentUser } = useUserAtomValue();
 
   const { setValue } = form;
   useEffect(() => {
@@ -139,39 +142,41 @@ const UserUpdateModal = ({ children, user }: Props) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value={UserRole.OWNER}>
-                              Owner
-                            </SelectItem>
-                            <SelectItem value={UserRole.STAFF}>
-                              Staff
-                            </SelectItem>
-                            <SelectItem value={UserRole.ADMIN}>
-                              Admin
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {currentUser?.role === UserRole.ADMIN && (
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Role</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value={UserRole.OWNER}>
+                                Owner
+                              </SelectItem>
+                              <SelectItem value={UserRole.STAFF}>
+                                Staff
+                              </SelectItem>
+                              <SelectItem value={UserRole.ADMIN}>
+                                Admin
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
               <FormField
                 control={form.control}
                 name="status"

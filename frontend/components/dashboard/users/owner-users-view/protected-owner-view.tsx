@@ -11,51 +11,32 @@ import {
 import { ApiQuery } from "@/services/query";
 import { useUserAtomValue } from "@/store/user";
 import { lowerCase, startCase } from "lodash";
-import UserSearch from "./user-search";
-import { Fragment, useCallback, useState } from "react";
-import UserPagination from "./pagination";
+import { Fragment, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import useAppQuery from "@/hooks/use-app-query";
-import UsersEmptyState from "./empty-state";
+import UsersEmptyState from "../empty-state";
 import { UserPen } from "lucide-react";
-import UserUpdateModal from "./update-user-modal";
+import UserUpdateModal from "../update-user-modal";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { User, UserDTO } from "@/types/Api";
-import CreateUserModal from "./create-user-modal";
+import { UserDTO } from "@/types/Api";
+import CreateUserModal from "../create-user-modal";
+import UserSearch from "../user-search";
+import { cn } from "@/lib/utils";
 
-const Users = () => {
-  const createFilterValue = useCallback(
-    (page: number, search: string) => ({
-      page,
-      search,
-    }),
-    []
-  );
+const ProtectedUserOwnerView = () => {
+  const [filter, setFilter] = useState({ search: "" });
   const [updatedUser, setUpdatedUser] = useState<UserDTO>();
-  const [filter, setFilter] = useState(createFilterValue(0, ""));
-  const { data: { data } = {} } = useAppQuery(ApiQuery.users.getUsers(filter));
-
   const userAtom = useUserAtomValue();
-  const isAdmin = userAtom.user?.role === "ADMIN";
 
-  const handleNavigatePage = (page: number) => {
-    setFilter((prev) => createFilterValue(prev.page + page, prev.search));
-  };
-  const handleNavigateFullPage = (page: number) => {
-    const isRight = page > 0;
-    setFilter(
-      createFilterValue(
-        isRight ? (data?.totalPages ?? 0) - 1 : 0,
-        filter.search
-      )
-    );
-  };
-
+  const { data: { data } = {} } = useAppQuery({
+    ...ApiQuery.shops.getShopDetails(userAtom.user?.shopId),
+    enabled: !!userAtom.user?.shopId,
+  });
   const handleSearch = (search: string) => {
-    setFilter(createFilterValue(0, search));
+    setFilter({ search });
   };
+  const users = data?.users || [];
 
   return (
     <Fragment>
@@ -63,7 +44,7 @@ const Users = () => {
         <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
       </CreateUserModal>
       <UserUpdateModal user={updatedUser}>
-        {(data?.data?.length || 0) > 0 ? (
+        {(users?.length || 0) > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
@@ -71,14 +52,15 @@ const Users = () => {
                 <TableHead>Username</TableHead>
                 <TableHead>Phone number</TableHead>
                 <TableHead>Role</TableHead>
-                {isAdmin && <TableHead>Status</TableHead>}
+                <TableHead>Status</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.data?.map((user) => {
+              {users?.map((user) => {
                 const isActive = user.status === "ACTIVE";
                 const isCurrentAccount = userAtom.user?.id === user.id;
+
                 return (
                   <TableRow key={user.id}>
                     <TableCell>
@@ -92,20 +74,18 @@ const Users = () => {
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.phoneNumber}</TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>
-                    {isAdmin && (
-                      <TableCell>
-                        <Badge
-                          className={cn(
-                            isActive
-                              ? "bg-green-600 hover:bg-green-500 text-slate-100"
-                              : ""
-                          )}
-                          variant={isActive ? "default" : "destructive"}
-                        >
-                          {startCase(lowerCase(user.status))}
-                        </Badge>
-                      </TableCell>
-                    )}
+                    <TableCell>
+                      <Badge
+                        className={cn(
+                          isActive
+                            ? "bg-green-600 hover:bg-green-500 text-slate-100"
+                            : ""
+                        )}
+                        variant={isActive ? "default" : "destructive"}
+                      >
+                        {startCase(lowerCase(user.status))}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="flex justify-end w-full">
                       {!isCurrentAccount && (
                         <DialogTrigger asChild>
@@ -130,15 +110,9 @@ const Users = () => {
         ) : (
           <UsersEmptyState />
         )}
-        <UserPagination
-          isLeftButtonDisabled={filter.page === 0}
-          isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
-          handleNavigateFullPage={handleNavigateFullPage}
-          handleNavigatePage={handleNavigatePage}
-        />
       </UserUpdateModal>
     </Fragment>
   );
 };
 
-export default Users;
+export default ProtectedUserOwnerView;
