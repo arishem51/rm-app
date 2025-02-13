@@ -43,26 +43,9 @@ export interface User {
   status: "ACTIVE" | "INACTIVE";
 }
 
-export interface CreateUserRequest {
-  /**
-   * @minLength 3
-   * @maxLength 20
-   */
-  username: string;
-  /**
-   * @minLength 6
-   * @maxLength 2147483647
-   */
-  password: string;
-  /** @pattern ^[0-9]{10,12}$ */
-  phoneNumber: string;
-  name: string;
-  role: string;
-}
-
-export interface CreateShopDTO {
-  name?: string;
-  address?: string;
+export interface UpdateShopDTO {
+  shopName?: string;
+  shopAddress?: string;
 }
 
 export interface BaseResponseShopDTO {
@@ -100,6 +83,28 @@ export interface UserDTO {
   status: string;
   /** @format int64 */
   shopId?: number;
+}
+
+export interface CreateUserRequest {
+  /**
+   * @minLength 3
+   * @maxLength 20
+   */
+  username: string;
+  /**
+   * @minLength 6
+   * @maxLength 2147483647
+   */
+  password: string;
+  /** @pattern ^[0-9]{10,12}$ */
+  phoneNumber: string;
+  name: string;
+  role: string;
+}
+
+export interface CreateShopDTO {
+  name?: string;
+  address?: string;
 }
 
 export interface SignUpRequest {
@@ -437,6 +442,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     updateUser: (id: number, data: UpdateUserRequest, params: RequestParams = {}) =>
       this.request<BaseResponseUser, any>({
         path: `/api/users/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Shop Management
+     * @name UpdateShop
+     * @request PUT:/api/shops/update/{shopId}
+     * @secure
+     */
+    updateShop: (shopId: number, data: UpdateShopDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseShopDTO, any>({
+        path: `/api/shops/update/${shopId}`,
         method: "PUT",
         body: data,
         secure: true,

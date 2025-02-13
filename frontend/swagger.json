@@ -48,6 +48,38 @@
         }
       }
     },
+    "/api/shops/update/{shopId}": {
+      "put": {
+        "tags": ["Shop Management"],
+        "operationId": "updateShop",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateShopDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseShopDTO" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/users/": {
       "get": {
         "tags": ["User Management"],
@@ -319,26 +351,11 @@
         },
         "required": ["id", "name", "phoneNumber", "role", "status", "username"]
       },
-      "CreateUserRequest": {
+      "UpdateShopDTO": {
         "type": "object",
         "properties": {
-          "username": { "type": "string", "maxLength": 20, "minLength": 3 },
-          "password": {
-            "type": "string",
-            "maxLength": 2147483647,
-            "minLength": 6
-          },
-          "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
-          "name": { "type": "string" },
-          "role": { "type": "string" }
-        },
-        "required": ["name", "password", "phoneNumber", "role", "username"]
-      },
-      "CreateShopDTO": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "address": { "type": "string" }
+          "shopName": { "type": "string" },
+          "shopAddress": { "type": "string" }
         }
       },
       "BaseResponseShopDTO": {
@@ -394,6 +411,28 @@
           "status",
           "username"
         ]
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string", "maxLength": 20, "minLength": 3 },
+          "password": {
+            "type": "string",
+            "maxLength": 2147483647,
+            "minLength": 6
+          },
+          "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
+          "name": { "type": "string" },
+          "role": { "type": "string" }
+        },
+        "required": ["name", "password", "phoneNumber", "role", "username"]
+      },
+      "CreateShopDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" }
+        }
       },
       "SignUpRequest": {
         "type": "object",

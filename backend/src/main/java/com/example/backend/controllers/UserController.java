@@ -48,7 +48,7 @@ public class UserController {
     @Operation(summary = "Current user", description = "Get current user by client token.")
     @GetMapping("/me")
     public ResponseEntity<BaseResponse<UserDTO>> getMe(@CurrentUser User user) {
-        logger.log(Level.INFO, () -> "Get Me: ");
+        logger.log(Level.INFO, () -> "Get Me: " + user);
         return ResponseEntity.ok(new BaseResponse<>(UserDTO.fromEntity(user), "Success!"));
     }
 

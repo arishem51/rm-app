@@ -2,6 +2,7 @@ package com.example.backend.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +34,7 @@ public class UserService {
     }
 
     private void validateCreateUser(CreateUserRequest request, User currentUser) {
-        if (Role.STAFF == currentUser.getRole()) {
+        if (currentUser != null && Role.STAFF == currentUser.getRole()) {
             throw new IllegalArgumentException("Only Admin/Owner can create staff user");
         }
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -45,10 +46,15 @@ public class UserService {
     }
 
     public User createUser(CreateUserRequest request) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isUserLogged = authentication.getPrincipal() instanceof User;
+        User currentUser = isUserLogged ? (User) authentication.getPrincipal() : null;
         validateCreateUser(request, currentUser);
         Role role = Role.valueOf(request.getRole());
-        Shop shop = currentUser.getShop();
+        Shop shop = null;
+        if (currentUser != null) {
+            currentUser.getShop();
+        }
 
         User user = User.builder()
                 .username(request.getUsername())
