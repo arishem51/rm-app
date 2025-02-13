@@ -66,11 +66,11 @@ public class UserController {
 
     @Operation(summary = "Create a user", description = "Create a user by owner or admin.")
     @PostMapping("/")
-    public ResponseEntity<BaseResponse<User>> createUser(
+    public ResponseEntity<BaseResponse<UserDTO>> createUser(
             @RequestBody @Valid CreateUserRequest request) {
         try {
             User user = userService.createUser(request);
-            return ResponseEntity.ok().body(BaseResponse.success(user, "Create user success!"));
+            return ResponseEntity.ok().body(BaseResponse.success(UserDTO.fromEntity(user), "Create user success!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
