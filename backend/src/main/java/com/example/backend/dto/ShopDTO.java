@@ -3,6 +3,10 @@ package com.example.backend.dto;
 import lombok.Builder;
 import lombok.Data;
 import java.util.List;
+import java.util.stream.Collectors;
+//code moi
+import java.util.Collections;
+import lombok.NoArgsConstructor;
 
 import com.example.backend.entities.Shop;
 
@@ -15,13 +19,22 @@ public class ShopDTO {
     private List<UserDTO> users;
     private UserDTO createdBy;
 
+    // code moi
     public static ShopDTO fromEntity(Shop shop) {
+        if(shop == null){
+            return null;
+        }
+
         return ShopDTO.builder()
                 .id(shop.getId())
                 .name(shop.getName())
                 .address(shop.getAddress())
-                .users(shop.getUsers().stream().map(UserDTO::fromEntity).toList())
-                .createdBy(UserDTO.fromEntity(shop.getCreateBy()))
+                .users(shop.getUsers() != null
+                ? shop.getUsers().stream().map(UserDTO::fromEntity).collect(Collectors.toList()) 
+                : Collections.emptyList())  // Tránh lỗi null
+        .createdBy(shop.getCreateBy() != null 
+                ? UserDTO.fromEntity(shop.getCreateBy()) 
+                : null)  // Tránh lỗi null
                 .build();
     }
 }

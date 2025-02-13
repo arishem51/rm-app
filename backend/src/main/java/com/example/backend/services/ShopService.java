@@ -7,7 +7,11 @@ import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.repositories.ShopRepository;
 
+//code moi
+import com.example.backend.dto.UpdateShopDTO;
+
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
@@ -59,4 +63,29 @@ public class ShopService {
         return shopRepository.findById(id).orElse(null);
     }
 
+    //code moi
+    //Kiem tra quyen so huu: Neu user khong phai chu cua hang, tu choi cap nhap
+    //Cap nhat thong tin: Neu hop le, cap nhap ten & dia chi roi luu vao database
+    public Shop updateShop(Long shopId, UpdateShopDTO shopDTO, User currentUser) {
+        Optional<Shop> shopOpt = shopRepository.findById(shopId);
+    
+        if (shopOpt.isEmpty()) {
+            throw new IllegalArgumentException("Shop does not exist.");
+        }
+    
+        Shop shop = shopOpt.get();
+    
+        // Kiểm tra quyền cập nhật (chỉ Owner hoặc Admin)
+        if (shop.getCreateBy().getRole() != Role.OWNER && shop.getCreateBy().getRole() != Role.ADMIN) {
+            throw new IllegalArgumentException("You are not authorized to update this shop.");
+        }
+    
+        // Cập nhật thông tin
+        shop.setName(shopDTO.getShopName());
+        shop.setAddress(shopDTO.getShopAddress());
+    
+        return shopRepository.save(shop);
+    }
+      
+    
 }
