@@ -6,10 +6,10 @@ import com.example.backend.entities.User;
 
 import com.example.backend.enums.Role;
 
-//code moi
 import com.example.backend.dto.UpdateShopDTO;
 
 import org.apache.commons.lang3.ObjectUtils.Null;
+import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +41,8 @@ public class ShopController {
         return ResponseEntity.ok(new BaseResponse<PaginateResponse<ShopDTO>>(response, "Success!"));
     }
 
-    @PostMapping("/create")
+    @Operation(summary = "Create a shop", description = "Create a shop by owner or admin.")
+    @PostMapping()
     public ResponseEntity<BaseResponse<ShopDTO>> createShop(@RequestBody CreateShopDTO shopDTO,
             @CurrentUser User user) {
         try {
@@ -73,18 +74,19 @@ public class ShopController {
         return ResponseEntity.ok(new BaseResponse<>(ShopDTO.fromEntity(shop), "Success!"));
     }
     
-    //code moi
+    //Cap nhap thong tin
     //@PathVariable shopId: Lay ID shop tu url
     //@RequestBody UpdateShopDTO: Nhan du lieu cap nhap tu client
     //Kiem tra quyen: Chi cho phep admin/owner update
-    @PutMapping("/update/{shopId}")
+    @Operation(summary = "Update a shop", description = "Update a shop by its ID.")
+    @PutMapping()
      public ResponseEntity<BaseResponse<ShopDTO>> updateShop(
-        @PathVariable Long shopId,
+        @PathVariable Long Id,
         @RequestBody UpdateShopDTO shopDTO,
         @CurrentUser User currentUser) {
 
     try {
-        Shop updatedShop = shopService.updateShop(shopId, shopDTO, currentUser);
+        Shop updatedShop = shopService.updateShop(Id, shopDTO, currentUser);
         return ResponseEntity.ok(BaseResponse.success(ShopDTO.fromEntity(updatedShop), "Shop updated successfully!"));
     } catch (IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)

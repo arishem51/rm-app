@@ -3,7 +3,7 @@ package com.example.backend.dto;
 import lombok.Builder;
 import lombok.Data;
 import java.util.List;
-//code moi
+
 import java.util.Collections;
 
 import com.example.backend.entities.Shop;
@@ -17,7 +17,6 @@ public class ShopDTO {
     private List<UserDTO> users;
     private UserDTO createdBy;
 
-    // code moi
     public static ShopDTO fromEntity(Shop shop) {
         if (shop == null) {
             return null;

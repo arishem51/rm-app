@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class UpdateShopDTO {
-    private String shopName;
-    private String shopAddress;
+    private Long Id;
+    private String Name;
+    private String Address;
 }
