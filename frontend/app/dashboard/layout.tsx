@@ -8,7 +8,6 @@ import { redirect } from "next/navigation";
 type Props = Readonly<{ children: ReactNode }>;
 
 export default async function Layout({ children }: Props) {
-  //FIXME: make sure getMe is cached
   const query = await getMe();
   if (!query?.data) {
     redirect("/auth/sign-in");

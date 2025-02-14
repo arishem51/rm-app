@@ -35,6 +35,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { useUserAtomValue } from "@/store/user";
+import { isEmpty } from "lodash";
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
@@ -44,6 +45,15 @@ const schemaFields = {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
+  password: z
+    .union([
+      z
+        .string()
+        .min(6, { message: "Password must be at least 6 characters long" }),
+      z.literal(""),
+      z.literal(null),
+    ])
+    .optional(),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
   status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
 };
@@ -53,13 +63,14 @@ type Props = {
   user?: UserDTO;
 };
 
-//FIXME: Should update password
 const UserUpdateModal = ({ children, user }: Props) => {
   const [open, setOpen] = useState(false);
   const form = useForm<UpdateUserRequest>({
     defaultValues: {
       name: "",
       phoneNumber: "",
+      password: "",
+      role: UserRole.ADMIN,
     },
     resolver: zodResolver(z.object(schemaFields)),
   });
@@ -80,7 +91,13 @@ const UserUpdateModal = ({ children, user }: Props) => {
   const handleSubmit = form.handleSubmit((data: UpdateUserRequest) => {
     if (user?.id) {
       updateUser(
-        { id: user.id, ...data },
+        {
+          id: user.id,
+          ...data,
+          password: (isEmpty(data.password)
+            ? null
+            : data.password) as unknown as string,
+        },
         {
           onSuccess: () => {
             toast({
@@ -135,6 +152,25 @@ const UserUpdateModal = ({ children, user }: Props) => {
                       <Input
                         type="tel"
                         placeholder="(+84) 123 456 78"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <div className="flex justify-between">
+                      <FormLabel>New Password</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="*********"
                         {...field}
                       />
                     </FormControl>
