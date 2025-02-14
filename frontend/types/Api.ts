@@ -10,15 +10,20 @@
  */
 
 export interface UpdateUserRequest {
-  name: string;
+  name?: string;
+  /**
+   * @minLength 6
+   * @maxLength 2147483647
+   */
+  password?: string;
   /** @pattern ^[0-9]{10,12}$ */
-  phoneNumber: string;
-  role: string;
-  status: string;
+  phoneNumber?: string;
+  role?: string;
+  status?: string;
 }
 
-export interface BaseResponseUser {
-  data?: User;
+export interface BaseResponseUserDTO {
+  data?: UserDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -29,18 +34,20 @@ export interface BaseResponseUser {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface User {
+export interface UserDTO {
   /** @format int64 */
   id: number;
   username: string;
   name: string;
   phoneNumber: string;
   /** @format date-time */
-  createdAt?: string;
+  createdAt: string;
   /** @format date-time */
   updatedAt?: string;
-  role: "OWNER" | "STAFF" | "ADMIN";
-  status: "ACTIVE" | "INACTIVE";
+  role: string;
+  status: string;
+  /** @format int64 */
+  shopId?: number;
 }
 
 export interface UpdateShopDTO {
@@ -67,22 +74,6 @@ export interface ShopDTO {
   address?: string;
   users?: UserDTO[];
   createdBy?: UserDTO;
-}
-
-export interface UserDTO {
-  /** @format int64 */
-  id: number;
-  username: string;
-  name: string;
-  phoneNumber: string;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt?: string;
-  role: string;
-  status: string;
-  /** @format int64 */
-  shopId?: number;
 }
 
 export interface CreateUserRequest {
@@ -121,18 +112,6 @@ export interface SignUpRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
-}
-
-export interface BaseResponseUserDTO {
-  data?: UserDTO;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface SignInRequest {
@@ -440,7 +419,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     updateUser: (id: number, data: UpdateUserRequest, params: RequestParams = {}) =>
-      this.request<BaseResponseUser, any>({
+      this.request<BaseResponseUserDTO, any>({
         path: `/api/users/${id}`,
         method: "PUT",
         body: data,
@@ -511,7 +490,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     createUser: (data: CreateUserRequest, params: RequestParams = {}) =>
-      this.request<BaseResponseUser, any>({
+      this.request<BaseResponseUserDTO, any>({
         path: `/api/users/`,
         method: "POST",
         body: data,

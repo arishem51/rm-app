@@ -41,7 +41,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/BaseResponseUser" }
+                "schema": { "$ref": "#/components/schemas/BaseResponseUserDTO" }
               }
             }
           }
@@ -137,7 +137,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/BaseResponseUser" }
+                "schema": { "$ref": "#/components/schemas/BaseResponseUserDTO" }
               }
             }
           }
@@ -313,16 +313,20 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
+          "password": {
+            "type": "string",
+            "maxLength": 2147483647,
+            "minLength": 6
+          },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
           "role": { "type": "string" },
           "status": { "type": "string" }
-        },
-        "required": ["name", "phoneNumber", "role", "status"]
+        }
       },
-      "BaseResponseUser": {
+      "BaseResponseUserDTO": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/User" },
+          "data": { "$ref": "#/components/schemas/UserDTO" },
           "message": { "type": "string" },
           "errorCode": {
             "type": "string",
@@ -337,7 +341,7 @@
           }
         }
       },
-      "User": {
+      "UserDTO": {
         "type": "object",
         "properties": {
           "id": { "type": "integer", "format": "int64" },
@@ -346,10 +350,19 @@
           "phoneNumber": { "type": "string" },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" },
-          "role": { "type": "string", "enum": ["OWNER", "STAFF", "ADMIN"] },
-          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
+          "role": { "type": "string" },
+          "status": { "type": "string" },
+          "shopId": { "type": "integer", "format": "int64" }
         },
-        "required": ["id", "name", "phoneNumber", "role", "status", "username"]
+        "required": [
+          "createdAt",
+          "id",
+          "name",
+          "phoneNumber",
+          "role",
+          "status",
+          "username"
+        ]
       },
       "UpdateShopDTO": {
         "type": "object",
@@ -389,29 +402,6 @@
           "createdBy": { "$ref": "#/components/schemas/UserDTO" }
         }
       },
-      "UserDTO": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "username": { "type": "string" },
-          "name": { "type": "string" },
-          "phoneNumber": { "type": "string" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "role": { "type": "string" },
-          "status": { "type": "string" },
-          "shopId": { "type": "integer", "format": "int64" }
-        },
-        "required": [
-          "createdAt",
-          "id",
-          "name",
-          "phoneNumber",
-          "role",
-          "status",
-          "username"
-        ]
-      },
       "CreateUserRequest": {
         "type": "object",
         "properties": {
@@ -447,24 +437,6 @@
           "name": { "type": "string" }
         },
         "required": ["name", "password", "phoneNumber", "username"]
-      },
-      "BaseResponseUserDTO": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/UserDTO" },
-          "message": { "type": "string" },
-          "errorCode": {
-            "type": "string",
-            "enum": [
-              "AUTH_MISSING",
-              "TOKEN_EXPIRED",
-              "TOKEN_INVALID",
-              "ACCESS_DENIED",
-              "BAD_REQUEST",
-              "INTERNAL_SERVER_ERROR"
-            ]
-          }
-        }
       },
       "SignInRequest": {
         "type": "object",

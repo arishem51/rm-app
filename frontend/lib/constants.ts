@@ -1,4 +1,4 @@
-import { User } from "@/types/Api";
+import { UserDTO } from "@/types/Api";
 
 export const AppPathURL = {
   auth: {
@@ -13,12 +13,12 @@ export const AppPathURL = {
   },
 } as const;
 
-export const UserStatus: Record<User["status"], User["status"]> = {
+export const UserStatus: Record<UserDTO["status"], UserDTO["status"]> = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
 };
 
-export const UserRole: Record<User["role"], User["role"]> = {
+export const UserRole = {
   ADMIN: "ADMIN",
   OWNER: "OWNER",
   STAFF: "STAFF",
