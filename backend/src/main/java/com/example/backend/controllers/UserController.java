@@ -9,15 +9,12 @@ import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.services.UserService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,11 +51,11 @@ public class UserController {
 
     @Operation(summary = "Update a user", description = "Update a user by their name.")
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<User>> updateUser(@PathVariable Long id,
+    public ResponseEntity<BaseResponse<UserDTO>> updateUser(@PathVariable Long id,
             @RequestBody @Valid UpdateUserRequest request) {
         try {
             User user = userService.updateUser(id, request);
-            return ResponseEntity.ok().body(BaseResponse.success(user, "Update user success!"));
+            return ResponseEntity.ok().body(BaseResponse.success(UserDTO.fromEntity(user), "Update user success!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

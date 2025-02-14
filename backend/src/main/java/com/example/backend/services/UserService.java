@@ -1,5 +1,7 @@
 package com.example.backend.services;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -55,7 +57,6 @@ public class UserService {
         if (currentUser != null) {
             shop = currentUser.getShop();
         }
-
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -71,9 +72,12 @@ public class UserService {
     public User updateUser(Long id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
-        if (request.getPhoneNumber() != null && !request.getPhoneNumber().isEmpty()
-                && userRepository.findByPhoneNumber(request.getPhoneNumber()).get().getId() != id) {
-            throw new IllegalArgumentException("Phone number is already taken!");
+        String phoneNumber = request.getPhoneNumber();
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+                throw new IllegalArgumentException("Phone number is already taken!");
+            }
         }
 
         user.setName(request.getName() != null ? request.getName() : user.getName());
@@ -81,6 +85,8 @@ public class UserService {
         // FIXME: validate just admin can update role to admin
         user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
         user.setStatus(request.getStatus() != null ? UserStatus.valueOf(request.getStatus()) : user.getStatus());
+        user.setPassword(
+                request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : user.getPassword());
         userRepository.save(user);
         return user;
     }
