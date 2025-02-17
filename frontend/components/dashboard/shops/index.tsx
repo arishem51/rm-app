@@ -21,7 +21,7 @@ const Shops = () => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Stt</TableHead>
+          <TableHead>STT</TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Address</TableHead>
           <TableHead className="text-right">Action</TableHead>

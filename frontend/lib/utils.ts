@@ -16,7 +16,7 @@ export const { api: apiClient } = new Api({
     format: "json",
   },
   customFetch: async (url, init) => {
-    const options = init ? init : {};
+    const options = init ?? {};
     options.headers = {
       ...options.headers,
       format: "json",

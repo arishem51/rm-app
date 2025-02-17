@@ -2,7 +2,7 @@ import CreateShopView from "@/components/dashboard/create-shop-view";
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
 import AdminUsersView from "@/components/dashboard/users/admin-users-view";
 import OwnerUsersView from "@/components/dashboard/users/owner-users-view";
-import { UserRole } from "@/lib/constants";
+import { checkRole } from "@/lib/helpers";
 import { getMe } from "@/server/actions";
 import { ApiQuery } from "@/services/query";
 import { redirect } from "next/navigation";
@@ -10,15 +10,13 @@ import { redirect } from "next/navigation";
 const Page = async () => {
   const query = await getMe();
   const user = query?.data?.data;
-  const isAdmin = user?.role === UserRole.ADMIN;
-  const isOwner = user?.role === UserRole.OWNER;
-  const isStaff = user?.role === UserRole.STAFF;
+  const { isAdmin, isOwner, isStaff } = checkRole(user);
 
   if (isStaff) {
     redirect("/dashboard");
   }
 
-  if (isOwner && !user.shopId) {
+  if (isOwner && !user?.shopId) {
     return <CreateShopView />;
   }
 
@@ -27,7 +25,7 @@ const Page = async () => {
       return ApiQuery.users.getUsers({ page: 0, search: "" });
     }
     if (isOwner) {
-      return ApiQuery.shops.getShopDetails(user.shopId);
+      return ApiQuery.shops.getShopDetails(user?.shopId);
     }
     return null;
   };
