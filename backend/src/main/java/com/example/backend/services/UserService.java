@@ -1,7 +1,6 @@
 package com.example.backend.services;
 
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -16,7 +15,6 @@ import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.enums.UserStatus;
 import com.example.backend.repositories.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
