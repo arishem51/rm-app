@@ -1,10 +1,11 @@
 package com.example.backend.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UpdateShopDTO {
-    private Long Id;
-    private String Name;
-    private String Address;
+    private String name;
+    private String address;
 }
