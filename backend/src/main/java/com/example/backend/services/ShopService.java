@@ -6,14 +6,10 @@ import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.repositories.ShopRepository;
-
-//code moi
 import com.example.backend.dto.UpdateShopDTO;
-
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -59,33 +55,31 @@ public class ShopService {
         userService.updateShop(persistedUser, shop);
         return shop;
     }
+
     public Shop getShopById(Long id) {
         return shopRepository.findById(id).orElse(null);
     }
 
-    //code moi
-    //Kiem tra quyen so huu: Neu user khong phai chu cua hang, tu choi cap nhap
-    //Cap nhat thong tin: Neu hop le, cap nhap ten & dia chi roi luu vao database
-    public Shop updateShop(Long shopId, UpdateShopDTO shopDTO, User currentUser) {
-        Optional<Shop> shopOpt = shopRepository.findById(shopId);
-    
+    // Kiem tra quyen so huu: Neu user khong phai chu cua hang, tu choi cap nhap
+    // Cap nhat thong tin: Neu hop le, cap nhap ten & dia chi roi luu vao database
+    public Shop updateShop(Long id, UpdateShopDTO shopDTO, User currentUser) {
+        Optional<Shop> shopOpt = shopRepository.findById(id);
         if (shopOpt.isEmpty()) {
             throw new IllegalArgumentException("Shop does not exist.");
         }
-    
         Shop shop = shopOpt.get();
-    
-        // Kiểm tra quyền cập nhật (chỉ Owner hoặc Admin)
-        if (shop.getCreateBy().getRole() != Role.OWNER && shop.getCreateBy().getRole() != Role.ADMIN) {
+        // Kiểm tra quyền cập nhật (chỉ Admin hoặc chính chủ shop)
+        if (!currentUser.getRole().equals(Role.ADMIN) && !shop.getCreateBy().getId().equals(currentUser.getId())) {
             throw new IllegalArgumentException("You are not authorized to update this shop.");
         }
-    
-        // Cập nhật thông tin
-        shop.setName(shopDTO.getShopName());
-        shop.setAddress(shopDTO.getShopAddress());
-    
+        // Cập nhật thông tin an toàn
+        if (shopDTO.getName() != null) {
+            shop.setName(shopDTO.getName());
+        }
+        if (shopDTO.getAddress() != null) {
+            shop.setAddress(shopDTO.getAddress());
+        }
         return shopRepository.save(shop);
     }
-      
-    
+
 }

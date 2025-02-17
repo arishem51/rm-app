@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.backend.entities.Shop;
-import com.example.backend.entities.User;  // Import User
+import com.example.backend.entities.User;
 
 public interface ShopRepository extends JpaRepository<Shop, Long> {
     Optional<Shop> findById(Long id);

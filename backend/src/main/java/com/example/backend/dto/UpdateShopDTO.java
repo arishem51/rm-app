@@ -1,9 +1,11 @@
 package com.example.backend.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UpdateShopDTO {
-    private String shopName;
-    private String shopAddress;
+    private String name;
+    private String address;
 }
