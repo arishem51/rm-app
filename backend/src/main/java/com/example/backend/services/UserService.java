@@ -68,8 +68,16 @@ public class UserService {
     }
 
     public User updateUser(Long id, UpdateUserRequest request, User currentUser) {
+        if (currentUser.getRole() == Role.STAFF) {
+            throw new IllegalArgumentException("Permission denied!");
+        }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+
+        if (currentUser.getRole() == Role.OWNER && !user.isEnabled()) {
+            throw new UsernameNotFoundException("User not found!");
+        }
+
         String phoneNumber = request.getPhoneNumber();
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
@@ -81,7 +89,14 @@ public class UserService {
         user.setPhoneNumber(request.getPhoneNumber());
         if (currentUser.getRole() == Role.ADMIN) {
             user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
-            user.setStatus(request.getStatus() != null ? UserStatus.valueOf(request.getStatus()) : user.getStatus());
+        }
+        String requestUserStatus = request.getStatus();
+        if (requestUserStatus != null) {
+            if (currentUser.getRole() == Role.ADMIN) {
+                user.setStatus(UserStatus.valueOf(requestUserStatus));
+            } else if (requestUserStatus.equals(UserStatus.INACTIVE.toString())) {
+                user.setStatus(UserStatus.INACTIVE);
+            }
         }
         user.setPassword(
                 request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : user.getPassword());
