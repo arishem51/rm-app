@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { UserDTO } from "@/types/Api";
 import CreateUserModal from "../create-user-modal";
 import UserSearch from "../user-search";
-import { cn } from "@/lib/utils";
+import DeleteUserView from "./delete-user-view";
 
 const ProtectedUserOwnerView = () => {
   const [filter, setFilter] = useState({ search: "" });
@@ -33,6 +33,7 @@ const ProtectedUserOwnerView = () => {
     ...ApiQuery.shops.getShopDetails(userAtom.user?.shopId),
     enabled: !!userAtom.user?.shopId,
   });
+
   const handleSearch = (search: string) => {
     setFilter({ search });
   };
@@ -52,13 +53,11 @@ const ProtectedUserOwnerView = () => {
                 <TableHead>Username</TableHead>
                 <TableHead>Phone number</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users?.map((user) => {
-                const isActive = user.status === "ACTIVE";
                 const isCurrentAccount = userAtom.user?.id === user.id;
 
                 return (
@@ -74,32 +73,23 @@ const ProtectedUserOwnerView = () => {
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.phoneNumber}</TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>
-                    <TableCell>
-                      <Badge
-                        className={cn(
-                          isActive
-                            ? "bg-green-600 hover:bg-green-500 text-slate-100"
-                            : ""
-                        )}
-                        variant={isActive ? "default" : "destructive"}
-                      >
-                        {startCase(lowerCase(user.status))}
-                      </Badge>
-                    </TableCell>
                     <TableCell className="flex justify-end w-full">
                       {!isCurrentAccount && (
-                        <DialogTrigger asChild>
-                          <Button
-                            size="icon"
-                            className="w-6 h-6"
-                            variant="outline"
-                            onClick={() => {
-                              setUpdatedUser(user);
-                            }}
-                          >
-                            <UserPen />
-                          </Button>
-                        </DialogTrigger>
+                        <Fragment>
+                          <DialogTrigger asChild>
+                            <Button
+                              size="icon"
+                              className="w-6 h-6"
+                              variant="outline"
+                              onClick={() => {
+                                setUpdatedUser(user);
+                              }}
+                            >
+                              <UserPen />
+                            </Button>
+                          </DialogTrigger>
+                          <DeleteUserView user={user} />
+                        </Fragment>
                       )}
                     </TableCell>
                   </TableRow>
