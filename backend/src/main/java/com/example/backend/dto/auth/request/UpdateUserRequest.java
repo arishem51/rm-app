@@ -17,7 +17,7 @@ public class UpdateUserRequest {
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
-    @Pattern(regexp = "^[0-9]{10,12}$", message = "Phone number must be 10-12 digits long")
+    @Pattern(regexp = "^\\d{10,12}$", message = "Phone number must be 10-12 digits long")
     private String phoneNumber;
 
     @ValidEnum(enumClass = Role.class, message = "Invalid user role!")
