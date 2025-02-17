@@ -15,6 +15,7 @@ import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.enums.UserStatus;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -68,13 +69,13 @@ public class UserService {
     }
 
     public User updateUser(Long id, UpdateUserRequest request, User currentUser) {
-        if (currentUser.getRole() == Role.STAFF) {
+        if (UserRoleUtils.isStaff(currentUser)) {
             throw new IllegalArgumentException("Permission denied!");
         }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
-        if (currentUser.getRole() == Role.OWNER && !user.isEnabled()) {
+        if (UserRoleUtils.isOwner(currentUser) && !user.isEnabled()) {
             throw new UsernameNotFoundException("User not found!");
         }
 
@@ -87,16 +88,14 @@ public class UserService {
         }
         user.setName(request.getName() != null ? request.getName() : user.getName());
         user.setPhoneNumber(request.getPhoneNumber());
-        if (currentUser.getRole() == Role.ADMIN) {
+        if (UserRoleUtils.isAdmin(currentUser)) {
             user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
         }
         String requestUserStatus = request.getStatus();
-        if (requestUserStatus != null) {
-            if (currentUser.getRole() == Role.ADMIN) {
-                user.setStatus(UserStatus.valueOf(requestUserStatus));
-            } else if (requestUserStatus.equals(UserStatus.INACTIVE.toString())) {
-                user.setStatus(UserStatus.INACTIVE);
-            }
+        if (UserRoleUtils.isAdmin(currentUser)) {
+            user.setStatus(UserStatus.valueOf(requestUserStatus));
+        } else if (requestUserStatus.equals(UserStatus.INACTIVE.toString())) {
+            user.setStatus(UserStatus.INACTIVE);
         }
         user.setPassword(
                 request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : user.getPassword());

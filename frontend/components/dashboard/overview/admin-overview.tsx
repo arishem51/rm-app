@@ -1,18 +1,22 @@
+"use client";
+
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { UsersRound } from "lucide-react";
 
+//FIXME: should migrate to server component
 const AdminOverview = () => {
-  const { data: shopQuery } = useAppQuery(
+  const { data: shopQuery, isLoading: isShopQueryLoading } = useAppQuery(
     ApiQuery.shops.getShops({ page: 0, search: "" })
   );
-  const { data: userQuery } = useAppQuery(
+  const { data: userQuery, isLoading: isUserQueryLoading } = useAppQuery(
     ApiQuery.users.getUsers({ page: 0, search: "" })
   );
 
@@ -25,7 +29,11 @@ const AdminOverview = () => {
             <span>Total users</span>
           </CardTitle>
           <CardDescription className="text-neutral-50 text-2xl">
-            {userQuery?.data?.totalElements}
+            {isUserQueryLoading ? (
+              <Skeleton className="h-6 w-[100px] mt-1" />
+            ) : (
+              userQuery?.data?.totalElements
+            )}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -36,7 +44,11 @@ const AdminOverview = () => {
             <span>Total shops</span>
           </CardTitle>
           <CardDescription className="text-neutral-50 text-2xl">
-            {shopQuery?.data?.totalElements}
+            {isShopQueryLoading ? (
+              <Skeleton className="h-6 w-[100px] mt-1" />
+            ) : (
+              shopQuery?.data?.totalElements
+            )}
           </CardDescription>
         </CardHeader>
       </Card>
