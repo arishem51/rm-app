@@ -2,6 +2,7 @@ package com.example.backend.entities;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.SQLRestriction;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,6 +44,7 @@ public class Shop {
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @SQLRestriction("status = 'ACTIVE'")
     private Set<User> users = new HashSet<>();
 
     @Override

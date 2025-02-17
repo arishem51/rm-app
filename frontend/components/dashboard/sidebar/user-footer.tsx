@@ -1,10 +1,10 @@
-"use client";
-
-import { useUserAtomValue } from "@/store/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getMe } from "@/server/actions";
 
-const UserFooter = () => {
-  const { user } = useUserAtomValue();
+const UserFooter = async () => {
+  const query = await getMe();
+  const { data } = query ?? {};
+  const { data: user } = data ?? {};
 
   const splitName = user?.name?.split(" ");
   const name =

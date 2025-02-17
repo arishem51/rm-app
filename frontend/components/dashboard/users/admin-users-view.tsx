@@ -61,7 +61,7 @@ const AdminUsersView = () => {
       <CreateUserModal isAdmin>
         <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
       </CreateUserModal>
-      <UserUpdateModal user={updatedUser}>
+      <UserUpdateModal isAdmin user={updatedUser}>
         {(data?.data?.length || 0) > 0 ? (
           <Table>
             <TableHeader>

@@ -46,8 +46,7 @@ public class ShopService {
         Shop shop = Shop.builder()
                 .name(shopDTO.getName())
                 .address(shopDTO.getAddress())
-                .createBy(
-                        persistedUser)
+                .createBy(persistedUser)
                 .users(users)
                 .build();
 

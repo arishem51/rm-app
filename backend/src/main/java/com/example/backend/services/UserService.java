@@ -1,7 +1,6 @@
 package com.example.backend.services;
 
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -16,7 +15,6 @@ import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.enums.UserStatus;
 import com.example.backend.repositories.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -69,9 +67,17 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, UpdateUserRequest request) {
+    public User updateUser(Long id, UpdateUserRequest request, User currentUser) {
+        if (currentUser.getRole() == Role.STAFF) {
+            throw new IllegalArgumentException("Permission denied!");
+        }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+
+        if (currentUser.getRole() == Role.OWNER && !user.isEnabled()) {
+            throw new UsernameNotFoundException("User not found!");
+        }
+
         String phoneNumber = request.getPhoneNumber();
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
@@ -79,12 +85,19 @@ public class UserService {
                 throw new IllegalArgumentException("Phone number is already taken!");
             }
         }
-
         user.setName(request.getName() != null ? request.getName() : user.getName());
         user.setPhoneNumber(request.getPhoneNumber());
-        // FIXME: validate just admin can update role to admin
-        user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
-        user.setStatus(request.getStatus() != null ? UserStatus.valueOf(request.getStatus()) : user.getStatus());
+        if (currentUser.getRole() == Role.ADMIN) {
+            user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
+        }
+        String requestUserStatus = request.getStatus();
+        if (requestUserStatus != null) {
+            if (currentUser.getRole() == Role.ADMIN) {
+                user.setStatus(UserStatus.valueOf(requestUserStatus));
+            } else if (requestUserStatus.equals(UserStatus.INACTIVE.toString())) {
+                user.setStatus(UserStatus.INACTIVE);
+            }
+        }
         user.setPassword(
                 request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : user.getPassword());
         userRepository.save(user);

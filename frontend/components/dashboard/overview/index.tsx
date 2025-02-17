@@ -3,6 +3,7 @@
 import { useUserAtomValue } from "@/store/user";
 import AdminOverview from "./admin-overview";
 import CreateShopView from "../create-shop-view";
+import OwnerOverview from "./owner-overview";
 
 const Overview = () => {
   const { user } = useUserAtomValue();
@@ -15,7 +16,7 @@ const Overview = () => {
     return <AdminOverview />;
   }
 
-  return <div>Data overview</div>;
+  return <OwnerOverview />;
 };
 
 export default Overview;

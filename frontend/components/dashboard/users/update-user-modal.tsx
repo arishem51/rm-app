@@ -61,9 +61,10 @@ const schemaFields = {
 type Props = {
   children?: ReactNode;
   user?: UserDTO;
+  isAdmin?: boolean;
 };
 
-const UserUpdateModal = ({ children, user }: Props) => {
+const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
   const [open, setOpen] = useState(false);
   const form = useForm<UpdateUserRequest>({
     defaultValues: {
@@ -105,9 +106,15 @@ const UserUpdateModal = ({ children, user }: Props) => {
               title: "Success",
               description: "User updated successfully",
             });
-            queryClient.invalidateQueries({
-              queryKey: ApiQuery.users.getUsers().queryKey,
-            });
+            if (isAdmin) {
+              queryClient.invalidateQueries({
+                queryKey: ApiQuery.users.getUsers().queryKey,
+              });
+            } else {
+              queryClient.invalidateQueries({
+                queryKey: ApiQuery.shops.getShopDetails().queryKey,
+              });
+            }
             setOpen(false);
           },
         }
@@ -213,36 +220,38 @@ const UserUpdateModal = ({ children, user }: Props) => {
                   )}
                 />
               )}
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value={UserStatus.ACTIVE}>
-                              Active
-                            </SelectItem>
-                            <SelectItem value={UserStatus.INACTIVE}>
-                              Inactive
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {isAdmin && (
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value={UserStatus.ACTIVE}>
+                                Active
+                              </SelectItem>
+                              <SelectItem value={UserStatus.INACTIVE}>
+                                Inactive
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
