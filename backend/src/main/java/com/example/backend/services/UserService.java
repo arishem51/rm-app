@@ -67,7 +67,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, UpdateUserRequest request) {
+    public User updateUser(Long id, UpdateUserRequest request, User currentUser) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
         String phoneNumber = request.getPhoneNumber();
@@ -77,12 +77,12 @@ public class UserService {
                 throw new IllegalArgumentException("Phone number is already taken!");
             }
         }
-
         user.setName(request.getName() != null ? request.getName() : user.getName());
         user.setPhoneNumber(request.getPhoneNumber());
-        // FIXME: validate just admin can update role to admin
-        user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
-        user.setStatus(request.getStatus() != null ? UserStatus.valueOf(request.getStatus()) : user.getStatus());
+        if (currentUser.getRole() == Role.ADMIN) {
+            user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
+            user.setStatus(request.getStatus() != null ? UserStatus.valueOf(request.getStatus()) : user.getStatus());
+        }
         user.setPassword(
                 request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : user.getPassword());
         userRepository.save(user);

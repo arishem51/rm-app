@@ -52,9 +52,9 @@ public class UserController {
     @Operation(summary = "Update a user", description = "Update a user by their name.")
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<UserDTO>> updateUser(@PathVariable Long id,
-            @RequestBody @Valid UpdateUserRequest request) {
+            @RequestBody @Valid UpdateUserRequest request, @CurrentUser User currentUser) {
         try {
-            User user = userService.updateUser(id, request);
+            User user = userService.updateUser(id, request, currentUser);
             return ResponseEntity.ok().body(BaseResponse.success(UserDTO.fromEntity(user), "Update user success!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
