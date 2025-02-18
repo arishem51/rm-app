@@ -23,8 +23,9 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { AppPathURL, UserRole } from "@/lib/constants";
+import { AppPathURL } from "@/lib/constants";
 import { getMe } from "@/server/actions";
+import { checkRole } from "@/lib/helpers";
 
 type Item = {
   title: string;
@@ -33,12 +34,14 @@ type Item = {
   children?: Item[];
 };
 
-type SidebarGroupType = "application" | "shop";
+type SidebarGroupType = "application" | "shop" | "setting";
 
 const Content = async () => {
   const query = await getMe();
   const { data } = query ?? {};
   const { data: user } = data ?? {};
+  const { isAdmin, isOwner } = checkRole(user);
+
   const itemGroups: Record<
     SidebarGroupType,
     {
@@ -60,13 +63,23 @@ const Content = async () => {
       title: "Shop Management",
       items: [],
     },
+    setting: {
+      title: "Setting",
+      items: [
+        {
+          title: "Profile",
+          url: AppPathURL.dashboard.profile,
+          icon: User2,
+        },
+      ],
+    },
   };
 
-  if (user?.role === UserRole.ADMIN) {
+  if (isAdmin) {
     itemGroups.application.items.push(
       {
         title: "Users",
-        icon: User2,
+        icon: Users,
         url: AppPathURL.dashboard.users,
         children: [],
       },
@@ -78,7 +91,7 @@ const Content = async () => {
     );
   }
 
-  if (user?.role === UserRole.OWNER) {
+  if (isOwner) {
     itemGroups.shop.items.push({
       title: "Users",
       url: AppPathURL.dashboard.users,
