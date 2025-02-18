@@ -14,7 +14,7 @@ import { lowerCase, startCase } from "lodash";
 import { Fragment, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import useAppQuery from "@/hooks/use-app-query";
-import UsersEmptyState from "../empty-state";
+import EmptyState from "../../empty-state";
 import { UserPen } from "lucide-react";
 import UserUpdateModal from "../update-user-modal";
 import { DialogTrigger } from "@/components/ui/dialog";
@@ -42,7 +42,10 @@ const ProtectedUserOwnerView = () => {
   return (
     <Fragment>
       <CreateUserModal>
-        <HeaderListSearch filterSearch={filter.search} onSearch={handleSearch} />
+        <HeaderListSearch
+          filterSearch={filter.search}
+          onSearch={handleSearch}
+        />
       </CreateUserModal>
       <UserUpdateModal user={updatedUser}>
         {(users?.length || 0) > 0 ? (
@@ -98,7 +101,7 @@ const ProtectedUserOwnerView = () => {
             </TableBody>
           </Table>
         ) : (
-          <UsersEmptyState />
+          <EmptyState />
         )}
       </UserUpdateModal>
     </Fragment>

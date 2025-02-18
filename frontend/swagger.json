@@ -401,8 +401,11 @@
             "type": "array",
             "items": { "$ref": "#/components/schemas/UserDTO" }
           },
-          "createdBy": { "$ref": "#/components/schemas/UserDTO" }
-        }
+          "createdBy": { "$ref": "#/components/schemas/UserDTO" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["createdAt"]
       },
       "CreateUserRequest": {
         "type": "object",

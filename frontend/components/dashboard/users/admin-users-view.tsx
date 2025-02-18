@@ -16,7 +16,7 @@ import UserPagination from "./pagination";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import useAppQuery from "@/hooks/use-app-query";
-import UsersEmptyState from "./empty-state";
+import EmptyState from "../empty-state";
 import { UserPen } from "lucide-react";
 import UserUpdateModal from "./update-user-modal";
 import { DialogTrigger } from "@/components/ui/dialog";
@@ -128,7 +128,7 @@ const AdminUsersView = () => {
             </TableBody>
           </Table>
         ) : (
-          <UsersEmptyState />
+          <EmptyState />
         )}
         <UserPagination
           isLeftButtonDisabled={filter.page === 0}

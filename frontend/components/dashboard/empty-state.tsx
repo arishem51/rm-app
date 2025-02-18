@@ -18,7 +18,7 @@ function InboxIcon(props: { className?: string }) {
   );
 }
 
-const UsersEmptyState = () => {
+const EmptyState = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-6 my-12">
       <div className="flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full dark:bg-gray-800">
@@ -37,4 +37,4 @@ const UsersEmptyState = () => {
   );
 };
 
-export default UsersEmptyState;
+export default EmptyState;

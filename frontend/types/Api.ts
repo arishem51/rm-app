@@ -74,6 +74,10 @@ export interface ShopDTO {
   address?: string;
   users?: UserDTO[];
   createdBy?: UserDTO;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt?: string;
 }
 
 export interface CreateUserRequest {

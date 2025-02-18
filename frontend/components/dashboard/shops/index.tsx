@@ -18,6 +18,7 @@ import { ShopDTO } from "@/types/Api";
 import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import ShopForm from "@/components/shop-form";
+import EmptyState from "../empty-state";
 
 const Shops = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -48,37 +49,45 @@ const Shops = () => {
           />
         </DialogContent>
       </Dialog>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>STT</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Address</TableHead>
-            <TableHead className="text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.data?.map((shop, index) => (
-            <TableRow key={shop.id}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>{shop.name}</TableCell>
-              <TableCell>{shop.address}</TableCell>
-              <TableCell className="text-right">
-                <Button
-                  onClick={() => {
-                    setUpdateShop(shop);
-                  }}
-                  size="icon"
-                  variant="outline"
-                  className="w-6 h-6"
-                >
-                  <Edit />
-                </Button>
-              </TableCell>
+      {(data?.data || []).length > 0 ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>STT</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead>Created By</TableHead>
+              <TableHead>Created At</TableHead>
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {data?.data?.map((shop, index) => (
+              <TableRow key={shop.id}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{shop.name}</TableCell>
+                <TableCell>{shop.address}</TableCell>
+                <TableCell>{shop.createdBy?.name}</TableCell>
+                <TableCell>{shop.createdAt}</TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    onClick={() => {
+                      setUpdateShop(shop);
+                    }}
+                    size="icon"
+                    variant="outline"
+                    className="w-6 h-6"
+                  >
+                    <Edit />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <EmptyState />
+      )}
     </Fragment>
   );
 };
