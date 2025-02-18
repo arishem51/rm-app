@@ -8,13 +8,15 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { FC, ReactNode, useEffect } from "react";
-import { useUserAtom } from "@/store/user";
 import { useToast } from "@/hooks/use-toast";
 import { useSignIn, useSignUp } from "@/hooks/mutations/user";
 import { ToastTitle } from "@/lib/constants";
 import AuthForm from "../auth-form";
 import { useRouter } from "next/navigation";
 import { setTokenAfterSignIn } from "@/server/actions";
+import { useAuthAtom } from "@/store/auth";
+import { useQueryClient } from "@tanstack/react-query";
+import { ApiQuery } from "@/services/query";
 
 type Props = {
   title?: string;
@@ -31,9 +33,10 @@ const AuthView: FC<Props> = ({
 }) => {
   const router = useRouter();
   const { toast } = useToast();
-  const [atom, setAtom] = useUserAtom();
+  const [atom, setAtom] = useAuthAtom();
   const { mutate: signIn } = useSignIn();
   const { mutate: signUp } = useSignUp();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (atom.showToastErrorSignIn) {
@@ -42,7 +45,7 @@ const AuthView: FC<Props> = ({
         title: ToastTitle.somethingWentWrong,
         description: "Credentials expired, please sign in again!",
       });
-      setAtom({ user: undefined, showToastErrorSignIn: false, token: "" });
+      setAtom({ showToastErrorSignIn: false, token: "" });
       fetch(`${window.origin}/api/auth`, {
         method: "POST",
         credentials: "include",
@@ -87,7 +90,7 @@ const AuthView: FC<Props> = ({
                     description: e.message,
                   });
                 },
-                onSuccess({ data }) {
+                async onSuccess({ data }) {
                   if (data.data) {
                     toast({
                       title: ToastTitle.success,
@@ -97,10 +100,12 @@ const AuthView: FC<Props> = ({
                     if (data.data.token) {
                       setTokenAfterSignIn(data.data.token);
                       setAtom({
-                        user: data.data.user,
                         showToastErrorSignIn: false,
                         token: data.data.token,
                       });
+                      await queryClient.invalidateQueries(
+                        ApiQuery.users.getMe()
+                      );
                       setTimeout(() => {
                         router.replace("/dashboard");
                       }, 50);

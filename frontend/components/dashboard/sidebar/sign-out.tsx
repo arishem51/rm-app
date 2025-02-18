@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "@/server/actions";
-import { useSetUserAtom } from "@/store/user";
+import { useSetAuthAtom } from "@/store/auth";
 import { redirect } from "next/navigation";
 import { DropdownMenuItem } from "../../ui/dropdown-menu";
 import { ReactNode } from "react";
@@ -11,10 +11,10 @@ type Props = {
 };
 
 const DropdownSignOut = ({ children }: Props) => {
-  const setUser = useSetUserAtom();
+  const setAuth = useSetAuthAtom();
   const handleSignOut = async () => {
     await signOut();
-    setUser({ token: "", user: undefined, showToastErrorSignIn: false });
+    setAuth({ token: "", showToastErrorSignIn: false });
     redirect("/auth/sign-in");
   };
   return (

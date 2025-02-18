@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ApiQuery } from "@/services/query";
-import { useUserAtomValue } from "@/store/user";
 import { lowerCase, startCase } from "lodash";
 import { Fragment, useCallback, useState } from "react";
 import UserPagination from "./pagination";
@@ -24,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { UserDTO } from "@/types/Api";
 import CreateUserModal from "./create-user-modal";
 import HeaderListSearch from "../header-list-search";
+import { useMe } from "@/hooks/mutations/user";
 
 const AdminUsersView = () => {
   const createFilterValue = useCallback(
@@ -36,7 +36,7 @@ const AdminUsersView = () => {
   const [updatedUser, setUpdatedUser] = useState<UserDTO>();
   const [filter, setFilter] = useState(createFilterValue(0, ""));
 
-  const userAtom = useUserAtomValue();
+  const { data: currentUser } = useMe();
   const { data: { data } = {} } = useAppQuery(ApiQuery.users.getUsers(filter));
 
   const handleNavigatePage = (page: number) => {
@@ -80,7 +80,7 @@ const AdminUsersView = () => {
             <TableBody>
               {data?.data?.map((user) => {
                 const isActive = user.status === "ACTIVE";
-                const isCurrentAccount = userAtom.user?.id === user.id;
+                const isCurrentAccount = currentUser?.id === user.id;
                 return (
                   <TableRow key={user.id}>
                     <TableCell>

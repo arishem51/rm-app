@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ApiQuery } from "@/services/query";
-import { useUserAtomValue } from "@/store/user";
 import { lowerCase, startCase } from "lodash";
 import { Fragment, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -23,15 +22,16 @@ import { UserDTO } from "@/types/Api";
 import CreateUserModal from "../create-user-modal";
 import DeleteUserView from "./delete-user-view";
 import HeaderListSearch from "../../header-list-search";
+import { useMe } from "@/hooks/mutations/user";
 
 const ProtectedUserOwnerView = () => {
   const [filter, setFilter] = useState({ search: "" });
   const [updatedUser, setUpdatedUser] = useState<UserDTO>();
-  const userAtom = useUserAtomValue();
+  const { data: currentUser } = useMe();
 
   const { data: { data } = {} } = useAppQuery({
-    ...ApiQuery.shops.getShopDetails(userAtom.user?.shopId),
-    enabled: !!userAtom.user?.shopId,
+    ...ApiQuery.shops.getShopDetails(currentUser?.shopId),
+    enabled: !!currentUser?.shopId,
   });
 
   const handleSearch = (search: string) => {
@@ -61,7 +61,7 @@ const ProtectedUserOwnerView = () => {
             </TableHeader>
             <TableBody>
               {users?.map((user) => {
-                const isCurrentAccount = userAtom.user?.id === user.id;
+                const isCurrentAccount = currentUser?.id === user.id;
 
                 return (
                   <TableRow key={user.id}>
