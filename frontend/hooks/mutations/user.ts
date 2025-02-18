@@ -11,6 +11,12 @@ import { useMutation } from "@tanstack/react-query";
 import useAppQuery from "../use-app-query";
 import { ApiQuery } from "@/services/query";
 
+const createError = (error: unknown) => {
+  return new Error(
+    (error as HttpResponse<unknown, BaseResponseUserDTO>).error.message
+  );
+};
+
 export const useUpdateUser = () =>
   useMutation({
     mutationFn: async ({ id, ...rest }: UpdateUserRequest & { id: number }) => {
@@ -25,9 +31,7 @@ export const useSignIn = () =>
         const response = await apiClient.signIn(props);
         return response;
       } catch (error) {
-        throw new Error(
-          (error as HttpResponse<unknown, BaseResponseUserDTO>).error.message
-        );
+        throw createError(error);
       }
     },
   });
@@ -35,8 +39,12 @@ export const useSignIn = () =>
 export const useSignUp = () =>
   useMutation({
     mutationFn: async (props: SignUpRequest) => {
-      const response = await apiClient.signUp(props);
-      return response;
+      try {
+        const response = await apiClient.signUp(props);
+        return response;
+      } catch (error) {
+        throw createError(error);
+      }
     },
   });
 
@@ -47,9 +55,7 @@ export const useCreateUser = () =>
         const response = await apiClient.createUser(props);
         return response;
       } catch (error) {
-        throw new Error(
-          (error as HttpResponse<unknown, BaseResponseUserDTO>).error.message
-        );
+        throw createError(error);
       }
     },
   });

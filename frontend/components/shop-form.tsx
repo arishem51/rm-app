@@ -27,7 +27,7 @@ const schemaFields = {
 };
 
 type Props = {
-  onClose: () => void;
+  onClose?: () => void;
   shop?: ShopDTO;
 };
 
@@ -54,11 +54,11 @@ const ShopForm = ({ onClose, shop }: Props) => {
       title: "Success",
       description: `${type === "create" ? "Create" : "Update"} shop successfully`,
     });
-    onClose();
+    onClose?.();
     queryClient.invalidateQueries({
       queryKey: ApiQuery.shops.getShops().queryKey,
     });
-    if (user?.role !== UserRole.ADMIN) {
+    if (user?.role !== UserRole.ADMIN && type === "create") {
       queryClient.invalidateQueries({
         queryKey: ApiQuery.users.getMe().queryKey,
       });
