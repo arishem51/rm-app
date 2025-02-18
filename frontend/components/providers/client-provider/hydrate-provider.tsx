@@ -2,14 +2,14 @@
 
 import { globalStore } from "@/store";
 import { userAtom } from "@/store/user";
-import { BaseResponseUser } from "@/types/Api";
+import { BaseResponseUserDTO } from "@/types/Api";
 import { useHydrateAtoms } from "jotai/utils";
 import { ReactNode } from "react";
 
 type Props = {
   children?: ReactNode;
   query?: {
-    data: BaseResponseUser | null;
+    data: BaseResponseUserDTO | null;
     status: number;
     token?: string;
   } | null;

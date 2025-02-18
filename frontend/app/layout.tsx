@@ -3,8 +3,10 @@ import "./globals.css";
 import { Inter, Fira_Code } from "next/font/google";
 import Head from "next/head";
 import Providers from "@/components/providers";
-import { getMe } from "@/server/actions";
 import HydrateProvider from "@/components/providers/client-provider/hydrate-provider";
+import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
+import { ApiQuery } from "@/services/query";
+import { getMe } from "@/server/actions";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,7 +29,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const query = await getMe();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <Head>
@@ -39,7 +40,9 @@ export default async function RootLayout({
       </Head>
       <body className={`${inter.variable} ${firaCode.variable} antialiased`}>
         <Providers>
-          <HydrateProvider query={query}>{children}</HydrateProvider>
+          <HydrationPrefetchQuery query={ApiQuery.users.getMe()}>
+            <HydrateProvider query={query}>{children}</HydrateProvider>
+          </HydrationPrefetchQuery>
         </Providers>
       </body>
     </html>

@@ -17,10 +17,9 @@ import { toast } from "@/hooks/use-toast";
 import { useCreateShop, useUpdateShop } from "@/hooks/mutations/shop";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { useSetUserAtom, useUserAtomValue } from "@/store/user";
-import { apiClient } from "@/lib/utils";
 import { useEffect } from "react";
 import { UserRole } from "@/lib/constants";
+import { useMe } from "@/hooks/mutations/user";
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
@@ -41,8 +40,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
   const { mutate: updateShop, isPending: isUpdating } = useUpdateShop();
   const isPending = isCreating || isUpdating;
   const queryClient = useQueryClient();
-  const setUser = useSetUserAtom();
-  const { user } = useUserAtomValue();
+  const { data: user } = useMe();
 
   useEffect(() => {
     if (shop) {
@@ -60,12 +58,10 @@ const ShopForm = ({ onClose, shop }: Props) => {
     queryClient.invalidateQueries({
       queryKey: ApiQuery.shops.getShops().queryKey,
     });
-    //FIXME: should migrate to useQuery
     if (user?.role !== UserRole.ADMIN) {
-      const user = await apiClient.getMe();
-      if (user.data) {
-        setUser({ user: user.data.data });
-      }
+      queryClient.invalidateQueries({
+        queryKey: ApiQuery.users.getMe().queryKey,
+      });
     }
   };
 

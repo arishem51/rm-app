@@ -1,4 +1,4 @@
-import { BaseResponseUser, HttpResponse } from "@/types/Api";
+import { BaseResponseUserDTO, HttpResponse } from "@/types/Api";
 import {
   DefaultError,
   QueryKey,
@@ -13,10 +13,17 @@ function useAppQuery<
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(options: UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>) {
-  const { error, ...rest } = useQuery(options);
+  const { error, ...rest } = useQuery({
+    ...options,
+    select:
+      options.select ??
+      ((data) => {
+        return data as unknown as TData;
+      }),
+  });
   if (error) {
     const e = error as unknown as
-      | HttpResponse<null, BaseResponseUser>
+      | HttpResponse<null, BaseResponseUserDTO>
       | undefined;
     const { errorCode } = e?.error ?? {};
     if (errorCode === "TOKEN_EXPIRED" || errorCode === "TOKEN_INVALID") {
