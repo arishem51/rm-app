@@ -1,7 +1,7 @@
 import {
   ChevronsUpDown,
   Home,
-  LucideIcon,
+  LucideIcon, ShoppingBag,
   Store,
   User2,
   Users,
@@ -97,6 +97,14 @@ const Content = async () => {
       url: AppPathURL.dashboard.users,
       icon: Users,
     });
+    if (user?.shopId) {
+      itemGroups.setting.items.push({
+        title: "Shop",
+        url: AppPathURL.dashboard.users,
+        icon: ShoppingBag,
+
+      });
+    }
   }
 
   const groups = Object.keys(itemGroups).map(
