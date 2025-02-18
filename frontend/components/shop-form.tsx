@@ -74,7 +74,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
       updateShop(
         { id: shop.id, ...data },
         {
-          onSuccess: async () => {
+          onSuccess: () => {
             callbackSuccess("update");
           },
         }
@@ -83,7 +83,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
       createShop(
         { ...data },
         {
-          onSuccess: async () => {
+          onSuccess: () => {
             callbackSuccess("create");
           },
         }

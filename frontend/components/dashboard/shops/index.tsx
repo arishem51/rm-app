@@ -32,8 +32,8 @@ const Shops = () => {
       <HeaderListSearch filterSearch={filter.search} onSearch={handleSearch} />
       <Dialog
         open={!!updateShop}
-        onOpenChange={(e) => {
-          if (!e) {
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
             setUpdateShop(undefined);
           }
         }}
