@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardHeader,
@@ -11,7 +9,6 @@ import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { UsersRound } from "lucide-react";
 
-//FIXME: should migrate to server component
 const AdminOverview = () => {
   const { data: shopQuery, isLoading: isShopQueryLoading } = useAppQuery(
     ApiQuery.shops.getShops({ page: 0, search: "" })

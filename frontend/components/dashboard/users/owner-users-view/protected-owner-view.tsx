@@ -9,29 +9,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ApiQuery } from "@/services/query";
-import { useUserAtomValue } from "@/store/user";
 import { lowerCase, startCase } from "lodash";
 import { Fragment, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import useAppQuery from "@/hooks/use-app-query";
-import UsersEmptyState from "../empty-state";
+import EmptyState from "../../empty-state";
 import { UserPen } from "lucide-react";
 import UserUpdateModal from "../update-user-modal";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { UserDTO } from "@/types/Api";
 import CreateUserModal from "../create-user-modal";
-import UserSearch from "../user-search";
 import DeleteUserView from "./delete-user-view";
+import HeaderListSearch from "../../header-list-search";
+import { useMe } from "@/hooks/mutations/user";
 
 const ProtectedUserOwnerView = () => {
   const [filter, setFilter] = useState({ search: "" });
   const [updatedUser, setUpdatedUser] = useState<UserDTO>();
-  const userAtom = useUserAtomValue();
+  const { data: currentUser } = useMe();
 
   const { data: { data } = {} } = useAppQuery({
-    ...ApiQuery.shops.getShopDetails(userAtom.user?.shopId),
-    enabled: !!userAtom.user?.shopId,
+    ...ApiQuery.shops.getShopDetails(currentUser?.shopId),
+    enabled: !!currentUser?.shopId,
   });
 
   const handleSearch = (search: string) => {
@@ -42,7 +42,10 @@ const ProtectedUserOwnerView = () => {
   return (
     <Fragment>
       <CreateUserModal>
-        <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
+        <HeaderListSearch
+          filterSearch={filter.search}
+          onSearch={handleSearch}
+        />
       </CreateUserModal>
       <UserUpdateModal user={updatedUser}>
         {(users?.length || 0) > 0 ? (
@@ -58,7 +61,7 @@ const ProtectedUserOwnerView = () => {
             </TableHeader>
             <TableBody>
               {users?.map((user) => {
-                const isCurrentAccount = userAtom.user?.id === user.id;
+                const isCurrentAccount = currentUser?.id === user.id;
 
                 return (
                   <TableRow key={user.id}>
@@ -98,7 +101,7 @@ const ProtectedUserOwnerView = () => {
             </TableBody>
           </Table>
         ) : (
-          <UsersEmptyState />
+          <EmptyState />
         )}
       </UserUpdateModal>
     </Fragment>

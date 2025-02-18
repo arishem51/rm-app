@@ -30,11 +30,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useUpdateUser } from "@/hooks/mutations/user";
+import { useMe, useUpdateUser } from "@/hooks/mutations/user";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { useUserAtomValue } from "@/store/user";
 import { isEmpty } from "lodash";
 
 const schemaFields = {
@@ -77,7 +76,7 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
   });
   const { mutate: updateUser, isPending } = useUpdateUser();
   const queryClient = useQueryClient();
-  const { user: currentUser } = useUserAtomValue();
+  const { data: currentUser } = useMe();
 
   const { setValue } = form;
   useEffect(() => {

@@ -4,7 +4,6 @@ import { Inter, Fira_Code } from "next/font/google";
 import Head from "next/head";
 import Providers from "@/components/providers";
 import { getMe } from "@/server/actions";
-import HydrateProvider from "@/components/providers/client-provider/hydrate-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,11 +22,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   const query = await getMe();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <Head>
@@ -38,9 +36,7 @@ export default async function RootLayout({
         />
       </Head>
       <body className={`${inter.variable} ${firaCode.variable} antialiased`}>
-        <Providers>
-          <HydrateProvider query={query}>{children}</HydrateProvider>
-        </Providers>
+        <Providers query={query}>{children}</Providers>
       </body>
     </html>
   );

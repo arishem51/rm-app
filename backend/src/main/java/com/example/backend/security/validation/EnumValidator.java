@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class EnumValidator implements ConstraintValidator<ValidEnum, CharSequence> {
-    private List acceptedValues;
+    private List<?> acceptedValues;
 
     @Override
     public void initialize(ValidEnum constraintAnnotation) {

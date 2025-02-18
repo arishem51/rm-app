@@ -48,13 +48,39 @@
         }
       }
     },
-    "/api/shops/update/{shopId}": {
+    "/api/shops/{id}": {
+      "get": {
+        "tags": ["Shop Management"],
+        "summary": "Get shop by id",
+        "description": "Fetch shop details by shop id. Accessible only if the current user is an admin, staff or owner of the shop.",
+        "operationId": "getShopById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseShopDTO" }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": ["Shop Management"],
+        "summary": "Update a shop",
+        "description": "Update a shop by its ID.",
         "operationId": "updateShop",
         "parameters": [
           {
-            "name": "shopId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": { "type": "integer", "format": "int64" }
@@ -144,9 +170,11 @@
         }
       }
     },
-    "/api/shops/create": {
+    "/api/shops": {
       "post": {
         "tags": ["Shop Management"],
+        "summary": "Create a shop",
+        "description": "Create a shop by owner or admin.",
         "operationId": "createShop",
         "requestBody": {
           "content": {
@@ -240,32 +268,6 @@
         }
       }
     },
-    "/api/shops/{id}": {
-      "get": {
-        "tags": ["Shop Management"],
-        "summary": "Get shop by id",
-        "description": "Fetch shop details by shop id. Accessible only if the current user is an admin, staff or owner of the shop.",
-        "operationId": "getShopById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/BaseResponseShopDTO" }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/shops/": {
       "get": {
         "tags": ["Shop Management"],
@@ -318,7 +320,7 @@
             "maxLength": 2147483647,
             "minLength": 6
           },
-          "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
+          "phoneNumber": { "type": "string", "pattern": "^\\d{10,12}$" },
           "role": { "type": "string" },
           "status": { "type": "string" }
         }
@@ -367,8 +369,8 @@
       "UpdateShopDTO": {
         "type": "object",
         "properties": {
-          "shopName": { "type": "string" },
-          "shopAddress": { "type": "string" }
+          "name": { "type": "string" },
+          "address": { "type": "string" }
         }
       },
       "BaseResponseShopDTO": {
@@ -399,8 +401,11 @@
             "type": "array",
             "items": { "$ref": "#/components/schemas/UserDTO" }
           },
-          "createdBy": { "$ref": "#/components/schemas/UserDTO" }
-        }
+          "createdBy": { "$ref": "#/components/schemas/UserDTO" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["createdAt"]
       },
       "CreateUserRequest": {
         "type": "object",

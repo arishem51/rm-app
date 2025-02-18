@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Api } from "@/types/Api";
 import { globalStore } from "@/store";
-import { userAtom } from "@/store/user";
+import { authAtom } from "@/store/auth";
 import { queryOptions } from "@tanstack/react-query";
 import { QueryConfigType } from "@/types";
 
@@ -16,7 +16,7 @@ export const { api: apiClient } = new Api({
     format: "json",
   },
   customFetch: async (url, init) => {
-    const options = init ? init : {};
+    const options = init ?? {};
     options.headers = {
       ...options.headers,
       format: "json",
@@ -29,7 +29,7 @@ export const { api: apiClient } = new Api({
       token = (await cookies()).get("token")?.value;
     } else {
       // Running on the client: Get token from globalStore
-      token = globalStore.get(userAtom)?.token;
+      token = globalStore.get(authAtom)?.token;
     }
     if (token) {
       options.headers = {
@@ -44,9 +44,8 @@ export const { api: apiClient } = new Api({
       token &&
       typeof window !== "undefined"
     ) {
-      globalStore.set(userAtom, {
+      globalStore.set(authAtom, {
         token: "",
-        user: undefined,
         showToastErrorSignIn: true,
       });
     }

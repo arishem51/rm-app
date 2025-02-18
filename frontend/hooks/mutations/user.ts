@@ -1,13 +1,15 @@
 import { apiClient } from "@/lib/utils";
 import {
-  BaseResponseUser,
+  BaseResponseUserDTO,
   CreateUserRequest,
   HttpResponse,
   SignInRequest,
   SignUpRequest,
   UpdateUserRequest,
 } from "@/types/Api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import useAppQuery from "../use-app-query";
+import { ApiQuery } from "@/services/query";
 
 export const useUpdateUser = () =>
   useMutation({
@@ -24,7 +26,7 @@ export const useSignIn = () =>
         return response;
       } catch (error) {
         throw new Error(
-          (error as HttpResponse<unknown, BaseResponseUser>).error.message
+          (error as HttpResponse<unknown, BaseResponseUserDTO>).error.message
         );
       }
     },
@@ -46,19 +48,13 @@ export const useCreateUser = () =>
         return response;
       } catch (error) {
         throw new Error(
-          (error as HttpResponse<unknown, BaseResponseUser>).error.message
+          (error as HttpResponse<unknown, BaseResponseUserDTO>).error.message
         );
       }
     },
   });
 
-export const useGetMe = () => {
-  return useQuery({
-    queryKey: ["me"],
-    queryFn: async () => {
-      const response = await apiClient.getMe();
-      console.log("API Response:", response);
-      return response.data.data;
-    },
-  });
+export const useMe = () => {
+  const query = useAppQuery(ApiQuery.users.getMe());
+  return { ...query, data: query.data?.data };
 };

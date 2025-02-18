@@ -3,10 +3,10 @@ package com.example.backend.dto;
 import lombok.Builder;
 import lombok.Data;
 import java.util.List;
-
+import java.time.LocalDateTime;
 import java.util.Collections;
-
 import com.example.backend.entities.Shop;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -16,6 +16,9 @@ public class ShopDTO {
     private String address;
     private List<UserDTO> users;
     private UserDTO createdBy;
+    @NotNull
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public static ShopDTO fromEntity(Shop shop) {
         if (shop == null) {
