@@ -1,5 +1,5 @@
 "use client";
-import CreateShopModal from "./shops/create-shop-modal";
+import ShopModal from "./shops/shop-modal";
 
 const CreateShopView = () => {
   return (
@@ -8,7 +8,7 @@ const CreateShopView = () => {
         You haven&apos;t register any shop yet, create a shop or join by an
         invite!
       </h1>
-      <CreateShopModal />
+      <ShopModal />
     </div>
   );
 };

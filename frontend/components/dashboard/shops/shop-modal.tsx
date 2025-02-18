@@ -6,13 +6,15 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ReactNode, useState } from "react";
-import ShopModal from "@/components/shop-form";
+import ShopForm from "@/components/shop-form";
+import { Plus } from "lucide-react";
 
 type Props = {
   children?: ReactNode;
+  trigger?: ReactNode;
 };
 
-const CreateShopModal = ({ children }: Props) => {
+const ShopModal = ({ children, trigger }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,15 +22,20 @@ const CreateShopModal = ({ children }: Props) => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTitle className="hidden">Create Modal</DialogTitle>
         <DialogContent className="sm:max-w-[425px]">
-          <ShopModal onClose={() => setOpen(false)}></ShopModal>
+          <ShopForm onClose={() => setOpen(false)} />
         </DialogContent>
         {children}
         <DialogTrigger asChild>
-          <Button>Create a shop!</Button>
+          {trigger ?? (
+            <Button>
+              <Plus />
+              <span>Create Shop</span>
+            </Button>
+          )}
         </DialogTrigger>
       </Dialog>
     </div>
   );
 };
 
-export default CreateShopModal;
+export default ShopModal;

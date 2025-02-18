@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ChevronsUpDown,
   Home,
@@ -26,7 +24,7 @@ import {
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import { AppPathURL, UserRole } from "@/lib/constants";
-import { useUserAtomValue } from "@/store/user";
+import { getMe } from "@/server/actions";
 
 type Item = {
   title: string;
@@ -37,8 +35,10 @@ type Item = {
 
 type SidebarGroupType = "application" | "shop";
 
-const Content = () => {
-  const { user } = useUserAtomValue();
+const Content = async () => {
+  const query = await getMe();
+  const { data } = query ?? {};
+  const { data: user } = data ?? {};
   const itemGroups: Record<
     SidebarGroupType,
     {

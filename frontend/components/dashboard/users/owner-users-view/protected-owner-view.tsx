@@ -21,8 +21,8 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { UserDTO } from "@/types/Api";
 import CreateUserModal from "../create-user-modal";
-import UserSearch from "../user-search";
 import DeleteUserView from "./delete-user-view";
+import HeaderListSearch from "../../header-list-search";
 
 const ProtectedUserOwnerView = () => {
   const [filter, setFilter] = useState({ search: "" });
@@ -42,7 +42,7 @@ const ProtectedUserOwnerView = () => {
   return (
     <Fragment>
       <CreateUserModal>
-        <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
+        <HeaderListSearch filterSearch={filter.search} onSearch={handleSearch} />
       </CreateUserModal>
       <UserUpdateModal user={updatedUser}>
         {(users?.length || 0) > 0 ? (

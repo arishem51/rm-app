@@ -11,7 +11,6 @@ import {
 import { ApiQuery } from "@/services/query";
 import { useUserAtomValue } from "@/store/user";
 import { lowerCase, startCase } from "lodash";
-import UserSearch from "./user-search";
 import { Fragment, useCallback, useState } from "react";
 import UserPagination from "./pagination";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +23,7 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { UserDTO } from "@/types/Api";
 import CreateUserModal from "./create-user-modal";
+import HeaderListSearch from "../header-list-search";
 
 const AdminUsersView = () => {
   const createFilterValue = useCallback(
@@ -59,7 +59,10 @@ const AdminUsersView = () => {
   return (
     <Fragment>
       <CreateUserModal isAdmin>
-        <UserSearch filterSearch={filter.search} onSearch={handleSearch} />
+        <HeaderListSearch
+          filterSearch={filter.search}
+          onSearch={handleSearch}
+        />
       </CreateUserModal>
       <UserUpdateModal isAdmin user={updatedUser}>
         {(data?.data?.length || 0) > 0 ? (

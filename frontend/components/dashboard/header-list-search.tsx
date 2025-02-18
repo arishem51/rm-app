@@ -8,7 +8,8 @@ type Props = {
   onSearch: (search: string) => void;
   filterSearch?: string;
 };
-const UserSearch = ({ onSearch, filterSearch }: Props) => {
+
+const HeaderListSearch = ({ onSearch, filterSearch }: Props) => {
   const [search, setSearch] = useState("");
   const resetSearch = () => {
     setSearch("");
@@ -55,4 +56,4 @@ const UserSearch = ({ onSearch, filterSearch }: Props) => {
   );
 };
 
-export default UserSearch;
+export default HeaderListSearch;

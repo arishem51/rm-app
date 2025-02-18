@@ -16,7 +16,7 @@ export interface UpdateUserRequest {
    * @maxLength 2147483647
    */
   password?: string;
-  /** @pattern ^[0-9]{10,12}$ */
+  /** @pattern ^\d{10,12}$ */
   phoneNumber?: string;
   role?: string;
   status?: string;
@@ -51,8 +51,8 @@ export interface UserDTO {
 }
 
 export interface UpdateShopDTO {
-  shopName?: string;
-  shopAddress?: string;
+  name?: string;
+  address?: string;
 }
 
 export interface BaseResponseShopDTO {
@@ -429,16 +429,34 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Fetch shop details by shop id. Accessible only if the current user is an admin, staff or owner of the shop.
+     *
+     * @tags Shop Management
+     * @name GetShopById
+     * @summary Get shop by id
+     * @request GET:/api/shops/{id}
+     * @secure
+     */
+    getShopById: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseShopDTO, any>({
+        path: `/api/shops/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Update a shop by its ID.
      *
      * @tags Shop Management
      * @name UpdateShop
-     * @request PUT:/api/shops/update/{shopId}
+     * @summary Update a shop
+     * @request PUT:/api/shops/{id}
      * @secure
      */
-    updateShop: (shopId: number, data: UpdateShopDTO, params: RequestParams = {}) =>
+    updateShop: (id: number, data: UpdateShopDTO, params: RequestParams = {}) =>
       this.request<BaseResponseShopDTO, any>({
-        path: `/api/shops/update/${shopId}`,
+        path: `/api/shops/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -500,16 +518,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Create a shop by owner or admin.
      *
      * @tags Shop Management
      * @name CreateShop
-     * @request POST:/api/shops/create
+     * @summary Create a shop
+     * @request POST:/api/shops
      * @secure
      */
     createShop: (data: CreateShopDTO, params: RequestParams = {}) =>
       this.request<BaseResponseShopDTO, any>({
-        path: `/api/shops/create`,
+        path: `/api/shops`,
         method: "POST",
         body: data,
         secure: true,
@@ -567,23 +586,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getMe: (params: RequestParams = {}) =>
       this.request<BaseResponseUserDTO, any>({
         path: `/api/users/me`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Fetch shop details by shop id. Accessible only if the current user is an admin, staff or owner of the shop.
-     *
-     * @tags Shop Management
-     * @name GetShopById
-     * @summary Get shop by id
-     * @request GET:/api/shops/{id}
-     * @secure
-     */
-    getShopById: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseShopDTO, any>({
-        path: `/api/shops/${id}`,
         method: "GET",
         secure: true,
         ...params,
