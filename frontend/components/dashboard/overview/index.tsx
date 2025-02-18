@@ -1,24 +1,25 @@
+"use client";
+
 import AdminOverview from "./admin-overview";
 import CreateShopView from "../create-shop-view";
 import OwnerOverview from "./owner-overview";
-import { UserRole } from "@/lib/constants";
 import StaffOverview from "./staff-overview";
-import { getMe } from "@/server/actions";
+import { useMe } from "@/hooks/mutations/user";
+import { checkRole } from "@/lib/helpers";
 
-const Overview = async () => {
-  const query = await getMe();
-  const { data } = query ?? {};
-  const { data: user } = data ?? {};
+const Overview = () => {
+  const { data: user } = useMe();
+  const { isAdmin, isOwner } = checkRole(user);
 
-  if (user?.role !== UserRole.ADMIN && !user?.shopId) {
+  if (!isAdmin && !user?.shopId) {
     return <CreateShopView />;
   }
 
-  if (user?.role === UserRole.ADMIN) {
+  if (isAdmin) {
     return <AdminOverview />;
   }
 
-  if (user.role === UserRole.OWNER) {
+  if (isOwner) {
     return <OwnerOverview />;
   }
 
