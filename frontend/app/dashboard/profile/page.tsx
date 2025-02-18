@@ -14,7 +14,7 @@ const Profile = async () => {
         This is how others will see you on the site.
       </p>
       <Separator className="my-4 w-1/2" />
-      <ProfileForm />
+      {user && <ProfileForm user={user} />}
     </div>
   );
 };
