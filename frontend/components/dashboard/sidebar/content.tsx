@@ -1,7 +1,8 @@
 import {
   ChevronsUpDown,
   Home,
-  LucideIcon, ShoppingBag,
+  LucideIcon,
+  ShoppingBag,
   Store,
   User2,
   Users,
@@ -68,7 +69,7 @@ const Content = async () => {
       items: [
         {
           title: "Profile",
-          url: AppPathURL.dashboard.profile,
+          url: AppPathURL.dashboard.setting.profile,
           icon: User2,
         },
       ],
@@ -97,12 +98,12 @@ const Content = async () => {
       url: AppPathURL.dashboard.users,
       icon: Users,
     });
+    //FIXME: should revalidate
     if (user?.shopId) {
       itemGroups.setting.items.push({
         title: "Shop",
-        url: AppPathURL.dashboard.users,
+        url: AppPathURL.dashboard.setting.shop,
         icon: ShoppingBag,
-
       });
     }
   }

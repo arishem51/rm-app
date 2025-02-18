@@ -64,11 +64,11 @@ const AuthView: FC<Props> = ({
           onSubmit={(formData) => {
             if (type === "sign-up") {
               signUp(formData, {
-                onError: () => {
+                onError: (e) => {
                   toast({
                     variant: "destructive",
                     title: ToastTitle.error,
-                    description: ToastTitle.somethingWentWrong,
+                    description: e.message || ToastTitle.somethingWentWrong,
                   });
                 },
                 onSuccess: () => {
