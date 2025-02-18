@@ -13,7 +13,7 @@ type Props = {
   } | null;
 };
 
-const HydrateProvider = ({ children, query }: Props) => {
+const AtomHydrationProvider = ({ children, query }: Props) => {
   useHydrateAtoms(
     [
       [
@@ -31,4 +31,4 @@ const HydrateProvider = ({ children, query }: Props) => {
   return children;
 };
 
-export default HydrateProvider;
+export default AtomHydrationProvider;
