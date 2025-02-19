@@ -5,6 +5,7 @@ import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.ShopDTO;
 import com.example.backend.dto.category.CreateCategoryDTO;
 import com.example.backend.dto.PaginateResponse;
+import com.example.backend.dto.category.UpdateCategoryDTO;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
@@ -42,6 +43,29 @@ public class CategoryController {
         try {
             Category createdCategory = categoryService.createCategory(categoryDTO, user);
             return ResponseEntity.ok(BaseResponse.success(createdCategory, "Category created successfully!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse<Category>> updateCategory(@PathVariable Long id, @RequestBody UpdateCategoryDTO requestDTO) {
+
+        // Gọi service để cập nhật danh mục
+        try {
+            Category createdCategory = categoryService.updateCategory(id, requestDTO);
+            return ResponseEntity.ok(BaseResponse.success(createdCategory, "Category update successfully!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteCategory(@PathVariable Long id){
+        try {
+            categoryService.deleteCategory(id);
+            return ResponseEntity.ok(BaseResponse.success(null, "Category deleted successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

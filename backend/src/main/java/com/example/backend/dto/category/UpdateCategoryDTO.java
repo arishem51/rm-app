@@ -10,9 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateCategoryDTO {
+public class UpdateCategoryDTO {
     private String name;
     private String description;
-//FIXME: validate-categoryDTO
 
+
+    //FIXME: validate-categoryDTO
 }
