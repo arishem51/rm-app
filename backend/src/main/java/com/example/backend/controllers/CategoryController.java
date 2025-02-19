@@ -5,6 +5,7 @@ import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.ShopDTO;
 import com.example.backend.dto.category.CreateCategoryDTO;
 import com.example.backend.dto.PaginateResponse;
+import com.example.backend.dto.category.UpdateCategoryDTO;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
@@ -47,31 +48,27 @@ public class CategoryController {
         }
     }
 
-    //code moi
-    /**
-     * API cập nhật danh mục theo ID
-     * @param id ID của danh mục cần cập nhật
-     * @param categoryDetails Đối tượng Category nhận từ request body
-     * @return ResponseEntity chứa thông tin danh mục sau khi cập nhật
-     */
+
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {
-        // Tạo DTO để truyền dữ liệu thay vì dùng trực tiếp entity Category
-        CreateCategoryDTO dto = new CreateCategoryDTO();
-        dto.setName(categoryDetails.getName()); // Gán tên danh mục từ request
-        dto.setDescription(categoryDetails.getDescription()); // Gán mô tả danh mục từ request
+    public ResponseEntity<BaseResponse<Category>> updateCategory(@PathVariable Long id, @RequestBody UpdateCategoryDTO requestDTO) {
 
         // Gọi service để cập nhật danh mục
-        Category updatedCategory = categoryService.updateCategory(id, dto);
-
-        // Trả về response với danh mục đã được cập nhật
-        return ResponseEntity.ok(updatedCategory);
+        try {
+            Category createdCategory = categoryService.updateCategory(id, requestDTO);
+            return ResponseEntity.ok(BaseResponse.success(createdCategory, "Category update successfully!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id){
-        categoryService.deleteCategory(id);//Gọi service để xoá danh mục
-        return ResponseEntity.ok("Category deleted successfully!");
+    public ResponseEntity deleteCategory(@PathVariable Long id){
+        try {
+            categoryService.deleteCategory(id);
+            return ResponseEntity.ok(BaseResponse.success(null, "Category deleted successfully!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
 }
