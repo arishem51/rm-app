@@ -47,4 +47,31 @@ public class CategoryController {
         }
     }
 
+    //code moi
+    /**
+     * API cập nhật danh mục theo ID
+     * @param id ID của danh mục cần cập nhật
+     * @param categoryDetails Đối tượng Category nhận từ request body
+     * @return ResponseEntity chứa thông tin danh mục sau khi cập nhật
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {
+        // Tạo DTO để truyền dữ liệu thay vì dùng trực tiếp entity Category
+        CreateCategoryDTO dto = new CreateCategoryDTO();
+        dto.setName(categoryDetails.getName()); // Gán tên danh mục từ request
+        dto.setDescription(categoryDetails.getDescription()); // Gán mô tả danh mục từ request
+
+        // Gọi service để cập nhật danh mục
+        Category updatedCategory = categoryService.updateCategory(id, dto);
+
+        // Trả về response với danh mục đã được cập nhật
+        return ResponseEntity.ok(updatedCategory);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id){
+        categoryService.deleteCategory(id);//Gọi service để xoá danh mục
+        return ResponseEntity.ok("Category deleted successfully!");
+    }
+
 }

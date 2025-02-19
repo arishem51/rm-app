@@ -8,9 +8,14 @@ import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+//code moi
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,4 +40,40 @@ public class CategoryService {
                 : categoryRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
 
     }
+
+    //code moi
+    @Autowired
+    /**
+     * Cập nhập danh mục theo ID
+     * @param id ID của Category cần câp nhật
+     * @param dto Đối tượng DTO chứa thông tin cần cập nhật
+     * @return Danh mục sau khi đã cập nhật
+     */
+    public Category updateCategory(Long id, CreateCategoryDTO dto){
+        //Tìm danh mục theo ID trong database
+        Optional<Category> optionalCategory = categoryRepository.findById(id);
+
+        if(optionalCategory.isPresent()){//Nếu tìm thấy danh mục
+            //Lấy đối tượng Category từ Optional
+            Category category = optionalCategory.get();
+            category.setName(dto.getName());
+            return categoryRepository.save(category);
+        }else{
+            throw new RuntimeException("Category not found with id: " + id);
+        }
+    }
+
+    /**
+     * Xoá danh mục theo ID
+     * @param id ID của danh mục cần xoá
+     */
+    public void deleteCategory(Long id){
+        if(categoryRepository.existsById(id)){
+            categoryRepository.deleteById(id);
+        }else{
+            throw new RuntimeException("Category not found with id:"+id);
+        }
+    }
+
+
 }
