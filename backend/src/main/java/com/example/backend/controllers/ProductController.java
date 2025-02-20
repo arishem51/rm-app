@@ -4,53 +4,83 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.example.backend.config.CurrentUser;
+import com.example.backend.dto.BaseResponse;
+import com.example.backend.dto.PaginateResponse;
 import com.example.backend.dto.product.CreateProductDTO;
 import com.example.backend.dto.product.UpdateProductDTO;
 import com.example.backend.entities.Product;
 import com.example.backend.services.ProductService;
+import com.example.backend.entities.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
+@Tag(name = "Product Management", description = "Operations related to products")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
 
+    @Operation(summary = "Get all products", description = "Fetch a list of all registerd products.")
+    @GetMapping("/")
+    public ResponseEntity<BaseResponse<PaginateResponse<Product>>> getProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize, 
+            @RequestParam(defaultValue = "") String search) {
+                Page<Product> product = productService.findProducts(page, pageSize, search);
+                PaginateResponse<Product> response = new PaginateResponse<>(product);
+                return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+    }
+
     // Chỉ ADMIN và OWNER được tạo sản phẩm
-    @PostMapping
+    @Operation(summary = "Create a product", description = "Create a product by admin or owner.")
+    @PostMapping()
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
-    public ResponseEntity<Product> createProduct(@RequestBody CreateProductDTO dto) {
-        return ResponseEntity.ok(productService.createProduct(dto));
+    public ResponseEntity<BaseResponse<Product>> createProduct(
+            @RequestBody CreateProductDTO productDTO) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        try {
+            Product product = productService.createProduct(productDTO, user);
+            return ResponseEntity.ok(BaseResponse.success(product, "Product created successfully!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     // Chỉ ADMIN và OWNER được cập nhật sản phẩm
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody UpdateProductDTO dto) {
-        return ResponseEntity.ok(productService.updateProduct(id, dto));
+@PutMapping("/{id}")
+@PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
+public ResponseEntity<BaseResponse<Product>> updateProduct(
+        @PathVariable Long id, 
+        @RequestBody UpdateProductDTO dto) {
+    try {
+        Product product = productService.updateProduct(id, dto);
+        return ResponseEntity.ok(new BaseResponse<>(product, "Product updated successfully!"));
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
     }
+}
 
-    // Chỉ ADMIN và OWNER được xoá sản phẩm
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
-    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+// Chỉ ADMIN và OWNER được xoá sản phẩm
+@DeleteMapping("/{id}")
+@PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
+public ResponseEntity<BaseResponse<Void>> deleteProduct(@PathVariable Long id) {
+    try {
         productService.deleteProduct(id);
-        return ResponseEntity.ok("Product deleted successfully!");
+        return ResponseEntity.ok(new BaseResponse<>(null, "Product deleted successfully!"));
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
     }
+}
 
-    // STAFF, ADMIN và OWNER đều có thể xem danh sách sản phẩm
-    @GetMapping
-    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN', 'OWNER')")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
-    }
-
-    // STAFF, ADMIN và OWNER có thể xem sản phẩm theo ID
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN', 'OWNER')")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
-    }
 }
