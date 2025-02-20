@@ -3,8 +3,6 @@ package com.example.backend.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Setter
 @Getter
 @NoArgsConstructor
@@ -20,8 +18,8 @@ public class Supplier {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "contract_name", nullable = false)
-    private String contractName;
+    @Column(name = "contact_name", nullable = false)
+    private String contactName;
 
     @Column(nullable = false)
     private String phone;
@@ -37,12 +35,6 @@ public class Supplier {
 
     @Column()
     private String website;
-
-    @Column(name = "total_debt", nullable = false)
-    private int totalDebt;
-
-    @Column(name = "last_order_date", nullable = false)
-    private LocalDateTime lastOrderDate;
 
     @Column()
     private String notes;
