@@ -31,7 +31,7 @@ public class AuthService {
         try {
             CreateUserRequest userRequest = CreateUserRequest.builder().name(request.getName())
                     .password(request.getPassword()).phoneNumber(request.getPhoneNumber()).role(Role.OWNER.name())
-                    .username(request.getUsername()).build();
+                    .email(request.getEmail()).username(request.getUsername()).build();
             User user = userService.createUser(userRequest);
             return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
         } catch (IllegalArgumentException e) {

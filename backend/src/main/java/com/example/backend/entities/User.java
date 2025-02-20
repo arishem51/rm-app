@@ -36,6 +36,9 @@ public class User implements UserDetails {
     @Schema(required = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
+    private String email; // Email of the user
+
     @Column(nullable = false)
     @Schema(required = true)
     private String name; // New field for full name
