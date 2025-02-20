@@ -1,8 +1,6 @@
 import { apiClient } from "@/lib/utils";
 import {
-  BaseResponseUserDTO,
   CreateUserRequest,
-  HttpResponse,
   SignInRequest,
   SignUpRequest,
   UpdateUserRequest,
@@ -10,12 +8,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import useAppQuery from "../use-app-query";
 import { ApiQuery } from "@/services/query";
-
-const createError = (error: unknown) => {
-  return new Error(
-    (error as HttpResponse<unknown, BaseResponseUserDTO>).error.message
-  );
-};
+import { createHttpResponseError } from "@/lib/helpers";
 
 export const useUpdateUser = () =>
   useMutation({
@@ -31,7 +24,7 @@ export const useSignIn = () =>
         const response = await apiClient.signIn(props);
         return response;
       } catch (error) {
-        throw createError(error);
+        throw createHttpResponseError(error);
       }
     },
   });
@@ -43,7 +36,7 @@ export const useSignUp = () =>
         const response = await apiClient.signUp(props);
         return response;
       } catch (error) {
-        throw createError(error);
+        throw createHttpResponseError(error);
       }
     },
   });
@@ -55,7 +48,7 @@ export const useCreateUser = () =>
         const response = await apiClient.createUser(props);
         return response;
       } catch (error) {
-        throw createError(error);
+        throw createHttpResponseError(error);
       }
     },
   });
