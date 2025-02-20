@@ -31,6 +31,7 @@ public class CategoryService {
 
         Category category = new Category();
         category.setName(dto.getName());
+        category.setImageUrl(dto.getImageUrl());
         category.setDescription(dto.getDescription());
         return categoryRepository.save(category);
     }
@@ -62,6 +63,9 @@ public class CategoryService {
             }
             if (dto.getDescription() != null) {
                 category.setDescription(dto.getDescription());
+            }
+            if (category.getImageUrl() != null){
+                category.setImageUrl(dto.getImageUrl());
             }
             return categoryRepository.save(category);
         } else {
