@@ -1,14 +1,35 @@
 package com.example.backend.dto.product;
 
+import jakarta.validation.constraints.DecimalMin;
 import lombok.*;
+
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class UpdateProductDTO {
     private String name;
     private String description;
+    private Long categoryId;
     private Long supplierId;
-    private String supplierName;
+    private String unit;
+
+    @DecimalMin(value = "0.0", inclusive = false, message = "Purchase price must be greater than zero")
+    private BigDecimal purchasePrice;
+
+    @DecimalMin(value = "0.0", inclusive = false, message = "Sale price must be greater than zero")
+    private BigDecimal salePrice;
+
+    @DecimalMin(value = "0.0", inclusive = false, message = "Wholesale price must be greater than zero")
+    private BigDecimal wholesalePrice;
+
+    @DecimalMin(value = "0.0", message = "Stock quantity cannot be negative")
+    private BigDecimal stockQuantity;
+
+    @DecimalMin(value = "0.0", message = "Low stock alert cannot be negative")
+    private BigDecimal lowStockAlert;
+
+    private String imageUrl;
 }
