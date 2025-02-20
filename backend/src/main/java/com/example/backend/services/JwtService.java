@@ -15,6 +15,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
+    // FIXME: should be env
     private String jwtSecretKey = "4a58afe52404b0d4535d3e3344a8b90928d7afae03ccb2247a95dc5f1d684c16";
 
     private SecretKey getJwtKey() {

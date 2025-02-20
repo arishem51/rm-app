@@ -60,7 +60,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<Void>> deleteCategory(@PathVariable Long id) {
         try {
             categoryService.deleteCategory(id);
             return ResponseEntity.ok(BaseResponse.success(null, "Category deleted successfully!"));

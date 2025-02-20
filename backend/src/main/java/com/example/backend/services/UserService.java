@@ -127,4 +127,14 @@ public class UserService {
         userRepository.save(user);
         return user;
     }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+    }
+
+    public void resetPassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
 }

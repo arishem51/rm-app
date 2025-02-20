@@ -241,7 +241,11 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "type": "string" } } }
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            }
           }
         }
       }
@@ -474,6 +478,56 @@
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponseSignInResponse"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "operationId": "resetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ResetPasswordRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/forgot-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Forgot password",
+        "description": "Validate email and send a code to reset password.",
+        "operationId": "forgotPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ForgotPasswordRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
               }
             }
           }
@@ -874,6 +928,41 @@
           "user": { "$ref": "#/components/schemas/UserDTO" }
         }
       },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "maxLength": 2147483647,
+            "minLength": 6
+          },
+          "token": { "type": "string" }
+        },
+        "required": ["password", "token"]
+      },
+      "BaseResponseVoid": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "object" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "properties": { "email": { "type": "string" } },
+        "required": ["email"]
+      },
       "BaseResponsePaginateResponseUserDTO": {
         "type": "object",
         "properties": {
@@ -995,24 +1084,6 @@
           "data": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/Category" }
-          }
-        }
-      },
-      "BaseResponseVoid": {
-        "type": "object",
-        "properties": {
-          "data": { "type": "object" },
-          "message": { "type": "string" },
-          "errorCode": {
-            "type": "string",
-            "enum": [
-              "AUTH_MISSING",
-              "TOKEN_EXPIRED",
-              "TOKEN_INVALID",
-              "ACCESS_DENIED",
-              "BAD_REQUEST",
-              "INTERNAL_SERVER_ERROR"
-            ]
           }
         }
       }

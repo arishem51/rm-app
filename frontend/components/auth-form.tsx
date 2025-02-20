@@ -16,7 +16,8 @@ import {
   Form,
 } from "./ui/form";
 import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { PasswordInput } from "./ui/password-input";
 
 const signInSchemaFields = {
   username: z
@@ -76,6 +77,7 @@ const AuthForm: FC<Props> = ({
       z.object(isSignUp ? signUpSchemaFields : signInSchemaFields)
     ),
   });
+  const router = useRouter();
 
   const handleSubmit = form.handleSubmit(async (formData) => {
     onSubmit(formData);
@@ -161,12 +163,7 @@ const AuthForm: FC<Props> = ({
                       type="button"
                       variant="link"
                       onClick={() => {
-                        toast({
-                          variant: "default",
-                          title: "Feature not available!",
-                          description:
-                            "Please contact the admin to reset your password.",
-                        });
+                        router.push("/auth/forgot-password");
                       }}
                     >
                       <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white">
@@ -176,7 +173,7 @@ const AuthForm: FC<Props> = ({
                   )}
                 </div>
                 <FormControl>
-                  <Input type="password" placeholder="*********" {...field} />
+                  <PasswordInput placeholder="*********" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -4,7 +4,8 @@ import { getMe } from "./server/actions";
 export async function middleware(request: NextRequest) {
   if (
     request.url.includes("/auth/sign-in") ||
-    request.url.includes("/auth/sign-up")
+    request.url.includes("/auth/sign-up") ||
+    request.url.includes("/auth/forgot-password")
   ) {
     const query = await getMe();
     if (query?.data?.data) {

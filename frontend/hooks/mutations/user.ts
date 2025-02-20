@@ -1,6 +1,8 @@
 import { apiClient } from "@/lib/utils";
 import {
   CreateUserRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
   SignInRequest,
   SignUpRequest,
   UpdateUserRequest,
@@ -58,6 +60,33 @@ export const useCreateUser = () =>
     },
   });
 
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: async (props: ForgotPasswordRequest) => {
+      try {
+        const response = await apiClient.forgotPassword(props);
+        return response;
+      } catch (error) {
+        throw createHttpResponseError(error);
+      }
+    },
+  });
+};
+
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: async (props: ResetPasswordRequest) => {
+      try {
+        const response = await apiClient.resetPassword(props);
+        return response;
+      } catch (error) {
+        throw createHttpResponseError(error);
+      }
+    },
+  });
+};
+
+//FIXME: useMe is query not mutation
 export const useMe = () => {
   const query = useAppQuery(ApiQuery.users.getMe());
   return { ...query, data: query.data?.data };
