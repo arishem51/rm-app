@@ -27,12 +27,16 @@ public class UserDTO {
     @NotNull
     private String status;
     private Long shopId;
+    @NotNull
+    private String email;
+
 
     public static UserDTO fromEntity(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .name(user.getName())
+                .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())

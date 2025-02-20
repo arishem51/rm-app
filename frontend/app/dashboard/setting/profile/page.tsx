@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { getMe } from "@/server/actions";
 
 const Profile = async () => {
+  //FIXME: use tanstack-query to fix bug not validate UI
   const query = await getMe();
   const { data } = query ?? {};
   const { data: user } = data ?? {};
