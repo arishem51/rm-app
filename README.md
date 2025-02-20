@@ -32,9 +32,12 @@ A monorepo project with a **Spring Boot** backend and a **Next.js** frontend.
 ---
 
 The backend will run on `http://localhost:8080` and the frontend on `http://localhost:3000`.
+
+Run migration
+
 mvn flyway:migrate \
 -Dflyway.url="jdbc:sqlserver://localhost:1433;databaseName=rm_management;encrypt=false" \
 -Dflyway.user="sa" \
 -Dflyway.password="123" \
 -Dflyway.baselineOnMigrate=true \
--Dflyway.outOfOrder=true (cau lenh migrate)
+-Dflyway.outOfOrder=true

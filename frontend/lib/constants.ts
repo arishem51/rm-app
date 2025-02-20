@@ -10,6 +10,7 @@ export const AppPathURL = {
     home: "/dashboard",
     users: "/dashboard/users",
     shops: "/dashboard/shops",
+    categories: "/dashboard/categories",
     setting: {
       profile: "/dashboard/setting/profile",
       shop: "/dashboard/setting/shop",

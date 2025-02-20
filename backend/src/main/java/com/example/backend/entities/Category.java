@@ -31,13 +31,14 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String name;
 
-
-    @Column
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
 
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -67,4 +68,3 @@ public class Category {
                 + '}';
     }
 }
-
