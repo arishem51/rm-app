@@ -16,7 +16,8 @@ import {
   Form,
 } from "./ui/form";
 import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { PasswordInput } from "./ui/password-input";
 
 const signInSchemaFields = {
   username: z
@@ -37,6 +38,7 @@ const signUpSchemaFields = {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
 };
 
 type FormDataType = {
@@ -44,6 +46,7 @@ type FormDataType = {
   password: string;
   name: string;
   phoneNumber: string;
+  email: string;
 };
 
 type Props = {
@@ -68,11 +71,13 @@ const AuthForm: FC<Props> = ({
       password: "",
       name: "",
       phoneNumber: "",
+      email: "",
     },
     resolver: zodResolver(
       z.object(isSignUp ? signUpSchemaFields : signInSchemaFields)
     ),
   });
+  const router = useRouter();
 
   const handleSubmit = form.handleSubmit(async (formData) => {
     onSubmit(formData);
@@ -116,8 +121,22 @@ const AuthForm: FC<Props> = ({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </Fragment>
         )}
+
         <FormField
           control={form.control}
           name="username"
@@ -144,12 +163,7 @@ const AuthForm: FC<Props> = ({
                       type="button"
                       variant="link"
                       onClick={() => {
-                        toast({
-                          variant: "default",
-                          title: "Feature not available!",
-                          description:
-                            "Please contact the admin to reset your password.",
-                        });
+                        router.push("/auth/forgot-password");
                       }}
                     >
                       <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white">
@@ -159,7 +173,7 @@ const AuthForm: FC<Props> = ({
                   )}
                 </div>
                 <FormControl>
-                  <Input type="password" placeholder="*********" {...field} />
+                  <PasswordInput placeholder="*********" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -20,6 +20,7 @@ export interface UpdateUserRequest {
   phoneNumber?: string;
   role?: string;
   status?: string;
+  email: string;
 }
 
 export interface BaseResponseUserDTO {
@@ -48,6 +49,7 @@ export interface UserDTO {
   status: string;
   /** @format int64 */
   shopId?: number;
+  email: string;
 }
 
 export interface UpdateSupplierDTO {
@@ -138,8 +140,8 @@ export interface Category {
   /** @format int64 */
   id?: number;
   name?: string;
-  imageUrl?: string;
   description?: string;
+  imageUrl?: string;
   /** @format date-time */
   createdAt?: string;
   /** @format date-time */
@@ -160,6 +162,7 @@ export interface CreateUserRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
+  email: string;
   role: string;
 }
 
@@ -200,6 +203,7 @@ export interface SignUpRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
+  email: string;
 }
 
 export interface SignInRequest {
@@ -230,6 +234,31 @@ export interface BaseResponseSignInResponse {
 export interface SignInResponse {
   token?: string;
   user?: UserDTO;
+}
+
+export interface ResetPasswordRequest {
+  /**
+   * @minLength 6
+   * @maxLength 2147483647
+   */
+  password: string;
+  token: string;
+}
+
+export interface BaseResponseVoid {
+  data?: object;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
 }
 
 export interface BaseResponsePaginateResponseUserDTO {
@@ -326,18 +355,6 @@ export interface PaginateResponseCategory {
   /** @format int32 */
   totalPages?: number;
   data?: Category[];
-}
-
-export interface BaseResponseVoid {
-  data?: object;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -689,7 +706,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     deleteCategory: (id: number, params: RequestParams = {}) =>
-      this.request<string, any>({
+      this.request<BaseResponseVoid, any>({
         path: `/api/categories/${id}`,
         method: "DELETE",
         secure: true,
@@ -869,6 +886,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     signIn: (data: SignInRequest, params: RequestParams = {}) =>
       this.request<BaseResponseSignInResponse, any>({
         path: `/api/auth/sign-in`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authentication
+     * @name ResetPassword
+     * @request POST:/api/auth/reset-password
+     * @secure
+     */
+    resetPassword: (data: ResetPasswordRequest, params: RequestParams = {}) =>
+      this.request<BaseResponseVoid, any>({
+        path: `/api/auth/reset-password`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Validate email and send a code to reset password.
+     *
+     * @tags Authentication
+     * @name ForgotPassword
+     * @summary Forgot password
+     * @request POST:/api/auth/forgot-password
+     * @secure
+     */
+    forgotPassword: (data: ForgotPasswordRequest, params: RequestParams = {}) =>
+      this.request<BaseResponseVoid, any>({
+        path: `/api/auth/forgot-password`,
         method: "POST",
         body: data,
         secure: true,

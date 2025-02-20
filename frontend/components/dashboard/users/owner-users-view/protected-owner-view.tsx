@@ -55,6 +55,7 @@ const ProtectedUserOwnerView = () => {
                 <TableHead>Name</TableHead>
                 <TableHead>Username</TableHead>
                 <TableHead>Phone number</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
@@ -75,6 +76,7 @@ const ProtectedUserOwnerView = () => {
                     </TableCell>
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.phoneNumber}</TableCell>
+                    <TableCell>{user.email}</TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>
                     <TableCell className="flex justify-end w-full">
                       {!isCurrentAccount && (

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.UserDTO;
+import com.example.backend.dto.auth.request.ForgotPasswordRequest;
+import com.example.backend.dto.auth.request.ResetPasswordRequest;
 import com.example.backend.dto.auth.request.SignInRequest;
 import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.response.SignInResponse;
@@ -50,6 +52,29 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
         return ResponseEntity.ok(authService.signIn(request));
+    }
+
+    @Operation(summary = "Forgot password", description = "Validate email and send a code to reset password.")
+    @PostMapping("/forgot-password")
+    public ResponseEntity<BaseResponse<Void>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request) {
+        try {
+            authService.forgotPassword(request.getEmail());
+            return ResponseEntity.ok().body(new BaseResponse<>(null, "Success!"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<BaseResponse<Void>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request) {
+        try {
+            authService.resetPassword(request);
+            return ResponseEntity.ok().body(new BaseResponse<>(null, "Success!"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
 }

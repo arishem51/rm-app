@@ -36,13 +36,16 @@ public class User implements UserDetails {
     @Schema(required = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
     @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     @Schema(required = true)
-    private String name; // New field for full name
+    private String name;
 
     @Column(nullable = false, unique = true)
     @Schema(required = true)
-    private String phoneNumber; // New field for phone number
+    private String phoneNumber;
 
     @Column(nullable = false)
     @JsonIgnore

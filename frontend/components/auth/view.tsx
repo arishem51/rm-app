@@ -17,6 +17,8 @@ import { setTokenAfterSignIn } from "@/server/actions";
 import { useAuthAtom } from "@/store/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
+import { Home } from "lucide-react";
+import { Button } from "../ui/button";
 
 type Props = {
   title?: string;
@@ -56,7 +58,21 @@ const AuthView: FC<Props> = ({
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+        <CardTitle className="text-2xl font-bold flex items-center justify-between">
+          <span>{title}</span>
+          {type === "sign-up" && (
+            <Button
+              className="h-6 w-6 ml-auto"
+              size="icon"
+              variant="outline"
+              onClick={() => {
+                router.replace("/auth/sign-in");
+              }}
+            >
+              <Home />
+            </Button>
+          )}
+        </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>

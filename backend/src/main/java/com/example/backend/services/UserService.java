@@ -44,6 +44,9 @@ public class UserService {
         if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
             throw new IllegalArgumentException("Phone number is already taken!");
         }
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email is already taken!");
+        }
     }
 
     public User createUser(CreateUserRequest request) {
@@ -64,6 +67,7 @@ public class UserService {
                 .status(UserStatus.ACTIVE)
                 .name(request.getName())
                 .shop(shop)
+                .email(request.getEmail())
                 .build();
         return userRepository.save(user);
     }
@@ -79,6 +83,7 @@ public class UserService {
             throw new UsernameNotFoundException("User not found!");
         }
 
+        // FIXME: Refactor this
         String phoneNumber = request.getPhoneNumber();
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
@@ -86,6 +91,14 @@ public class UserService {
                 throw new IllegalArgumentException("Phone number is already taken!");
             }
         }
+        String email = request.getEmail();
+        if (email != null && !email.isEmpty()) {
+            Optional<User> existingUser = userRepository.findByEmail(email);
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+                throw new IllegalArgumentException("email is already taken!");
+            }
+        }
+
         user.setName(request.getName() != null ? request.getName() : user.getName());
         user.setPhoneNumber(request.getPhoneNumber());
         if (UserRoleUtils.isAdmin(currentUser)) {
@@ -113,5 +126,15 @@ public class UserService {
         user.setShop(shop);
         userRepository.save(user);
         return user;
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+    }
+
+    public void resetPassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
     }
 }
