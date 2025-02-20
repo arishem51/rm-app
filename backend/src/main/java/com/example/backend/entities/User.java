@@ -36,7 +36,7 @@ public class User implements UserDetails {
     @Schema(required = true)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     @Schema(required = true)
     private String name; // New field for full name
 

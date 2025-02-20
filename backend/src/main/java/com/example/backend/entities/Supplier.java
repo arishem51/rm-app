@@ -15,10 +15,10 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String name;
 
-    @Column(name = "contact_name", nullable = false)
+    @Column(name = "contact_name", nullable = false, columnDefinition = "NVARCHAR(255)")
     private String contactName;
 
     @Column(nullable = false)
@@ -30,7 +30,7 @@ public class Supplier {
     @Column(name = "tax_id", nullable = false)
     private String taxId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String address;
 
     @Column()
