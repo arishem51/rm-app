@@ -14,10 +14,14 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
-import { useCreateCategory } from "@/hooks/mutations/category";
+import {
+  useCreateCategory,
+  useUpdateCategory,
+} from "@/hooks/mutations/category";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
+import { ToastTitle } from "@/lib/constants";
 
 type Props = {
   onClose?: () => void;
@@ -45,11 +49,13 @@ const CategoryForm = ({ category, onClose }: Props) => {
   });
 
   const { mutate: createCategory, isPending: isCreating } = useCreateCategory();
+  const { mutate: updateCategory, isPending: isUpdating } = useUpdateCategory();
+
   const queryClient = useQueryClient();
 
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
-      title: "Success",
+      title: ToastTitle.success,
       description: `${type === "create" ? "Create" : "Update"} category successfully`,
     });
     onClose?.();
@@ -58,7 +64,15 @@ const CategoryForm = ({ category, onClose }: Props) => {
     });
   };
 
-  const isPending = isCreating;
+  const callbackFailed = (type: "create" | "update") => {
+    toast({
+      title: ToastTitle.error,
+      description: `${type === "create" ? "Create" : "Update"} category failed!`,
+    });
+    onClose?.();
+  };
+
+  const isPending = isCreating || isUpdating;
 
   useEffect(() => {
     if (category) {
@@ -68,11 +82,24 @@ const CategoryForm = ({ category, onClose }: Props) => {
 
   const handleSubmit = form.handleSubmit((data: CreateCategoryDTO) => {
     if (category?.id) {
-      console.log("update");
+      updateCategory(
+        { id: category.id, ...data },
+        {
+          onSuccess: () => {
+            callbackSuccess("update");
+          },
+          onError: () => {
+            callbackFailed("update");
+          },
+        }
+      );
     } else {
       createCategory(data, {
         onSuccess: () => {
           callbackSuccess("create");
+        },
+        onError: () => {
+          callbackFailed("create");
         },
       });
     }
