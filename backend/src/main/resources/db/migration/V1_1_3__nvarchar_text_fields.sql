@@ -1,0 +1,20 @@
+-- Alter Shop table
+ALTER TABLE shops
+ALTER COLUMN name NVARCHAR(255) NOT NULL;
+
+ALTER TABLE shops 
+ALTER COLUMN address NVARCHAR(255) NOT NULL;
+
+-- Alter Supplier table
+ALTER TABLE suppliers
+ALTER COLUMN name NVARCHAR(255) NOT NULL;
+
+ALTER TABLE suppliers 
+ALTER COLUMN contact_name NVARCHAR(255) NOT NULL;
+
+ALTER TABLE suppliers 
+ALTER COLUMN address NVARCHAR(255) NOT NULL;
+
+-- Alter User table
+ALTER TABLE [users] 
+ALTER COLUMN name NVARCHAR(255) NOT NULL;
