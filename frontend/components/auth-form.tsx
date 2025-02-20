@@ -37,6 +37,7 @@ const signUpSchemaFields = {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
 };
 
 type FormDataType = {
@@ -44,6 +45,7 @@ type FormDataType = {
   password: string;
   name: string;
   phoneNumber: string;
+  email: string;
 };
 
 type Props = {
@@ -68,6 +70,7 @@ const AuthForm: FC<Props> = ({
       password: "",
       name: "",
       phoneNumber: "",
+      email: "",
     },
     resolver: zodResolver(
       z.object(isSignUp ? signUpSchemaFields : signInSchemaFields)
@@ -116,8 +119,22 @@ const AuthForm: FC<Props> = ({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </Fragment>
         )}
+
         <FormField
           control={form.control}
           name="username"

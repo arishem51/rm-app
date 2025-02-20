@@ -13,7 +13,12 @@ import { createHttpResponseError } from "@/lib/helpers";
 export const useUpdateUser = () =>
   useMutation({
     mutationFn: async ({ id, ...rest }: UpdateUserRequest & { id: number }) => {
-      return apiClient.updateUser(id, rest);
+      try {
+        const response = await apiClient.updateUser(id, rest);
+        return response;
+      } catch (error) {
+        throw createHttpResponseError(error);
+      }
     },
   });
 

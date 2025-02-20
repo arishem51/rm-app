@@ -20,6 +20,7 @@ export interface UpdateUserRequest {
   phoneNumber?: string;
   role?: string;
   status?: string;
+  email: string;
 }
 
 export interface BaseResponseUserDTO {
@@ -48,6 +49,7 @@ export interface UserDTO {
   status: string;
   /** @format int64 */
   shopId?: number;
+  email: string;
 }
 
 export interface UpdateSupplierDTO {
@@ -138,8 +140,8 @@ export interface Category {
   /** @format int64 */
   id?: number;
   name?: string;
-  imageUrl?: string;
   description?: string;
+  imageUrl?: string;
   /** @format date-time */
   createdAt?: string;
   /** @format date-time */
@@ -160,6 +162,7 @@ export interface CreateUserRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
+  email: string;
   role: string;
 }
 
@@ -200,6 +203,7 @@ export interface SignUpRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
+  email: string;
 }
 
 export interface SignInRequest {

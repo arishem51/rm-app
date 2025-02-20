@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { UpdateUserRequest, UserDTO } from "@/types/Api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { UserRole, UserStatus } from "@/lib/constants";
+import { ToastTitle, UserRole, UserStatus } from "@/lib/constants";
 import {
   Form,
   FormControl,
@@ -44,6 +44,7 @@ const schemaFields = {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
   password: z
     .union([
       z
@@ -71,6 +72,7 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
       phoneNumber: "",
       password: "",
       role: UserRole.ADMIN,
+      email: "",
     },
     resolver: zodResolver(z.object(schemaFields)),
   });
@@ -78,15 +80,13 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
   const queryClient = useQueryClient();
   const { data: currentUser } = useMe();
 
-  const { setValue } = form;
+  const { reset } = form;
+
   useEffect(() => {
     if (user) {
-      setValue("name", user.name);
-      setValue("phoneNumber", user.phoneNumber);
-      setValue("role", user.role);
-      setValue("status", user.status);
+      reset(user);
     }
-  }, [setValue, user]);
+  }, [reset, user]);
 
   const handleSubmit = form.handleSubmit((data: UpdateUserRequest) => {
     if (user?.id) {
@@ -101,8 +101,7 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
         {
           onSuccess: () => {
             toast({
-              variant: "default",
-              title: "Success",
+              title: ToastTitle.success,
               description: "User updated successfully",
             });
             if (isAdmin) {
@@ -115,6 +114,13 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
               });
             }
             setOpen(false);
+          },
+          onError: (e) => {
+            toast({
+              variant: "destructive",
+              title: ToastTitle.error,
+              description: e.message,
+            });
           },
         }
       );
@@ -160,6 +166,19 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
                         placeholder="(+84) 123 456 78"
                         {...field}
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

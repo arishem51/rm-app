@@ -592,8 +592,10 @@
           },
           "phoneNumber": { "type": "string", "pattern": "^\\d{10,12}$" },
           "role": { "type": "string" },
-          "status": { "type": "string" }
-        }
+          "status": { "type": "string" },
+          "email": { "type": "string" }
+        },
+        "required": ["email"]
       },
       "BaseResponseUserDTO": {
         "type": "object",
@@ -624,10 +626,12 @@
           "updatedAt": { "type": "string", "format": "date-time" },
           "role": { "type": "string" },
           "status": { "type": "string" },
-          "shopId": { "type": "integer", "format": "int64" }
+          "shopId": { "type": "integer", "format": "int64" },
+          "email": { "type": "string" }
         },
         "required": [
           "createdAt",
+          "email",
           "id",
           "name",
           "phoneNumber",
@@ -753,8 +757,8 @@
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "name": { "type": "string" },
-          "imageUrl": { "type": "string" },
           "description": { "type": "string" },
+          "imageUrl": { "type": "string" },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }
         }
@@ -770,9 +774,17 @@
           },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
           "name": { "type": "string" },
+          "email": { "type": "string" },
           "role": { "type": "string" }
         },
-        "required": ["name", "password", "phoneNumber", "role", "username"]
+        "required": [
+          "email",
+          "name",
+          "password",
+          "phoneNumber",
+          "role",
+          "username"
+        ]
       },
       "SupplierCreateDTO": {
         "type": "object",
@@ -820,9 +832,10 @@
             "minLength": 6
           },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
-          "name": { "type": "string" }
+          "name": { "type": "string" },
+          "email": { "type": "string" }
         },
-        "required": ["name", "password", "phoneNumber", "username"]
+        "required": ["email", "name", "password", "phoneNumber", "username"]
       },
       "SignInRequest": {
         "type": "object",
