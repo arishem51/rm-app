@@ -18,41 +18,78 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useUpdateUser } from "@/hooks/mutations/user";
-import { UserRole } from "@/lib/constants";
+import { useMe, useUpdateUser } from "@/hooks/mutations/user";
+import { UserRole, UserStatus } from "@/lib/constants";
 import { UserDTO } from "@/types/Api";
 import { isEmpty } from "lodash";
 import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PasswordInput } from "@/components/ui/password-input";
 
-type Props = {
-  user: UserDTO;
+type FormData = UserDTO & { newPassword?: string; confirmPassword?: string };
+
+const schemaFields = {
+  username: z.string(),
+  name: z.string().nonempty({ message: "Name is required" }),
+  newPassword: z.union([
+    z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.literal(""),
+    z.null(),
+  ]),
+  confirmPassword: z.union([
+    z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.literal(""),
+    z.null(),
+  ]),
+  phoneNumber: z
+    .string()
+    .regex(/^\d{10,12}$/, {
+      message: "Phone number must be 10-12 digits long",
+    })
+    .nonempty({ message: "Phone number is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
+  status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
 };
 
-type FormData = UserDTO & { newPassword?: string };
-
-const ProfileForm = ({ user }: Props) => {
+const ProfileForm = () => {
+  const { data: user } = useMe();
   const form = useForm<FormData>({
-    defaultValues: { ...user, newPassword: "" },
+    defaultValues: { ...user, newPassword: "", confirmPassword: "" },
+    resolver: zodResolver(
+      z
+        .object(schemaFields)
+        .refine((data) => data.newPassword === data.confirmPassword, {
+          message: "Passwords don't match",
+          path: ["confirmPassword"],
+        })
+    ),
   });
   const queryClient = useQueryClient();
   const { mutate: updateUser, isPending } = useUpdateUser();
 
   const handleSubmit = form.handleSubmit(async (data: FormData) => {
-    if (user.id) {
-      const { newPassword } = data;
+    if (user?.id) {
+      const { newPassword, confirmPassword, ...rest } = data;
+      void confirmPassword;
       updateUser(
         {
-          ...data,
+          ...rest,
+          id: user.id,
           password: (isEmpty(newPassword)
             ? null
             : newPassword) as unknown as string,
         },
         {
           onSuccess: () => {
-            form.reset();
             toast({
               variant: "default",
               title: "Success",
@@ -101,12 +138,22 @@ const ProfileForm = ({ user }: Props) => {
             <FormItem className="mt-4">
               <FormLabel>New Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Your new password"
-                  {...field}
-                />
+                <PasswordInput placeholder="Your new password" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem className="mt-4">
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <PasswordInput placeholder="Your confirm password" {...field} />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -119,6 +166,7 @@ const ProfileForm = ({ user }: Props) => {
               <FormControl>
                 <Input type="tel" placeholder="(+84) 123 456 78" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
