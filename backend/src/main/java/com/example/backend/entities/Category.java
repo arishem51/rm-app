@@ -34,6 +34,8 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "image_url") // Added a column to store the image URL
+    private String imageUrl; // Field to store image URL
 
     @Column
     private String description;

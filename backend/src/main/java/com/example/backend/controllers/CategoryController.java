@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     private final CategoryService categoryService;
+
     @Operation(summary = "Get all categories", description = "Fetch a list of all registered categories.")
     @GetMapping("/")
     public ResponseEntity<BaseResponse<PaginateResponse<Category>>> getCategories(@RequestParam(defaultValue = "0") int page,
