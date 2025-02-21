@@ -7,6 +7,7 @@ import AtomHydrationProvider from "./client-provider/atom-hydration-provider";
 import { getQueryClient } from "@/lib/query-client";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { BaseResponseUserDTO } from "@/types/Api";
+import BProgressProvider from "./client-provider/bprogress-provider";
 
 type ProviderProps = {
   children?: ReactNode;
@@ -27,9 +28,11 @@ const Providers = ({ children, query }: ProviderProps) => {
         <ThemeProvider attribute="class" defaultTheme="dark">
           <QueryProvider>
             <HydrationBoundary state={dehydrate(queryClient)}>
-              <AtomHydrationProvider query={query}>
-                {children}
-              </AtomHydrationProvider>
+              <BProgressProvider>
+                <AtomHydrationProvider query={query}>
+                  {children}
+                </AtomHydrationProvider>
+              </BProgressProvider>
             </HydrationBoundary>
           </QueryProvider>
         </ThemeProvider>
