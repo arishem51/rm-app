@@ -39,6 +39,9 @@ const signUpSchemaFields = {
     })
     .nonempty({ message: "Phone number is required" }),
   email: z.string().email({ message: "Invalid email address" }),
+  confirmPassword: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" }),
 };
 
 type FormDataType = {
@@ -47,6 +50,7 @@ type FormDataType = {
   name: string;
   phoneNumber: string;
   email: string;
+  confirmPassword?: string;
 };
 
 type Props = {
@@ -72,15 +76,30 @@ const AuthForm: FC<Props> = ({
       name: "",
       phoneNumber: "",
       email: "",
+      confirmPassword: "",
     },
     resolver: zodResolver(
-      z.object(isSignUp ? signUpSchemaFields : signInSchemaFields)
+      z
+        .object(isSignUp ? signUpSchemaFields : signInSchemaFields)
+        .refine(
+          (data) =>
+            isSignUp
+              ? data.password ===
+                (data as { confirmPassword?: string })?.confirmPassword
+              : true,
+          {
+            message: "Passwords don't match",
+            path: ["confirmPassword"],
+          }
+        )
     ),
   });
   const router = useRouter();
 
   const handleSubmit = form.handleSubmit(async (formData) => {
-    onSubmit(formData);
+    const { confirmPassword, ...rest } = formData;
+    void confirmPassword;
+    onSubmit(rest);
   });
 
   return (
@@ -95,10 +114,10 @@ const AuthForm: FC<Props> = ({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your Name" {...field} />
+                    <Input placeholder="Account Name" {...field} />
                   </FormControl>
                   <FormDescription>
-                    This is your public display name.
+                    Public account display name, visible to others.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -179,6 +198,21 @@ const AuthForm: FC<Props> = ({
               </FormItem>
             )}
           />
+          {isSignUp && (
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput placeholder="*********" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
         <Button type="submit" className="w-full">
           {btnText ?? (isSignUp ? "Sign Up" : "Sign In")}

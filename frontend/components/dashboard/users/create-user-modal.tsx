@@ -39,9 +39,9 @@ const CreateUserModal = ({ children, isAdmin = false }: Props) => {
                 {
                   onError: (error) => {
                     toast({
+                      variant: "destructive",
                       title: ToastTitle.error,
                       description: error.message,
-                      variant: "destructive",
                     });
                   },
                   onSuccess: () => {

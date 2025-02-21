@@ -35,6 +35,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { isEmpty } from "lodash";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
@@ -45,15 +46,19 @@ const schemaFields = {
     })
     .nonempty({ message: "Phone number is required" }),
   email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .union([
-      z
-        .string()
-        .min(6, { message: "Password must be at least 6 characters long" }),
-      z.literal(""),
-      z.literal(null),
-    ])
-    .optional(),
+  password: z.union([
+    z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.literal(""),
+    z.literal(null),
+  ]),
+  confirmPassword: z.union([
+    z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.literal(""),
+  ]),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
   status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
 };
@@ -66,15 +71,23 @@ type Props = {
 
 const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
   const [open, setOpen] = useState(false);
-  const form = useForm<UpdateUserRequest>({
+  const form = useForm<UpdateUserRequest & { confirmPassword?: string }>({
     defaultValues: {
       name: "",
       phoneNumber: "",
       password: "",
       role: UserRole.ADMIN,
       email: "",
+      confirmPassword: "",
     },
-    resolver: zodResolver(z.object(schemaFields)),
+    resolver: zodResolver(
+      z
+        .object(schemaFields)
+        .refine((data) => data.password === data.confirmPassword, {
+          message: "Passwords don't match",
+          path: ["confirmPassword"],
+        })
+    ),
   });
   const { mutate: updateUser, isPending } = useUpdateUser();
   const queryClient = useQueryClient();
@@ -84,7 +97,11 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
 
   useEffect(() => {
     if (user) {
-      reset(user);
+      reset({
+        ...user,
+        password: "",
+        confirmPassword: "",
+      });
     }
   }, [reset, user]);
 
@@ -189,15 +206,22 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <div className="flex justify-between">
-                      <FormLabel>New Password</FormLabel>
-                    </div>
+                    <FormLabel>New Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="*********"
-                        {...field}
-                      />
+                      <PasswordInput placeholder="*********" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput placeholder="*********" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
