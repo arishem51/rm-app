@@ -681,6 +681,7 @@
           "role": { "type": "string" },
           "status": { "type": "string" },
           "shopId": { "type": "integer", "format": "int64" },
+          "shopName": { "type": "string" },
           "email": { "type": "string" }
         },
         "required": [
