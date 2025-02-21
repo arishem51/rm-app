@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +24,26 @@ public class ProductService {
     private final SupplierRepository supplierRepository;
     private final CategoryRepository categoryRepository;
 
-    // Tạo sản phẩm mới
+    /**
+     * Tạo sản phẩm mới
+     * @param dto Dữ liệu đầu vào để tạo sản phẩm
+     * @param user Người thực hiện thao tác
+     * @return Sản phẩm sau khi tạo
+     */
     public Product createProduct(CreateProductDTO dto, User user) {
-        Supplier supplier = supplierRepository.findById(dto.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+        // Kiểm tra và lấy thông tin nhà cung cấp (có thể null)
+        Supplier supplier = null;
+        if (dto.getSupplierId() != null) {
+            supplier = supplierRepository.findById(dto.getSupplierId())
+                    .orElseThrow(() -> new IllegalArgumentException("Supplier not found with ID: " + dto.getSupplierId()));
+        }
 
-        Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        // Kiểm tra và lấy thông tin danh mục (có thể null)
+        Category category = null;
+        if (dto.getCategoryId() != null) {
+            category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getCategoryId()));
+        }
 
         Product product = new Product();
         product.setName(dto.getName());
@@ -47,45 +61,65 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    /**
+     * Tìm kiếm danh sách sản phẩm với phân trang
+     * @param page Trang hiện tại
+     * @param pageSize Số lượng sản phẩm mỗi trang
+     * @param search Từ khóa tìm kiếm theo tên
+     * @return Danh sách sản phẩm theo tiêu chí tìm kiếm
+     */
     public Page<Product> findProducts(int page, int pageSize, String search) {
         return search.isEmpty()
                 ? productRepository.findAll(PageRequest.of(page, pageSize))
                 : productRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
     }
 
-    // Cập nhật sản phẩm
+    /**
+     * Cập nhật thông tin sản phẩm
+     * @param id ID của sản phẩm cần cập nhật
+     * @param dto Dữ liệu cập nhật
+     * @return Sản phẩm sau khi cập nhật
+     */
     public Product updateProduct(Long id, UpdateProductDTO dto) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+        // Tìm sản phẩm theo ID
+        Optional<Product> optionalProduct = productRepository.findById(id);
 
-        if (dto.getName() != null) product.setName(dto.getName()); 
-        if(dto.getCategoryId()!=null){
-            Category category = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-            product.setCategory(category);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+
+            if (dto.getName() != null) product.setName(dto.getName());
+
+            if (dto.getCategoryId() != null) {
+                Category category = categoryRepository.findById(dto.getCategoryId())
+                        .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getCategoryId()));
+                product.setCategory(category);
+            }
+
+            if (dto.getSupplierId() != null) {
+                Supplier supplier = supplierRepository.findById(dto.getSupplierId())
+                        .orElseThrow(() -> new IllegalArgumentException("Supplier not found with ID: " + dto.getSupplierId()));
+                product.setSupplier(supplier);
+            }
+
+            if (dto.getUnit() != null) product.setUnit(dto.getUnit());
+            
+            if (dto.getPurchasePrice() != null) product.setPurchasePrice(dto.getPurchasePrice());
+
+            if (dto.getSalePrice() != null) product.setSalePrice(dto.getSalePrice());
+
+            if (dto.getWholesalePrice() != null) product.setWholesalePrice(dto.getWholesalePrice());
+
+            if (dto.getStockQuantity() != null) product.setStockQuantity(dto.getStockQuantity());
+
+            if (dto.getLowStockAlert() != null) product.setLowStockAlert(dto.getLowStockAlert());
+
+            if (dto.getDescription() != null) product.setDescription(dto.getDescription());
+            
+            if (dto.getImageUrl() != null) product.setImageUrl(dto.getImageUrl());
+
+            return productRepository.save(product);
+        } else {
+            throw new IllegalArgumentException("Product not found with ID: " + id);
         }
-        if(dto.getSupplierId()!=null){
-        Supplier supplier = supplierRepository.findById(dto.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
-        product.setSupplier(supplier);
-    }if(dto.getUnit()!=null)product.setUnit(dto.getUnit());
-        if(dto.getPurchasePrice()!=null)product.setPurchasePrice(dto.getPurchasePrice());
-        if(dto.getSalePrice()!=null)product.setSalePrice(dto.getSalePrice());
-        if(dto.getWholesalePrice()!=null)product.setWholesalePrice(dto.getWholesalePrice());
-        if(dto.getStockQuantity()!=null)product.setStockQuantity(dto.getStockQuantity());
-        if(dto.getLowStockAlert()!=null)product.setLowStockAlert(dto.getLowStockAlert());
-        if(dto.getDescription()!=null)product.setDescription(dto.getDescription());
-        if(dto.getImageUrl()!=null)product.setImageUrl(dto.getImageUrl());
-
-    return productRepository.save(product);
-    }
-
-    // Xóa sản phẩm
-    public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + id));
-
-        product.setDeletedAt(java.time.LocalDateTime.now());
-        productRepository.save(product);
     }
 }

@@ -16,10 +16,8 @@ public class CreateProductDTO {
 
     private String description;
 
-    @NotNull(message = "Category ID is required")
     private Long categoryId;
 
-    @NotNull(message = "Supplier ID is required")
     private Long supplierId;
 
     @NotBlank(message = "Unit is required")

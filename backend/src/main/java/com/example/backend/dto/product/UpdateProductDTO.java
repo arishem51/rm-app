@@ -1,6 +1,6 @@
 package com.example.backend.dto.product;
 
-import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -10,10 +10,17 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateProductDTO {
+
+    @NotBlank(message = "Product name cannot be empty")
     private String name;
+
     private String description;
+
     private Long categoryId;
+
     private Long supplierId;
+
+    @NotBlank(message = "Unit cannot be empty")
     private String unit;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Purchase price must be greater than zero")
