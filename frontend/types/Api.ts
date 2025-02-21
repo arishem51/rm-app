@@ -49,6 +49,7 @@ export interface UserDTO {
   status: string;
   /** @format int64 */
   shopId?: number;
+  shopName?: string;
   email: string;
 }
 

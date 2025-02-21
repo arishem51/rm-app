@@ -27,9 +27,9 @@ public class UserDTO {
     @NotNull
     private String status;
     private Long shopId;
+    private String shopName;
     @NotNull
     private String email;
-
 
     public static UserDTO fromEntity(User user) {
         return UserDTO.builder()
@@ -43,6 +43,7 @@ public class UserDTO {
                 .role(user.getRole().toString())
                 .status(user.getStatus().toString())
                 .shopId(user.getShop() != null ? user.getShop().getId() : null)
+                .shopName(user.getShop() != null ? user.getShop().getName() : null)
                 .build();
     }
 }
