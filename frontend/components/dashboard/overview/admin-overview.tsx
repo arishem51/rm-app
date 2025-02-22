@@ -25,7 +25,7 @@ const AdminOverview = () => {
             <UsersRound size={16} />
             <span>Total users</span>
           </CardTitle>
-          <CardDescription className="text-neutral-50 text-2xl">
+          <CardDescription className="text-2xl">
             {isUserQueryLoading ? (
               <Skeleton className="h-6 w-[100px] mt-1" />
             ) : (
@@ -40,7 +40,7 @@ const AdminOverview = () => {
             <UsersRound size={16} />
             <span>Total shops</span>
           </CardTitle>
-          <CardDescription className="text-neutral-50 text-2xl">
+          <CardDescription className="text-2xl">
             {isShopQueryLoading ? (
               <Skeleton className="h-6 w-[100px] mt-1" />
             ) : (
