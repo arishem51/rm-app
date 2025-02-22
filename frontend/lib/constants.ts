@@ -1,19 +1,68 @@
 import { UserDTO } from "@/types/Api";
 
-export const AppPathURL = {
+export const UserRole = {
+  ADMIN: "ADMIN",
+  OWNER: "OWNER",
+  STAFF: "STAFF",
+} as const;
+
+export const AppRoutes = {
   auth: {
-    signIn: "/auth/signin",
-    signUp: "/auth/signup",
+    signIn: {
+      url: "/auth/signin",
+      role: "ALL",
+    },
+    signUp: {
+      url: "/auth/signup",
+      role: "ALL",
+    },
+    forgotPassword: {
+      url: "/auth/forgot-password",
+      role: "ALL",
+    },
+    resetPassword: {
+      url: "/auth/reset-password",
+      role: "ALL",
+    },
   },
-  home: "/",
+  home: {
+    url: "/",
+    role: "ALL",
+  },
   dashboard: {
-    home: "/dashboard",
-    users: "/dashboard/users",
-    shops: "/dashboard/shops",
-    categories: "/dashboard/categories",
+    home: {
+      url: "/dashboard",
+      role: "ALL",
+    },
+    users: {
+      url: "/dashboard/users",
+      role: "ALL",
+    },
+    shops: {
+      url: "/dashboard/shops",
+      role: UserRole.ADMIN,
+    },
+    categories: {
+      url: "/dashboard/categories",
+      role: UserRole.ADMIN,
+    },
+    products: {
+      url: "/dashboard/products",
+      role: UserRole.ADMIN,
+    },
+    suppliers: {
+      url: "/dashboard/suppliers",
+      role: UserRole.ADMIN,
+    },
     setting: {
-      profile: "/dashboard/setting/profile",
-      shop: "/dashboard/setting/shop",
+      profile: {
+        url: "/dashboard/setting/profile",
+        role: "ALL",
+      },
+      shop: {
+        url: "/dashboard/setting/shop",
+        role: "ALL",
+      },
     },
   },
 } as const;
@@ -21,12 +70,6 @@ export const AppPathURL = {
 export const UserStatus: Record<UserDTO["status"], UserDTO["status"]> = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
-};
-
-export const UserRole = {
-  ADMIN: "ADMIN",
-  OWNER: "OWNER",
-  STAFF: "STAFF",
 };
 
 export const ToastTitle = {

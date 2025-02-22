@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { AppPathURL } from "@/lib/constants";
+import { AppRoutes } from "@/lib/constants";
 import {
   ChevronsUpDown,
   GalleryVerticalEnd,
@@ -39,7 +39,7 @@ const Header = () => {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <SquareArrowOutUpRight />
-                <Link href={AppPathURL.home} className="w-full">
+                <Link href={AppRoutes.home.url} className="w-full">
                   Landing Page
                 </Link>
               </DropdownMenuItem>
