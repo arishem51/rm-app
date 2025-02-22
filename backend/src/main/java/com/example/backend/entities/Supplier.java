@@ -1,6 +1,8 @@
 package com.example.backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Setter
@@ -27,8 +29,10 @@ public class Supplier {
     @Column(nullable = false)
     private String email;
 
-    @Column(name = "tax_id", nullable = false)
-    private String taxId;
+    @Column(name = "tax_code", nullable = false)
+    @NotEmpty(message = "Tax code is required")
+    @Pattern(regexp = "\\d{10}|\\d{13}", message = "Invalid tax code format")
+    private String taxCode;
 
     @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String address;
@@ -36,7 +40,6 @@ public class Supplier {
     @Column()
     private String website;
 
-    @Column()
-    private String notes;
-
+    @Column(columnDefinition = "NVARCHAR(255)")
+    private String description;
 }

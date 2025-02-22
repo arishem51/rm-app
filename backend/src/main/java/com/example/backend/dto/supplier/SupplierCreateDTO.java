@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SupplierCreateDTO {
-
     @NotEmpty(message = "Supplier name is required")
     private String name;
 
@@ -24,12 +23,13 @@ public class SupplierCreateDTO {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotEmpty(message = "Tax ID is required")
-    private String taxId;
+    @NotEmpty(message = "Tax Code is required")
+    @Pattern(regexp = "\\d{10}|\\d{13}", message = "Invalid tax code format")
+    private String taxCode;
 
     @NotEmpty(message = "Address is required")
     private String address;
 
     private String website;
-    private String notes;
+    private String description;
 }
