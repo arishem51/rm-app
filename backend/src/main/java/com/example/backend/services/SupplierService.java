@@ -1,11 +1,9 @@
 package com.example.backend.services;
 
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.supplier.SupplierCreateDTO;
 import com.example.backend.dto.supplier.UpdateSupplierDTO;
@@ -43,10 +41,10 @@ public class SupplierService {
                 .contactName(supplierDto.getContactName())
                 .phone(supplierDto.getPhone())
                 .email(supplierDto.getEmail())
-                .taxId(supplierDto.getTaxId())
+                .taxCode(supplierDto.getTaxCode())
                 .address(supplierDto.getAddress())
                 .website(supplierDto.getWebsite())
-                .notes(supplierDto.getNotes())
+                .description(supplierDto.getDescription())
                 .build();
 
         supplierRepository.save(supplier);
@@ -68,10 +66,11 @@ public class SupplierService {
                         : dbSupplier.get().getContactName())
                 .phone(supplierDto.getPhone() != null ? supplierDto.getPhone() : dbSupplier.get().getPhone())
                 .email(supplierDto.getEmail() != null ? supplierDto.getEmail() : dbSupplier.get().getEmail())
-                .taxId(supplierDto.getTaxId() != null ? supplierDto.getTaxId() : dbSupplier.get().getTaxId())
+                .taxCode(supplierDto.getTaxCode() != null ? supplierDto.getTaxCode() : dbSupplier.get().getTaxCode())
                 .address(supplierDto.getAddress() != null ? supplierDto.getAddress() : dbSupplier.get().getAddress())
                 .website(supplierDto.getWebsite() != null ? supplierDto.getWebsite() : dbSupplier.get().getWebsite())
-                .notes(supplierDto.getNotes() != null ? supplierDto.getNotes() : dbSupplier.get().getNotes())
+                .description(supplierDto.getDescription() != null ? supplierDto.getDescription()
+                        : dbSupplier.get().getDescription())
                 .build();
 
         supplierRepository.save(supplier);
