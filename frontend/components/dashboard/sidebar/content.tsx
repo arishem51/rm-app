@@ -7,6 +7,7 @@ import {
   TagIcon,
   User2,
   Users,
+  Package
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -94,6 +95,11 @@ const Content = async () => {
         title: "Categories",
         url: AppPathURL.dashboard.categories,
         icon: TagIcon,
+      },
+      {
+        title: "Suppliers",
+        url: AppPathURL.dashboard.suppliers,
+        icon: TagIcon,
       }
     );
   }
@@ -103,6 +109,11 @@ const Content = async () => {
       title: "Users",
       url: AppPathURL.dashboard.users,
       icon: Users,
+    });
+    itemGroups.shop.items.push({
+      title: "Suppliers",
+      url: AppPathURL.dashboard.suppliers,
+      icon: Package,
     });
     //FIXME: should revalidate
     if (user?.shopId) {
