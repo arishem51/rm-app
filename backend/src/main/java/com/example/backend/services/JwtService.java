@@ -15,6 +15,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
+    // FIXME: should be env
     private String jwtSecretKey = "4a58afe52404b0d4535d3e3344a8b90928d7afae03ccb2247a95dc5f1d684c16";
 
     private SecretKey getJwtKey() {
@@ -37,7 +38,7 @@ public class JwtService {
     }
 
     public String createToken(String username) {
-        long expirationTimeMillis = getMilliseconds(1000, "seconds");
+        long expirationTimeMillis = getMilliseconds(10000, "seconds");
         return Jwts.builder().issuedAt(new Date()).expiration(new Date(System.currentTimeMillis()
                 + expirationTimeMillis)).subject(username).signWith(getJwtKey(), Jwts.SIG.HS256).compact();
     }

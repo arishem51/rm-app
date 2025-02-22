@@ -10,6 +10,7 @@
     "openapi": "npx swagger-typescript-api -p ./swagger.json -o ./types -n Api.ts"
   },
   "dependencies": {
+    "@bprogress/next": "^3.0.4",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-alert-dialog": "^1.1.5",
     "@radix-ui/react-avatar": "^1.1.2",

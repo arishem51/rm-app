@@ -4,6 +4,7 @@ import {
   LucideIcon,
   ShoppingBag,
   Store,
+  TagIcon,
   User2,
   Users,
 } from "lucide-react";
@@ -88,6 +89,11 @@ const Content = async () => {
         title: "Shops",
         url: AppPathURL.dashboard.shops,
         icon: Store,
+      },
+      {
+        title: "Categories",
+        url: AppPathURL.dashboard.categories,
+        icon: TagIcon,
       }
     );
   }

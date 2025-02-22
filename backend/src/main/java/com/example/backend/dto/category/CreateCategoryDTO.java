@@ -13,6 +13,7 @@ import lombok.*;
 public class CreateCategoryDTO {
     private String name;
     private String description;
+    private String imageUrl;
 //FIXME: validate-categoryDTO
 
 }

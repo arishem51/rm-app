@@ -6,12 +6,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
+import com.example.backend.enums.Role;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     Optional<User> findByPhoneNumber(String phoneNumber);
+
+    Optional<User> findByEmail(String email);
 
     boolean existsByUsername(String username);
 
@@ -19,4 +23,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findByNameContainingIgnoreCase(String search, PageRequest pageRequest);
 
+    List<User> findByShopAndRole(Shop shop, Role role);
 }

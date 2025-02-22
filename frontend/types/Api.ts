@@ -20,6 +20,7 @@ export interface UpdateUserRequest {
   phoneNumber?: string;
   role?: string;
   status?: string;
+  email: string;
 }
 
 export interface BaseResponseUserDTO {
@@ -48,6 +49,44 @@ export interface UserDTO {
   status: string;
   /** @format int64 */
   shopId?: number;
+  shopName?: string;
+  email: string;
+}
+
+export interface UpdateSupplierDTO {
+  name?: string;
+  contactName?: string;
+  phone?: string;
+  email?: string;
+  taxId?: string;
+  address?: string;
+  website?: string;
+  notes?: string;
+}
+
+export interface BaseResponseSupplier {
+  data?: Supplier;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface Supplier {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  contactName?: string;
+  phone?: string;
+  email?: string;
+  taxId?: string;
+  address?: string;
+  website?: string;
+  notes?: string;
 }
 
 export interface UpdateShopDTO {
@@ -80,6 +119,36 @@ export interface ShopDTO {
   updatedAt?: string;
 }
 
+export interface UpdateCategoryDTO {
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+}
+
+export interface BaseResponseCategory {
+  data?: Category;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface Category {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+}
+
 export interface CreateUserRequest {
   /**
    * @minLength 3
@@ -94,12 +163,31 @@ export interface CreateUserRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
+  email: string;
   role: string;
+}
+
+export interface SupplierCreateDTO {
+  name: string;
+  contactName: string;
+  /** @pattern ^(\+?\d{1,3})?\d{10}$ */
+  phone: string;
+  email: string;
+  taxId: string;
+  address: string;
+  website?: string;
+  notes?: string;
 }
 
 export interface CreateShopDTO {
   name?: string;
   address?: string;
+}
+
+export interface CreateCategoryDTO {
+  name?: string;
+  description?: string;
+  imageUrl?: string;
 }
 
 export interface SignUpRequest {
@@ -116,6 +204,7 @@ export interface SignUpRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
+  email: string;
 }
 
 export interface SignInRequest {
@@ -148,6 +237,31 @@ export interface SignInResponse {
   user?: UserDTO;
 }
 
+export interface ResetPasswordRequest {
+  /**
+   * @minLength 6
+   * @maxLength 2147483647
+   */
+  password: string;
+  token: string;
+}
+
+export interface BaseResponseVoid {
+  data?: object;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
 export interface BaseResponsePaginateResponseUserDTO {
   data?: PaginateResponseUserDTO;
   message?: string;
@@ -172,6 +286,30 @@ export interface PaginateResponseUserDTO {
   data?: UserDTO[];
 }
 
+export interface BaseResponsePaginateResponseSupplier {
+  data?: PaginateResponseSupplier;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface PaginateResponseSupplier {
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: Supplier[];
+}
+
 export interface BaseResponsePaginateResponseShopDTO {
   data?: PaginateResponseShopDTO;
   message?: string;
@@ -194,6 +332,30 @@ export interface PaginateResponseShopDTO {
   /** @format int32 */
   totalPages?: number;
   data?: ShopDTO[];
+}
+
+export interface BaseResponsePaginateResponseCategory {
+  data?: PaginateResponseCategory;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface PaginateResponseCategory {
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: Category[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -433,6 +595,56 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags Supplier Management
+     * @name GetSupplierById
+     * @request GET:/api/suppliers/{id}
+     * @secure
+     */
+    getSupplierById: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseSupplier, any>({
+        path: `/api/suppliers/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Supplier Management
+     * @name UpdateSupplier
+     * @request PUT:/api/suppliers/{id}
+     * @secure
+     */
+    updateSupplier: (id: number, data: UpdateSupplierDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseSupplier, any>({
+        path: `/api/suppliers/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Supplier Management
+     * @name DeleteSupplier
+     * @request DELETE:/api/suppliers/{id}
+     * @secure
+     */
+    deleteSupplier: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseVoid, any>({
+        path: `/api/suppliers/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Fetch shop details by shop id. Accessible only if the current user is an admin, staff or owner of the shop.
      *
      * @tags Shop Management
@@ -465,6 +677,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Category Management
+     * @name UpdateCategory
+     * @request PUT:/api/categories/{id}
+     * @secure
+     */
+    updateCategory: (id: number, data: UpdateCategoryDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseCategory, any>({
+        path: `/api/categories/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Category Management
+     * @name DeleteCategory
+     * @request DELETE:/api/categories/{id}
+     * @secure
+     */
+    deleteCategory: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseVoid, any>({
+        path: `/api/categories/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
 
@@ -522,6 +768,57 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags Supplier Management
+     * @name GetSuppliers
+     * @request GET:/api/suppliers
+     * @secure
+     */
+    getSuppliers: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseSupplier, any>({
+        path: `/api/suppliers`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Supplier Management
+     * @name CreateSupplier
+     * @request POST:/api/suppliers
+     * @secure
+     */
+    createSupplier: (data: SupplierCreateDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseSupplier, any>({
+        path: `/api/suppliers`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Create a shop by owner or admin.
      *
      * @tags Shop Management
@@ -533,6 +830,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     createShop: (data: CreateShopDTO, params: RequestParams = {}) =>
       this.request<BaseResponseShopDTO, any>({
         path: `/api/shops`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Create a new category under a specific shop.
+     *
+     * @tags Category Management
+     * @name CreateCategory
+     * @summary Create a category
+     * @request POST:/api/categories
+     * @secure
+     */
+    createCategory: (data: CreateCategoryDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseCategory, any>({
+        path: `/api/categories`,
         method: "POST",
         body: data,
         secure: true,
@@ -571,6 +887,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     signIn: (data: SignInRequest, params: RequestParams = {}) =>
       this.request<BaseResponseSignInResponse, any>({
         path: `/api/auth/sign-in`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Authentication
+     * @name ResetPassword
+     * @request POST:/api/auth/reset-password
+     * @secure
+     */
+    resetPassword: (data: ResetPasswordRequest, params: RequestParams = {}) =>
+      this.request<BaseResponseVoid, any>({
+        path: `/api/auth/reset-password`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Validate email and send a code to reset password.
+     *
+     * @tags Authentication
+     * @name ForgotPassword
+     * @summary Forgot password
+     * @request POST:/api/auth/forgot-password
+     * @secure
+     */
+    forgotPassword: (data: ForgotPasswordRequest, params: RequestParams = {}) =>
+      this.request<BaseResponseVoid, any>({
+        path: `/api/auth/forgot-password`,
         method: "POST",
         body: data,
         secure: true,
@@ -623,6 +976,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<BaseResponsePaginateResponseShopDTO, any>({
         path: `/api/shops/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch a list of all registered categories.
+     *
+     * @tags Category Management
+     * @name GetCategories
+     * @summary Get all categories
+     * @request GET:/api/categories/
+     * @secure
+     */
+    getCategories: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseCategory, any>({
+        path: `/api/categories/`,
         method: "GET",
         query: query,
         secure: true,

@@ -1,9 +1,9 @@
 package com.example.backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -17,11 +17,11 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String name;
 
-    @Column(name = "contract_name", nullable = false)
-    private String contractName;
+    @Column(name = "contact_name", nullable = false, columnDefinition = "NVARCHAR(255)")
+    private String contactName;
 
     @Column(nullable = false)
     private String phone;
@@ -29,22 +29,17 @@ public class Supplier {
     @Column(nullable = false)
     private String email;
 
-    @Column(name = "tax_id", nullable = false)
-    private String taxId;
+    @Column(name = "tax_code", nullable = false)
+    @NotEmpty(message = "Tax code is required")
+    @Pattern(regexp = "\\d{10}|\\d{13}", message = "Invalid tax code format")
+    private String taxCode;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String address;
 
     @Column()
     private String website;
 
-    @Column(name = "total_debt", nullable = false)
-    private int totalDebt;
-
-    @Column(name = "last_order_date", nullable = false)
-    private LocalDateTime lastOrderDate;
-
-    @Column()
-    private String notes;
-
+    @Column(columnDefinition = "NVARCHAR(255)")
+    private String description;
 }
