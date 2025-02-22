@@ -16,7 +16,8 @@ import {
   Form,
 } from "./ui/form";
 import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { PasswordInput } from "./ui/password-input";
 
 const signInSchemaFields = {
   username: z
@@ -37,6 +38,10 @@ const signUpSchemaFields = {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  confirmPassword: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" }),
 };
 
 type FormDataType = {
@@ -44,6 +49,8 @@ type FormDataType = {
   password: string;
   name: string;
   phoneNumber: string;
+  email: string;
+  confirmPassword?: string;
 };
 
 type Props = {
@@ -68,14 +75,31 @@ const AuthForm: FC<Props> = ({
       password: "",
       name: "",
       phoneNumber: "",
+      email: "",
+      confirmPassword: "",
     },
     resolver: zodResolver(
-      z.object(isSignUp ? signUpSchemaFields : signInSchemaFields)
+      z
+        .object(isSignUp ? signUpSchemaFields : signInSchemaFields)
+        .refine(
+          (data) =>
+            isSignUp
+              ? data.password ===
+                (data as { confirmPassword?: string })?.confirmPassword
+              : true,
+          {
+            message: "Passwords don't match",
+            path: ["confirmPassword"],
+          }
+        )
     ),
   });
+  const router = useRouter();
 
   const handleSubmit = form.handleSubmit(async (formData) => {
-    onSubmit(formData);
+    const { confirmPassword, ...rest } = formData;
+    void confirmPassword;
+    onSubmit(rest);
   });
 
   return (
@@ -90,10 +114,10 @@ const AuthForm: FC<Props> = ({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your Name" {...field} />
+                    <Input placeholder="Account Name" {...field} />
                   </FormControl>
                   <FormDescription>
-                    This is your public display name.
+                    Public account display name, visible to others.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -116,8 +140,22 @@ const AuthForm: FC<Props> = ({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </Fragment>
         )}
+
         <FormField
           control={form.control}
           name="username"
@@ -144,12 +182,7 @@ const AuthForm: FC<Props> = ({
                       type="button"
                       variant="link"
                       onClick={() => {
-                        toast({
-                          variant: "default",
-                          title: "Feature not available!",
-                          description:
-                            "Please contact the admin to reset your password.",
-                        });
+                        router.push("/auth/forgot-password");
                       }}
                     >
                       <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white">
@@ -159,12 +192,27 @@ const AuthForm: FC<Props> = ({
                   )}
                 </div>
                 <FormControl>
-                  <Input type="password" placeholder="*********" {...field} />
+                  <PasswordInput placeholder="*********" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          {isSignUp && (
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput placeholder="*********" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
         <Button type="submit" className="w-full">
           {btnText ?? (isSignUp ? "Sign Up" : "Sign In")}

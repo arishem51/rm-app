@@ -2,19 +2,16 @@ package com.example.backend.controllers;
 
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
-import com.example.backend.dto.ShopDTO;
 import com.example.backend.dto.category.CreateCategoryDTO;
 import com.example.backend.dto.PaginateResponse;
 import com.example.backend.dto.category.UpdateCategoryDTO;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.User;
-import com.example.backend.enums.Role;
 import com.example.backend.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,15 +22,16 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     private final CategoryService categoryService;
+
     @Operation(summary = "Get all categories", description = "Fetch a list of all registered categories.")
     @GetMapping("/")
-    public ResponseEntity<BaseResponse<PaginateResponse<Category>>> getCategories(@RequestParam(defaultValue = "0") int page,
-                                                                            @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search) {
+    public ResponseEntity<BaseResponse<PaginateResponse<Category>>> getCategories(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search) {
         Page<Category> categories = categoryService.findCategories(page, pageSize, search);
         PaginateResponse<Category> response = new PaginateResponse<>(categories);
         return ResponseEntity.ok(new BaseResponse<PaginateResponse<Category>>(response, "Success!"));
     }
-
 
     @Operation(summary = "Create a category", description = "Create a new category under a specific shop.")
     @PostMapping()
@@ -48,9 +46,9 @@ public class CategoryController {
         }
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<Category>> updateCategory(@PathVariable Long id, @RequestBody UpdateCategoryDTO requestDTO) {
+    public ResponseEntity<BaseResponse<Category>> updateCategory(@PathVariable Long id,
+            @RequestBody UpdateCategoryDTO requestDTO) {
 
         // Gọi service để cập nhật danh mục
         try {
@@ -62,7 +60,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteCategory(@PathVariable Long id){
+    public ResponseEntity<BaseResponse<Void>> deleteCategory(@PathVariable Long id) {
         try {
             categoryService.deleteCategory(id);
             return ResponseEntity.ok(BaseResponse.success(null, "Category deleted successfully!"));

@@ -4,6 +4,8 @@ import com.example.backend.enums.Role;
 import com.example.backend.enums.UserStatus;
 import com.example.backend.security.validation.ValidEnum;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -25,4 +27,10 @@ public class UpdateUserRequest {
 
     @ValidEnum(enumClass = UserStatus.class, message = "Invalid user status!")
     private String status;
+
+    @Email(message = "Email should be valid")
+    @NotBlank(message = "Email is required")
+    private String email;
+
+
 }

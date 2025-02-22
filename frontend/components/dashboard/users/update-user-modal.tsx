@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { UpdateUserRequest, UserDTO } from "@/types/Api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { UserRole, UserStatus } from "@/lib/constants";
+import { ToastTitle, UserRole, UserStatus } from "@/lib/constants";
 import {
   Form,
   FormControl,
@@ -35,6 +35,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { isEmpty } from "lodash";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
@@ -44,15 +45,20 @@ const schemaFields = {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
-  password: z
-    .union([
-      z
-        .string()
-        .min(6, { message: "Password must be at least 6 characters long" }),
-      z.literal(""),
-      z.literal(null),
-    ])
-    .optional(),
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.union([
+    z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.literal(""),
+    z.literal(null),
+  ]),
+  confirmPassword: z.union([
+    z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.literal(""),
+  ]),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
   status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
 };
@@ -65,28 +71,39 @@ type Props = {
 
 const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
   const [open, setOpen] = useState(false);
-  const form = useForm<UpdateUserRequest>({
+  const form = useForm<UpdateUserRequest & { confirmPassword?: string }>({
     defaultValues: {
       name: "",
       phoneNumber: "",
       password: "",
       role: UserRole.ADMIN,
+      email: "",
+      confirmPassword: "",
     },
-    resolver: zodResolver(z.object(schemaFields)),
+    resolver: zodResolver(
+      z
+        .object(schemaFields)
+        .refine((data) => data.password === data.confirmPassword, {
+          message: "Passwords don't match",
+          path: ["confirmPassword"],
+        })
+    ),
   });
   const { mutate: updateUser, isPending } = useUpdateUser();
   const queryClient = useQueryClient();
   const { data: currentUser } = useMe();
 
-  const { setValue } = form;
+  const { reset } = form;
+
   useEffect(() => {
     if (user) {
-      setValue("name", user.name);
-      setValue("phoneNumber", user.phoneNumber);
-      setValue("role", user.role);
-      setValue("status", user.status);
+      reset({
+        ...user,
+        password: "",
+        confirmPassword: "",
+      });
     }
-  }, [setValue, user]);
+  }, [reset, user]);
 
   const handleSubmit = form.handleSubmit((data: UpdateUserRequest) => {
     if (user?.id) {
@@ -101,8 +118,7 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
         {
           onSuccess: () => {
             toast({
-              variant: "default",
-              title: "Success",
+              title: ToastTitle.success,
               description: "User updated successfully",
             });
             if (isAdmin) {
@@ -115,6 +131,13 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
               });
             }
             setOpen(false);
+          },
+          onError: (e) => {
+            toast({
+              variant: "destructive",
+              title: ToastTitle.error,
+              description: e.message,
+            });
           },
         }
       );
@@ -167,18 +190,38 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
               />
               <FormField
                 control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <div className="flex justify-between">
-                      <FormLabel>New Password</FormLabel>
-                    </div>
+                    <FormLabel>New Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="*********"
-                        {...field}
-                      />
+                      <PasswordInput placeholder="*********" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput placeholder="*********" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -27,18 +27,23 @@ public class UserDTO {
     @NotNull
     private String status;
     private Long shopId;
+    private String shopName;
+    @NotNull
+    private String email;
 
     public static UserDTO fromEntity(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .name(user.getName())
+                .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .role(user.getRole().toString())
                 .status(user.getStatus().toString())
                 .shopId(user.getShop() != null ? user.getShop().getId() : null)
+                .shopName(user.getShop() != null ? user.getShop().getName() : null)
                 .build();
     }
 }
