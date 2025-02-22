@@ -6,6 +6,7 @@ import com.example.backend.entities.Category;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.Supplier;
 import com.example.backend.entities.User;
+import com.example.backend.enums.UnitType;
 import com.example.backend.repositories.CategoryRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.repositories.SupplierRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,48 +26,47 @@ public class ProductService {
     private final SupplierRepository supplierRepository;
     private final CategoryRepository categoryRepository;
 
-    /**
-     * Tạo sản phẩm mới
-     * @param dto Dữ liệu đầu vào để tạo sản phẩm
-     * @param user Người thực hiện thao tác
-     * @return Sản phẩm sau khi tạo
-     */
     public Product createProduct(CreateProductDTO dto, User user) {
-        // Kiểm tra và lấy thông tin nhà cung cấp (có thể null)
-        Supplier supplier = null;
-        if (dto.getSupplierId() != null) {
-            supplier = supplierRepository.findById(dto.getSupplierId())
-                    .orElseThrow(() -> new IllegalArgumentException("Supplier not found with ID: " + dto.getSupplierId()));
-        }
+        Category category = (dto.getCategoryId() != null)
+                ? categoryRepository.findById(dto.getCategoryId())
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Category not found with ID: " + dto.getCategoryId()))
+                : null;
 
-        // Kiểm tra và lấy thông tin danh mục (có thể null)
-        Category category = null;
-        if (dto.getCategoryId() != null) {
-            category = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getCategoryId()));
-        }
+        Supplier supplier = (dto.getSupplierId() != null)
+                ? supplierRepository.findById(dto.getSupplierId())
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Supplier not found with ID: " + dto.getSupplierId()))
+                : null;
 
-        Product product = new Product();
-        product.setName(dto.getName());
-        product.setCategory(category);
-        product.setSupplier(supplier);
-        product.setUnit(dto.getUnit());
-        product.setPurchasePrice(dto.getPurchasePrice());
-        product.setSalePrice(dto.getSalePrice());
-        product.setWholesalePrice(dto.getWholesalePrice());
-        product.setStockQuantity(dto.getStockQuantity() != null ? dto.getStockQuantity() : BigDecimal.ZERO);
-        product.setLowStockAlert(dto.getLowStockAlert());
-        product.setDescription(dto.getDescription());
-        product.setImageUrl(dto.getImageUrl());
+        UnitType unitType;
+        try {
+            unitType = UnitType.valueOf(dto.getUnit().name().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid unit type: " + dto.getUnit());
+        }
+        Product product = Product.builder()
+                .name(dto.getName())
+                .category(category)
+                .supplier(supplier)
+                .unit(unitType)
+                .salePrice(dto.getSalePrice())
+                .wholesalePrice(dto.getWholesalePrice())
+                .stockQuantity(dto.getStockQuantity() != null ? dto.getStockQuantity() : BigDecimal.ZERO)
+                .lowStockAlert(dto.getLowStockAlert())
+                .description(dto.getDescription())
+                .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
+                .build();
 
         return productRepository.save(product);
     }
 
     /**
      * Tìm kiếm danh sách sản phẩm với phân trang
-     * @param page Trang hiện tại
+     * 
+     * @param page     Trang hiện tại
      * @param pageSize Số lượng sản phẩm mỗi trang
-     * @param search Từ khóa tìm kiếm theo tên
+     * @param search   Từ khóa tìm kiếm theo tên
      * @return Danh sách sản phẩm theo tiêu chí tìm kiếm
      */
     public Page<Product> findProducts(int page, int pageSize, String search) {
@@ -76,7 +77,8 @@ public class ProductService {
 
     /**
      * Cập nhật thông tin sản phẩm
-     * @param id ID của sản phẩm cần cập nhật
+     * 
+     * @param id  ID của sản phẩm cần cập nhật
      * @param dto Dữ liệu cập nhật
      * @return Sản phẩm sau khi cập nhật
      */
@@ -87,35 +89,42 @@ public class ProductService {
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
 
-            if (dto.getName() != null) product.setName(dto.getName());
+            if (dto.getName() != null)
+                product.setName(dto.getName());
 
             if (dto.getCategoryId() != null) {
                 Category category = categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getCategoryId()));
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Category not found with ID: " + dto.getCategoryId()));
                 product.setCategory(category);
             }
 
             if (dto.getSupplierId() != null) {
                 Supplier supplier = supplierRepository.findById(dto.getSupplierId())
-                        .orElseThrow(() -> new IllegalArgumentException("Supplier not found with ID: " + dto.getSupplierId()));
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Supplier not found with ID: " + dto.getSupplierId()));
                 product.setSupplier(supplier);
             }
 
-            if (dto.getUnit() != null) product.setUnit(dto.getUnit());
-            
-            if (dto.getPurchasePrice() != null) product.setPurchasePrice(dto.getPurchasePrice());
+            if (dto.getUnit() != null)
+                product.setUnit(dto.getUnit());
 
-            if (dto.getSalePrice() != null) product.setSalePrice(dto.getSalePrice());
+            if (dto.getSalePrice() != null)
+                product.setSalePrice(dto.getSalePrice());
 
-            if (dto.getWholesalePrice() != null) product.setWholesalePrice(dto.getWholesalePrice());
+            if (dto.getWholesalePrice() != null)
+                product.setWholesalePrice(dto.getWholesalePrice());
 
-            if (dto.getStockQuantity() != null) product.setStockQuantity(dto.getStockQuantity());
+            if (dto.getStockQuantity() != null)
+                product.setStockQuantity(dto.getStockQuantity());
 
-            if (dto.getLowStockAlert() != null) product.setLowStockAlert(dto.getLowStockAlert());
+            if (dto.getLowStockAlert() != null)
+                product.setLowStockAlert(dto.getLowStockAlert());
 
-            if (dto.getDescription() != null) product.setDescription(dto.getDescription());
-            
-            if (dto.getImageUrl() != null) product.setImageUrl(dto.getImageUrl());
+            if (dto.getDescription() != null)
+                product.setDescription(dto.getDescription());
+
+                product.getImageUrls().addAll(dto.getImageUrls());
 
             return productRepository.save(product);
         } else {

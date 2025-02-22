@@ -4,12 +4,17 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter
+import java.util.List;
+
+import com.example.backend.enums.UnitType;
+
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -32,19 +37,17 @@ public class Product {
     @JoinColumn(name = "supplier_id", nullable = true)
     private Supplier supplier;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String unit;
+    private UnitType unit;
 
-    @Column(name = "purchase_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal purchasePrice;
-
-    @Column(name = "sale_price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "sale_price")
     private BigDecimal salePrice;
 
-    @Column(name = "wholesale_price", precision = 10, scale = 2)
+    @Column(name = "wholesale_price")
     private BigDecimal wholesalePrice;
 
-    @Column(name = "stock_quantity", nullable = false, precision = 10, scale = 2)
+    @Column(name = "stock_quantity")
     private BigDecimal stockQuantity = BigDecimal.ZERO;
 
     @Column(name = "low_stock_alert", precision = 10, scale = 2)
@@ -53,8 +56,8 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "image_urls")
+    private List<String> imageUrls;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -87,7 +90,6 @@ public class Product {
                 + ", category='" + (category != null ? category.getName() : "null") + '\''
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
                 + ", unit='" + unit + '\''
-                + ", purchasePrice='" + purchasePrice + '\''
                 + ", salePrice='" + salePrice + '\''
                 + ", stockQuantity='" + stockQuantity + '\''
                 + "} ";

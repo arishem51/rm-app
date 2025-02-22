@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
+import com.example.backend.enums.UnitType;
 
 @Getter
 @Setter
@@ -20,12 +22,6 @@ public class UpdateProductDTO {
 
     private Long supplierId;
 
-    @NotBlank(message = "Unit cannot be empty")
-    private String unit;
-
-    @DecimalMin(value = "0.0", inclusive = false, message = "Purchase price must be greater than zero")
-    private BigDecimal purchasePrice;
-
     @DecimalMin(value = "0.0", inclusive = false, message = "Sale price must be greater than zero")
     private BigDecimal salePrice;
 
@@ -38,5 +34,8 @@ public class UpdateProductDTO {
     @DecimalMin(value = "0.0", message = "Low stock alert cannot be negative")
     private BigDecimal lowStockAlert;
 
-    private String imageUrl;
+    @NotNull
+    private UnitType unit;
+
+    private List<String> imageUrls;
 }
