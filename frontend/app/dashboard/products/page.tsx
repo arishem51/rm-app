@@ -1,4 +1,4 @@
-import UnSupportFeature from "@/components/pages/un-support-feature";
+import UnSupportFeature from "@/components/view/un-support-feature";
 
 const Page = () => {
   return <UnSupportFeature />;

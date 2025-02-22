@@ -1,6 +1,6 @@
 "use client";
 
-import ShopForm from "@/components/shop-form";
+import ShopForm from "@/components/form/shop-form";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { UserDTO } from "@/types/Api";

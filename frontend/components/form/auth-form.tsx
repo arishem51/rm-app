@@ -14,10 +14,10 @@ import {
   FormLabel,
   FormMessage,
   Form,
-} from "./ui/form";
+} from "../ui/form";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { PasswordInput } from "./ui/password-input";
+import { PasswordInput } from "../ui/password-input";
 
 const signInSchemaFields = {
   username: z

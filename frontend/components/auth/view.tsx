@@ -11,7 +11,7 @@ import { FC, ReactNode, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useSignIn, useSignUp } from "@/hooks/mutations/user";
 import { ToastTitle } from "@/lib/constants";
-import AuthForm from "../auth-form";
+import AuthForm from "../form/auth-form";
 import { useRouter } from "next/navigation";
 import { setTokenAfterSignIn } from "@/server/actions";
 import { useAuthAtom } from "@/store/auth";

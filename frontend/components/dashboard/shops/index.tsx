@@ -17,7 +17,7 @@ import HeaderListSearch from "../header-list-search";
 import { ShopDTO } from "@/types/Api";
 import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
-import ShopForm from "@/components/shop-form";
+import ShopForm from "@/components/form/shop-form";
 import EmptyState from "../empty-state";
 
 const Shops = () => {

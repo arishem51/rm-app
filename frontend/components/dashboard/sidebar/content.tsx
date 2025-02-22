@@ -27,7 +27,7 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { AppPathURL } from "@/lib/constants";
+import { AppRoutes } from "@/lib/constants";
 import { getMe } from "@/server/actions";
 import { checkRole } from "@/lib/helpers";
 
@@ -58,7 +58,7 @@ const Content = async () => {
       items: [
         {
           title: "Home",
-          url: AppPathURL.dashboard.home,
+          url: AppRoutes.dashboard.home.url,
           icon: Home,
         },
       ],
@@ -72,7 +72,7 @@ const Content = async () => {
       items: [
         {
           title: "Profile",
-          url: AppPathURL.dashboard.setting.profile,
+          url: AppRoutes.dashboard.setting.profile.url,
           icon: User2,
         },
       ],
@@ -84,27 +84,27 @@ const Content = async () => {
       {
         title: "Users",
         icon: Users,
-        url: AppPathURL.dashboard.users,
+        url: AppRoutes.dashboard.users.url,
         children: [],
       },
       {
         title: "Shops",
-        url: AppPathURL.dashboard.shops,
+        url: AppRoutes.dashboard.shops.url,
         icon: Store,
       },
       {
         title: "Categories",
-        url: AppPathURL.dashboard.categories,
+        url: AppRoutes.dashboard.categories.url,
         icon: TagIcon,
       },
       {
         title: "Suppliers",
-        url: AppPathURL.dashboard.suppliers,
+        url: AppRoutes.dashboard.suppliers.url,
         icon: Briefcase,
       },
       {
         title: "Products",
-        url: AppPathURL.dashboard.products,
+        url: AppRoutes.dashboard.products.url,
         icon: Box,
       }
     );
@@ -113,14 +113,14 @@ const Content = async () => {
   if (isOwner) {
     itemGroups.shop.items.push({
       title: "Users",
-      url: AppPathURL.dashboard.users,
+      url: AppRoutes.dashboard.users.url,
       icon: Users,
     });
     //FIXME: should revalidate
     if (user?.shopId) {
       itemGroups.setting.items.push({
         title: "Shop",
-        url: AppPathURL.dashboard.setting.shop,
+        url: AppRoutes.dashboard.setting.shop.url,
         icon: ShoppingBag,
       });
     }
