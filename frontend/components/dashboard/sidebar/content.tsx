@@ -1,4 +1,6 @@
 import {
+  Box,
+  Briefcase,
   ChevronsUpDown,
   Home,
   LucideIcon,
@@ -94,6 +96,16 @@ const Content = async () => {
         title: "Categories",
         url: AppPathURL.dashboard.categories,
         icon: TagIcon,
+      },
+      {
+        title: "Suppliers",
+        url: AppPathURL.dashboard.suppliers,
+        icon: Briefcase,
+      },
+      {
+        title: "Products",
+        url: AppPathURL.dashboard.products,
+        icon: Box,
       }
     );
   }
