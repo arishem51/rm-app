@@ -86,4 +86,8 @@ public class SupplierService {
         }
         supplierRepository.deleteById(id);
     }
+
+    public Optional<Supplier> findById(Long id) {
+        return supplierRepository.findById(id);
+    }
 }

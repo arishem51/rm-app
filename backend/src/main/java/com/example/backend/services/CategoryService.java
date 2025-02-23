@@ -64,7 +64,7 @@ public class CategoryService {
             if (dto.getDescription() != null) {
                 category.setDescription(dto.getDescription());
             }
-            if (category.getImageUrl() != null){
+            if (category.getImageUrl() != null) {
                 category.setImageUrl(dto.getImageUrl());
             }
             return categoryRepository.save(category);
@@ -87,6 +87,10 @@ public class CategoryService {
         } else {
             throw new IllegalArgumentException("Category not found with id: " + id);
         }
+    }
+
+    public Optional<Category> findById(Long id) {
+        return categoryRepository.findById(id);
     }
 
 }

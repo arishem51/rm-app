@@ -13,13 +13,16 @@ import com.example.backend.security.validation.ValidEnum;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
+public class RequestProductDTO {
 
     @NotBlank(message = "Name is required!")
     private String name;
     private String description;
     private Long categoryId;
     private Long supplierId;
+
+    @NotNull(message = "Shop ID is required!")
+    private Long shopId;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Sale price must be greater than zero")
     private BigDecimal salePrice;
