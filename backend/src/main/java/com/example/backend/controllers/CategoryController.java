@@ -48,22 +48,12 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<Category>> updateCategory(@PathVariable Long id,
-            @RequestBody UpdateCategoryDTO requestDTO) {
+            @RequestBody UpdateCategoryDTO requestDTO, @CurrentUser User user) {
 
         // Gọi service để cập nhật danh mục
         try {
-            Category createdCategory = categoryService.updateCategory(id, requestDTO);
+            Category createdCategory = categoryService.updateCategory(id, requestDTO, user);
             return ResponseEntity.ok(BaseResponse.success(createdCategory, "Category update successfully!"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<Void>> deleteCategory(@PathVariable Long id) {
-        try {
-            categoryService.deleteCategory(id);
-            return ResponseEntity.ok(BaseResponse.success(null, "Category deleted successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

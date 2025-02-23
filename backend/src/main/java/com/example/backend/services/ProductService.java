@@ -55,7 +55,8 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Page<Product> findProducts(int page, int pageSize, String search) {
+    public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
+        // FIXME: find product for user shop only
         return search.isEmpty()
                 ? productRepository.findAll(PageRequest.of(page, pageSize))
                 : productRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
