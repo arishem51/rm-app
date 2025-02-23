@@ -14,10 +14,10 @@ import {
   FormLabel,
   FormMessage,
   Form,
-} from "./ui/form";
+} from "../ui/form";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { PasswordInput } from "./ui/password-input";
+import { PasswordInput } from "../ui/password-input";
 
 const signInSchemaFields = {
   username: z
@@ -175,7 +175,7 @@ const AuthForm: FC<Props> = ({
             name="password"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <FormLabel>Password</FormLabel>
                   {!isSignUp && (
                     <Button
@@ -185,7 +185,7 @@ const AuthForm: FC<Props> = ({
                         router.push("/auth/forgot-password");
                       }}
                     >
-                      <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer text-white">
+                      <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer">
                         Forgot you password?
                       </span>
                     </Button>
