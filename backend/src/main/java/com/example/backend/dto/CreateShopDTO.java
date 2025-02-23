@@ -1,7 +1,5 @@
 package com.example.backend.dto;
 
-
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -9,7 +7,8 @@ public class CreateShopDTO {
     private String name;
     private String address;
 
-    public CreateShopDTO() {}
+    public CreateShopDTO() {
+    }
 
     public CreateShopDTO(String name, String address) {
         this.name = name;

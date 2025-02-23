@@ -3,8 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
-import com.example.backend.dto.product.CreateProductDTO;
-import com.example.backend.dto.product.UpdateProductDTO;
+import com.example.backend.dto.product.ProductDTO;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.User;
 import com.example.backend.services.ProductService;
@@ -36,7 +35,7 @@ public class ProductController {
     @Operation(summary = "Create a product", description = "Create a new product.")
     @PostMapping()
     public ResponseEntity<BaseResponse<Product>> createProduct(
-            @RequestBody CreateProductDTO productDTO,
+            @RequestBody ProductDTO productDTO,
             @CurrentUser User user) {
         try {
             Product createdProduct = productService.createProduct(productDTO, user);
@@ -50,9 +49,10 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<Product>> updateProduct(
             @PathVariable Long id,
-            @RequestBody UpdateProductDTO dto) {
+            @RequestBody ProductDTO dto,
+            @CurrentUser User user) {
         try {
-            Product updatedProduct = productService.updateProduct(id, dto);
+            Product updatedProduct = productService.updateProduct(id, dto, user);
             return ResponseEntity.ok(BaseResponse.success(updatedProduct, "Product updated successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));

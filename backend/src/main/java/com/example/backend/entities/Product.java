@@ -7,10 +7,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
-
 import com.example.backend.enums.UnitType;
 
 @Getter
@@ -47,13 +50,7 @@ public class Product {
     @Column(name = "wholesale_price")
     private BigDecimal wholesalePrice;
 
-    @Column(name = "stock_quantity")
-    private BigDecimal stockQuantity = BigDecimal.ZERO;
-
-    @Column(name = "low_stock_alert", precision = 10, scale = 2)
-    private BigDecimal lowStockAlert;
-
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
 
     @Column(name = "image_urls")
@@ -91,7 +88,6 @@ public class Product {
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
                 + ", unit='" + unit + '\''
                 + ", salePrice='" + salePrice + '\''
-                + ", stockQuantity='" + stockQuantity + '\''
                 + "} ";
     }
 }
