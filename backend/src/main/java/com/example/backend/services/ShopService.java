@@ -21,9 +21,26 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final UserService userService;
 
-    public Page<ShopDTO> findShops(int page, int pageSize, String search) {
-        Page<Shop> shopPage = search.isEmpty() ? shopRepository.findAll(PageRequest.of(page, pageSize))
-                : shopRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
+    public Page<ShopDTO> findShops(int page, int pageSize, String search, User user) {
+        Page<Shop> shopPage;
+
+        //Kiểm tra quyền của user để xác định danh sách shop mà họ có thể xem
+        if (user.getRole() == Role.ADMIN) {
+            //Nếu là Admin, có thể xem tất cả cửa hàng
+            shopPage = search.isEmpty() ? shopRepository.findAll(PageRequest.of(page, pageSize))
+                    : shopRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
+        } else if (user.getRole() == Role.OWNER) {
+            //Nếu là Owner, chỉ có thể xem cửa hàng của chính chủ
+            shopPage = shopRepository.findByCreateBy(user, PageRequest.of(page, pageSize));
+        } else if (user.getRole() == Role.STAFF) {
+            //Nếu là Staff, chỉ có thề xem cửa hàng mà họ đang làm việc
+            //Voi moi staff, chi co 1 cua hang
+            shopPage = shopRepository.findByUsersContaining(user, PageRequest.of(page, pageSize));
+        } else {
+            //Neu khong phai Admin, Owner, Staff
+            throw new IllegalArgumentException("You are not authorized to perform this action.");
+        }
+    
         return shopPage.map(ShopDTO::fromEntity);
     }
 

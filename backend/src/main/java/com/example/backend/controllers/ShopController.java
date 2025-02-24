@@ -27,11 +27,16 @@ public class ShopController {
 
     @Operation(summary = "Get all shops", description = "Fetch a list of all registered shops.")
     @GetMapping("/")
-    public ResponseEntity<BaseResponse<PaginateResponse<ShopDTO>>> getShops(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search) {
-        Page<ShopDTO> shops = shopService.findShops(page, pageSize, search);
+    public ResponseEntity<BaseResponse<PaginateResponse<ShopDTO>>> getShops(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "") String search,
+            @CurrentUser User user) {
+
+        Page<ShopDTO> shops = shopService.findShops(page, pageSize, search, user);
         PaginateResponse<ShopDTO> response = new PaginateResponse<>(shops);
-        return ResponseEntity.ok(new BaseResponse<PaginateResponse<ShopDTO>>(response, "Success!"));
+
+        return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
     }
 
     @Operation(summary = "Create a shop", description = "Create a shop by owner or admin.")
