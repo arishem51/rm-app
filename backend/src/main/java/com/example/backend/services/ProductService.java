@@ -1,10 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.product.ProductDTO;
-import com.example.backend.entities.Category;
-import com.example.backend.entities.Product;
-import com.example.backend.entities.Supplier;
-import com.example.backend.entities.User;
+import com.example.backend.entities.*;
 import com.example.backend.enums.UnitType;
 import com.example.backend.repositories.CategoryRepository;
 import com.example.backend.repositories.ProductRepository;
@@ -23,28 +20,42 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final SupplierRepository supplierRepository;
     private final CategoryRepository categoryRepository;
+    private final WarehouseService warehouseService;
 
     public Product createProduct(ProductDTO dto, User user) {
         if (UserRoleUtils.isStaff(user)) {
             throw new IllegalArgumentException("You are not authorized to create a product!");
         }
-        Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryRepository::findById).orElse(null);
-        Supplier supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(supplierRepository::findById).orElse(null);
+
+        Category category = categoryRepository.findById(dto.getCategoryId()).orElse(null);
+        Supplier supplier = supplierRepository.findById(dto.getSupplierId()).orElse(null);
 
         Product product = Product.builder()
                 .name(dto.getName())
                 .category(category)
                 .supplier(supplier)
-                .unit(UnitType.valueOf(dto
-                        .getUnit().toUpperCase()))
+                .unit(UnitType.valueOf(dto.getUnit().toUpperCase()))
                 .salePrice(dto.getSalePrice())
                 .wholesalePrice(dto.getWholesalePrice())
                 .description(dto.getDescription())
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
+                .quantity(dto.getQuantity())  // Lưu số lượng vào sản phẩm
                 .build();
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+
+        // Cập nhật số lượng vào các kho đã chọn
+        for (Long warehouseId : dto.getWarehouseIds()) {
+            Warehouse warehouse = warehouseService.getWarehouseById(warehouseId);
+            if (warehouse != null) {
+                warehouse.addProduct(savedProduct);  // Thêm sản phẩm vào kho
+                warehouseService.save(warehouse);  // Lưu kho
+            }
+        }
+
+        return savedProduct;
     }
+
 
     public Page<Product> findProducts(int page, int pageSize, String search) {
         return search.isEmpty()

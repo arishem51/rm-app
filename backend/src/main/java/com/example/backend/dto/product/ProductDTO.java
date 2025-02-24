@@ -30,4 +30,6 @@ public class ProductDTO {
     private String unit;
 
     private List<String> imageUrls;
+    private Integer quantity;
+    private List<Long> warehouseIds;
 }
