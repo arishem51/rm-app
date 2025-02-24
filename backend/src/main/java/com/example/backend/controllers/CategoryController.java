@@ -11,6 +11,9 @@ import com.example.backend.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +34,13 @@ public class CategoryController {
         Page<Category> categories = categoryService.findCategories(page, pageSize, search);
         PaginateResponse<Category> response = new PaginateResponse<>(categories);
         return ResponseEntity.ok(new BaseResponse<PaginateResponse<Category>>(response, "Success!"));
+    }
+
+    @Operation(summary = "Get all categories", description = "Fetch all categories.")
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<List<Category>>> getAllCategories() {
+        List<Category> categories = categoryService.findAllCategories();
+        return ResponseEntity.ok(new BaseResponse<List<Category>>(categories, "Success!"));
     }
 
     @Operation(summary = "Create a category", description = "Create a new category under a specific shop.")

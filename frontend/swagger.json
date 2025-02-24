@@ -704,6 +704,26 @@
         }
       }
     },
+    "/api/categories/all": {
+      "get": {
+        "tags": ["Category Management"],
+        "summary": "Get all categories",
+        "description": "Fetch all categories.",
+        "operationId": "getAllCategories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListCategory"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/categories/": {
       "get": {
         "tags": ["Category Management"],
@@ -1249,6 +1269,27 @@
           "data": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/ResponseProductDTO" }
+          }
+        }
+      },
+      "BaseResponseListCategory": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Category" }
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
           }
         }
       },

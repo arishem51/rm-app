@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 //code moi
 import java.util.Optional;
 
@@ -63,6 +64,10 @@ public class CategoryService {
 
     public Optional<Category> findById(Long id) {
         return categoryRepository.findById(id);
+    }
+
+    public List<Category> findAllCategories() {
+        return categoryRepository.findAll();
     }
 
 }

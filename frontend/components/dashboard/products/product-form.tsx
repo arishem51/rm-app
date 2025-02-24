@@ -20,7 +20,7 @@ import { ApiQuery } from "@/services/query";
 import { RequestProductDTO, ResponseProductDTO } from "@/types/Api";
 import { ToastTitle } from "@/lib/constants";
 import { Textarea } from "@/components/ui/textarea";
-import { ComboboxCategories } from "../combobox/categories";
+import { ComboboxCategories } from "../combobox/category";
 import {
   Select,
   SelectContent,
@@ -251,7 +251,10 @@ const ProductForm = ({ onClose, product }: Props) => {
                   <FormLabel>Category</FormLabel>
                   <br />
                   <FormControl>
-                    <ComboboxCategories />
+                    <ComboboxCategories
+                      onSelect={field.onChange}
+                      formValue={field.value?.toString()}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -265,7 +268,10 @@ const ProductForm = ({ onClose, product }: Props) => {
                   <FormLabel>Supplier</FormLabel>
                   <br />
                   <FormControl>
-                    <ComboboxCategories />
+                    <ComboboxCategories
+                      onSelect={field.onChange}
+                      formValue={field.value?.toString()}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
