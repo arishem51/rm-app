@@ -104,7 +104,7 @@ const Content = async () => {
       },
       {
         title: "Products",
-        url: AppRoutes.dashboard.products.url,
+        url: AppRoutes.dashboard.products.index.url,
         icon: Box,
       }
     );
@@ -119,7 +119,7 @@ const Content = async () => {
       },
       {
         title: "Products",
-        url: AppRoutes.dashboard.products.url,
+        url: AppRoutes.dashboard.products.index.url,
         icon: Box,
       }
     );

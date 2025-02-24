@@ -199,6 +199,32 @@
       }
     },
     "/api/products/{id}": {
+      "get": {
+        "tags": ["Product Management"],
+        "summary": "Get a product",
+        "description": "Fetch a product by ID.",
+        "operationId": "getProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseResponseProductDTO"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": ["Product Management"],
         "summary": "Update a product",
@@ -215,7 +241,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ProductDTO" }
+              "schema": { "$ref": "#/components/schemas/RequestProductDTO" }
             }
           },
           "required": true
@@ -225,7 +251,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/BaseResponseProduct" }
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseResponseProductDTO"
+                }
               }
             }
           }
@@ -260,28 +288,6 @@
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponseCategory"
                 }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Category Management"],
-        "operationId": "deleteCategory",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
               }
             }
           }
@@ -449,7 +455,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ProductDTO" }
+              "schema": { "$ref": "#/components/schemas/RequestProductDTO" }
             }
           },
           "required": true
@@ -459,7 +465,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/BaseResponseProduct" }
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseResponseProductDTO"
+                }
               }
             }
           }
@@ -659,8 +667,8 @@
     "/api/products/": {
       "get": {
         "tags": ["Product Management"],
-        "summary": "Get all products",
-        "description": "Fetch a list of all registered products.",
+        "summary": "Get page products",
+        "description": "Fetch a list of page registered products.",
         "operationId": "getProducts",
         "parameters": [
           {
@@ -688,7 +696,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePaginateResponseProduct"
+                  "$ref": "#/components/schemas/BaseResponsePaginateResponseResponseProductDTO"
                 }
               }
             }
@@ -699,8 +707,8 @@
     "/api/categories/": {
       "get": {
         "tags": ["Category Management"],
-        "summary": "Get all categories",
-        "description": "Fetch a list of all registered categories.",
+        "summary": "Get paginate categories",
+        "description": "Fetch a list of categories.",
         "operationId": "getCategories",
         "parameters": [
           {
@@ -886,24 +894,25 @@
         },
         "required": ["createdAt"]
       },
-      "ProductDTO": {
+      "RequestProductDTO": {
         "type": "object",
         "properties": {
           "name": { "type": "string" },
           "description": { "type": "string" },
           "categoryId": { "type": "integer", "format": "int64" },
           "supplierId": { "type": "integer", "format": "int64" },
+          "shopId": { "type": "integer", "format": "int64" },
           "salePrice": { "type": "number", "minimum": 0.0 },
           "wholesalePrice": { "type": "number", "minimum": 0.0 },
           "unit": { "type": "string" },
           "imageUrls": { "type": "array", "items": { "type": "string" } }
         },
-        "required": ["name"]
+        "required": ["name", "shopId"]
       },
-      "BaseResponseProduct": {
+      "BaseResponseResponseProductDTO": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/Product" },
+          "data": { "$ref": "#/components/schemas/ResponseProductDTO" },
           "message": { "type": "string" },
           "errorCode": {
             "type": "string",
@@ -929,21 +938,20 @@
           "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
-      "Product": {
+      "ResponseProductDTO": {
         "type": "object",
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "name": { "type": "string" },
+          "description": { "type": "string" },
           "category": { "$ref": "#/components/schemas/Category" },
           "supplier": { "$ref": "#/components/schemas/Supplier" },
-          "unit": { "type": "string", "enum": ["KG", "BAG"] },
+          "shopId": { "type": "integer", "format": "int64" },
+          "shopName": { "type": "string" },
           "salePrice": { "type": "number" },
           "wholesalePrice": { "type": "number" },
-          "description": { "type": "string" },
-          "imageUrls": { "type": "array", "items": { "type": "string" } },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "deletedAt": { "type": "string", "format": "date-time" }
+          "unit": { "type": "string", "enum": ["KG", "BAG"] },
+          "imageUrls": { "type": "array", "items": { "type": "string" } }
         }
       },
       "UpdateCategoryDTO": {
@@ -1211,10 +1219,12 @@
           }
         }
       },
-      "BaseResponsePaginateResponseProduct": {
+      "BaseResponsePaginateResponseResponseProductDTO": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/PaginateResponseProduct" },
+          "data": {
+            "$ref": "#/components/schemas/PaginateResponseResponseProductDTO"
+          },
           "message": { "type": "string" },
           "errorCode": {
             "type": "string",
@@ -1229,7 +1239,7 @@
           }
         }
       },
-      "PaginateResponseProduct": {
+      "PaginateResponseResponseProductDTO": {
         "type": "object",
         "properties": {
           "pageSize": { "type": "integer", "format": "int32" },
@@ -1238,7 +1248,7 @@
           "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/Product" }
+            "items": { "$ref": "#/components/schemas/ResponseProductDTO" }
           }
         }
       },

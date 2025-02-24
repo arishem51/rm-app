@@ -14,10 +14,26 @@ type Props = {
 
 const ProtectedRole = ({ children, user }: Props) => {
   const pathname = usePathname();
+
+  const checkUrlAndPathname = (url: string) => {
+    // url can contain dynamic route like /dashboard/products/[id]
+    // url: /dashboard/products/[id]
+    // pathname: /dashboard/products/1
+
+    // check if url is dynamic
+    if (url.includes("[") && url.includes("]")) {
+      // remove dynamic route from url
+      url = url.substring(0, url.lastIndexOf("/"));
+      return url === pathname.substring(0, pathname.lastIndexOf("/"));
+    }
+    return url === pathname;
+  };
+
   const checkSupportRole = () => {
     let isSupport = false;
     const checkRouteSupportRole = ({ url, role }: RouteItem) => {
-      const result = url === pathname && (user.role === role || role === "ALL");
+      const result =
+        checkUrlAndPathname(url) && (user.role === role || role === "ALL");
       if (result) {
         isSupport = true;
       }
