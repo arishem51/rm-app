@@ -11,6 +11,7 @@ import com.example.backend.entities.Supplier;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.repositories.SupplierRepository;
+import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,7 +31,7 @@ public class SupplierService {
 
     public Supplier create(SupplierCreateDTO supplierDto, User currentUser) {
 
-        if (currentUser.getRole() == Role.STAFF) {
+        if (!UserRoleUtils.isAdmin(currentUser)) {
             throw new IllegalArgumentException("You are not authorized to perform this action");
         }
 
@@ -52,7 +53,7 @@ public class SupplierService {
     }
 
     public Supplier update(Long id, UpdateSupplierDTO supplierDto, @CurrentUser User currentUser) {
-        if (currentUser.getRole() == Role.STAFF) {
+        if (!UserRoleUtils.isAdmin(currentUser)) {
             throw new IllegalArgumentException("You are not authorized to perform this action");
         }
         Optional<Supplier> dbSupplier = supplierRepository.findById(id);

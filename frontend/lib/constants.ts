@@ -48,7 +48,7 @@ export const AppRoutes = {
     },
     products: {
       url: "/dashboard/products",
-      role: UserRole.ADMIN,
+      role: "ALL",
     },
     suppliers: {
       url: "/dashboard/suppliers",

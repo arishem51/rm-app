@@ -36,10 +36,14 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "") String search,
             @CurrentUser User user) {
-        Page<Product> products = productService.findProducts(page, pageSize, search, user);
-        PaginateResponse<ResponseProductDTO> response = new PaginateResponse<>(
-                products.map(ResponseProductDTO::fromEntity));
-        return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        try {
+            Page<Product> products = productService.findProducts(page, pageSize, search, user);
+            PaginateResponse<ResponseProductDTO> response = new PaginateResponse<>(
+                    products.map(ResponseProductDTO::fromEntity));
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @Operation(summary = "Create a product", description = "Create a new product.")

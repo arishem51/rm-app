@@ -111,11 +111,18 @@ const Content = async () => {
   }
 
   if (isOwner) {
-    itemGroups.shop.items.push({
-      title: "Users",
-      url: AppRoutes.dashboard.users.url,
-      icon: Users,
-    });
+    itemGroups.shop.items.push(
+      {
+        title: "Users",
+        url: AppRoutes.dashboard.users.url,
+        icon: Users,
+      },
+      {
+        title: "Products",
+        url: AppRoutes.dashboard.products.url,
+        icon: Box,
+      }
+    );
     //FIXME: should revalidate
     if (user?.shopId) {
       itemGroups.setting.items.push({

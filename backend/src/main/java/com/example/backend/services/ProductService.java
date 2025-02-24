@@ -56,10 +56,22 @@ public class ProductService {
     }
 
     public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
-        // FIXME: find product for user shop only
+
+        if (UserRoleUtils.isAdmin(currentUser)) {
+            return search.isEmpty()
+                    ? productRepository.findAll(PageRequest.of(page, pageSize))
+                    : productRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
+        }
+
+        Shop shop = currentUser.getShop();
+
+        if (shop == null) {
+            throw new IllegalArgumentException("You must have a shop to manage products!");
+        }
         return search.isEmpty()
-                ? productRepository.findAll(PageRequest.of(page, pageSize))
-                : productRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
+                ? productRepository.findByShopId(currentUser.getShop().getId(), PageRequest.of(page, pageSize))
+                : productRepository.findByShopIdAndNameContainingIgnoreCase(currentUser.getShop().getId(), search,
+                        PageRequest.of(page, pageSize));
     }
 
     public Product updateProduct(Long id, RequestProductDTO dto, User user) {
