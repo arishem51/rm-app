@@ -104,4 +104,21 @@ public class ProductService {
 
         return productRepository.save(product);
     }
+
+    public Product findProductById(Long id, User currentUser) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
+        if (UserRoleUtils.isAdmin(currentUser)) {
+            return product;
+        }
+        Shop shop = currentUser.getShop();
+        if (shop == null) {
+            throw new IllegalArgumentException("You must have a shop to manage products!");
+        }
+
+        if (product.getShop().getId() != shop.getId()) {
+            throw new IllegalArgumentException("You can only view products from your own shop!");
+        }
+        return product;
+    }
 }

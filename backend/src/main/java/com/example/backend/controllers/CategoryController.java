@@ -23,7 +23,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @Operation(summary = "Get all categories", description = "Fetch a list of all registered categories.")
+    @Operation(summary = "Get paginate categories", description = "Fetch a list of categories.")
     @GetMapping("/")
     public ResponseEntity<BaseResponse<PaginateResponse<Category>>> getCategories(
             @RequestParam(defaultValue = "0") int page,

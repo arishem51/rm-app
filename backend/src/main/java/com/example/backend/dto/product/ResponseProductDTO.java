@@ -21,6 +21,7 @@ public class ResponseProductDTO {
     private Supplier supplier;
 
     private Long shopId;
+    private String shopName;
     private BigDecimal salePrice;
     private BigDecimal wholesalePrice;
     private UnitType unit;
@@ -34,6 +35,7 @@ public class ResponseProductDTO {
                 .category(product.getCategory())
                 .supplier(product.getSupplier())
                 .shopId(product.getShop().getId())
+                .shopName(product.getShop().getName())
                 .salePrice(product.getSalePrice())
                 .wholesalePrice(product.getWholesalePrice())
                 .unit(product.getUnit())

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
     private final ProductService productService;
 
-    @Operation(summary = "Get all products", description = "Fetch a list of all registered products.")
+    @Operation(summary = "Get page products", description = "Fetch a list of page registered products.")
     @GetMapping("/")
     public ResponseEntity<BaseResponse<PaginateResponse<ResponseProductDTO>>> getProducts(
             @RequestParam(defaultValue = "0") int page,
@@ -41,6 +41,18 @@ public class ProductController {
             PaginateResponse<ResponseProductDTO> response = new PaginateResponse<>(
                     products.map(ResponseProductDTO::fromEntity));
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Get a product", description = "Fetch a product by ID.")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<ResponseProductDTO>> getProduct(@PathVariable Long id,
+            @CurrentUser User currentUser) {
+        try {
+            Product product = productService.findProductById(id, currentUser);
+            return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(product), "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
