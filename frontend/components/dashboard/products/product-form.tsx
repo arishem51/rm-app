@@ -33,6 +33,7 @@ import { Plus, XIcon } from "lucide-react";
 import { ComboboxSuppliers } from "../combobox/supplier";
 import InputCurrency from "@/components/input-currency";
 import { useRouter } from "next/navigation";
+import { useMe } from "@/hooks/mutations/user";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
@@ -64,6 +65,8 @@ type Props = {
 };
 
 const ProductForm = ({ onClose, product }: Props) => {
+  const { data: currentUser } = useMe();
+
   const form = useForm<ProductFormDTO>({
     resolver: zodResolver(schema),
     defaultValues: product
@@ -80,6 +83,7 @@ const ProductForm = ({ onClose, product }: Props) => {
           wholesalePrice: 0,
           unit: "KG",
           imageUrls: [],
+          shopId: 1,
         },
   });
   const {
@@ -133,23 +137,26 @@ const ProductForm = ({ onClose, product }: Props) => {
   };
 
   const onSubmit = form.handleSubmit((data) => {
-    const payload = {
-      ...data,
-      categoryId: data.categoryId ? Number(data.categoryId) : undefined,
-      supplierId: data.supplierId ? Number(data.supplierId) : undefined,
-    };
+    if (currentUser?.shopId) {
+      const payload = {
+        ...data,
+        categoryId: data.categoryId ? Number(data.categoryId) : undefined,
+        supplierId: data.supplierId ? Number(data.supplierId) : undefined,
+      };
 
-    const mutateData: RequestProductDTO = {
-      ...payload,
-      imageUrls: payload.imageUrls.map((image) => image.url),
-    };
-    if (product?.id) {
-      updateProduct(
-        { id: product.id, ...mutateData },
-        factoryMutateConfig("update")
-      );
-    } else {
-      createProduct(mutateData, factoryMutateConfig("create"));
+      const mutateData: RequestProductDTO = {
+        ...payload,
+        imageUrls: payload.imageUrls.map((image) => image.url),
+        shopId: currentUser?.shopId,
+      };
+      if (product?.id) {
+        updateProduct(
+          { id: product.id, ...mutateData },
+          factoryMutateConfig("update")
+        );
+      } else {
+        createProduct(mutateData, factoryMutateConfig("create"));
+      }
     }
   });
 

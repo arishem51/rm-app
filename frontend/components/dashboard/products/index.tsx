@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
 import HeaderListSearch from "../header-list-search";
@@ -47,7 +47,18 @@ const Products = () => {
 
   return (
     <Fragment>
-      <HeaderListSearch filterSearch={filter.search} onSearch={handleSearch} />
+      <div className="flex justify-between">
+        <HeaderListSearch
+          filterSearch={filter.search}
+          onSearch={handleSearch}
+        />
+        <Link href="/dashboard/products/create">
+          <Button>
+            <Plus />
+            Create Product
+          </Button>
+        </Link>
+      </div>
       {(data?.data || []).length > 0 ? (
         <Table>
           <TableHeader>
