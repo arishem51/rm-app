@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import EmptyState from "../empty-state";
 import CategoryForm from "./category-form";
+import ListPagination from "../pagination";
 
 const Categories = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -31,6 +32,18 @@ const Categories = () => {
     ApiQuery.categories.getCategories(filter)
   );
   const [updateCategory, setUpdateCategory] = useState<Category>();
+
+  const handleNavigatePage = (page: number) => {
+    setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
+  };
+  const handleNavigateFullPage = (page: number) => {
+    const isRight = page > 0;
+    setFilter({
+      page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
+      search: filter.search,
+    });
+  };
+
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
   };
@@ -113,6 +126,12 @@ const Categories = () => {
       ) : (
         <EmptyState />
       )}
+      <ListPagination
+        isLeftButtonDisabled={filter.page === 0}
+        isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
+        handleNavigateFullPage={handleNavigateFullPage}
+        handleNavigatePage={handleNavigatePage}
+      />
     </Fragment>
   );
 };
