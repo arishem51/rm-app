@@ -11,7 +11,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class WarehouseUpdateDTO {
-
     private String name;
     private String location;
 }

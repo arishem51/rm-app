@@ -95,7 +95,7 @@ public class UserService {
         if (email != null && !email.isEmpty()) {
             Optional<User> existingUser = userRepository.findByEmail(email);
             if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
-                throw new IllegalArgumentException("email is already taken!");
+                throw new IllegalArgumentException("Email is already taken!");
             }
         }
 

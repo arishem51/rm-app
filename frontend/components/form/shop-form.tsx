@@ -20,6 +20,7 @@ import { ApiQuery } from "@/services/query";
 import { useEffect } from "react";
 import { UserRole } from "@/lib/constants";
 import { useMe } from "@/hooks/mutations/user";
+import { useRouter } from "next/navigation";
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Name is required" }),
@@ -41,6 +42,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
   const isPending = isCreating || isUpdating;
   const queryClient = useQueryClient();
   const { data: user } = useMe();
+  const router = useRouter();
 
   useEffect(() => {
     if (shop) {
@@ -63,6 +65,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
         queryKey: ApiQuery.users.getMe().queryKey,
       });
     }
+    router.push("/dashboard");
   };
 
   const handleSubmit = form.handleSubmit((data: CreateShopDTO) => {

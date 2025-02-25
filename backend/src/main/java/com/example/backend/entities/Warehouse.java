@@ -1,7 +1,6 @@
 package com.example.backend.entities;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,22 +28,7 @@ public class Warehouse {
     private String name;
 
     @Column(nullable = false)
-    private String location;
-
-    // Admin có thể tạo nhiều warehouse
-    @ManyToOne
-    @JoinColumn(name = "admin_id", nullable = false)
-    private User admin;
-
-    @ManyToMany
-    @JoinTable(name = "warehouse_product",
-            joinColumns = @JoinColumn(name = "warehouse_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<Product> products;
-
-    public void addProduct(Product product) {
-        this.products.add(product);
-    }
+    private String address;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -56,9 +40,9 @@ public class Warehouse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
-    @Column(name = "deleted_at")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime deletedAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id", nullable = false)
+    private Shop shop;
 
     @PrePersist
     protected void onCreate() {
@@ -72,6 +56,6 @@ public class Warehouse {
 
     @Override
     public String toString() {
-        return "Warehouse{id=" + id + ", name='" + name + "', location='" + location + "'}";
+        return "Warehouse{id=" + id + ", name='" + name + "', address='" + address + "'}";
     }
 }

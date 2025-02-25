@@ -64,10 +64,6 @@ public class Product {
     @Column(nullable = false)
     private Integer quantity;
 
-    // Mối quan hệ Many-to-Many với Warehouse
-    @ManyToMany(mappedBy = "products")
-    private List<Warehouse> warehouses;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

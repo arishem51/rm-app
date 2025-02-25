@@ -50,21 +50,9 @@ public class ProductService {
                 .wholesalePrice(dto.getWholesalePrice())
                 .description(dto.getDescription())
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
-                .quantity(dto.getQuantity()) // Lưu số lượng vào sản phẩm
                 .build();
 
-        Product savedProduct = productRepository.save(product);
-
-        // Cập nhật số lượng vào các kho đã chọn
-        for (Long warehouseId : dto.getWarehouseIds()) {
-            Warehouse warehouse = warehouseService.getWarehouseById(warehouseId);
-            if (warehouse != null) {
-                warehouse.addProduct(savedProduct); // Thêm sản phẩm vào kho
-                warehouseService.save(warehouse); // Lưu kho
-            }
-        }
-
-        return savedProduct;
+        return productRepository.save(product);
     }
 
     public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
