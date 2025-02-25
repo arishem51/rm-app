@@ -39,7 +39,7 @@ export function Combobox({ onSelect, formValue, options }: Props) {
           {value
             ? options.find((item) => item.value?.toString() === value)?.label
             : "Search items..."}
-          {buttonHover ? (
+          {buttonHover && !!value ? (
             <CircleX
               size={16}
               onClick={(e) => {

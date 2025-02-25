@@ -50,8 +50,8 @@ const schema = z.object({
       z.object({ url: z.string().url({ message: "Must be a valid URL" }) })
     )
     .default([]),
-  categoryId: z.coerce.number().optional(),
-  supplierId: z.coerce.number().optional(),
+  categoryId: z.string().nullable().optional(),
+  supplierId: z.string().nullable().optional(),
   shopId: z.coerce.number(),
 });
 
@@ -68,8 +68,8 @@ const ProductForm = ({ onClose, product }: Props) => {
     defaultValues: product
       ? {
           ...product,
-          categoryId: product.category?.id,
-          supplierId: product.supplier?.id,
+          categoryId: product.category?.id?.toString(),
+          supplierId: product.supplier?.id?.toString(),
           imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
         }
       : {
@@ -97,12 +97,16 @@ const ProductForm = ({ onClose, product }: Props) => {
   const isPending = isCreating || isUpdating;
   const { reset } = form;
 
+  const [category, s] = form.watch(["categoryId", "supplierId"]);
+
+  console.log({ category, s });
+
   useEffect(() => {
     if (product) {
       reset({
         ...product,
-        categoryId: product.category?.id,
-        supplierId: product.supplier?.id,
+        categoryId: product.category?.id?.toString(),
+        supplierId: product.supplier?.id?.toString(),
         imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
       });
     }
@@ -111,8 +115,8 @@ const ProductForm = ({ onClose, product }: Props) => {
   const onSubmit = form.handleSubmit((data) => {
     const payload = {
       ...data,
-      categoryId: Number(data.categoryId),
-      supplierId: Number(data.supplierId),
+      categoryId: data.categoryId ? Number(data.categoryId) : undefined,
+      supplierId: data.supplierId ? Number(data.supplierId) : undefined,
     };
 
     if (product?.id) {
@@ -213,7 +217,7 @@ const ProductForm = ({ onClose, product }: Props) => {
                 <FormItem className="w-full">
                   <FormLabel>Sale Price (VND)</FormLabel>
                   <FormControl>
-                    <Input
+                    <InputCurrency
                       className={className}
                       placeholder="Sale Price"
                       {...field}
@@ -228,11 +232,10 @@ const ProductForm = ({ onClose, product }: Props) => {
               name="wholesalePrice"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Wholesale Price</FormLabel>
+                  <FormLabel>Wholesale Price (VND)</FormLabel>
                   <FormControl>
-                    <Input
+                    <InputCurrency
                       className={className}
-                      type="number"
                       placeholder="Wholesale Price"
                       {...field}
                     />
