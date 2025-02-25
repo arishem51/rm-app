@@ -24,7 +24,7 @@ export default async function Page({
   return (
     <HydrationPrefetchQuery query={ApiQuery.products.getProduct(id)} awaitQuery>
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Profile</h1>
+        <h1 className="text-3xl font-bold mt-2">Product</h1>
         <p className="text-sm text-muted-foreground">
           Edit product information here
         </p>

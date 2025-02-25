@@ -55,6 +55,10 @@ export const AppRoutes = {
         url: "/dashboard/products/[id]",
         role: "OWNER",
       },
+      create: {
+        url: "/dashboard/products/create",
+        role: "OWNER",
+      },
     },
     suppliers: {
       url: "/dashboard/suppliers",
