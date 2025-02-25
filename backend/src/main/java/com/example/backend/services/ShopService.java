@@ -1,7 +1,6 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.CreateShopDTO;
-import com.example.backend.dto.ShopDTO;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
@@ -21,10 +20,13 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final UserService userService;
 
-    public Page<ShopDTO> findShops(int page, int pageSize, String search) {
-        Page<Shop> shopPage = search.isEmpty() ? shopRepository.findAll(PageRequest.of(page, pageSize))
-                : shopRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
-        return shopPage.map(ShopDTO::fromEntity);
+    public Page<Shop> findShops(int page, int pageSize, String search, User user) {
+        if (user.getRole() == Role.ADMIN) {
+            return search.isEmpty() ? shopRepository.findAll(PageRequest.of(page, pageSize))
+                    : shopRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
+        }
+        throw new IllegalArgumentException("You are not authorized to perform this action.");
+
     }
 
     public Shop createShop(CreateShopDTO shopDTO, User user) throws IllegalArgumentException {
@@ -79,6 +81,18 @@ public class ShopService {
             shop.setAddress(shopDTO.getAddress());
         }
         return shopRepository.save(shop);
+    }
+
+    public Shop findShopById(Long id, User currentUser) {
+        Optional<Shop> shopOpt = shopRepository.findById(id);
+        if (shopOpt.isEmpty()) {
+            throw new IllegalArgumentException("Shop does not exist.");
+        }
+        Shop shop = shopOpt.get();
+        if (!currentUser.getRole().equals(Role.ADMIN) && !shop.getCreateBy().getId().equals(currentUser.getId())) {
+            throw new IllegalArgumentException("You are not authorized to view this shop.");
+        }
+        return shop;
     }
 
 }
