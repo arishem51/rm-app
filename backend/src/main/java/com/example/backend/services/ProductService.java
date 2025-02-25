@@ -86,6 +86,12 @@ public class ProductService {
         if (product.getShop().getId() != user.getShop().getId()) {
             throw new IllegalArgumentException("You can only update products from your own shop!");
         }
+
+        Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
+        Supplier supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(supplierService::findById).orElse(null);
+        product.setCategory(category);
+        product.setSupplier(supplier);
+
         if (dto.getName() != null)
             product.setName(dto.getName());
 
