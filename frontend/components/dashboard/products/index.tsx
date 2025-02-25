@@ -19,6 +19,8 @@ import { useMe } from "@/hooks/mutations/user";
 import { UserRole } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { toCurrency } from "@/lib/utils";
+import { startCase } from "lodash";
 
 const Products = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -41,6 +43,9 @@ const Products = () => {
             <TableRow>
               <TableHead>STT</TableHead>
               <TableHead>Name</TableHead>
+              <TableHead>Sale Price (VND)</TableHead>
+              <TableHead>Wholesale Price (VND)</TableHead>
+              <TableHead>Unit</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Supplier</TableHead>
               <TableHead>Shop</TableHead>
@@ -52,6 +57,15 @@ const Products = () => {
               <TableRow key={product.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{product.name}</TableCell>
+                <TableCell>{toCurrency(product.salePrice as number)}</TableCell>
+                <TableCell>
+                  {toCurrency(product.wholesalePrice as number)}
+                </TableCell>
+                <TableCell>
+                  <Badge className="px-1 py-0.5">
+                    {startCase(product.unit?.toLowerCase())}
+                  </Badge>
+                </TableCell>
                 <TableCell>
                   <Badge
                     variant={product.category?.name ? "default" : "outline"}

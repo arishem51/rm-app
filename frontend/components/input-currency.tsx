@@ -11,20 +11,13 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { toCurrency } from "@/lib/utils";
 
 type InputProps = React.ComponentProps<"input">;
 export type InputCurrencyProps<T extends FieldValues> = InputProps & {
   name: Path<T>;
   label?: string;
 };
-
-const toCurrency = (value: number) =>
-  new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
 
 function InputCurrency<T extends FieldValues>({
   name,
