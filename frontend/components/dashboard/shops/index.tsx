@@ -19,13 +19,25 @@ import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import ShopForm from "@/components/form/shop-form";
 import EmptyState from "../empty-state";
+import ListPagination from "../pagination";
 
 const Shops = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useAppQuery(ApiQuery.shops.getShops(filter));
   const [updateShop, setUpdateShop] = useState<ShopDTO>();
+
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
+  };
+  const handleNavigatePage = (page: number) => {
+    setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
+  };
+  const handleNavigateFullPage = (page: number) => {
+    const isRight = page > 0;
+    setFilter({
+      page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
+      search: filter.search,
+    });
   };
 
   return (
@@ -88,6 +100,12 @@ const Shops = () => {
       ) : (
         <EmptyState />
       )}
+      <ListPagination
+        isLeftButtonDisabled={filter.page === 0}
+        isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
+        handleNavigateFullPage={handleNavigateFullPage}
+        handleNavigatePage={handleNavigatePage}
+      />
     </Fragment>
   );
 };

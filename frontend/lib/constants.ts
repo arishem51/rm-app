@@ -47,8 +47,18 @@ export const AppRoutes = {
       role: UserRole.ADMIN,
     },
     products: {
-      url: "/dashboard/products",
-      role: UserRole.ADMIN,
+      index: {
+        url: "/dashboard/products",
+        role: "ALL",
+      },
+      detail: {
+        url: "/dashboard/products/[id]",
+        role: "OWNER",
+      },
+      create: {
+        url: "/dashboard/products/create",
+        role: "OWNER",
+      },
     },
     suppliers: {
       url: "/dashboard/suppliers",

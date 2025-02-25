@@ -11,7 +11,6 @@ import {
 import { ApiQuery } from "@/services/query";
 import { lowerCase, startCase } from "lodash";
 import { Fragment, useCallback, useState } from "react";
-import UserPagination from "./pagination";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import useAppQuery from "@/hooks/use-app-query";
@@ -24,6 +23,7 @@ import { UserDTO } from "@/types/Api";
 import CreateUserModal from "./create-user-modal";
 import HeaderListSearch from "../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
+import ListPagination from "../pagination";
 
 const AdminUsersView = () => {
   const createFilterValue = useCallback(
@@ -141,7 +141,7 @@ const AdminUsersView = () => {
         ) : (
           <EmptyState />
         )}
-        <UserPagination
+        <ListPagination
           isLeftButtonDisabled={filter.page === 0}
           isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
           handleNavigateFullPage={handleNavigateFullPage}

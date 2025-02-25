@@ -1,9 +1,9 @@
 import { apiClient, createQuery } from "@/lib/utils";
 import { keepPreviousData } from "@tanstack/react-query";
 
-export const categories = {
-  getCategories: createQuery(apiClient.getCategories, {
+export const products = {
+  getProducts: createQuery(apiClient.getProducts, {
     placeholderData: keepPreviousData,
   }),
-  getAllCategories: createQuery(apiClient.getAllCategories, {}),
+  getProduct: createQuery(apiClient.getProduct),
 };

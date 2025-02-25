@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Briefcase,
@@ -28,8 +30,8 @@ import {
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import { AppRoutes } from "@/lib/constants";
-import { getMe } from "@/server/actions";
 import { checkRole } from "@/lib/helpers";
+import { useMe } from "@/hooks/mutations/user";
 
 type Item = {
   title: string;
@@ -40,10 +42,9 @@ type Item = {
 
 type SidebarGroupType = "application" | "shop" | "setting";
 
-const Content = async () => {
-  const query = await getMe();
-  const { data } = query ?? {};
-  const { data: user } = data ?? {};
+const Content = () => {
+  const query = useMe();
+  const { data: user } = query ?? {};
   const { isAdmin, isOwner } = checkRole(user);
 
   const itemGroups: Record<
@@ -104,7 +105,7 @@ const Content = async () => {
       },
       {
         title: "Products",
-        url: AppRoutes.dashboard.products.url,
+        url: AppRoutes.dashboard.products.index.url,
         icon: Box,
       }
     );
@@ -116,8 +117,12 @@ const Content = async () => {
       url: AppRoutes.dashboard.users.url,
       icon: Users,
     });
-    //FIXME: should revalidate
     if (user?.shopId) {
+      itemGroups.shop.items.push({
+        title: "Products",
+        url: AppRoutes.dashboard.products.index.url,
+        icon: Box,
+      });
       itemGroups.setting.items.push({
         title: "Shop",
         url: AppRoutes.dashboard.setting.shop.url,

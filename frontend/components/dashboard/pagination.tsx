@@ -45,7 +45,7 @@ type Props = {
   handleNavigatePage: (page: number) => void;
   handleNavigateFullPage: (page: number) => void;
 };
-const UserPagination = ({
+const ListPagination = ({
   handleNavigateFullPage,
   handleNavigatePage,
   isLeftButtonDisabled,
@@ -83,4 +83,4 @@ const UserPagination = ({
   );
 };
 
-export default UserPagination;
+export default ListPagination;

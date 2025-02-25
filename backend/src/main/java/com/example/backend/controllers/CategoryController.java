@@ -11,6 +11,9 @@ import com.example.backend.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +26,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @Operation(summary = "Get all categories", description = "Fetch a list of all registered categories.")
+    @Operation(summary = "Get paginate categories", description = "Fetch a list of categories.")
     @GetMapping("/")
     public ResponseEntity<BaseResponse<PaginateResponse<Category>>> getCategories(
             @RequestParam(defaultValue = "0") int page,
@@ -31,6 +34,13 @@ public class CategoryController {
         Page<Category> categories = categoryService.findCategories(page, pageSize, search);
         PaginateResponse<Category> response = new PaginateResponse<>(categories);
         return ResponseEntity.ok(new BaseResponse<PaginateResponse<Category>>(response, "Success!"));
+    }
+
+    @Operation(summary = "Get all categories", description = "Fetch all categories.")
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<List<Category>>> getAllCategories() {
+        List<Category> categories = categoryService.findAllCategories();
+        return ResponseEntity.ok(new BaseResponse<List<Category>>(categories, "Success!"));
     }
 
     @Operation(summary = "Create a category", description = "Create a new category under a specific shop.")
@@ -48,22 +58,12 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<Category>> updateCategory(@PathVariable Long id,
-            @RequestBody UpdateCategoryDTO requestDTO) {
+            @RequestBody UpdateCategoryDTO requestDTO, @CurrentUser User user) {
 
         // Gọi service để cập nhật danh mục
         try {
-            Category createdCategory = categoryService.updateCategory(id, requestDTO);
+            Category createdCategory = categoryService.updateCategory(id, requestDTO, user);
             return ResponseEntity.ok(BaseResponse.success(createdCategory, "Category update successfully!"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<Void>> deleteCategory(@PathVariable Long id) {
-        try {
-            categoryService.deleteCategory(id);
-            return ResponseEntity.ok(BaseResponse.success(null, "Category deleted successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

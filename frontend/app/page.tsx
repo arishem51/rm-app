@@ -11,7 +11,7 @@ import Link from "next/link";
 export default function Page() {
   return (
     <main className="flex flex-col items-center justify-start min-h-screen p-6 space-y-12">
-      <section className="w-full max-w-4xl text-center">
+      <section className="w-full max-w-4xl text-center mt-20">
         <h1 className="text-5xl font-extrabold">Ứng dụng Quản Lý Gạo</h1>
         <p className="mt-4 text-xl">
           Mang đến giải pháp quản lý hiệu quả cho các cửa hàng bán gạo
@@ -103,7 +103,8 @@ export default function Page() {
       <section className="w-full max-w-4xl text-center">
         <p className="text-sm text-gray-500">
           © {new Date().getFullYear()} Ứng dụng Quản Lý Gạo - Được phát triển
-          bởi Nhóm 4, FPT University Hà Nội | Dự án SWP
+          bởi Nhóm 4 - SWP391 - SE1889-VJ - KhangPQ3 , FPT University Hà Nội |
+          Dự án SWP
         </p>
       </section>
     </main>
