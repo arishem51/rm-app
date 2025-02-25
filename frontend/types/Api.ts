@@ -357,6 +357,18 @@ export interface PaginateResponseSupplier {
   data?: Supplier[];
 }
 
+export interface BaseResponseListSupplier {
+  data?: Supplier[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
 export interface BaseResponsePaginateResponseShopDTO {
   data?: PaginateResponseShopDTO;
   message?: string;
@@ -1065,6 +1077,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getMe: (params: RequestParams = {}) =>
       this.request<BaseResponseUserDTO, any>({
         path: `/api/users/me`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch all suppliers.
+     *
+     * @tags Supplier Management
+     * @name GetAllSuppliers
+     * @summary Get all suppliers
+     * @request GET:/api/suppliers/all
+     * @secure
+     */
+    getAllSuppliers: (params: RequestParams = {}) =>
+      this.request<BaseResponseListSupplier, any>({
+        path: `/api/suppliers/all`,
         method: "GET",
         secure: true,
         ...params,

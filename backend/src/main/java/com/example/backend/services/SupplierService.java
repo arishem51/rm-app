@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,10 @@ public class SupplierService {
         return search.isEmpty() ? supplierRepository.findAll(PageRequest.of(page, pageSize))
                 : supplierRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
 
+    }
+
+    public List<Supplier> findAllSuppliers() {
+        return supplierRepository.findAll();
     }
 
     public Supplier getSupplierById(Long id) {

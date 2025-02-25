@@ -5,4 +5,5 @@ export const suppliers = {
   getSuppliers: createQuery(apiClient.getSuppliers, {
     placeholderData: keepPreviousData,
   }),
+  getAllSuppliers: createQuery(apiClient.getAllSuppliers, {}),
 };

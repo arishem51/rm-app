@@ -30,6 +30,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, XIcon } from "lucide-react";
+import { ComboboxSuppliers } from "../combobox/supplier";
+import InputCurrency from "@/components/input-currency";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
@@ -79,7 +81,6 @@ const ProductForm = ({ onClose, product }: Props) => {
           imageUrls: [],
         },
   });
-
   const {
     fields: imageFields,
     append,
@@ -94,8 +95,8 @@ const ProductForm = ({ onClose, product }: Props) => {
   const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
 
   const isPending = isCreating || isUpdating;
-
   const { reset } = form;
+
   useEffect(() => {
     if (product) {
       reset({
@@ -210,11 +211,10 @@ const ProductForm = ({ onClose, product }: Props) => {
               name="salePrice"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Sale Price</FormLabel>
+                  <FormLabel>Sale Price (VND)</FormLabel>
                   <FormControl>
                     <Input
                       className={className}
-                      type="number"
                       placeholder="Sale Price"
                       {...field}
                     />
@@ -242,65 +242,73 @@ const ProductForm = ({ onClose, product }: Props) => {
               )}
             />
           </div>
-          <div className="flex gap-2 justify-between">
-            <FormField
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Category</FormLabel>
-                  <br />
-                  <FormControl>
-                    <ComboboxCategories
-                      onSelect={field.onChange}
-                      formValue={field.value?.toString()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="supplierId"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Supplier</FormLabel>
-                  <br />
-                  <FormControl>
-                    <ComboboxCategories
-                      onSelect={field.onChange}
-                      formValue={field.value?.toString()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+
           <FormField
             control={form.control}
-            name="unit"
+            name="supplierId"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unit</FormLabel>
+              <FormItem className="w-full">
+                <FormLabel>Supplier</FormLabel>
+                <br />
                 <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="KG">Kg</SelectItem>
-                        <SelectItem value="BAG">Bag</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <ComboboxSuppliers
+                    onSelect={field.onChange}
+                    formValue={field.value?.toString()}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <div className="flex justify-between gap-2">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Category</FormLabel>
+                    <br />
+                    <FormControl>
+                      <ComboboxCategories
+                        onSelect={field.onChange}
+                        formValue={field.value?.toString()}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unit</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a unit" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="KG">Kg</SelectItem>
+                            <SelectItem value="BAG">Bag</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
           <FormItem className="w-full">
             <FormLabel>Image URLs</FormLabel>
