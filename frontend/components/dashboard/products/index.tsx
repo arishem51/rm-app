@@ -18,7 +18,7 @@ import HeaderListSearch from "../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import { UserRole } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Products = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -26,7 +26,6 @@ const Products = () => {
     ApiQuery.products.getProducts(filter)
   );
   const { data: currentUser } = useMe();
-  const router = useRouter();
 
   const isOwner = currentUser?.role === UserRole.OWNER;
   const handleSearch = (search: string) => {
@@ -53,21 +52,30 @@ const Products = () => {
               <TableRow key={product.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{product.name}</TableCell>
-                <TableCell>{product.category?.name}</TableCell>
-                <TableCell>{product.supplier?.name}</TableCell>
+                <TableCell>
+                  <Badge
+                    variant={product.category?.name ? "default" : "outline"}
+                    className="px-1 py-0.5"
+                  >
+                    {product.category?.name || "None"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={product.supplier?.name ? "default" : "outline"}
+                    className="px-1 py-0.5"
+                  >
+                    {product.supplier?.name || "None"}
+                  </Badge>
+                </TableCell>
                 <TableCell>{product.shopName}</TableCell>
                 <TableCell className="text-right">
                   {isOwner ? (
-                    <Button
-                      onClick={() => {
-                        router.push(`/dashboard/products/${product.id}`);
-                      }}
-                      size="icon"
-                      variant="outline"
-                      className="w-6 h-6"
-                    >
-                      <ArrowUpRight />
-                    </Button>
+                    <Link href={`/dashboard/products/${product.id}`}>
+                      <Button variant="outline" className="w-6 h-6" size="icon">
+                        <ArrowUpRight />
+                      </Button>
+                    </Link>
                   ) : (
                     <Badge className="px-1 py-0.5" variant="outline">
                       No Action

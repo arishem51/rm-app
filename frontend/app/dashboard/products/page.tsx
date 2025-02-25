@@ -10,7 +10,7 @@ const Page = () => {
     >
       <div className="px-4">
         <h1 className="text-3xl font-bold mt-2">Products management</h1>
-        <p className="text-sm  text-neutral-400 my-1">
+        <p className="text-sm text-neutral-400 my-1">
           Manage Products and their information here.
         </p>
         <Products />

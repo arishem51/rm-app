@@ -32,6 +32,7 @@ import {
 import { Plus, XIcon } from "lucide-react";
 import { ComboboxSuppliers } from "../combobox/supplier";
 import InputCurrency from "@/components/input-currency";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
@@ -93,13 +94,10 @@ const ProductForm = ({ onClose, product }: Props) => {
   const queryClient = useQueryClient();
   const { mutate: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
+  const router = useRouter();
 
   const isPending = isCreating || isUpdating;
   const { reset } = form;
-
-  const [category, s] = form.watch(["categoryId", "supplierId"]);
-
-  console.log({ category, s });
 
   useEffect(() => {
     if (product) {
@@ -112,6 +110,28 @@ const ProductForm = ({ onClose, product }: Props) => {
     }
   }, [product, reset]);
 
+  const factoryMutateConfig = (type: "create" | "update") => {
+    return {
+      onSuccess: () => {
+        toast({
+          title: ToastTitle.success,
+          description: `Product ${type === "create" ? "created" : "updated"} successfully.`,
+        });
+        queryClient.invalidateQueries({
+          queryKey: ApiQuery.products.getProducts().queryKey,
+        });
+        onClose?.();
+        router.push("/dashboard/products");
+      },
+      onError: (error: Error) => {
+        toast({
+          title: ToastTitle.error,
+          description: error.message,
+        });
+      },
+    };
+  };
+
   const onSubmit = form.handleSubmit((data) => {
     const payload = {
       ...data,
@@ -119,55 +139,17 @@ const ProductForm = ({ onClose, product }: Props) => {
       supplierId: data.supplierId ? Number(data.supplierId) : undefined,
     };
 
+    const mutateData: RequestProductDTO = {
+      ...payload,
+      imageUrls: payload.imageUrls.map((image) => image.url),
+    };
     if (product?.id) {
-      const data: RequestProductDTO = {
-        ...payload,
-        imageUrls: payload.imageUrls.map((image) => image.url),
-      };
       updateProduct(
-        { id: product.id, ...data },
-        {
-          onSuccess: () => {
-            toast({
-              title: ToastTitle.success,
-              description: "Product updated successfully.",
-            });
-            queryClient.invalidateQueries({
-              queryKey: ApiQuery.products.getProducts().queryKey,
-            });
-            onClose?.();
-          },
-          onError: (error) => {
-            toast({
-              title: ToastTitle.error,
-              description: error.message,
-            });
-          },
-        }
+        { id: product.id, ...mutateData },
+        factoryMutateConfig("update")
       );
     } else {
-      const data: RequestProductDTO = {
-        ...payload,
-        imageUrls: payload.imageUrls.map((image) => image.url),
-      };
-      createProduct(data, {
-        onSuccess: () => {
-          toast({
-            title: ToastTitle.success,
-            description: "Product created successfully.",
-          });
-          queryClient.invalidateQueries({
-            queryKey: ApiQuery.products.getProducts().queryKey,
-          });
-          onClose?.();
-        },
-        onError: (error) => {
-          toast({
-            title: ToastTitle.error,
-            description: error.message,
-          });
-        },
-      });
+      createProduct(mutateData, factoryMutateConfig("create"));
     }
   });
 
