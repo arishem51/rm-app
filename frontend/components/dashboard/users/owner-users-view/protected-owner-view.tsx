@@ -25,7 +25,7 @@ import HeaderListSearch from "../../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 
 const ProtectedUserOwnerView = () => {
-  const [filter, setFilter] = useState({ search: "" });
+  const [filter, setFilter] = useState({ page: 0, search: "" });
   const [updatedUser, setUpdatedUser] = useState<UserDTO>();
   const { data: currentUser } = useMe();
 
@@ -35,7 +35,7 @@ const ProtectedUserOwnerView = () => {
   });
 
   const handleSearch = (search: string) => {
-    setFilter({ search });
+    setFilter({ page: 0, search });
   };
   const users = data?.users || [];
 
@@ -105,6 +105,12 @@ const ProtectedUserOwnerView = () => {
         ) : (
           <EmptyState />
         )}
+        {/* <ListPagination
+          isLeftButtonDisabled={filter.page === 0}
+          isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
+          handleNavigateFullPage={handleNavigateFullPage}
+          handleNavigatePage={handleNavigatePage}
+        /> */}
       </UserUpdateModal>
     </Fragment>
   );

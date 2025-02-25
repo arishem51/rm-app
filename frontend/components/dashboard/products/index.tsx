@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { toCurrency } from "@/lib/utils";
 import { startCase } from "lodash";
+import ListPagination from "../pagination";
 
 const Products = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -32,6 +33,16 @@ const Products = () => {
   const isOwner = currentUser?.role === UserRole.OWNER;
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
+  };
+  const handleNavigatePage = (page: number) => {
+    setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
+  };
+  const handleNavigateFullPage = (page: number) => {
+    const isRight = page > 0;
+    setFilter({
+      page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
+      search: filter.search,
+    });
   };
 
   return (
@@ -61,11 +72,7 @@ const Products = () => {
                 <TableCell>
                   {toCurrency(product.wholesalePrice as number)}
                 </TableCell>
-                <TableCell>
-                  <Badge className="px-1 py-0.5">
-                    {startCase(product.unit?.toLowerCase())}
-                  </Badge>
-                </TableCell>
+                <TableCell>{startCase(product.unit?.toLowerCase())}</TableCell>
                 <TableCell>
                   <Badge
                     variant={product.category?.name ? "default" : "outline"}
@@ -103,6 +110,12 @@ const Products = () => {
       ) : (
         <EmptyState />
       )}
+      <ListPagination
+        isLeftButtonDisabled={filter.page === 0}
+        isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
+        handleNavigateFullPage={handleNavigateFullPage}
+        handleNavigatePage={handleNavigatePage}
+      />
     </Fragment>
   );
 };
