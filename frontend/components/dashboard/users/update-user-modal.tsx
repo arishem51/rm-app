@@ -134,9 +134,9 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
           },
           onError: (e) => {
             toast({
-              variant: "destructive",
               title: ToastTitle.error,
               description: e.message,
+              variant: "destructive",
             });
           },
         }

@@ -10,11 +10,15 @@ import com.example.backend.entities.User;
 import com.example.backend.enums.ErrorCode;
 import com.example.backend.services.SupplierService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 
@@ -33,6 +37,13 @@ public class SupplierController {
         Page<Supplier> suppliers = supplierService.findSuppliers(page, pageSize, search);
         PaginateResponse<Supplier> response = new PaginateResponse<>(suppliers);
         return ResponseEntity.ok(new BaseResponse<PaginateResponse<Supplier>>(response, "Success!"));
+    }
+
+    @Operation(summary = "Get all suppliers", description = "Fetch all suppliers.")
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<List<Supplier>>> getAllSuppliers() {
+        List<Supplier> suppliers = supplierService.findAllSuppliers();
+        return ResponseEntity.ok(new BaseResponse<List<Supplier>>(suppliers, "Success!"));
     }
 
     @GetMapping("/{id}")

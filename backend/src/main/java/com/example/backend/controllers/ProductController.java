@@ -3,7 +3,8 @@ package com.example.backend.controllers;
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
-import com.example.backend.dto.product.ProductDTO;
+import com.example.backend.dto.product.RequestProductDTO;
+import com.example.backend.dto.product.ResponseProductDTO;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.User;
 import com.example.backend.services.ProductService;
@@ -12,7 +13,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/products")
@@ -21,25 +29,44 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     private final ProductService productService;
 
-    @Operation(summary = "Get all products", description = "Fetch a list of all registered products.")
+    @Operation(summary = "Get page products", description = "Fetch a list of page registered products.")
     @GetMapping("/")
-    public ResponseEntity<BaseResponse<PaginateResponse<Product>>> getProducts(
+    public ResponseEntity<BaseResponse<PaginateResponse<ResponseProductDTO>>> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "") String search) {
-        Page<Product> products = productService.findProducts(page, pageSize, search);
-        PaginateResponse<Product> response = new PaginateResponse<>(products);
-        return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+            @RequestParam(defaultValue = "") String search,
+            @CurrentUser User user) {
+        try {
+            Page<Product> products = productService.findProducts(page, pageSize, search, user);
+            PaginateResponse<ResponseProductDTO> response = new PaginateResponse<>(
+                    products.map(ResponseProductDTO::fromEntity));
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Get a product", description = "Fetch a product by ID.")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<ResponseProductDTO>> getProduct(@PathVariable Long id,
+            @CurrentUser User currentUser) {
+        try {
+            Product product = productService.findProductById(id, currentUser);
+            return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(product), "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @Operation(summary = "Create a product", description = "Create a new product.")
     @PostMapping()
-    public ResponseEntity<BaseResponse<Product>> createProduct(
-            @RequestBody ProductDTO productDTO,
+    public ResponseEntity<BaseResponse<ResponseProductDTO>> createProduct(
+            @RequestBody RequestProductDTO productDTO,
             @CurrentUser User user) {
         try {
             Product createdProduct = productService.createProduct(productDTO, user);
-            return ResponseEntity.ok(BaseResponse.success(createdProduct, "Product created successfully!"));
+            return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(createdProduct),
+                    "Product created successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
@@ -47,13 +74,14 @@ public class ProductController {
 
     @Operation(summary = "Update a product", description = "Update an existing product by ID.")
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<Product>> updateProduct(
+    public ResponseEntity<BaseResponse<ResponseProductDTO>> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductDTO dto,
+            @RequestBody RequestProductDTO dto,
             @CurrentUser User user) {
         try {
             Product updatedProduct = productService.updateProduct(id, dto, user);
-            return ResponseEntity.ok(BaseResponse.success(updatedProduct, "Product updated successfully!"));
+            return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(updatedProduct),
+                    "Product updated successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

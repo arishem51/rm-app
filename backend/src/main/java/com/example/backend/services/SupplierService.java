@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import com.example.backend.entities.Supplier;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.repositories.SupplierRepository;
+import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,13 +26,17 @@ public class SupplierService {
 
     }
 
+    public List<Supplier> findAllSuppliers() {
+        return supplierRepository.findAll();
+    }
+
     public Supplier getSupplierById(Long id) {
         return supplierRepository.findById(id).orElse(null);
     }
 
     public Supplier create(SupplierCreateDTO supplierDto, User currentUser) {
 
-        if (currentUser.getRole() == Role.STAFF) {
+        if (!UserRoleUtils.isAdmin(currentUser)) {
             throw new IllegalArgumentException("You are not authorized to perform this action");
         }
 
@@ -52,7 +58,7 @@ public class SupplierService {
     }
 
     public Supplier update(Long id, UpdateSupplierDTO supplierDto, @CurrentUser User currentUser) {
-        if (currentUser.getRole() == Role.STAFF) {
+        if (!UserRoleUtils.isAdmin(currentUser)) {
             throw new IllegalArgumentException("You are not authorized to perform this action");
         }
         Optional<Supplier> dbSupplier = supplierRepository.findById(id);
@@ -85,5 +91,9 @@ public class SupplierService {
             throw new IllegalArgumentException("Supplier not found");
         }
         supplierRepository.deleteById(id);
+    }
+
+    public Optional<Supplier> findById(Long id) {
+        return supplierRepository.findById(id);
     }
 }

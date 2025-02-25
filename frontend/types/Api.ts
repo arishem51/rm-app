@@ -58,10 +58,10 @@ export interface UpdateSupplierDTO {
   contactName?: string;
   phone?: string;
   email?: string;
-  taxId?: string;
+  taxCode?: string;
   address?: string;
   website?: string;
-  notes?: string;
+  description?: string;
 }
 
 export interface BaseResponseSupplier {
@@ -83,10 +83,11 @@ export interface Supplier {
   contactName?: string;
   phone?: string;
   email?: string;
-  taxId?: string;
+  /** @pattern \d{10}|\d{13} */
+  taxCode: string;
   address?: string;
   website?: string;
-  notes?: string;
+  description?: string;
 }
 
 export interface UpdateShopDTO {
@@ -119,14 +120,25 @@ export interface ShopDTO {
   updatedAt?: string;
 }
 
-export interface UpdateCategoryDTO {
-  name?: string;
+export interface RequestProductDTO {
+  name: string;
   description?: string;
-  imageUrl?: string;
+  /** @format int64 */
+  categoryId?: number;
+  /** @format int64 */
+  supplierId?: number;
+  /** @format int64 */
+  shopId: number;
+  /** @min 0 */
+  salePrice?: number;
+  /** @min 0 */
+  wholesalePrice?: number;
+  unit?: string;
+  imageUrls?: string[];
 }
 
-export interface BaseResponseCategory {
-  data?: Category;
+export interface BaseResponseResponseProductDTO {
+  data?: ResponseProductDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -147,6 +159,40 @@ export interface Category {
   createdAt?: string;
   /** @format date-time */
   updatedAt?: string;
+}
+
+export interface ResponseProductDTO {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  description?: string;
+  category?: Category;
+  supplier?: Supplier;
+  /** @format int64 */
+  shopId?: number;
+  shopName?: string;
+  salePrice?: number;
+  wholesalePrice?: number;
+  unit?: "KG" | "BAG";
+  imageUrls?: string[];
+}
+
+export interface UpdateCategoryDTO {
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+}
+
+export interface BaseResponseCategory {
+  data?: Category;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface CreateUserRequest {
@@ -173,10 +219,11 @@ export interface SupplierCreateDTO {
   /** @pattern ^(\+?\d{1,3})?\d{10}$ */
   phone: string;
   email: string;
-  taxId: string;
+  /** @pattern \d{10}|\d{13} */
+  taxCode: string;
   address: string;
   website?: string;
-  notes?: string;
+  description?: string;
 }
 
 export interface CreateShopDTO {
@@ -310,6 +357,18 @@ export interface PaginateResponseSupplier {
   data?: Supplier[];
 }
 
+export interface BaseResponseListSupplier {
+  data?: Supplier[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
 export interface BaseResponsePaginateResponseShopDTO {
   data?: PaginateResponseShopDTO;
   message?: string;
@@ -332,6 +391,42 @@ export interface PaginateResponseShopDTO {
   /** @format int32 */
   totalPages?: number;
   data?: ShopDTO[];
+}
+
+export interface BaseResponsePaginateResponseResponseProductDTO {
+  data?: PaginateResponseResponseProductDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface PaginateResponseResponseProductDTO {
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: ResponseProductDTO[];
+}
+
+export interface BaseResponseListCategory {
+  data?: Category[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface BaseResponsePaginateResponseCategory {
@@ -681,6 +776,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch a product by ID.
+     *
+     * @tags Product Management
+     * @name GetProduct
+     * @summary Get a product
+     * @request GET:/api/products/{id}
+     * @secure
+     */
+    getProduct: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseResponseProductDTO, any>({
+        path: `/api/products/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Update an existing product by ID.
+     *
+     * @tags Product Management
+     * @name UpdateProduct
+     * @summary Update a product
+     * @request PUT:/api/products/{id}
+     * @secure
+     */
+    updateProduct: (id: number, data: RequestProductDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseResponseProductDTO, any>({
+        path: `/api/products/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * No description
      *
      * @tags Category Management
@@ -695,22 +826,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Category Management
-     * @name DeleteCategory
-     * @request DELETE:/api/categories/{id}
-     * @secure
-     */
-    deleteCategory: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseVoid, any>({
-        path: `/api/categories/${id}`,
-        method: "DELETE",
-        secure: true,
         ...params,
       }),
 
@@ -838,6 +953,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Create a new product.
+     *
+     * @tags Product Management
+     * @name CreateProduct
+     * @summary Create a product
+     * @request POST:/api/products
+     * @secure
+     */
+    createProduct: (data: RequestProductDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseResponseProductDTO, any>({
+        path: `/api/products`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Create a new category under a specific shop.
      *
      * @tags Category Management
@@ -949,6 +1083,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch all suppliers.
+     *
+     * @tags Supplier Management
+     * @name GetAllSuppliers
+     * @summary Get all suppliers
+     * @request GET:/api/suppliers/all
+     * @secure
+     */
+    getAllSuppliers: (params: RequestParams = {}) =>
+      this.request<BaseResponseListSupplier, any>({
+        path: `/api/suppliers/all`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Fetch a list of all registered shops.
      *
      * @tags Shop Management
@@ -983,11 +1134,62 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of all registered categories.
+     * @description Fetch a list of page registered products.
+     *
+     * @tags Product Management
+     * @name GetProducts
+     * @summary Get page products
+     * @request GET:/api/products/
+     * @secure
+     */
+    getProducts: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseResponseProductDTO, any>({
+        path: `/api/products/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch all categories.
+     *
+     * @tags Category Management
+     * @name GetAllCategories
+     * @summary Get all categories
+     * @request GET:/api/categories/all
+     * @secure
+     */
+    getAllCategories: (params: RequestParams = {}) =>
+      this.request<BaseResponseListCategory, any>({
+        path: `/api/categories/all`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch a list of categories.
      *
      * @tags Category Management
      * @name GetCategories
-     * @summary Get all categories
+     * @summary Get paginate categories
      * @request GET:/api/categories/
      * @secure
      */

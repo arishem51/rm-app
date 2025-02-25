@@ -1,4 +1,5 @@
 import { UnusedSkipTokenOptions } from "@tanstack/react-query";
+import { HttpResponse } from "./Api";
 
 export type QueryConfigType<T> = Omit<
   UnusedSkipTokenOptions<T>,
@@ -17,3 +18,12 @@ export type RouteItem = {
 export type AppRoutesType = {
   [key: string]: RouteItem | AppRoutesType;
 };
+
+export type HttpErrorResponse = HttpResponse<
+  null,
+  {
+    data: null;
+    errorCode: number;
+    message: string;
+  }
+>;
