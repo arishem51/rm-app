@@ -3,6 +3,7 @@ import { products } from "./products";
 import { shops } from "./shops";
 import { suppliers } from "./suppliers";
 import { users } from "./users";
+import { warehouses } from "./warehouses";
 
 const ApiQuery = {
   users,
@@ -10,6 +11,7 @@ const ApiQuery = {
   categories,
   products,
   suppliers,
+  warehouses,
 };
 
 export { ApiQuery };

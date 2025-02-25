@@ -8,6 +8,7 @@ import com.example.backend.dto.product.ResponseProductDTO;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.User;
 import com.example.backend.services.ProductService;
+import com.example.backend.utils.UserRoleUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -58,18 +59,23 @@ public class ProductController {
         }
     }
 
-    @Operation(summary = "Create a product", description = "Create a new product.")
+    @Operation(summary = "Create a product", description = "Create a new product")
     @PostMapping()
     public ResponseEntity<BaseResponse<ResponseProductDTO>> createProduct(
             @RequestBody RequestProductDTO productDTO,
             @CurrentUser User user) {
         try {
+            if (UserRoleUtils.isStaff(user)) {
+                throw new IllegalArgumentException("You are not authorized to create a product!");
+            }
+
             Product createdProduct = productService.createProduct(productDTO, user);
             return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(createdProduct),
                     "Product created successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
+
     }
 
     @Operation(summary = "Update a product", description = "Update an existing product by ID.")

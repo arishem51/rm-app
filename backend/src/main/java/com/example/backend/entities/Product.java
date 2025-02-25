@@ -2,9 +2,9 @@ package com.example.backend.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 import com.example.backend.enums.UnitType;
 
 @Getter
@@ -57,8 +55,14 @@ public class Product {
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
 
-    @Column(name = "image_urls")
+    @ElementCollection
+    @CollectionTable(name = "product_image_urls", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_url")
     private List<String> imageUrls;
+
+    // Số lượng sản phẩm trong kho
+    @Column(nullable = false)
+    private Integer quantity;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -92,6 +96,7 @@ public class Product {
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
                 + ", unit='" + unit + '\''
                 + ", salePrice='" + salePrice + '\''
+                + ", quantity=" + quantity
                 + "} ";
     }
 }

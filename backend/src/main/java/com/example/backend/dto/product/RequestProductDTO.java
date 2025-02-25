@@ -2,10 +2,8 @@ package com.example.backend.dto.product;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.List;
-
 import com.example.backend.enums.UnitType;
 import com.example.backend.security.validation.ValidEnum;
 

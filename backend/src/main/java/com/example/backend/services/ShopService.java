@@ -6,6 +6,7 @@ import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.repositories.ShopRepository;
 import com.example.backend.dto.UpdateShopDTO;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class ShopService {
     private final ShopRepository shopRepository;
     private final UserService userService;
+    private final WarehouseService warehouseService;
 
     public Page<Shop> findShops(int page, int pageSize, String search, User user) {
         if (user.getRole() == Role.ADMIN) {
@@ -26,7 +28,6 @@ public class ShopService {
                     : shopRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
         }
         throw new IllegalArgumentException("You are not authorized to perform this action.");
-
     }
 
     public Shop createShop(CreateShopDTO shopDTO, User user) throws IllegalArgumentException {
@@ -43,6 +44,7 @@ public class ShopService {
         if (shopRepository.existsByName(shopDTO.getName())) {
             throw new IllegalArgumentException("A shop with this name already exists.");
         }
+
         Set<User> users = new HashSet<>();
         users.add(persistedUser);
         Shop shop = Shop.builder()
@@ -51,8 +53,8 @@ public class ShopService {
                 .createBy(persistedUser)
                 .users(users)
                 .build();
-
         shopRepository.save(shop);
+        warehouseService.createWarehouseByShop(shop);
         userService.updateShop(persistedUser, shop);
         return shop;
     }
