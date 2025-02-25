@@ -75,7 +75,9 @@ const Categories = () => {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create Category</DialogTitle>
+            <DialogTitle>
+              {updateCategory?.id ? "Update" : "Create"} Category
+            </DialogTitle>
             <DialogDescription>
               Enter the details for the new category. Click save once
               you&apos;re finished to add it to your collection.
