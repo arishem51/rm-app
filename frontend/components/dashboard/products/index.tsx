@@ -52,12 +52,14 @@ const Products = () => {
           filterSearch={filter.search}
           onSearch={handleSearch}
         />
-        <Link href="/dashboard/products/create">
-          <Button>
-            <Plus />
-            Create Product
-          </Button>
-        </Link>
+        {isOwner && (
+          <Link href="/dashboard/products/create">
+            <Button>
+              <Plus />
+              Create Product
+            </Button>
+          </Link>
+        )}
       </div>
       {(data?.data || []).length > 0 ? (
         <Table>
@@ -102,17 +104,11 @@ const Products = () => {
                 </TableCell>
                 <TableCell>{product.shopName}</TableCell>
                 <TableCell className="text-right">
-                  {isOwner ? (
-                    <Link href={`/dashboard/products/${product.id}`}>
-                      <Button variant="outline" className="w-6 h-6" size="icon">
-                        <ArrowUpRight />
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Badge className="px-1 py-0.5" variant="outline">
-                      No Action
-                    </Badge>
-                  )}
+                  <Link href={`/dashboard/products/${product.id}`}>
+                    <Button variant="outline" className="w-6 h-6" size="icon">
+                      <ArrowUpRight />
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

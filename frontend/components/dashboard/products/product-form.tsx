@@ -18,7 +18,7 @@ import { useCreateProduct, useUpdateProduct } from "@/hooks/mutations/product";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { RequestProductDTO, ResponseProductDTO } from "@/types/Api";
-import { ToastTitle } from "@/lib/constants";
+import { ToastTitle, UserRole } from "@/lib/constants";
 import { Textarea } from "@/components/ui/textarea";
 import { ComboboxCategories } from "../combobox/category";
 import {
@@ -34,6 +34,7 @@ import { ComboboxSuppliers } from "../combobox/supplier";
 import InputCurrency from "@/components/input-currency";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
+import { cn } from "@/lib/utils";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
@@ -102,6 +103,7 @@ const ProductForm = ({ onClose, product }: Props) => {
 
   const isPending = isCreating || isUpdating;
   const { reset } = form;
+  const isOwner = currentUser?.role === UserRole.OWNER;
 
   useEffect(() => {
     if (product) {
@@ -171,7 +173,6 @@ const ProductForm = ({ onClose, product }: Props) => {
     <Form {...form}>
       <form onSubmit={onSubmit} className="mb-12">
         <div className="flex flex-col gap-3 mb-4">
-          {/* Other form fields (Name, Description, etc.) */}
           <FormField
             control={form.control}
             name="name"
@@ -179,7 +180,7 @@ const ProductForm = ({ onClose, product }: Props) => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Name" {...field} />
+                  <Input placeholder="Name" readOnly={!isOwner} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -192,7 +193,12 @@ const ProductForm = ({ onClose, product }: Props) => {
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea rows={3} placeholder="Description" {...field} />
+                  <Textarea
+                    readOnly={!isOwner}
+                    rows={3}
+                    placeholder="Description"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -208,6 +214,7 @@ const ProductForm = ({ onClose, product }: Props) => {
                   <FormControl>
                     <InputCurrency
                       className={className}
+                      readOnly={!isOwner}
                       placeholder="Sale Price"
                       {...field}
                     />
@@ -226,6 +233,7 @@ const ProductForm = ({ onClose, product }: Props) => {
                     <InputCurrency
                       className={className}
                       placeholder="Wholesale Price"
+                      readOnly={!isOwner}
                       {...field}
                     />
                   </FormControl>
@@ -239,7 +247,9 @@ const ProductForm = ({ onClose, product }: Props) => {
             control={form.control}
             name="supplierId"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem
+                className={cn("w-full", isOwner ? "" : "pointer-events-none")}
+              >
                 <FormLabel>Supplier</FormLabel>
                 <br />
                 <FormControl>
@@ -258,7 +268,12 @@ const ProductForm = ({ onClose, product }: Props) => {
                 control={form.control}
                 name="categoryId"
                 render={({ field }) => (
-                  <FormItem className="w-full">
+                  <FormItem
+                    className={cn(
+                      "w-full",
+                      isOwner ? "" : "pointer-events-none"
+                    )}
+                  >
                     <FormLabel>Category</FormLabel>
                     <br />
                     <FormControl>
@@ -284,7 +299,12 @@ const ProductForm = ({ onClose, product }: Props) => {
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger
+                          className={cn(
+                            "w-full",
+                            isOwner ? "" : "pointer-events-none"
+                          )}
+                        >
                           <SelectValue placeholder="Select a unit" />
                         </SelectTrigger>
                         <SelectContent>
@@ -313,7 +333,11 @@ const ProductForm = ({ onClose, product }: Props) => {
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
-                          <Input placeholder="Paste image URL" {...field} />
+                          <Input
+                            readOnly={!isOwner}
+                            placeholder="Paste image URL"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -322,13 +346,14 @@ const ProductForm = ({ onClose, product }: Props) => {
                   <Button
                     variant="destructive"
                     size="icon"
+                    disabled={!isOwner}
                     onClick={() => remove(index)}
                   >
                     <XIcon />
                   </Button>
                 </div>
               ))}
-              {imageFields.length < 5 && (
+              {imageFields.length < 5 && isOwner && (
                 <Button variant="outline" onClick={() => append({ url: "" })}>
                   <Plus className="h-4 w-4" />
                   Add Image URL
@@ -338,11 +363,13 @@ const ProductForm = ({ onClose, product }: Props) => {
             <FormMessage />
           </FormItem>
         </div>
-        <DialogFooter>
-          <Button type="submit" disabled={isPending} className="mt-2">
-            Save changes
-          </Button>
-        </DialogFooter>
+        {isOwner && (
+          <DialogFooter>
+            <Button type="submit" disabled={isPending} className="mt-2">
+              Save changes
+            </Button>
+          </DialogFooter>
+        )}
       </form>
     </Form>
   );
