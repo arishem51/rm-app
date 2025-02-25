@@ -8,11 +8,10 @@ const WarehousesPage = () => {
       awaitQuery
     >
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Warehouse management</h1>
+        <h1 className="text-3xl font-bold mt-2">Inventory management</h1>
         <p className="text-sm  text-neutral-400 my-1">
-          Manage Warehouses and their information here.
+          Manage inventories and their information here.
         </p>
-        {/* <Shops /> */}
       </div>
     </HydrationPrefetchQuery>
   );
