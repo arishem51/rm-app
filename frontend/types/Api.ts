@@ -309,6 +309,41 @@ export interface ForgotPasswordRequest {
   email: string;
 }
 
+export interface BaseResponsePaginateResponseWarehouse {
+  data?: PaginateResponseWarehouse;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface PaginateResponseWarehouse {
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: Warehouse[];
+}
+
+export interface Warehouse {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  address?: string;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+}
+
 export interface BaseResponsePaginateResponseUserDTO {
   data?: PaginateResponseUserDTO;
   message?: string;
@@ -953,7 +988,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Create a new product.
+     * @description Create a new product
      *
      * @tags Product Management
      * @name CreateProduct
@@ -1062,6 +1097,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Get all warehouses of a shop
+     *
+     * @tags Warehouse Management
+     * @name GetWarehouses
+     * @summary Get all warehouses of a shop
+     * @request GET:/api/warehouses/
+     * @secure
+     */
+    getWarehouses: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseWarehouse, any>({
+        path: `/api/warehouses/`,
+        method: "GET",
+        query: query,
+        secure: true,
         ...params,
       }),
 

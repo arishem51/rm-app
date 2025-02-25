@@ -36,7 +36,7 @@ import lombok.Setter;
 public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String name;

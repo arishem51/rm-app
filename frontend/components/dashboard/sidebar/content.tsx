@@ -11,6 +11,7 @@ import {
   TagIcon,
   User2,
   Users,
+  Warehouse,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -111,24 +112,38 @@ const Content = () => {
     );
   }
 
-  if (isOwner) {
-    itemGroups.shop.items.push({
-      title: "Users",
-      url: AppRoutes.dashboard.users.url,
-      icon: Users,
-    });
-    if (user?.shopId) {
-      itemGroups.shop.items.push({
+  if (user?.shopId && isOwner) {
+    itemGroups.shop.items.push(
+      {
+        title: "Users",
+        url: AppRoutes.dashboard.users.url,
+        icon: Users,
+      },
+      {
         title: "Products",
         url: AppRoutes.dashboard.products.index.url,
         icon: Box,
-      });
-      itemGroups.setting.items.push({
-        title: "Shop",
-        url: AppRoutes.dashboard.setting.shop.url,
-        icon: ShoppingBag,
-      });
-    }
+      },
+      {
+        title: "Warehouses",
+        icon: Warehouse,
+        children: [
+          {
+            title: "Facilities",
+            url: AppRoutes.dashboard.warehouses.facilities.url,
+          },
+          {
+            title: "Inventories",
+            url: AppRoutes.dashboard.warehouses.inventories.url,
+          },
+        ],
+      }
+    );
+    itemGroups.setting.items.push({
+      title: "Shop",
+      url: AppRoutes.dashboard.setting.shop.url,
+      icon: ShoppingBag,
+    });
   }
 
   const groups = Object.keys(itemGroups).map(
@@ -178,7 +193,9 @@ const Content = () => {
                                 <SidebarMenuSub key={child.title}>
                                   <SidebarMenuSubItem>
                                     <SidebarMenuButton asChild>
-                                      <span>{child.title}</span>
+                                      <Link href={child.url as string}>
+                                        <span>{child.title}</span>
+                                      </Link>
                                     </SidebarMenuButton>
                                   </SidebarMenuSubItem>
                                 </SidebarMenuSub>

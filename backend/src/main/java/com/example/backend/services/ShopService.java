@@ -6,7 +6,6 @@ import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
 import com.example.backend.repositories.ShopRepository;
 import com.example.backend.dto.UpdateShopDTO;
-import com.example.backend.dto.warehouse.WarehouseCreateDTO;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -29,7 +28,6 @@ public class ShopService {
                     : shopRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
         }
         throw new IllegalArgumentException("You are not authorized to perform this action.");
-
     }
 
     public Shop createShop(CreateShopDTO shopDTO, User user) throws IllegalArgumentException {

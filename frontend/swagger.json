@@ -23,6 +23,10 @@
     {
       "name": "Product Management",
       "description": "Operations related to products"
+    },
+    {
+      "name": "Warehouse Management",
+      "description": "Operations related to warehouses"
     }
   ],
   "paths": {
@@ -450,7 +454,7 @@
       "post": {
         "tags": ["Product Management"],
         "summary": "Create a product",
-        "description": "Create a new product.",
+        "description": "Create a new product",
         "operationId": "createProduct",
         "requestBody": {
           "content": {
@@ -600,6 +604,46 @@
             "content": {
               "*/*": {
                 "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouses/": {
+      "get": {
+        "tags": ["Warehouse Management"],
+        "summary": "Get all warehouses of a shop",
+        "description": "Get all warehouses of a shop",
+        "operationId": "getWarehouses",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePaginateResponseWarehouse"
+                }
               }
             }
           }
@@ -1165,6 +1209,47 @@
         "type": "object",
         "properties": { "email": { "type": "string" } },
         "required": ["email"]
+      },
+      "BaseResponsePaginateResponseWarehouse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/PaginateResponseWarehouse" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "PaginateResponseWarehouse": {
+        "type": "object",
+        "properties": {
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Warehouse" }
+          }
+        }
+      },
+      "Warehouse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
       },
       "BaseResponsePaginateResponseUserDTO": {
         "type": "object",

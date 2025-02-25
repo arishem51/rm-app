@@ -53,11 +53,21 @@ export const AppRoutes = {
       },
       detail: {
         url: "/dashboard/products/[id]",
-        role: "OWNER",
+        role: UserRole.OWNER,
       },
       create: {
         url: "/dashboard/products/create",
-        role: "OWNER",
+        role: UserRole.OWNER,
+      },
+    },
+    warehouses: {
+      facilities: {
+        url: "/dashboard/warehouses/facilities",
+        role: UserRole.OWNER,
+      },
+      inventories: {
+        url: "/dashboard/warehouses/inventories",
+        role: UserRole.OWNER,
       },
     },
     suppliers: {
