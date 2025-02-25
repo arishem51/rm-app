@@ -4,7 +4,7 @@ import { UserDTO } from "@/types/Api";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import UnSupportRole from "../view/un-support-role";
-import { AppRoutes } from "@/lib/constants";
+import { AppRoutes, UserRole } from "@/lib/constants";
 import { AppRoutesType, RouteItem } from "@/types";
 
 type Props = {
@@ -53,7 +53,7 @@ const ProtectedRole = ({ children, user }: Props) => {
   };
   const isSupport = checkSupportRole();
 
-  if (!isSupport) {
+  if (user.role !== UserRole.ADMIN && !isSupport) {
     return <UnSupportRole />;
   }
 
