@@ -43,9 +43,9 @@ const AuthView: FC<Props> = ({
   useEffect(() => {
     if (atom.showToastErrorSignIn) {
       toast({
-        variant: "destructive",
         title: ToastTitle.somethingWentWrong,
         description: "Credentials expired, please sign in again!",
+        variant: "destructive",
       });
       setAtom({ showToastErrorSignIn: false, token: "" });
       fetch(`${window.origin}/api/auth`, {
@@ -82,9 +82,9 @@ const AuthView: FC<Props> = ({
               signUp(formData, {
                 onError: (e) => {
                   toast({
-                    variant: "destructive",
                     title: ToastTitle.error,
                     description: e.message || ToastTitle.somethingWentWrong,
+                    variant: "destructive",
                   });
                 },
                 onSuccess: () => {
@@ -101,9 +101,9 @@ const AuthView: FC<Props> = ({
               signIn(formData, {
                 onError: (e) => {
                   toast({
-                    variant: "destructive",
                     title: ToastTitle.error,
                     description: e.message,
+                    variant: "destructive",
                   });
                 },
                 async onSuccess({ data }) {

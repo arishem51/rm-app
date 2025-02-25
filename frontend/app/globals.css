@@ -184,3 +184,12 @@ body {
   /* neutral-700 */
   background: #404040;
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

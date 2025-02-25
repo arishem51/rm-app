@@ -104,18 +104,25 @@ const Content = async () => {
       },
       {
         title: "Products",
-        url: AppRoutes.dashboard.products.url,
+        url: AppRoutes.dashboard.products.index.url,
         icon: Box,
       }
     );
   }
 
   if (isOwner) {
-    itemGroups.shop.items.push({
-      title: "Users",
-      url: AppRoutes.dashboard.users.url,
-      icon: Users,
-    });
+    itemGroups.shop.items.push(
+      {
+        title: "Users",
+        url: AppRoutes.dashboard.users.url,
+        icon: Users,
+      },
+      {
+        title: "Products",
+        url: AppRoutes.dashboard.products.index.url,
+        icon: Box,
+      }
+    );
     //FIXME: should revalidate
     if (user?.shopId) {
       itemGroups.setting.items.push({

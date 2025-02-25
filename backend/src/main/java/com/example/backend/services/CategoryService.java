@@ -5,12 +5,15 @@ import com.example.backend.dto.category.UpdateCategoryDTO;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.CategoryRepository;
+import com.example.backend.utils.UserRoleUtils;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 //code moi
 import java.util.Optional;
 
@@ -20,14 +23,9 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public Category createCategory(CreateCategoryDTO dto, User user) {
-        // Lấy shop theo id từ dto
-
-        // FIXME: Kiểm tra quyền: chỉ cho phép chủ shop (hoặc admin) thêm category vào
-        // shop của mình
-        // if ( user.getRole() != Role.ADMIN) {
-        // throw new IllegalArgumentException("User does not have permission to add
-        // category to this shop");
-        // }
+        if (!UserRoleUtils.isAdmin(user)) {
+            throw new IllegalArgumentException("Permission denied");
+        }
 
         Category category = new Category();
         category.setName(dto.getName());
@@ -42,51 +40,34 @@ public class CategoryService {
 
     }
 
-    // code moi
-
-    /**
-     * Cập nhập danh mục theo ID
-     * 
-     * @param id  ID của Category cần câp nhật
-     * @param dto Đối tượng DTO chứa thông tin cần cập nhật
-     * @return Danh mục sau khi đã cập nhật
-     */
-    public Category updateCategory(Long id, UpdateCategoryDTO dto) {
-        // Tìm danh mục theo ID trong database
+    public Category updateCategory(Long id, UpdateCategoryDTO dto, User currentUser) {
+        if (currentUser == null) {
+            throw new IllegalArgumentException("User not found");
+        }
         Optional<Category> optionalCategory = categoryRepository.findById(id);
-
-        if (optionalCategory.isPresent()) {// Nếu tìm thấy danh mục
-            // Lấy đối tượng Category từ Optional
-            Category category = optionalCategory.get();
-            if (dto.getName() != null) {
-                category.setName(dto.getName());
-            }
-            if (dto.getDescription() != null) {
-                category.setDescription(dto.getDescription());
-            }
-            if (category.getImageUrl() != null){
-                category.setImageUrl(dto.getImageUrl());
-            }
-            return categoryRepository.save(category);
-        } else {
+        if (optionalCategory.isEmpty()) {
             throw new IllegalArgumentException("Category not found with id: " + id);
         }
+
+        Category category = optionalCategory.get();
+        if (dto.getName() != null) {
+            category.setName(dto.getName());
+        }
+        if (dto.getDescription() != null) {
+            category.setDescription(dto.getDescription());
+        }
+        if (category.getImageUrl() != null) {
+            category.setImageUrl(dto.getImageUrl());
+        }
+        return categoryRepository.save(category);
     }
 
-    /**
-     * Xoá danh mục theo ID
-     * 
-     * @param id ID của danh mục cần xoá
-     */
-    public void deleteCategory(Long id) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
+    public Optional<Category> findById(Long id) {
+        return categoryRepository.findById(id);
+    }
 
-        if (optionalCategory.isPresent()) {// Nếu tìm thấy danh mục
-            categoryRepository.delete(optionalCategory.get());
-
-        } else {
-            throw new IllegalArgumentException("Category not found with id: " + id);
-        }
+    public List<Category> findAllCategories() {
+        return categoryRepository.findAll();
     }
 
 }

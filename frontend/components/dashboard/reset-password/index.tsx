@@ -76,9 +76,9 @@ const ResetPasswordView = ({ token }: Props) => {
         },
         onError: (e) => {
           toast({
-            variant: "destructive",
             title: ToastTitle.error,
             description: e.message,
+            variant: "destructive",
           });
         },
       }

@@ -1,15 +1,10 @@
 import { BaseResponseUserDTO, HttpResponse } from "@/types/Api";
-import {
-  DefaultError,
-  QueryKey,
-  UseQueryOptions,
-  useQuery,
-} from "@tanstack/react-query";
+import { QueryKey, UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 
 function useAppQuery<
   TQueryFnData = unknown,
-  TError = DefaultError,
+  TError = HttpResponse<null>,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(options: UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>) {

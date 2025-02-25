@@ -89,3 +89,11 @@ export const createQuery = <T, K>(
     });
   };
 };
+
+export const toCurrency = (value: number) =>
+  new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);

@@ -24,6 +24,7 @@ const Navbar = () => {
         {segments.map((segment, index) => {
           const isLast = index === segments.length - 1;
           const segmentPath = startCase(segment);
+          const originSegment = segments.slice(0, index + 1).join("/");
 
           return (
             <Fragment key={segment}>
@@ -35,7 +36,7 @@ const Navbar = () => {
                   isLast ? (
                     segmentPath
                   ) : (
-                    <Link href={"/".concat(segment)}>{segmentPath}</Link>
+                    <Link href={"/".concat(originSegment)}>{segmentPath}</Link>
                   )
                 )}
               </BreadcrumbItem>
