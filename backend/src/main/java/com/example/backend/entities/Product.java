@@ -60,10 +60,6 @@ public class Product {
     @Column(name = "image_url")
     private List<String> imageUrls;
 
-    // Số lượng sản phẩm trong kho
-    @Column(nullable = false)
-    private Integer quantity;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -96,7 +92,6 @@ public class Product {
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
                 + ", unit='" + unit + '\''
                 + ", salePrice='" + salePrice + '\''
-                + ", quantity=" + quantity
                 + "} ";
     }
 }
