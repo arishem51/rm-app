@@ -9,6 +9,34 @@
  * ---------------------------------------------------------------
  */
 
+export interface WarehouseUpdateDTO {
+  name?: string;
+  address?: string;
+}
+
+export interface BaseResponseWarehouse {
+  data?: Warehouse;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface Warehouse {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  address?: string;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+}
+
 export interface UpdateUserRequest {
   name?: string;
   /**
@@ -195,6 +223,13 @@ export interface BaseResponseCategory {
     | "INTERNAL_SERVER_ERROR";
 }
 
+export interface WarehouseCreateDTO {
+  name?: string;
+  address?: string;
+  /** @format int64 */
+  shopId?: number;
+}
+
 export interface CreateUserRequest {
   /**
    * @minLength 3
@@ -309,8 +344,8 @@ export interface ForgotPasswordRequest {
   email: string;
 }
 
-export interface BaseResponsePaginateResponseWarehouse {
-  data?: PaginateResponseWarehouse;
+export interface BaseResponsePaginateResponseWarehouseDTO {
+  data?: PaginateResponseWarehouseDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -321,7 +356,7 @@ export interface BaseResponsePaginateResponseWarehouse {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponseWarehouse {
+export interface PaginateResponseWarehouseDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -330,18 +365,19 @@ export interface PaginateResponseWarehouse {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: Warehouse[];
+  data?: WarehouseDTO[];
 }
 
-export interface Warehouse {
-  /** @format int64 */
-  id?: number;
+export interface WarehouseDTO {
   name?: string;
   address?: string;
+  /** @format int64 */
+  shopId?: number;
+  /** @format int64 */
+  id?: number;
+  shopName?: string;
   /** @format date-time */
   createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
 }
 
 export interface BaseResponsePaginateResponseUserDTO {
@@ -706,6 +742,25 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
     /**
+     * @description Update the details of an existing warehouse by ID
+     *
+     * @tags Warehouse Management
+     * @name UpdateWarehouse
+     * @summary Update a warehouse by ID
+     * @request PUT:/api/warehouses/{warehouseId}
+     * @secure
+     */
+    updateWarehouse: (warehouseId: number, data: WarehouseUpdateDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseWarehouse, any>({
+        path: `/api/warehouses/${warehouseId}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Update a user by their name.
      *
      * @tags User Management
@@ -847,10 +902,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Update an existing category by ID.
      *
      * @tags Category Management
      * @name UpdateCategory
+     * @summary Update a category
      * @request PUT:/api/categories/{id}
      * @secure
      */
@@ -858,6 +914,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<BaseResponseCategory, any>({
         path: `/api/categories/${id}`,
         method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Create a new warehouse under the specified shop
+     *
+     * @tags Warehouse Management
+     * @name CreateWarehouse
+     * @summary Create a new warehouse for a shop
+     * @request POST:/api/warehouses/{shopId}
+     * @secure
+     */
+    createWarehouse: (shopId: number, data: WarehouseCreateDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseWarehouse, any>({
+        path: `/api/warehouses/${shopId}`,
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
@@ -1126,7 +1201,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponseWarehouse, any>({
+      this.request<BaseResponsePaginateResponseWarehouseDTO, any>({
         path: `/api/warehouses/`,
         method: "GET",
         query: query,
@@ -1276,6 +1351,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         pageSize?: number;
         /** @default "" */
         search?: string;
+        createdAt?: string;
       },
       params: RequestParams = {},
     ) =>

@@ -22,6 +22,8 @@ import Link from "next/link";
 import { toCurrency } from "@/lib/utils";
 import { startCase } from "lodash";
 import ListPagination from "../pagination";
+import Image from "next/image";
+import defaultPic from "../../../public/images/default-product.png";
 
 const Products = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -67,6 +69,7 @@ const Products = () => {
             <TableRow>
               <TableHead>STT</TableHead>
               <TableHead>Name</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead>Sale Price (VND)</TableHead>
               <TableHead>Wholesale Price (VND)</TableHead>
               <TableHead>Unit</TableHead>
@@ -81,6 +84,15 @@ const Products = () => {
               <TableRow key={product.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{product.name}</TableCell>
+                <TableCell>
+                  <Image
+                    src={product.imageUrls?.[0] ?? defaultPic}
+                    alt={product.name ?? ""}
+                    width={50}
+                    height={50}
+                  />
+                </TableCell>
+
                 <TableCell>{toCurrency(product.salePrice as number)}</TableCell>
                 <TableCell>
                   {toCurrency(product.wholesalePrice as number)}

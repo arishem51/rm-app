@@ -14,19 +14,32 @@ import { Fragment, useState } from "react";
 import HeaderListSearch from "../header-list-search";
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
+import { Button } from "@/components/ui/button";
+import { Edit, Plus } from "lucide-react";
+import { WarehouseDTO } from "@/types/Api";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import FacilityForm from "./facility-form";
+import { format } from "date-fns";
 
 const Facilities = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.warehouses.getWarehouses(filter)
   );
-
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
   };
   const handleNavigatePage = (page: number) => {
     setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
   };
+  const [updateWarehouse, setUpdateWarehouse] = useState<WarehouseDTO>();
+
   const handleNavigateFullPage = (page: number) => {
     const isRight = page > 0;
     setFilter({
@@ -37,12 +50,51 @@ const Facilities = () => {
 
   return (
     <Fragment>
-      <HeaderListSearch filterSearch={filter.search} onSearch={handleSearch} />
+      <div className="flex items-center justify-between">
+        <HeaderListSearch
+          filterSearch={filter.search}
+          onSearch={handleSearch}
+        />
+        <Button
+          onClick={() => {
+            setUpdateWarehouse({});
+          }}
+        >
+          <Plus />
+          Create facility
+        </Button>
+      </div>
+      <Dialog
+        open={!!updateWarehouse}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setUpdateWarehouse(undefined);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {updateWarehouse?.id ? "Update" : "Create"} Category
+            </DialogTitle>
+            <DialogDescription>
+              Enter the details for the new category. Click save once
+              you&apos;re finished to add it to your collection.
+            </DialogDescription>
+          </DialogHeader>
+          <FacilityForm
+            onClose={() => {
+              setUpdateWarehouse(undefined);
+            }}
+            warehouse={updateWarehouse}
+          />
+        </DialogContent>
+      </Dialog>
       {(data?.data || []).length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>STT</TableHead>
+              <TableHead>ID</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Address</TableHead>
               <TableHead>Created At</TableHead>
@@ -50,12 +102,26 @@ const Facilities = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.data?.map((warehouse, index) => (
+            {data?.data?.map((warehouse) => (
               <TableRow key={warehouse.id}>
-                <TableCell>{index + 1}</TableCell>
+                <TableCell>{warehouse.id}</TableCell>
                 <TableCell>{warehouse.name}</TableCell>
                 <TableCell>{warehouse.address}</TableCell>
-                <TableCell>{warehouse.createdAt}</TableCell>
+                <TableCell>
+                  {format(warehouse.createdAt!, "yyyy-MM-dd")}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    size="icon"
+                    onClick={() => {
+                      setUpdateWarehouse(warehouse);
+                    }}
+                    variant="outline"
+                    className="w-6 h-6"
+                  >
+                    <Edit />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
