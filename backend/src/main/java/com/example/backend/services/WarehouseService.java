@@ -46,7 +46,7 @@ public class WarehouseService {
     public Warehouse createWarehouseByShop(Shop shop) {
         // Tạo kho mới cho shop
         Warehouse warehouse = new Warehouse();
-        warehouse.setName("Warehouse for " + shop.getName()); // Tên kho có thể dựa trên tên shop
+        warehouse.setName("Warehouse - " + shop.getName()); // Tên kho có thể dựa trên tên shop
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
         // Cài đặt các thuộc tính khác của warehouse nếu cần
@@ -104,8 +104,9 @@ public class WarehouseService {
     }
 
     // Lấy kho theo warehouseId và shopId
-    public Warehouse getWarehouseById(Long warehouseId) {
+    public Warehouse findWarehouseById(Long warehouseId) {
         return warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new IllegalArgumentException("Warehouse not found with ID: " + warehouseId));
     }
+
 }

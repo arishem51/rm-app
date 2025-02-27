@@ -11,7 +11,7 @@ type Props = {
 
 export function ComboboxSuppliers({ onSelect, formValue }: Props) {
   const { data: { data: suppliers = [] } = {} } = useAppQuery(
-    ApiQuery.suppliers.getAllSuppliers()
+    ApiQuery.partners.getAllPartners()
   );
 
   const options =
