@@ -30,6 +30,48 @@
     }
   ],
   "paths": {
+    "/api/warehouses/{shopId}/{warehouseId}": {
+      "put": {
+        "tags": ["Warehouse Management"],
+        "summary": "Update a warehouse by ID",
+        "description": "Update the details of an existing warehouse by ID",
+        "operationId": "updateWarehouse",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WarehouseUpdateDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseWarehouse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/users/{id}": {
       "put": {
         "tags": ["User Management"],
@@ -267,6 +309,8 @@
     "/api/categories/{id}": {
       "put": {
         "tags": ["Category Management"],
+        "summary": "Update a category",
+        "description": "Update an existing category by ID.",
         "operationId": "updateCategory",
         "parameters": [
           {
@@ -291,6 +335,42 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponseCategory"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouses/{shopId}": {
+      "post": {
+        "tags": ["Warehouse Management"],
+        "summary": "Create a new warehouse for a shop",
+        "description": "Create a new warehouse under the specified shop",
+        "operationId": "createWarehouse",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WarehouseCreateDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseWarehouse"
                 }
               }
             }
@@ -812,6 +892,12 @@
             "in": "query",
             "required": false,
             "schema": { "type": "string", "default": "" }
+          },
+          {
+            "name": "createdAt",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -831,6 +917,41 @@
   },
   "components": {
     "schemas": {
+      "WarehouseUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" }
+        }
+      },
+      "BaseResponseWarehouse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/Warehouse" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "Warehouse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
       "UpdateUserRequest": {
         "type": "object",
         "properties": {
@@ -1064,6 +1185,14 @@
           }
         }
       },
+      "WarehouseCreateDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "shopId": { "type": "integer", "format": "int64" }
+        }
+      },
       "CreateUserRequest": {
         "type": "object",
         "properties": {
@@ -1239,16 +1368,6 @@
             "type": "array",
             "items": { "$ref": "#/components/schemas/Warehouse" }
           }
-        }
-      },
-      "Warehouse": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "address": { "type": "string" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
       "BaseResponsePaginateResponseUserDTO": {

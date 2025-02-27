@@ -25,36 +25,59 @@ import {
 import EmptyState from "../empty-state";
 import CategoryForm from "./category-form";
 import ListPagination from "../pagination";
+import { DatePicker } from "./date-picker";
+import { format } from "date-fns";
+import Image from "next/image";
+import defaultPic from "../../../public/images/default-product.png";
 
 const Categories = () => {
-  const [filter, setFilter] = useState({ page: 0, search: "" });
+  const [filter, setFilter] = useState({ page: 0, search: "", createdAt: "" });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.categories.getCategories(filter)
   );
   const [updateCategory, setUpdateCategory] = useState<Category>();
 
   const handleNavigatePage = (page: number) => {
-    setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
+    setFilter((prev) => ({
+      page: prev.page + page,
+      search: prev.search,
+      createdAt: prev.createdAt,
+    }));
   };
   const handleNavigateFullPage = (page: number) => {
     const isRight = page > 0;
     setFilter({
       page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
       search: filter.search,
+      createdAt: filter.createdAt,
     });
   };
 
   const handleSearch = (search: string) => {
-    setFilter({ page: 0, search });
+    setFilter({ page: 0, search, createdAt: filter.createdAt });
   };
 
   return (
     <Fragment>
       <div className="flex justify-between">
-        <HeaderListSearch
-          filterSearch={filter.search}
-          onSearch={handleSearch}
-        />
+        <div className="flex gap-2 items-center">
+          <HeaderListSearch
+            filterSearch={filter.search}
+            onSearch={handleSearch}
+          />
+          <span className="text-sm whitespace-nowrap">Created At:</span>
+          <DatePicker
+            onSelect={(e) => {
+              if (e) {
+                setFilter({
+                  page: 0,
+                  search: filter.search,
+                  createdAt: format(e, "yyyy-MM-dd"),
+                });
+              }
+            }}
+          />
+        </div>
         <Button
           type="button"
           onClick={() => {
@@ -95,19 +118,26 @@ const Categories = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>STT</TableHead>
+              <TableHead>ID</TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.data?.map((category, index) => (
+            {data?.data?.map((category) => (
               <TableRow key={category.id}>
-                <TableCell>{index + 1}</TableCell>
+                <TableCell>{category.id}</TableCell>
                 <TableCell>{category.name}</TableCell>
-                <TableCell>{category.description}</TableCell>
+                <TableCell>
+                  <Image
+                    src={category.imageUrl ?? defaultPic}
+                    alt={category.name ?? ""}
+                    width={50}
+                    height={50}
+                  />
+                </TableCell>
                 <TableCell>{category.createdAt}</TableCell>
                 <TableCell className="text-right">
                   <Button
