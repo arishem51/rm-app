@@ -54,13 +54,19 @@ public class WarehouseService {
     }
 
     // Cập nhật kho theo warehouseId và shopId
-    public Warehouse updateWarehouse(Long shopId, Long warehouseId, WarehouseUpdateDTO dto, User user) {
+    public Warehouse updateWarehouse(Long warehouseId, WarehouseUpdateDTO dto, User user) {
         validateUserCanManageWarehouse(user);
 
         Warehouse warehouse = warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new IllegalArgumentException("Warehouse not found"));
 
-        if (!warehouse.getShop().getId().equals(shopId)) {
+        Shop shop = user.getShop();
+
+        if (shop == null) {
+            throw new IllegalArgumentException("You must have a shop to manage warehouses!");
+        }
+
+        if (!warehouse.getShop().getId().equals(shop.getId())) {
             throw new IllegalArgumentException("You can only update warehouses from your own shop!");
         }
 

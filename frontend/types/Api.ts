@@ -344,8 +344,8 @@ export interface ForgotPasswordRequest {
   email: string;
 }
 
-export interface BaseResponsePaginateResponseWarehouse {
-  data?: PaginateResponseWarehouse;
+export interface BaseResponsePaginateResponseWarehouseDTO {
+  data?: PaginateResponseWarehouseDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -356,7 +356,7 @@ export interface BaseResponsePaginateResponseWarehouse {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponseWarehouse {
+export interface PaginateResponseWarehouseDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -365,7 +365,19 @@ export interface PaginateResponseWarehouse {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: Warehouse[];
+  data?: WarehouseDTO[];
+}
+
+export interface WarehouseDTO {
+  name?: string;
+  address?: string;
+  /** @format int64 */
+  shopId?: number;
+  /** @format int64 */
+  id?: number;
+  shopName?: string;
+  /** @format date-time */
+  createdAt?: string;
 }
 
 export interface BaseResponsePaginateResponseUserDTO {
@@ -735,12 +747,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Warehouse Management
      * @name UpdateWarehouse
      * @summary Update a warehouse by ID
-     * @request PUT:/api/warehouses/{shopId}/{warehouseId}
+     * @request PUT:/api/warehouses/{warehouseId}
      * @secure
      */
-    updateWarehouse: (shopId: number, warehouseId: number, data: WarehouseUpdateDTO, params: RequestParams = {}) =>
+    updateWarehouse: (warehouseId: number, data: WarehouseUpdateDTO, params: RequestParams = {}) =>
       this.request<BaseResponseWarehouse, any>({
-        path: `/api/warehouses/${shopId}/${warehouseId}`,
+        path: `/api/warehouses/${warehouseId}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -1189,7 +1201,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponseWarehouse, any>({
+      this.request<BaseResponsePaginateResponseWarehouseDTO, any>({
         path: `/api/warehouses/`,
         method: "GET",
         query: query,

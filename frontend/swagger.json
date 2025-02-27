@@ -30,19 +30,13 @@
     }
   ],
   "paths": {
-    "/api/warehouses/{shopId}/{warehouseId}": {
+    "/api/warehouses/{warehouseId}": {
       "put": {
         "tags": ["Warehouse Management"],
         "summary": "Update a warehouse by ID",
         "description": "Update the details of an existing warehouse by ID",
         "operationId": "updateWarehouse",
         "parameters": [
-          {
-            "name": "shopId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          },
           {
             "name": "warehouseId",
             "in": "path",
@@ -722,7 +716,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePaginateResponseWarehouse"
+                  "$ref": "#/components/schemas/BaseResponsePaginateResponseWarehouseDTO"
                 }
               }
             }
@@ -1339,10 +1333,12 @@
         "properties": { "email": { "type": "string" } },
         "required": ["email"]
       },
-      "BaseResponsePaginateResponseWarehouse": {
+      "BaseResponsePaginateResponseWarehouseDTO": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/PaginateResponseWarehouse" },
+          "data": {
+            "$ref": "#/components/schemas/PaginateResponseWarehouseDTO"
+          },
           "message": { "type": "string" },
           "errorCode": {
             "type": "string",
@@ -1357,7 +1353,7 @@
           }
         }
       },
-      "PaginateResponseWarehouse": {
+      "PaginateResponseWarehouseDTO": {
         "type": "object",
         "properties": {
           "pageSize": { "type": "integer", "format": "int32" },
@@ -1366,8 +1362,19 @@
           "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/Warehouse" }
+            "items": { "$ref": "#/components/schemas/WarehouseDTO" }
           }
+        }
+      },
+      "WarehouseDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "shopId": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "shopName": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
         }
       },
       "BaseResponsePaginateResponseUserDTO": {
