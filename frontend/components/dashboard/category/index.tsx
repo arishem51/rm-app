@@ -134,8 +134,9 @@ const Categories = () => {
                   <Image
                     src={category.imageUrl ?? defaultPic}
                     alt={category.name ?? ""}
-                    width={50}
-                    height={50}
+                    width={65}
+                    height={65}
+                    objectFit="contain"
                   />
                 </TableCell>
                 <TableCell>{category.createdAt}</TableCell>
@@ -164,6 +165,7 @@ const Categories = () => {
         handleNavigateFullPage={handleNavigateFullPage}
         handleNavigatePage={handleNavigatePage}
       />
+      <div className="mt-12" />
     </Fragment>
   );
 };

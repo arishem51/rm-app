@@ -4,7 +4,7 @@ import com.example.backend.dto.product.RequestProductDTO;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.Shop;
-import com.example.backend.entities.Supplier;
+import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
 import com.example.backend.enums.UnitType;
 import com.example.backend.repositories.ProductRepository;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-    private final SupplierService supplierService;
+    private final PartnerService partnerService;
     private final CategoryService categoryService;
 
     private void validateUserCanManageProduct(User user) {
@@ -37,7 +37,7 @@ public class ProductService {
 
         Shop shop = user.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
-        Supplier supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(supplierService::findById).orElse(null);
+        Partner supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
 
         Product product = Product.builder()
                 .name(dto.getName())
@@ -88,7 +88,7 @@ public class ProductService {
         }
 
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
-        Supplier supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(supplierService::findById).orElse(null);
+        Partner supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
         product.setCategory(category);
         product.setSupplier(supplier);
 
