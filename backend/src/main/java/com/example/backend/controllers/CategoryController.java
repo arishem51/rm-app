@@ -30,17 +30,23 @@ public class CategoryController {
     @GetMapping("/")
     public ResponseEntity<BaseResponse<PaginateResponse<Category>>> getCategories(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search) {
-        Page<Category> categories = categoryService.findCategories(page, pageSize, search);
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String description,
+            @RequestParam(required = false) String createdAt,
+            @RequestParam(required = false) String updatedAt) {
+
+
+        Page<Category> categories = categoryService.findCategories(page, pageSize, name, description, createdAt, updatedAt);
         PaginateResponse<Category> response = new PaginateResponse<>(categories);
-        return ResponseEntity.ok(new BaseResponse<PaginateResponse<Category>>(response, "Success!"));
+        return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
     }
 
     @Operation(summary = "Get all categories", description = "Fetch all categories.")
     @GetMapping("/all")
     public ResponseEntity<BaseResponse<List<Category>>> getAllCategories() {
         List<Category> categories = categoryService.findAllCategories();
-        return ResponseEntity.ok(new BaseResponse<List<Category>>(categories, "Success!"));
+        return ResponseEntity.ok(new BaseResponse<>(categories, "Success!"));
     }
 
     @Operation(summary = "Create a category", description = "Create a new category under a specific shop.")
@@ -56,17 +62,18 @@ public class CategoryController {
         }
     }
 
+    @Operation(summary = "Update a category", description = "Update an existing category by ID.")
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<Category>> updateCategory(@PathVariable Long id,
-            @RequestBody UpdateCategoryDTO requestDTO, @CurrentUser User user) {
-
-        // Gọi service để cập nhật danh mục
+    public ResponseEntity<BaseResponse<Category>> updateCategory(
+            @PathVariable Long id,
+            @RequestBody UpdateCategoryDTO requestDTO,
+            @CurrentUser User user) {
         try {
-            Category createdCategory = categoryService.updateCategory(id, requestDTO, user);
-            return ResponseEntity.ok(BaseResponse.success(createdCategory, "Category update successfully!"));
+            // Cập nhật danh mục theo ID
+            Category updatedCategory = categoryService.updateCategory(id, requestDTO, user);
+            return ResponseEntity.ok(BaseResponse.success(updatedCategory, "Category updated successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
     }
-
 }
