@@ -42,16 +42,16 @@ public class WarehouseService {
 
         return warehouseRepository.save(warehouse);
     }
+
     public Warehouse createWarehouseByShop(Shop shop) {
         // Tạo kho mới cho shop
         Warehouse warehouse = new Warehouse();
-        warehouse.setName("Warehouse for " + shop.getName());  // Tên kho có thể dựa trên tên shop
+        warehouse.setName("Warehouse for " + shop.getName()); // Tên kho có thể dựa trên tên shop
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
         // Cài đặt các thuộc tính khác của warehouse nếu cần
         return warehouseRepository.save(warehouse);
     }
-
 
     // Cập nhật kho theo warehouseId và shopId
     public Warehouse updateWarehouse(Long shopId, Long warehouseId, WarehouseUpdateDTO dto, User user) {
@@ -60,7 +60,7 @@ public class WarehouseService {
         Warehouse warehouse = warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new IllegalArgumentException("Warehouse not found"));
 
-        if (warehouse.getShop().getId() != shopId) {
+        if (!warehouse.getShop().getId().equals(shopId)) {
             throw new IllegalArgumentException("You can only update warehouses from your own shop!");
         }
 
@@ -93,7 +93,8 @@ public class WarehouseService {
 
         return search.isEmpty()
                 ? warehouseRepository.findAllByShopId(shop.getId(), PageRequest.of(page, pageSize))
-                : warehouseRepository.findByNameContainingIgnoreCaseAndShopId(search, shop.getId(), PageRequest.of(page, pageSize));
+                : warehouseRepository.findByNameContainingIgnoreCaseAndShopId(search, shop.getId(),
+                        PageRequest.of(page, pageSize));
     }
 
     // Lấy kho theo warehouseId và shopId

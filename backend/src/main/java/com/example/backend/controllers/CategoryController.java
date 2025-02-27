@@ -31,15 +31,15 @@ public class CategoryController {
     public ResponseEntity<BaseResponse<PaginateResponse<Category>>> getCategories(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "") String name,
-            @RequestParam(defaultValue = "") String description,
-            @RequestParam(required = false) String createdAt,
-            @RequestParam(required = false) String updatedAt) {
-
-
-        Page<Category> categories = categoryService.findCategories(page, pageSize, name, description, createdAt, updatedAt);
-        PaginateResponse<Category> response = new PaginateResponse<>(categories);
-        return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(required = false) String createdAt) {
+        try {
+            Page<Category> categories = categoryService.findCategories(page, pageSize, search, createdAt);
+            PaginateResponse<Category> response = new PaginateResponse<>(categories);
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @Operation(summary = "Get all categories", description = "Fetch all categories.")
