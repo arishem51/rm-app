@@ -35,8 +35,8 @@ public class Product {
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
+    @JoinColumn(name = "partner_id")
+    private Partner supplier;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)

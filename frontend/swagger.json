@@ -6,10 +6,6 @@
   ],
   "security": [{ "Bearer Authentication": [] }],
   "tags": [
-    {
-      "name": "Supplier Management",
-      "description": "Operations related to suppliers"
-    },
     { "name": "Shop Management", "description": "Operations related to shops" },
     { "name": "User Management", "description": "Operations related to users" },
     {
@@ -21,8 +17,16 @@
       "description": "Operations related to categories"
     },
     {
+      "name": "Inventories Management",
+      "description": "Operations related to inventories"
+    },
+    {
       "name": "Product Management",
       "description": "Operations related to products"
+    },
+    {
+      "name": "Partner Management",
+      "description": "Operations related to partners"
     },
     {
       "name": "Warehouse Management",
@@ -94,86 +98,6 @@
             "content": {
               "*/*": {
                 "schema": { "$ref": "#/components/schemas/BaseResponseUserDTO" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/suppliers/{id}": {
-      "get": {
-        "tags": ["Supplier Management"],
-        "operationId": "getSupplierById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseSupplier"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": ["Supplier Management"],
-        "operationId": "updateSupplier",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateSupplierDTO" }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseSupplier"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Supplier Management"],
-        "operationId": "deleteSupplier",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
               }
             }
           }
@@ -294,6 +218,82 @@
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponseResponseProductDTO"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/partners/{id}": {
+      "get": {
+        "tags": ["Partner Management"],
+        "operationId": "getPartnerById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponsePartner" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Partner Management"],
+        "operationId": "updatePartner",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PartnerUpdateDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponsePartner" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Partner Management"],
+        "operationId": "deletePartner",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
               }
             }
           }
@@ -436,68 +436,6 @@
         }
       }
     },
-    "/api/suppliers": {
-      "get": {
-        "tags": ["Supplier Management"],
-        "operationId": "getSuppliers",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 0 }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 10 }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "string", "default": "" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePaginateResponseSupplier"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["Supplier Management"],
-        "operationId": "createSupplier",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/SupplierCreateDTO" }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseSupplier"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/shops": {
       "post": {
         "tags": ["Shop Management"],
@@ -545,6 +483,91 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponseResponseProductDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/partners": {
+      "get": {
+        "tags": ["Partner Management"],
+        "operationId": "getPartners",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePaginateResponsePartner"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Partner Management"],
+        "operationId": "createPartner",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PartnerCreateDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponsePartner" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inventories": {
+      "post": {
+        "tags": ["Inventories Management"],
+        "operationId": "createInventory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InventoryCreateDTO" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseInventoryResponseDTO"
                 }
               }
             }
@@ -742,26 +765,6 @@
         }
       }
     },
-    "/api/suppliers/all": {
-      "get": {
-        "tags": ["Supplier Management"],
-        "summary": "Get all suppliers",
-        "description": "Fetch all suppliers.",
-        "operationId": "getAllSuppliers",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseListSupplier"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/shops/": {
       "get": {
         "tags": ["Shop Management"],
@@ -835,6 +838,66 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponsePaginateResponseResponseProductDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/partners/all": {
+      "get": {
+        "tags": ["Partner Management"],
+        "summary": "Get all Partners",
+        "description": "Fetch all Partners.",
+        "operationId": "getAllPartners",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListPartner"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inventories/": {
+      "get": {
+        "tags": ["Inventories Management"],
+        "summary": "Get all inventories",
+        "description": "Fetch a list of all registered inventories.",
+        "operationId": "getInventory",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePaginateResponseInventoryResponseDTO"
                 }
               }
             }
@@ -1006,52 +1069,6 @@
           "username"
         ]
       },
-      "UpdateSupplierDTO": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "contactName": { "type": "string" },
-          "phone": { "type": "string" },
-          "email": { "type": "string" },
-          "taxCode": { "type": "string" },
-          "address": { "type": "string" },
-          "website": { "type": "string" },
-          "description": { "type": "string" }
-        }
-      },
-      "BaseResponseSupplier": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/Supplier" },
-          "message": { "type": "string" },
-          "errorCode": {
-            "type": "string",
-            "enum": [
-              "AUTH_MISSING",
-              "TOKEN_EXPIRED",
-              "TOKEN_INVALID",
-              "ACCESS_DENIED",
-              "BAD_REQUEST",
-              "INTERNAL_SERVER_ERROR"
-            ]
-          }
-        }
-      },
-      "Supplier": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "contactName": { "type": "string" },
-          "phone": { "type": "string" },
-          "email": { "type": "string" },
-          "taxCode": { "type": "string", "pattern": "\\d{10}|\\d{13}" },
-          "address": { "type": "string" },
-          "website": { "type": "string" },
-          "description": { "type": "string" }
-        },
-        "required": ["taxCode"]
-      },
       "UpdateShopDTO": {
         "type": "object",
         "properties": {
@@ -1137,6 +1154,19 @@
           "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
+      "Partner": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "contactName": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string" },
+          "address": { "type": "string" },
+          "website": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
       "ResponseProductDTO": {
         "type": "object",
         "properties": {
@@ -1144,13 +1174,43 @@
           "name": { "type": "string" },
           "description": { "type": "string" },
           "category": { "$ref": "#/components/schemas/Category" },
-          "supplier": { "$ref": "#/components/schemas/Supplier" },
+          "supplier": { "$ref": "#/components/schemas/Partner" },
           "shopId": { "type": "integer", "format": "int64" },
           "shopName": { "type": "string" },
           "salePrice": { "type": "number" },
           "wholesalePrice": { "type": "number" },
           "unit": { "type": "string", "enum": ["KG", "BAG"] },
           "imageUrls": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "PartnerUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "contactName": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string" },
+          "address": { "type": "string" },
+          "website": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
+      "BaseResponsePartner": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/Partner" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
         }
       },
       "UpdateCategoryDTO": {
@@ -1210,32 +1270,65 @@
           "username"
         ]
       },
-      "SupplierCreateDTO": {
+      "CreateShopDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" }
+        }
+      },
+      "PartnerCreateDTO": {
         "type": "object",
         "properties": {
           "name": { "type": "string" },
           "contactName": { "type": "string" },
           "phone": { "type": "string", "pattern": "^(\\+?\\d{1,3})?\\d{10}$" },
           "email": { "type": "string" },
-          "taxCode": { "type": "string", "pattern": "\\d{10}|\\d{13}" },
           "address": { "type": "string" },
           "website": { "type": "string" },
           "description": { "type": "string" }
         },
-        "required": [
-          "address",
-          "contactName",
-          "email",
-          "name",
-          "phone",
-          "taxCode"
-        ]
+        "required": ["address", "contactName", "email", "name", "phone"]
       },
-      "CreateShopDTO": {
+      "InventoryCreateDTO": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "address": { "type": "string" }
+          "productId": { "type": "integer", "format": "int64" },
+          "warehouseId": { "type": "integer", "format": "int64" },
+          "quantity": { "type": "integer", "format": "int32" }
+        },
+        "required": ["productId", "quantity", "warehouseId"]
+      },
+      "BaseResponseInventoryResponseDTO": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/InventoryResponseDTO" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "InventoryResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "productId": { "type": "integer", "format": "int64" },
+          "warehouseId": { "type": "integer", "format": "int64" },
+          "quantity": { "type": "integer", "format": "int32" },
+          "productName": { "type": "string" },
+          "warehouseName": { "type": "string" },
+          "createdBy": { "$ref": "#/components/schemas/UserDTO" },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" }
         }
       },
       "CreateCategoryDTO": {
@@ -1408,58 +1501,6 @@
           }
         }
       },
-      "BaseResponsePaginateResponseSupplier": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/PaginateResponseSupplier" },
-          "message": { "type": "string" },
-          "errorCode": {
-            "type": "string",
-            "enum": [
-              "AUTH_MISSING",
-              "TOKEN_EXPIRED",
-              "TOKEN_INVALID",
-              "ACCESS_DENIED",
-              "BAD_REQUEST",
-              "INTERNAL_SERVER_ERROR"
-            ]
-          }
-        }
-      },
-      "PaginateResponseSupplier": {
-        "type": "object",
-        "properties": {
-          "pageSize": { "type": "integer", "format": "int32" },
-          "pageNumber": { "type": "integer", "format": "int32" },
-          "totalElements": { "type": "integer", "format": "int32" },
-          "totalPages": { "type": "integer", "format": "int32" },
-          "data": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/Supplier" }
-          }
-        }
-      },
-      "BaseResponseListSupplier": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/Supplier" }
-          },
-          "message": { "type": "string" },
-          "errorCode": {
-            "type": "string",
-            "enum": [
-              "AUTH_MISSING",
-              "TOKEN_EXPIRED",
-              "TOKEN_INVALID",
-              "ACCESS_DENIED",
-              "BAD_REQUEST",
-              "INTERNAL_SERVER_ERROR"
-            ]
-          }
-        }
-      },
       "BaseResponsePaginateResponseShopDTO": {
         "type": "object",
         "properties": {
@@ -1521,6 +1562,91 @@
           "data": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/ResponseProductDTO" }
+          }
+        }
+      },
+      "BaseResponsePaginateResponsePartner": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/PaginateResponsePartner" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "PaginateResponsePartner": {
+        "type": "object",
+        "properties": {
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Partner" }
+          }
+        }
+      },
+      "BaseResponseListPartner": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Partner" }
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "BaseResponsePaginateResponseInventoryResponseDTO": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PaginateResponseInventoryResponseDTO"
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "PaginateResponseInventoryResponseDTO": {
+        "type": "object",
+        "properties": {
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InventoryResponseDTO" }
           }
         }
       },
