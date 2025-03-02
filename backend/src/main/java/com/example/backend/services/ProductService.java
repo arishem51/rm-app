@@ -1,13 +1,10 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.product.RequestProductDTO;
-import com.example.backend.entities.Category;
-import com.example.backend.entities.Product;
-import com.example.backend.entities.Shop;
-import com.example.backend.entities.Supplier;
-import com.example.backend.entities.User;
+import com.example.backend.entities.*;
 import com.example.backend.enums.UnitType;
 import com.example.backend.repositories.ProductRepository;
+import com.example.backend.repositories.ZoneRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +19,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final SupplierService supplierService;
     private final CategoryService categoryService;
+    private final ZoneRepository zoneRepository;
 
     private void validateUserCanManageProduct(User user) {
         if (!UserRoleUtils.isOwner(user)) {
@@ -38,14 +36,13 @@ public class ProductService {
         Shop shop = user.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
         Supplier supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(supplierService::findById).orElse(null);
-
+        Zone zone = zoneRepository.findById(dto.getZoneId()).orElseThrow(() -> new IllegalArgumentException("Zone not found!"));
         Product product = Product.builder()
                 .name(dto.getName())
                 .category(category)
                 .supplier(supplier)
                 .shop(shop)
-                .unit(UnitType.valueOf(dto
-                        .getUnit().toUpperCase()))
+                .unit(UnitType.valueOf(dto.getUnit().toUpperCase()))
                 .salePrice(dto.getSalePrice())
                 .wholesalePrice(dto.getWholesalePrice())
                 .description(dto.getDescription())

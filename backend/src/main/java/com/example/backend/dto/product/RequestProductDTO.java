@@ -31,4 +31,5 @@ public class RequestProductDTO {
     private String unit;
 
     private List<String> imageUrls;
+    private Long zoneId;
 }

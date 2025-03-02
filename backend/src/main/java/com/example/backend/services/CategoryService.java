@@ -4,6 +4,7 @@ import com.example.backend.dto.category.CreateCategoryDTO;
 import com.example.backend.dto.category.UpdateCategoryDTO;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.User;
+import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.CategoryRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class CategoryService {
         Category category = new Category();
         category.setName(dto.getName());
         category.setDescription(dto.getDescription());
+        category.setStatus(ActionStatus.ACTIVE);
         return categoryRepository.save(category);
     }
 
@@ -81,6 +83,7 @@ public class CategoryService {
         if (category.getImageUrl() != null) {
             category.setImageUrl(dto.getImageUrl());
         }
+        category.setStatus(ActionStatus.valueOf(dto.getStatus()));
         return categoryRepository.save(category);
     }
 

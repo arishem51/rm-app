@@ -5,12 +5,16 @@ import com.example.backend.dto.warehouse.WarehouseUpdateDTO;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.entities.Warehouse;
+import com.example.backend.entities.Zone;
+import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.WarehouseRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +42,7 @@ public class WarehouseService {
                 .name(dto.getName())
                 .address(dto.getAddress())
                 .shop(shop)
+                .status(ActionStatus.ACTIVE)
                 .build();
 
         return warehouseRepository.save(warehouse);
@@ -50,6 +55,16 @@ public class WarehouseService {
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
         // Cài đặt các thuộc tính khác của warehouse nếu cần
+        // Tạo 4 Zone mặc định (A, B, C, D)
+        Set<Zone> zones = Set.of(
+                new Zone(1L, "A", warehouse),
+                new Zone(2L, "B", warehouse),
+                new Zone(3L, "C", warehouse),
+                new Zone(4L, "D", warehouse)
+        );
+
+        // Gắn các zone vào warehouse
+        warehouse.setZones(zones);
         return warehouseRepository.save(warehouse);
     }
 
@@ -77,9 +92,11 @@ public class WarehouseService {
         if (dto.getName() != null) {
             warehouse.setAddress(dto.getAddress());
         }
+        warehouse.setStatus(ActionStatus.valueOf(dto.getStatus()));
 
         return warehouseRepository.save(warehouse);
     }
+
 
     // Lấy kho theo shopId
     public Page<Warehouse> findShops(int page, int pageSize, String search, User user) {

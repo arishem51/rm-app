@@ -14,6 +14,7 @@ public class UpdateCategoryDTO {
     private String name;
     private String description;
     private String imageUrl;
+    private String status;
 
     //FIXME: validate-categoryDTO
 }

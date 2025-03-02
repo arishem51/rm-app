@@ -1,7 +1,8 @@
 package com.example.backend.dto.auth.request;
 
+import com.example.backend.enums.ActionStatus;
 import com.example.backend.enums.Role;
-import com.example.backend.enums.UserStatus;
+import com.example.backend.enums.ActionStatus;
 import com.example.backend.security.validation.ValidEnum;
 
 import jakarta.validation.constraints.Email;
@@ -25,7 +26,7 @@ public class UpdateUserRequest {
     @ValidEnum(enumClass = Role.class, message = "Invalid user role!")
     private String role;
 
-    @ValidEnum(enumClass = UserStatus.class, message = "Invalid user status!")
+    @ValidEnum(enumClass = ActionStatus.class, message = "Invalid user status!")
     private String status;
 
     @Email(message = "Email should be valid")

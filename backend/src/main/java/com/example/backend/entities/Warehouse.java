@@ -1,6 +1,11 @@
 package com.example.backend.entities;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.example.backend.enums.ActionStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -61,4 +66,13 @@ public class Warehouse {
     public String toString() {
         return "Warehouse{id=" + id + ", name='" + name + "', address='" + address + "'}";
     }
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    @Schema(required = true)
+    @Builder.Default
+    private ActionStatus status = ActionStatus.ACTIVE;
+    @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<Zone> zones = new HashSet<>();
 }

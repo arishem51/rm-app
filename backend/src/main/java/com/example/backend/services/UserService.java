@@ -1,6 +1,8 @@
 package com.example.backend.services;
 
 import java.util.Optional;
+
+import com.example.backend.enums.ActionStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -13,7 +15,7 @@ import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
-import com.example.backend.enums.UserStatus;
+import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +66,7 @@ public class UserService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
                 .role(role)
-                .status(UserStatus.ACTIVE)
+                .status(ActionStatus.ACTIVE)
                 .name(request.getName())
                 .shop(shop)
                 .email(request.getEmail())
@@ -112,9 +114,9 @@ public class UserService {
         }
         String requestUserStatus = request.getStatus();
         if (UserRoleUtils.isAdmin(currentUser)) {
-            user.setStatus(UserStatus.valueOf(requestUserStatus));
-        } else if (requestUserStatus.equals(UserStatus.INACTIVE.toString())) {
-            user.setStatus(UserStatus.INACTIVE);
+            user.setStatus(ActionStatus.valueOf(requestUserStatus));
+        } else if (requestUserStatus.equals(ActionStatus.INACTIVE.toString())) {
+            user.setStatus(ActionStatus.INACTIVE);
         }
         user.setPassword(
                 request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : user.getPassword());

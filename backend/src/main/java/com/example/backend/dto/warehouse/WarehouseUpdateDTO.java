@@ -13,4 +13,7 @@ import lombok.*;
 public class WarehouseUpdateDTO {
     private String name;
     private String address;
+    //FIXME:validate-Status
+    private String status;
+
 }

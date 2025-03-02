@@ -11,4 +11,5 @@ public class WarehouseCreateDTO {
     private String name;
     private String address;
     private Long shopId;
+
 }
