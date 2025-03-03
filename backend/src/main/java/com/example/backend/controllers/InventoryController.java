@@ -70,7 +70,7 @@ public class InventoryController {
 
     @Operation(summary = "Update a inventories", description = "Update a inventories by its ID.")
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<InventoryResponseDTO>> updateShop(
+    public ResponseEntity<BaseResponse<InventoryResponseDTO>> updateInventory(
             @PathVariable Long id,
             @RequestBody InventoryUpdateDTO dto,
             @CurrentUser User currentUser) {

@@ -25,7 +25,6 @@ public class InventoryService {
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage products!");
         }
-
         return search.isEmpty()
                 ? inventoryRepository.findByWarehouse_ShopId(shop.getId(), PageRequest.of(page, pageSize))
                 : inventoryRepository.findByWarehouse_ShopIdAndProduct_NameContainingIgnoreCase(shop.getId(), search,
