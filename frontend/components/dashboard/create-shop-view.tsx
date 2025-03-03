@@ -1,4 +1,3 @@
-"use client";
 import ShopModal from "./shops/shop-modal";
 
 const CreateShopView = () => {
