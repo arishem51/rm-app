@@ -38,10 +38,11 @@ const ProtectedShop = ({
     }
   }, [shouldRenderChildren]);
 
-  const fallbackReturn =
-    "view" in fallback ? fallback.view : redirect(fallback.redirectPath);
+  const fallbackReturn = () => {
+    return "view" in fallback ? fallback.view : redirect(fallback.redirectPath);
+  };
 
-  return shouldRenderChildren ? children : fallbackReturn;
+  return shouldRenderChildren ? children : fallbackReturn();
 };
 
 export default ProtectedShop;
