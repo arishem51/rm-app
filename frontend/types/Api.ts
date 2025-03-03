@@ -202,6 +202,43 @@ export interface BaseResponsePartner {
     | "INTERNAL_SERVER_ERROR";
 }
 
+export interface InventoryUpdateDTO {
+  /** @format int64 */
+  productId?: number;
+  /** @format int64 */
+  warehouseId?: number;
+  /** @format int32 */
+  quantity?: number;
+}
+
+export interface BaseResponseInventoryResponseDTO {
+  data?: InventoryResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface InventoryResponseDTO {
+  /** @format int64 */
+  id?: number;
+  /** @format int64 */
+  productId?: number;
+  /** @format int64 */
+  warehouseId?: number;
+  /** @format int32 */
+  quantity?: number;
+  productName?: string;
+  warehouseName?: string;
+  createdBy?: UserDTO;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface UpdateCategoryDTO {
   name?: string;
   description?: string;
@@ -268,34 +305,6 @@ export interface InventoryCreateDTO {
   warehouseId: number;
   /** @format int32 */
   quantity: number;
-}
-
-export interface BaseResponseInventoryResponseDTO {
-  data?: InventoryResponseDTO;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface InventoryResponseDTO {
-  /** @format int64 */
-  id?: number;
-  /** @format int64 */
-  productId?: number;
-  /** @format int64 */
-  warehouseId?: number;
-  /** @format int32 */
-  quantity?: number;
-  productName?: string;
-  warehouseName?: string;
-  createdBy?: UserDTO;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface CreateCategoryDTO {
@@ -958,6 +967,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Update a inventories by its ID.
+     *
+     * @tags Inventories Management
+     * @name UpdateInventory
+     * @summary Update a inventories
+     * @request PUT:/api/inventories/{id}
+     * @secure
+     */
+    updateInventory: (id: number, data: InventoryUpdateDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseInventoryResponseDTO, any>({
+        path: `/api/inventories/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Update an existing category by ID.
      *
      * @tags Category Management
@@ -1138,16 +1166,51 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Fetch a list of all registered inventories.
+     *
+     * @tags Inventories Management
+     * @name GetInventory
+     * @summary Get all inventories
+     * @request GET:/api/inventories/
+     * @secure
+     */
+    getInventory: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
+        path: `/api/inventories/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Create a inventory with the provided data.
      *
      * @tags Inventories Management
      * @name CreateInventory
-     * @request POST:/api/inventories
+     * @summary Create a inventory
+     * @request POST:/api/inventories/
      * @secure
      */
     createInventory: (data: InventoryCreateDTO, params: RequestParams = {}) =>
       this.request<BaseResponseInventoryResponseDTO, any>({
-        path: `/api/inventories`,
+        path: `/api/inventories/`,
         method: "POST",
         body: data,
         secure: true,
@@ -1381,40 +1444,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<BaseResponseListPartner, any>({
         path: `/api/partners/all`,
         method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Fetch a list of all registered inventories.
-     *
-     * @tags Inventories Management
-     * @name GetInventory
-     * @summary Get all inventories
-     * @request GET:/api/inventories/
-     * @secure
-     */
-    getInventory: (
-      query?: {
-        /**
-         * @format int32
-         * @default 0
-         */
-        page?: number;
-        /**
-         * @format int32
-         * @default 10
-         */
-        pageSize?: number;
-        /** @default "" */
-        search?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
-        path: `/api/inventories/`,
-        method: "GET",
-        query: query,
         secure: true,
         ...params,
       }),

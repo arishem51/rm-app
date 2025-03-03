@@ -1,7 +1,11 @@
-import UnSupportFeature from "@/components/view/un-support-feature";
+import ProtectedShop from "@/components/protected-shop";
 
 const InventoriesPage = () => {
-  return <UnSupportFeature />;
+  return (
+    <ProtectedShop fallback={{ redirectPath: "/dashboard" }}>
+      <div>Inventory</div>
+    </ProtectedShop>
+  );
 };
 
 export default InventoriesPage;
