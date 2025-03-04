@@ -6,4 +6,5 @@ export const products = {
     placeholderData: keepPreviousData,
   }),
   getProduct: createQuery(apiClient.getProduct),
+  getAllProducts: createQuery(apiClient.getAllProducts),
 };

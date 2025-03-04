@@ -16,7 +16,6 @@ import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
 import HeaderListSearch from "../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
-import { UserRole } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { toCurrency } from "@/lib/utils";
@@ -24,6 +23,7 @@ import { startCase } from "lodash";
 import ListPagination from "../pagination";
 import Image from "next/image";
 import defaultPic from "../../../public/images/default-product.png";
+import { checkRole } from "@/lib/helpers";
 
 const Products = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -32,7 +32,7 @@ const Products = () => {
   );
   const { data: currentUser } = useMe();
 
-  const isOwner = currentUser?.role === UserRole.OWNER;
+  const { isAdmin, isOwner } = checkRole(currentUser);
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
   };
@@ -75,7 +75,7 @@ const Products = () => {
               <TableHead>Unit</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Supplier</TableHead>
-              <TableHead>Shop</TableHead>
+              {isAdmin && <TableHead>Shop</TableHead>}
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -114,7 +114,7 @@ const Products = () => {
                     {product.supplier?.name || "None"}
                   </Badge>
                 </TableCell>
-                <TableCell>{product.shopName}</TableCell>
+                {isAdmin && <TableCell>{product.shopName}</TableCell>}
                 <TableCell className="text-right">
                   <Link href={`/dashboard/products/${product.id}`}>
                     <Button variant="outline" className="w-6 h-6" size="icon">

@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class InventoryController {
     private final InventoryService inventoryService;
 
-    @Operation(summary = "Get all inventories", description = "Fetch a list of all registered inventories.")
+    @Operation(summary = "Get the inventories", description = "Fetch a list of the registered inventories.")
     @GetMapping("/")
     public ResponseEntity<BaseResponse<PaginateResponse<InventoryResponseDTO>>> getInventory(
             @RequestParam(defaultValue = "0") int page,
@@ -49,6 +49,33 @@ public class InventoryController {
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Get all inventories", description = "Fetch a list of all registered inventories.")
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<PaginateResponse<InventoryResponseDTO>>> getAllInventory(
+            @CurrentUser User user) {
+        try {
+            return ResponseEntity.ok(new BaseResponse<>(null, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Get a inventory", description = "Update a inventory by its ID.")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<InventoryResponseDTO>> getInventoryById(
+            @PathVariable Long id,
+            @CurrentUser User currentUser) {
+
+        try {
+            Inventory item = inventoryService.findInventoryById(id, currentUser);
+            return ResponseEntity
+                    .ok(BaseResponse.success(InventoryResponseDTO.fromEntity(item), "Shop updated successfully!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new BaseResponse<>(null, e.getMessage()));
         }
     }
 
@@ -68,9 +95,9 @@ public class InventoryController {
         }
     }
 
-    @Operation(summary = "Update a inventories", description = "Update a inventories by its ID.")
+    @Operation(summary = "Update a inventory", description = "Update a inventory by its ID.")
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<InventoryResponseDTO>> updateShop(
+    public ResponseEntity<BaseResponse<InventoryResponseDTO>> updateInventory(
             @PathVariable Long id,
             @RequestBody InventoryUpdateDTO dto,
             @CurrentUser User currentUser) {

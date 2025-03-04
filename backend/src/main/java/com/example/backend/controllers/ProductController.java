@@ -12,6 +12,10 @@ import com.example.backend.utils.UserRoleUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +35,7 @@ public class ProductController {
     private final ProductService productService;
 
     @Operation(summary = "Get page products", description = "Fetch a list of page registered products.")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<PaginateResponse<ResponseProductDTO>>> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
@@ -41,6 +45,21 @@ public class ProductController {
             Page<Product> products = productService.findProducts(page, pageSize, search, user);
             PaginateResponse<ResponseProductDTO> response = new PaginateResponse<>(
                     products.map(ResponseProductDTO::fromEntity));
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Get all products", description = "Fetch a list of page registered products of a shop.")
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<List<ResponseProductDTO>>> getAllProducts(
+            Long shopId,
+            @CurrentUser User user) {
+        try {
+            List<Product> products = productService.findAllProductsFromShop(shopId, user);
+            List<ResponseProductDTO> response = products.stream().map(ResponseProductDTO::fromEntity)
+                    .collect(Collectors.toList());
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
@@ -60,7 +79,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Create a product", description = "Create a new product")
-    @PostMapping()
+    @PostMapping("")
     public ResponseEntity<BaseResponse<ResponseProductDTO>> createProduct(
             @RequestBody RequestProductDTO productDTO,
             @CurrentUser User user) {

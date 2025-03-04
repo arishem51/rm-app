@@ -3,7 +3,7 @@
 import { UserDTO } from "@/types/Api";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
-import UnSupportRole from "../view/un-support-role";
+import UnSupportRole from "../un-support-role";
 import { AppRoutes, UserRole } from "@/lib/constants";
 import { AppRoutesType, RouteItem } from "@/types";
 
@@ -16,13 +16,7 @@ const ProtectedRole = ({ children, user }: Props) => {
   const pathname = usePathname();
 
   const checkUrlAndPathname = (url: string) => {
-    // url can contain dynamic route like /dashboard/products/[id]
-    // url: /dashboard/products/[id]
-    // pathname: /dashboard/products/1
-
-    // check if url is dynamic
     if (url.includes("[") && url.includes("]")) {
-      // remove dynamic route from url
       url = url.substring(0, url.lastIndexOf("/"));
       return url === pathname.substring(0, pathname.lastIndexOf("/"));
     }

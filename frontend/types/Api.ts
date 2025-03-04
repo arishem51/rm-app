@@ -202,6 +202,43 @@ export interface BaseResponsePartner {
     | "INTERNAL_SERVER_ERROR";
 }
 
+export interface InventoryUpdateDTO {
+  /** @format int64 */
+  productId?: number;
+  /** @format int64 */
+  warehouseId?: number;
+  /** @format int32 */
+  quantity?: number;
+}
+
+export interface BaseResponseInventoryResponseDTO {
+  data?: InventoryResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface InventoryResponseDTO {
+  /** @format int64 */
+  id?: number;
+  /** @format int64 */
+  productId?: number;
+  /** @format int64 */
+  warehouseId?: number;
+  /** @format int32 */
+  quantity?: number;
+  productName?: string;
+  warehouseName?: string;
+  createdBy?: UserDTO;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface UpdateCategoryDTO {
   name?: string;
   description?: string;
@@ -268,34 +305,6 @@ export interface InventoryCreateDTO {
   warehouseId: number;
   /** @format int32 */
   quantity: number;
-}
-
-export interface BaseResponseInventoryResponseDTO {
-  data?: InventoryResponseDTO;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface InventoryResponseDTO {
-  /** @format int64 */
-  id?: number;
-  /** @format int64 */
-  productId?: number;
-  /** @format int64 */
-  warehouseId?: number;
-  /** @format int32 */
-  quantity?: number;
-  productName?: string;
-  warehouseName?: string;
-  createdBy?: UserDTO;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface CreateCategoryDTO {
@@ -412,6 +421,18 @@ export interface WarehouseDTO {
   createdAt?: string;
 }
 
+export interface BaseResponseListWarehouseDTO {
+  data?: WarehouseDTO[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
 export interface BaseResponsePaginateResponseUserDTO {
   data?: PaginateResponseUserDTO;
   message?: string;
@@ -482,6 +503,18 @@ export interface PaginateResponseResponseProductDTO {
   /** @format int32 */
   totalPages?: number;
   data?: ResponseProductDTO[];
+}
+
+export interface BaseResponseListResponseProductDTO {
+  data?: ResponseProductDTO[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface BaseResponsePaginateResponsePartner {
@@ -958,6 +991,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Update a inventory by its ID.
+     *
+     * @tags Inventories Management
+     * @name GetInventoryById
+     * @summary Get a inventory
+     * @request GET:/api/inventories/{id}
+     * @secure
+     */
+    getInventoryById: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseInventoryResponseDTO, any>({
+        path: `/api/inventories/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Update a inventory by its ID.
+     *
+     * @tags Inventories Management
+     * @name UpdateInventory
+     * @summary Update a inventory
+     * @request PUT:/api/inventories/{id}
+     * @secure
+     */
+    updateInventory: (id: number, data: InventoryUpdateDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseInventoryResponseDTO, any>({
+        path: `/api/inventories/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Update an existing category by ID.
      *
      * @tags Category Management
@@ -1068,6 +1137,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch a list of page registered products.
+     *
+     * @tags Product Management
+     * @name GetProducts
+     * @summary Get page products
+     * @request GET:/api/products
+     * @secure
+     */
+    getProducts: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseResponseProductDTO, any>({
+        path: `/api/products`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Create a new product
      *
      * @tags Product Management
@@ -1138,16 +1241,51 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Fetch a list of the registered inventories.
+     *
+     * @tags Inventories Management
+     * @name GetInventory
+     * @summary Get the inventories
+     * @request GET:/api/inventories/
+     * @secure
+     */
+    getInventory: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
+        path: `/api/inventories/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Create a inventory with the provided data.
      *
      * @tags Inventories Management
      * @name CreateInventory
-     * @request POST:/api/inventories
+     * @summary Create a inventory
+     * @request POST:/api/inventories/
      * @secure
      */
     createInventory: (data: InventoryCreateDTO, params: RequestParams = {}) =>
       this.request<BaseResponseInventoryResponseDTO, any>({
-        path: `/api/inventories`,
+        path: `/api/inventories/`,
         method: "POST",
         body: data,
         secure: true,
@@ -1250,12 +1388,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Get all warehouses of a shop
+     * @description Get paginate warehouses of a shop
      *
      * @tags Warehouse Management
      * @name GetWarehouses
-     * @summary Get all warehouses of a shop
-     * @request GET:/api/warehouses/
+     * @summary Get paginate warehouses of a shop
+     * @request GET:/api/warehouses
      * @secure
      */
     getWarehouses: (
@@ -1276,7 +1414,31 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<BaseResponsePaginateResponseWarehouseDTO, any>({
-        path: `/api/warehouses/`,
+        path: `/api/warehouses`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Get all warehouses of a shop
+     *
+     * @tags Warehouse Management
+     * @name GetAllWarehouses
+     * @summary Get all warehouses of a shop
+     * @request GET:/api/warehouses/all
+     * @secure
+     */
+    getAllWarehouses: (
+      query: {
+        /** @format int64 */
+        shopId: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponseListWarehouseDTO, any>({
+        path: `/api/warehouses/all`,
         method: "GET",
         query: query,
         secure: true,
@@ -1335,33 +1497,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of page registered products.
+     * @description Fetch a list of page registered products of a shop.
      *
      * @tags Product Management
-     * @name GetProducts
-     * @summary Get page products
-     * @request GET:/api/products/
+     * @name GetAllProducts
+     * @summary Get all products
+     * @request GET:/api/products/all
      * @secure
      */
-    getProducts: (
-      query?: {
-        /**
-         * @format int32
-         * @default 0
-         */
-        page?: number;
-        /**
-         * @format int32
-         * @default 10
-         */
-        pageSize?: number;
-        /** @default "" */
-        search?: string;
+    getAllProducts: (
+      query: {
+        /** @format int64 */
+        shopId: number;
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponseResponseProductDTO, any>({
-        path: `/api/products/`,
+      this.request<BaseResponseListResponseProductDTO, any>({
+        path: `/api/products/all`,
         method: "GET",
         query: query,
         secure: true,
@@ -1389,32 +1541,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Fetch a list of all registered inventories.
      *
      * @tags Inventories Management
-     * @name GetInventory
+     * @name GetAllInventory
      * @summary Get all inventories
-     * @request GET:/api/inventories/
+     * @request GET:/api/inventories/all
      * @secure
      */
-    getInventory: (
-      query?: {
-        /**
-         * @format int32
-         * @default 0
-         */
-        page?: number;
-        /**
-         * @format int32
-         * @default 10
-         */
-        pageSize?: number;
-        /** @default "" */
-        search?: string;
-      },
-      params: RequestParams = {},
-    ) =>
+    getAllInventory: (params: RequestParams = {}) =>
       this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
-        path: `/api/inventories/`,
+        path: `/api/inventories/all`,
         method: "GET",
-        query: query,
         secure: true,
         ...params,
       }),

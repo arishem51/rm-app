@@ -1,5 +1,7 @@
 package com.example.backend.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,30 @@ public class InventoryService {
     private final ProductService productService;
     private final WarehouseService warehouseService;
 
+    public List<Inventory> findAllInventoriesByShop(User currentUser, Long shopId) {
+        if (currentUser.getShop() == null) {
+            throw new IllegalArgumentException("You must have a shop to manage products!");
+        }
+        if (!currentUser.getShop().getId().equals(shopId)) {
+            throw new IllegalArgumentException("You do not have permission to manage inventory for this shop.");
+        }
+        return inventoryRepository.findByWarehouse_ShopId(shopId);
+    }
+
+    public Inventory findInventoryById(Long id, User currentUser) {
+        Inventory inventory = inventoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Inventory not found!"));
+        if (!currentUser.getShop().getId().equals(inventory.getWarehouse().getShop().getId())) {
+            throw new IllegalArgumentException("You do not have permission to manage inventory for this shop.");
+        }
+        return inventory;
+    }
+
     public Page<Inventory> findInventories(int page, int pageSize, String search, User currentUser) {
         Shop shop = currentUser.getShop();
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage products!");
         }
-
         return search.isEmpty()
                 ? inventoryRepository.findByWarehouse_ShopId(shop.getId(), PageRequest.of(page, pageSize))
                 : inventoryRepository.findByWarehouse_ShopIdAndProduct_NameContainingIgnoreCase(shop.getId(), search,
