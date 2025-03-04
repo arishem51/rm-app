@@ -25,6 +25,7 @@ import {
 import { ComboboxProducts } from "../combobox/product";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
+import { ComboboxWarehouses } from "../combobox/warehouses";
 
 type Props = {
   onClose?: () => void;
@@ -32,9 +33,9 @@ type Props = {
 };
 
 const schemaFields = {
-  productId: z.number().min(1, { message: "Product is required" }),
+  productId: z.coerce.number(),
   warehouseId: z.coerce.number(),
-  quantity: z.number().min(1, { message: "Quantity must be greater than 0" }),
+  quantity: z.coerce.number(),
 };
 
 const InventoryForm = ({ inventory, onClose }: Props) => {
@@ -131,7 +132,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
               <FormItem>
                 <FormLabel>Warehouse</FormLabel>
                 <FormControl>
-                  <ComboboxProducts
+                  <ComboboxWarehouses
                     onSelect={field.onChange}
                     formValue={field.value?.toString()}
                     shopId={currentUserQuery!.shopId!}
