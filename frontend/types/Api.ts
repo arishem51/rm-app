@@ -1166,11 +1166,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of all registered inventories.
+     * @description Fetch a list of the registered inventories.
      *
      * @tags Inventories Management
      * @name GetInventory
-     * @summary Get all inventories
+     * @summary Get the inventories
      * @request GET:/api/inventories/
      * @secure
      */
@@ -1443,6 +1443,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getAllPartners: (params: RequestParams = {}) =>
       this.request<BaseResponseListPartner, any>({
         path: `/api/partners/all`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch a list of all registered inventories.
+     *
+     * @tags Inventories Management
+     * @name GetAllInventory
+     * @summary Get all inventories
+     * @request GET:/api/inventories/all
+     * @secure
+     */
+    getAllInventory: (params: RequestParams = {}) =>
+      this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
+        path: `/api/inventories/all`,
         method: "GET",
         secure: true,
         ...params,

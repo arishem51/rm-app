@@ -1,5 +1,6 @@
 package com.example.backend.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,9 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
     Page<Inventory> findByWarehouse_ShopId(Long shopId, Pageable pageable);
 
+    List<Inventory> findByWarehouse_ShopId(Long shopId);
+
     Page<Inventory> findByWarehouse_ShopIdAndProduct_NameContainingIgnoreCase(Long shopId, String name,
             Pageable pageable);
+
 }

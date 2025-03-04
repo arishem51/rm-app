@@ -1,5 +1,7 @@
 package com.example.backend.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,16 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final ProductService productService;
     private final WarehouseService warehouseService;
+
+    public List<Inventory> findAllInventoriesByShop(User currentUser, Long shopId) {
+        if (currentUser.getShop() == null) {
+            throw new IllegalArgumentException("You must have a shop to manage products!");
+        }
+        if (!currentUser.getShop().getId().equals(shopId)) {
+            throw new IllegalArgumentException("You do not have permission to manage inventory for this shop.");
+        }
+        return inventoryRepository.findByWarehouse_ShopId(shopId);
+    }
 
     public Page<Inventory> findInventories(int page, int pageSize, String search, User currentUser) {
         Shop shop = currentUser.getShop();

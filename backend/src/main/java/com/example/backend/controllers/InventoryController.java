@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class InventoryController {
     private final InventoryService inventoryService;
 
-    @Operation(summary = "Get all inventories", description = "Fetch a list of all registered inventories.")
+    @Operation(summary = "Get the inventories", description = "Fetch a list of the registered inventories.")
     @GetMapping("/")
     public ResponseEntity<BaseResponse<PaginateResponse<InventoryResponseDTO>>> getInventory(
             @RequestParam(defaultValue = "0") int page,
@@ -47,6 +47,17 @@ public class InventoryController {
             PaginateResponse<InventoryResponseDTO> response = new PaginateResponse<>(items.map(
                     InventoryResponseDTO::fromEntity));
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Get all inventories", description = "Fetch a list of all registered inventories.")
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<PaginateResponse<InventoryResponseDTO>>> getAllInventory(
+            @CurrentUser User user) {
+        try {
+            return ResponseEntity.ok(new BaseResponse<>(null, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

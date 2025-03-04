@@ -589,8 +589,8 @@
     "/api/inventories/": {
       "get": {
         "tags": ["Inventories Management"],
-        "summary": "Get all inventories",
-        "description": "Fetch a list of all registered inventories.",
+        "summary": "Get the inventories",
+        "description": "Fetch a list of the registered inventories.",
         "operationId": "getInventory",
         "parameters": [
           {
@@ -935,6 +935,26 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponseListPartner"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inventories/all": {
+      "get": {
+        "tags": ["Inventories Management"],
+        "summary": "Get all inventories",
+        "description": "Fetch a list of all registered inventories.",
+        "operationId": "getAllInventory",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePaginateResponseInventoryResponseDTO"
                 }
               }
             }
