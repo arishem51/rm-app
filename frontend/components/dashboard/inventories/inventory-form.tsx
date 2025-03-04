@@ -23,6 +23,8 @@ import {
   useUpdateInventory,
 } from "@/hooks/mutations/inventory";
 import { ComboboxProducts } from "../combobox/product";
+import { useRouter } from "next/navigation";
+import { useMe } from "@/hooks/mutations/user";
 
 type Props = {
   onClose?: () => void;
@@ -31,7 +33,7 @@ type Props = {
 
 const schemaFields = {
   productId: z.number().min(1, { message: "Product is required" }),
-  warehouseId: z.number().min(1, { message: "Warehouse is required" }),
+  warehouseId: z.coerce.number(),
   quantity: z.number().min(1, { message: "Quantity must be greater than 0" }),
 };
 
@@ -45,6 +47,8 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
   const { mutate: updateInventory, isPending: isUpdating } =
     useUpdateInventory();
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const { data: currentUserQuery } = useMe();
 
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
@@ -55,6 +59,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
     queryClient.invalidateQueries({
       queryKey: ApiQuery.inventories.getInventories().queryKey,
     });
+    router.push("/dashboard/warehouses/inventories");
   };
 
   const callbackFailed = (type: "create" | "update") => {
@@ -112,6 +117,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
                   <ComboboxProducts
                     onSelect={field.onChange}
                     formValue={field.value?.toString()}
+                    shopId={currentUserQuery!.shopId!}
                   />
                 </FormControl>
                 <FormMessage />
@@ -128,6 +134,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
                   <ComboboxProducts
                     onSelect={field.onChange}
                     formValue={field.value?.toString()}
+                    shopId={currentUserQuery!.shopId!}
                   />
                 </FormControl>
                 <FormMessage />

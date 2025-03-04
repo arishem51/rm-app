@@ -525,6 +525,44 @@
       }
     },
     "/api/products": {
+      "get": {
+        "tags": ["Product Management"],
+        "summary": "Get page products",
+        "description": "Fetch a list of page registered products.",
+        "operationId": "getProducts",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePaginateResponseResponseProductDTO"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["Product Management"],
         "summary": "Create a product",
@@ -810,11 +848,11 @@
         }
       }
     },
-    "/api/warehouses/": {
+    "/api/warehouses": {
       "get": {
         "tags": ["Warehouse Management"],
-        "summary": "Get all warehouses of a shop",
-        "description": "Get all warehouses of a shop",
+        "summary": "Get paginate warehouses of a shop",
+        "description": "Get paginate warehouses of a shop",
         "operationId": "getWarehouses",
         "parameters": [
           {
@@ -843,6 +881,34 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponsePaginateResponseWarehouseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouses/all": {
+      "get": {
+        "tags": ["Warehouse Management"],
+        "summary": "Get all warehouses of a shop",
+        "description": "Get all warehouses of a shop",
+        "operationId": "getAllWarehouses",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListWarehouseDTO"
                 }
               }
             }
@@ -908,30 +974,18 @@
         }
       }
     },
-    "/api/products/": {
+    "/api/products/all": {
       "get": {
         "tags": ["Product Management"],
-        "summary": "Get page products",
-        "description": "Fetch a list of page registered products.",
-        "operationId": "getProducts",
+        "summary": "Get all products",
+        "description": "Fetch a list of page registered products of a shop.",
+        "operationId": "getAllProducts",
         "parameters": [
           {
-            "name": "page",
+            "name": "shopId",
             "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 0 }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 10 }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "string", "default": "" }
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -940,7 +994,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePaginateResponseResponseProductDTO"
+                  "$ref": "#/components/schemas/BaseResponseListResponseProductDTO"
                 }
               }
             }
@@ -1561,6 +1615,27 @@
           "createdAt": { "type": "string", "format": "date-time" }
         }
       },
+      "BaseResponseListWarehouseDTO": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/WarehouseDTO" }
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
       "BaseResponsePaginateResponseUserDTO": {
         "type": "object",
         "properties": {
@@ -1653,6 +1728,27 @@
           "data": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/ResponseProductDTO" }
+          }
+        }
+      },
+      "BaseResponseListResponseProductDTO": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseProductDTO" }
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
           }
         }
       },

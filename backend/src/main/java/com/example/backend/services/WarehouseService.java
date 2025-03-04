@@ -8,6 +8,9 @@ import com.example.backend.entities.Warehouse;
 import com.example.backend.repositories.WarehouseRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -107,6 +110,13 @@ public class WarehouseService {
     public Warehouse findWarehouseById(Long warehouseId) {
         return warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new IllegalArgumentException("Warehouse not found with ID: " + warehouseId));
+    }
+
+    public List<Warehouse> findAllWarehousesFromShop(Long shopId, User currentUser) {
+        if (currentUser.getShop() == null || !currentUser.getShop().getId().equals(shopId)) {
+            throw new IllegalArgumentException("You do not have permission to view warehouses from this shop.");
+        }
+        return warehouseRepository.findAllByShopId(shopId);
     }
 
 }

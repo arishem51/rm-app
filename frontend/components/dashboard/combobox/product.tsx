@@ -1,18 +1,16 @@
 "use client";
 
-import useAppQuery from "@/hooks/use-app-query";
-import { ApiQuery } from "@/services/query";
 import { Combobox } from "./index";
+import { useAllProducts } from "@/services/hooks/products";
 
 type Props = {
   onSelect: (value: string) => void;
   formValue?: string;
+  shopId: number;
 };
 
-export function ComboboxProducts({ onSelect, formValue }: Props) {
-  const { data: { data: products = [] } = {} } = useAppQuery(
-    ApiQuery.partners.getAllPartners()
-  );
+export function ComboboxProducts({ onSelect, formValue, shopId }: Props) {
+  const { data: { data: products = [] } = {} } = useAllProducts(shopId);
 
   const options =
     products.length > 0

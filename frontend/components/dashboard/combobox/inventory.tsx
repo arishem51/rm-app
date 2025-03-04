@@ -20,6 +20,10 @@ export function ComboboxInventories({ onSelect, formValue }: Props) {
       : [];
 
   return (
-    <Combobox onSelect={onSelect} formValue={formValue} options={options} />
+    <Combobox
+      onSelect={onSelect}
+      formValue={formValue}
+      options={options ?? []}
+    />
   );
 }

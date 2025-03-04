@@ -1,4 +1,5 @@
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
+import InventoryDetails from "@/components/dashboard/inventories/details";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ApiQuery } from "@/services/query";
 
@@ -30,7 +31,7 @@ const InventoryPage = async ({
         <p className="text-sm text-muted-foreground">
           Edit inventory information here
         </p>
-        <div>Details</div>
+        <InventoryDetails id={id} />
       </div>
     </HydrationPrefetchQuery>
   );

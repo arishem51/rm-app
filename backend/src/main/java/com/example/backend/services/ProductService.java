@@ -74,6 +74,13 @@ public class ProductService {
                         PageRequest.of(page, pageSize));
     }
 
+    public List<Product> findAllProductsFromShop(Long shopId, User currentUser) {
+        if (currentUser.getShop() == null || !currentUser.getShop().getId().equals(shopId)) {
+            throw new IllegalArgumentException("You do not have permission to view products from this shop.");
+        }
+        return productRepository.findAllByShopId(shopId);
+    }
+
     public Product updateProduct(Long id, RequestProductDTO dto, User user) {
         validateUserCanManageProduct(user);
         Optional<Product> optionalProduct = productRepository.findById(id);
