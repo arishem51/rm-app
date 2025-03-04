@@ -80,9 +80,11 @@ const Inventories = () => {
                 <TableCell>{item.warehouseName}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="outline" className="w-6 h-6" size="icon">
-                    <Edit />
-                  </Button>
+                  <Link href={`/dashboard/warehouses/inventories/${item.id}`}>
+                    <Button variant="outline" className="w-6 h-6" size="icon">
+                      <Edit />
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}
