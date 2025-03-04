@@ -28,7 +28,7 @@ const Page = async () => {
   };
 
   return (
-    <ProtectedShop fallback={{ view: <CreateShopView /> }}>
+    <ProtectedShop shouldAdminByPass fallback={{ view: <CreateShopView /> }}>
       <HydrationPrefetchQuery query={getQuery()} awaitQuery>
         <div className="px-4">
           <h1 className="text-3xl font-bold mt-2">User management</h1>
