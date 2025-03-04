@@ -33,13 +33,18 @@ type Props = {
 };
 
 const schemaFields = {
-  productId: z.coerce.number(),
-  warehouseId: z.coerce.number(),
-  quantity: z.coerce.number(),
+  productId: z.coerce.number({ message: "Product is required" }),
+  warehouseId: z.coerce.number({ message: "Warehouse is required" }),
+  quantity: z.coerce.number({ message: "Invalid Number" }),
 };
 
 const InventoryForm = ({ inventory, onClose }: Props) => {
   const form = useForm<InventoryCreateDTO>({
+    defaultValues: {
+      productId: inventory?.productId,
+      warehouseId: inventory?.warehouseId,
+      quantity: inventory?.quantity ?? 0,
+    },
     resolver: zodResolver(z.object(schemaFields)),
   });
 
