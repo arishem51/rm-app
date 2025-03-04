@@ -4,7 +4,7 @@ import { AppSidebar } from "@/components/dashboard/sidebar";
 import Header from "@/components/dashboard/header";
 import { getMe } from "@/server/actions";
 import { redirect } from "next/navigation";
-import ProtectedRole from "@/components/dashboard/protected-role";
+import ProtectedRole from "@/components/view/protected/protected-role";
 
 type Props = Readonly<{ children: ReactNode }>;
 

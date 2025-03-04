@@ -1,6 +1,6 @@
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
 import SettingShopView from "@/components/dashboard/setting/shop/setting-shop-view";
-import ProtectedShop from "@/components/protected-shop";
+import ProtectedShop from "@/components/view/protected/protected-shop";
 import { Separator } from "@/components/ui/separator";
 import { getMe } from "@/server/actions";
 import { ApiQuery } from "@/services/query";

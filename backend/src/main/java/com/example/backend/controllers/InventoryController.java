@@ -63,6 +63,22 @@ public class InventoryController {
         }
     }
 
+    @Operation(summary = "Get a inventory", description = "Update a inventory by its ID.")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<InventoryResponseDTO>> getInventoryById(
+            @PathVariable Long id,
+            @CurrentUser User currentUser) {
+
+        try {
+            Inventory item = inventoryService.findInventoryById(id, currentUser);
+            return ResponseEntity
+                    .ok(BaseResponse.success(InventoryResponseDTO.fromEntity(item), "Shop updated successfully!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
     @Operation(summary = "Create a inventory", description = "Create a inventory with the provided data.")
     @PostMapping("/")
     public ResponseEntity<BaseResponse<InventoryResponseDTO>> createInventory(
@@ -79,7 +95,7 @@ public class InventoryController {
         }
     }
 
-    @Operation(summary = "Update a inventories", description = "Update a inventories by its ID.")
+    @Operation(summary = "Update a inventory", description = "Update a inventory by its ID.")
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<InventoryResponseDTO>> updateInventory(
             @PathVariable Long id,

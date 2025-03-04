@@ -3,7 +3,7 @@
 import { UserDTO } from "@/types/Api";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
-import UnSupportRole from "../view/un-support-role";
+import UnSupportRole from "../un-support-role";
 import { AppRoutes, UserRole } from "@/lib/constants";
 import { AppRoutesType, RouteItem } from "@/types";
 

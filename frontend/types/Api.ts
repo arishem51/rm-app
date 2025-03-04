@@ -967,11 +967,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Update a inventories by its ID.
+     * @description Update a inventory by its ID.
+     *
+     * @tags Inventories Management
+     * @name GetInventoryById
+     * @summary Get a inventory
+     * @request GET:/api/inventories/{id}
+     * @secure
+     */
+    getInventoryById: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseInventoryResponseDTO, any>({
+        path: `/api/inventories/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Update a inventory by its ID.
      *
      * @tags Inventories Management
      * @name UpdateInventory
-     * @summary Update a inventories
+     * @summary Update a inventory
      * @request PUT:/api/inventories/{id}
      * @secure
      */

@@ -2,7 +2,7 @@ import CreateShopView from "@/components/dashboard/create-shop-view";
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
 import AdminUsersView from "@/components/dashboard/users/admin-users-view";
 import OwnerUsersView from "@/components/dashboard/users/owner-users-view";
-import ProtectedShop from "@/components/protected-shop";
+import ProtectedShop from "@/components/view/protected/protected-shop";
 import { checkRole } from "@/lib/helpers";
 import { getMe } from "@/server/actions";
 import { ApiQuery } from "@/services/query";

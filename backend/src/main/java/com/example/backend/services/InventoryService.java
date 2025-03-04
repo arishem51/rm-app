@@ -32,6 +32,15 @@ public class InventoryService {
         return inventoryRepository.findByWarehouse_ShopId(shopId);
     }
 
+    public Inventory findInventoryById(Long id, User currentUser) {
+        Inventory inventory = inventoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Inventory not found!"));
+        if (!currentUser.getShop().getId().equals(inventory.getWarehouse().getShop().getId())) {
+            throw new IllegalArgumentException("You do not have permission to manage inventory for this shop.");
+        }
+        return inventory;
+    }
+
     public Page<Inventory> findInventories(int page, int pageSize, String search, User currentUser) {
         Shop shop = currentUser.getShop();
         if (shop == null) {

@@ -1,6 +1,6 @@
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
 import Inventories from "@/components/dashboard/inventories";
-import ProtectedShop from "@/components/protected-shop";
+import ProtectedShop from "@/components/view/protected/protected-shop";
 import { ApiQuery } from "@/services/query";
 
 const InventoriesPage = () => {

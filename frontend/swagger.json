@@ -301,10 +301,36 @@
       }
     },
     "/api/inventories/{id}": {
+      "get": {
+        "tags": ["Inventories Management"],
+        "summary": "Get a inventory",
+        "description": "Update a inventory by its ID.",
+        "operationId": "getInventoryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseInventoryResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": ["Inventories Management"],
-        "summary": "Update a inventories",
-        "description": "Update a inventories by its ID.",
+        "summary": "Update a inventory",
+        "description": "Update a inventory by its ID.",
         "operationId": "updateInventory",
         "parameters": [
           {
