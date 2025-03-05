@@ -46,19 +46,13 @@ const ForgotPasswordView = () => {
 
   const handleSubmit = form.handleSubmit((data: FormData) => {
     forgotPassword(data, {
-      onSuccess: () => {
+      onSettled: () => {
         toast({
           title: ToastTitle.success,
           description:
             "We have sent to your email a link to reset your password",
         });
         router.push("/auth/sign-in");
-      },
-      onError: () => {
-        toast({
-          title: ToastTitle.error,
-          description: "Reset password failed",
-        });
       },
     });
   });
