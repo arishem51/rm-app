@@ -1,5 +1,7 @@
 package com.example.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,8 +21,12 @@ public class Zone {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+    @Column(nullable = false)
+    private String description;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "warehouse_id", nullable = false)
-    private Warehouse warehouse;  // Liên kết với Warehouse
+    @JsonIgnore
+    private Warehouse warehouse;
 
 }

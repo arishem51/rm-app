@@ -1,8 +1,8 @@
 package com.example.backend.entities;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.example.backend.enums.ActionStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -72,7 +72,8 @@ public class Warehouse {
     @Schema(required = true)
     @Builder.Default
     private ActionStatus status = ActionStatus.ACTIVE;
+
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private Set<Zone> zones = new HashSet<>();
+    private List<Zone> zones = new ArrayList<>();
 }
