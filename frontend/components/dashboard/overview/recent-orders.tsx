@@ -9,10 +9,8 @@ export function RecentOrders() {
           <AvatarFallback>OM</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Olivia Martin</p>
-          <p className="text-sm text-muted-foreground">
-            olivia.martin@email.com
-          </p>
+          <p className="text-sm font-medium leading-none">Phùng Văn Hưng</p>
+          <p className="text-sm text-muted-foreground">arishem51@gmail.com</p>
         </div>
         <div className="ml-auto font-medium">+$1,999.00</div>
       </div>
@@ -22,8 +20,8 @@ export function RecentOrders() {
           <AvatarFallback>JL</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Jackson Lee</p>
-          <p className="text-sm text-muted-foreground">jackson.lee@email.com</p>
+          <p className="text-sm font-medium leading-none">Nguyễn Đức Hiếu</p>
+          <p className="text-sm text-muted-foreground">hieunguyen@email.com</p>
         </div>
         <div className="ml-auto font-medium">+$39.00</div>
       </div>
@@ -33,10 +31,8 @@ export function RecentOrders() {
           <AvatarFallback>IN</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Isabella Nguyen</p>
-          <p className="text-sm text-muted-foreground">
-            isabella.nguyen@email.com
-          </p>
+          <p className="text-sm font-medium leading-none">Kiều Anh</p>
+          <p className="text-sm text-muted-foreground">kieuanh@email.com</p>
         </div>
         <div className="ml-auto font-medium">+$299.00</div>
       </div>
@@ -46,8 +42,8 @@ export function RecentOrders() {
           <AvatarFallback>WK</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">William Kim</p>
-          <p className="text-sm text-muted-foreground">will@email.com</p>
+          <p className="text-sm font-medium leading-none">Kiên</p>
+          <p className="text-sm text-muted-foreground">kien@email.com</p>
         </div>
         <div className="ml-auto font-medium">+$99.00</div>
       </div>
@@ -57,8 +53,8 @@ export function RecentOrders() {
           <AvatarFallback>SD</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Sofia Davis</p>
-          <p className="text-sm text-muted-foreground">sofia.davis@email.com</p>
+          <p className="text-sm font-medium leading-none">Duy</p>
+          <p className="text-sm text-muted-foreground">duy@email.com</p>
         </div>
         <div className="ml-auto font-medium">+$39.00</div>
       </div>
