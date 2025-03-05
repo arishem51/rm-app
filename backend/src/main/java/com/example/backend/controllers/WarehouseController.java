@@ -11,6 +11,7 @@ import com.example.backend.entities.Warehouse;
 import com.example.backend.services.WarehouseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class WarehouseController {
     @PostMapping("/{shopId}")
     public ResponseEntity<BaseResponse<Warehouse>> createWarehouse(
             @PathVariable Long shopId,
-            @RequestBody WarehouseCreateDTO warehouseCreateDTO,
+            @Valid @RequestBody WarehouseCreateDTO warehouseCreateDTO,
             @CurrentUser User user) {
         try {
             Warehouse warehouse = warehouseService.createWarehouse(shopId, warehouseCreateDTO, user);
@@ -60,7 +61,7 @@ public class WarehouseController {
     @PutMapping("/{warehouseId}")
     public ResponseEntity<BaseResponse<Warehouse>> updateWarehouse(
             @PathVariable Long warehouseId,
-            @RequestBody WarehouseUpdateDTO warehouseUpdateDTO,
+            @Valid @RequestBody WarehouseUpdateDTO warehouseUpdateDTO,
             @CurrentUser User user) {
         try {
             Warehouse warehouse = warehouseService.updateWarehouse(warehouseId, warehouseUpdateDTO, user);

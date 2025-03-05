@@ -1,10 +1,9 @@
 package com.example.backend.dto.warehouse;
 
+import com.example.backend.enums.ActionStatus;
+import com.example.backend.security.validation.ValidEnum;
 import lombok.*;
 
-/**
- * DTO dùng để cập nhật một Warehouse.
- */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,7 +12,7 @@ import lombok.*;
 public class WarehouseUpdateDTO {
     private String name;
     private String address;
-    //FIXME:validate-Status
-    private String status;
 
+    @ValidEnum(enumClass = ActionStatus.class, message = "Invalid status!")
+    private String status;
 }
