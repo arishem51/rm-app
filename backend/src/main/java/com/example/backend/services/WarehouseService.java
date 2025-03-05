@@ -5,7 +5,6 @@ import com.example.backend.dto.warehouse.WarehouseUpdateDTO;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.entities.Warehouse;
-import com.example.backend.entities.Zone;
 import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.WarehouseRepository;
 import com.example.backend.utils.UserRoleUtils;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,11 +46,6 @@ public class WarehouseService {
                 .shop(shop)
                 .status(ActionStatus.ACTIVE)
                 .build();
-
-        List<Zone> zones = new ArrayList<>();
-        zones.add(Zone.builder().name("1P").description("Vị trí kệ bên phải").warehouse(warehouse).build());
-        warehouse.setZones(zones);
-
         return warehouseRepository.save(warehouse);
     }
 
@@ -61,9 +54,6 @@ public class WarehouseService {
         warehouse.setName("Warehouse - " + shop.getName()); // Tên kho có thể dựa trên tên shop
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
-        List<Zone> zones = new ArrayList<>();
-        zones.add(Zone.builder().name("1P").description("Vị trí kệ bên phải").build());
-        warehouse.setZones(zones);
         return warehouseRepository.save(warehouse);
     }
 

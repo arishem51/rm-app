@@ -1,9 +1,6 @@
 package com.example.backend.entities;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.example.backend.enums.ActionStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.CreationTimestamp;
@@ -72,8 +69,4 @@ public class Warehouse {
     @Schema(required = true)
     @Builder.Default
     private ActionStatus status = ActionStatus.ACTIVE;
-
-    @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Zone> zones = new ArrayList<>();
 }
