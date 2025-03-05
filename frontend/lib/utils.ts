@@ -5,6 +5,7 @@ import { globalStore } from "@/store";
 import { authAtom } from "@/store/auth";
 import { queryOptions } from "@tanstack/react-query";
 import { QueryConfigType } from "@/types";
+import { isEmpty } from "lodash";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -24,11 +25,9 @@ export const { api: apiClient } = new Api({
     let token;
 
     if (typeof window === "undefined") {
-      // Running on the server: Get token from cookies
       const { cookies } = await import("next/headers");
       token = (await cookies()).get("token")?.value;
     } else {
-      // Running on the client: Get token from globalStore
       token = globalStore.get(authAtom)?.token;
     }
     if (token) {
@@ -56,7 +55,9 @@ export const { api: apiClient } = new Api({
 const serialize = <T>(record?: Record<string, string | number | T>) => {
   const result: Record<string, string> = {};
   for (const key in record) {
-    result[key] = String(record[key]);
+    if (key !== "search" && !isEmpty(record[key])) {
+      result[key] = String(record[key]);
+    }
   }
   return result;
 };

@@ -68,13 +68,11 @@ const Categories = () => {
           <span className="text-sm whitespace-nowrap">Created At:</span>
           <DatePicker
             onSelect={(e) => {
-              if (e) {
-                setFilter({
-                  page: 0,
-                  search: filter.search,
-                  createdAt: format(e, "yyyy-MM-dd"),
-                });
-              }
+              setFilter({
+                page: 0,
+                search: filter.search,
+                createdAt: e ? format(e, "yyyy-MM-dd") : "",
+              });
             }}
           />
         </div>
