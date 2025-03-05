@@ -5,7 +5,11 @@ import { ApiQuery } from "@/services/query";
 const CategoriesPage = async () => {
   return (
     <HydrationPrefetchQuery
-      query={ApiQuery.categories.getCategories({ page: 0, search: "" })}
+      query={ApiQuery.categories.getCategories({
+        page: 0,
+        search: "",
+        createdAt: "",
+      })}
       awaitQuery
     >
       <div className="px-4">

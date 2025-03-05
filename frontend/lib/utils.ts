@@ -5,7 +5,6 @@ import { globalStore } from "@/store";
 import { authAtom } from "@/store/auth";
 import { queryOptions } from "@tanstack/react-query";
 import { QueryConfigType } from "@/types";
-import { isEmpty } from "lodash";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -55,9 +54,7 @@ export const { api: apiClient } = new Api({
 const serialize = <T>(record?: Record<string, string | number | T>) => {
   const result: Record<string, string> = {};
   for (const key in record) {
-    if (key !== "search" && !isEmpty(record[key])) {
-      result[key] = String(record[key]);
-    }
+    result[key] = String(record[key]);
   }
   return result;
 };
