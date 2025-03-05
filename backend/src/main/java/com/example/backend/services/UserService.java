@@ -103,15 +103,20 @@ public class UserService {
 
         user.setName(request.getName() != null ? request.getName() : user.getName());
         user.setPhoneNumber(request.getPhoneNumber());
-        if (UserRoleUtils.isAdmin(currentUser)) {
-            if (!request.getRole().equals(Role.OWNER.toString())
-                    && UserRoleUtils.isOwner(user)
-                    && user.getShop() != null
-                    && userRepository.findByShopAndRole(user.getShop(), Role.OWNER).size() == 1) {
-                throw new IllegalArgumentException("This shop must have at least one owner");
-            }
-            user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) : user.getRole());
-        }
+
+        // FIXME: ignore role for now
+
+        // if (UserRoleUtils.isAdmin(currentUser)) {
+        // if (!request.getRole().equals(Role.OWNER.toString())
+        // && UserRoleUtils.isOwner(user)
+        // && user.getShop() != null
+        // && userRepository.findByShopAndRole(user.getShop(), Role.OWNER).size() == 1)
+        // {
+        // throw new IllegalArgumentException("This shop must have at least one owner");
+        // }
+        // user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) :
+        // user.getRole());
+        // }
         String requestUserStatus = request.getStatus();
         if (UserRoleUtils.isAdmin(currentUser)) {
             user.setStatus(ActionStatus.valueOf(requestUserStatus));
