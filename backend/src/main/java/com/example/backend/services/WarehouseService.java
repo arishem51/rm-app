@@ -10,6 +10,9 @@ import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.WarehouseRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -55,7 +58,7 @@ public class WarehouseService {
 
     public Warehouse createWarehouseByShop(Shop shop) {
         Warehouse warehouse = new Warehouse();
-        warehouse.setName("Warehouse for " + shop.getName()); // Tên kho có thể dựa trên tên shop
+        warehouse.setName("Warehouse - " + shop.getName()); // Tên kho có thể dựa trên tên shop
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
         List<Zone> zones = new ArrayList<>();
@@ -116,8 +119,16 @@ public class WarehouseService {
     }
 
     // Lấy kho theo warehouseId và shopId
-    public Warehouse getWarehouseById(Long warehouseId) {
+    public Warehouse findWarehouseById(Long warehouseId) {
         return warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new IllegalArgumentException("Warehouse not found with ID: " + warehouseId));
     }
+
+    public List<Warehouse> findAllWarehousesFromShop(Long shopId, User currentUser) {
+        if (currentUser.getShop() == null || !currentUser.getShop().getId().equals(shopId)) {
+            throw new IllegalArgumentException("You do not have permission to view warehouses from this shop.");
+        }
+        return warehouseRepository.findAllByShopId(shopId);
+    }
+
 }

@@ -79,7 +79,7 @@ public class CategoryService {
         if (dto.getDescription() != null) {
             category.setDescription(dto.getDescription());
         }
-        if (category.getImageUrl() != null) {
+        if (dto.getImageUrl() != null) {
             category.setImageUrl(dto.getImageUrl());
         }
         category.setStatus(ActionStatus.valueOf(dto.getStatus()));

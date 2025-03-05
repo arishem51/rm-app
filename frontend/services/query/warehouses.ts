@@ -5,4 +5,5 @@ export const warehouses = {
   getWarehouses: createQuery(apiClient.getWarehouses, {
     placeholderData: keepPreviousData,
   }),
+  getAllWarehouses: createQuery(apiClient.getAllWarehouses),
 };

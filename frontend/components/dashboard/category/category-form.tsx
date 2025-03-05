@@ -76,7 +76,11 @@ const CategoryForm = ({ category, onClose }: Props) => {
 
   useEffect(() => {
     if (category) {
-      form.reset(category);
+      form.reset({
+        name: category.name,
+        description: category.description,
+        imageUrl: category.imageUrl ?? "",
+      });
     }
   }, [form, category]);
 

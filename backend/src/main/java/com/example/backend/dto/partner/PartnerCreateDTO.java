@@ -1,4 +1,4 @@
-package com.example.backend.dto.supplier;
+package com.example.backend.dto.partner;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,8 +8,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SupplierCreateDTO {
-    @NotEmpty(message = "Supplier name is required")
+public class PartnerCreateDTO {
+    @NotEmpty(message = "Partner name is required")
     private String name;
 
     @NotEmpty(message = "Contact name is required")
@@ -22,10 +22,6 @@ public class SupplierCreateDTO {
     @NotEmpty(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
-
-    @NotEmpty(message = "Tax Code is required")
-    @Pattern(regexp = "\\d{10}|\\d{13}", message = "Invalid tax code format")
-    private String taxCode;
 
     @NotEmpty(message = "Address is required")
     private String address;

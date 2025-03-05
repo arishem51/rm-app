@@ -134,7 +134,7 @@ const Content = () => {
           },
           {
             title: "Inventories",
-            url: AppRoutes.dashboard.warehouses.inventories.url,
+            url: AppRoutes.dashboard.warehouses.inventories.index.url,
           },
         ],
       }

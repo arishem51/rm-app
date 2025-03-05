@@ -3,8 +3,8 @@ package com.example.backend.dto.product;
 import java.math.BigDecimal;
 import java.util.List;
 import com.example.backend.entities.Category;
+import com.example.backend.entities.Partner;
 import com.example.backend.entities.Product;
-import com.example.backend.entities.Supplier;
 import com.example.backend.enums.UnitType;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class ResponseProductDTO {
     private String name;
     private String description;
     private Category category;
-    private Supplier supplier;
+    private Partner supplier;
 
     private Long shopId;
     private String shopName;

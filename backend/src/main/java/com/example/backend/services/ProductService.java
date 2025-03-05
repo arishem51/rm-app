@@ -1,7 +1,11 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.product.RequestProductDTO;
-import com.example.backend.entities.*;
+import com.example.backend.entities.Category;
+import com.example.backend.entities.Product;
+import com.example.backend.entities.Shop;
+import com.example.backend.entities.Partner;
+import com.example.backend.entities.User;
 import com.example.backend.enums.UnitType;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.utils.UserRoleUtils;
@@ -16,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-    private final SupplierService supplierService;
+    private final PartnerService partnerService;
     private final CategoryService categoryService;
 
     private void validateUserCanManageProduct(User user) {
@@ -33,7 +37,8 @@ public class ProductService {
 
         Shop shop = user.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
-        Supplier supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(supplierService::findById).orElse(null);
+        Partner supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
+
         Product product = Product.builder()
                 .name(dto.getName())
                 .category(category)
@@ -68,6 +73,13 @@ public class ProductService {
                         PageRequest.of(page, pageSize));
     }
 
+    public List<Product> findAllProductsFromShop(Long shopId, User currentUser) {
+        if (currentUser.getShop() == null || !currentUser.getShop().getId().equals(shopId)) {
+            throw new IllegalArgumentException("You do not have permission to view products from this shop.");
+        }
+        return productRepository.findAllByShopId(shopId);
+    }
+
     public Product updateProduct(Long id, RequestProductDTO dto, User user) {
         validateUserCanManageProduct(user);
         Optional<Product> optionalProduct = productRepository.findById(id);
@@ -82,7 +94,7 @@ public class ProductService {
         }
 
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
-        Supplier supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(supplierService::findById).orElse(null);
+        Partner supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
         product.setCategory(category);
         product.setSupplier(supplier);
 

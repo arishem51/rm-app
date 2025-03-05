@@ -1,16 +1,15 @@
-package com.example.backend.dto.supplier;
+package com.example.backend.dto.partner;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateSupplierDTO {
+public class PartnerUpdateDTO {
     private String name;
     private String contactName;
     private String phone;
     private String email;
-    private String taxCode;
     private String address;
     private String website;
     private String description;

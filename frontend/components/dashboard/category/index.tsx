@@ -68,13 +68,11 @@ const Categories = () => {
           <span className="text-sm whitespace-nowrap">Created At:</span>
           <DatePicker
             onSelect={(e) => {
-              if (e) {
-                setFilter({
-                  page: 0,
-                  search: filter.search,
-                  createdAt: format(e, "yyyy-MM-dd"),
-                });
-              }
+              setFilter({
+                page: 0,
+                search: filter.search,
+                createdAt: e ? format(e, "yyyy-MM-dd") : "",
+              });
             }}
           />
         </div>
@@ -134,8 +132,9 @@ const Categories = () => {
                   <Image
                     src={category.imageUrl ?? defaultPic}
                     alt={category.name ?? ""}
-                    width={50}
-                    height={50}
+                    width={65}
+                    height={65}
+                    objectFit="contain"
                   />
                 </TableCell>
                 <TableCell>{category.createdAt}</TableCell>
@@ -164,6 +163,7 @@ const Categories = () => {
         handleNavigateFullPage={handleNavigateFullPage}
         handleNavigatePage={handleNavigatePage}
       />
+      <div className="mt-12" />
     </Fragment>
   );
 };

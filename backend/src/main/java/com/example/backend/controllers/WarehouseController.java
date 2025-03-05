@@ -13,6 +13,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +29,8 @@ public class WarehouseController {
     private final WarehouseService warehouseService;
 
     // Lấy tất cả kho của cửa hàng
-    @Operation(summary = "Get all warehouses of a shop", description = "Get all warehouses of a shop")
-    @GetMapping("/")
+    @Operation(summary = "Get paginate warehouses of a shop", description = "Get paginate warehouses of a shop")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<PaginateResponse<WarehouseDTO>>> getWarehouses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
@@ -35,6 +39,21 @@ public class WarehouseController {
         try {
             Page<Warehouse> warehouses = warehouseService.findShops(page, pageSize, search, user);
             PaginateResponse<WarehouseDTO> response = new PaginateResponse<>(warehouses.map(WarehouseDTO::fromEntity));
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Get all warehouses of a shop", description = "Get all warehouses of a shop")
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<List<WarehouseDTO>>> getAllWarehouses(
+            Long shopId,
+            @CurrentUser User user) {
+        try {
+            List<Warehouse> warehouses = warehouseService.findAllWarehousesFromShop(shopId, user);
+            List<WarehouseDTO> response = warehouses.stream().map(WarehouseDTO::fromEntity)
+                    .collect(Collectors.toList());
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
