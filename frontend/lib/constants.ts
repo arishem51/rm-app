@@ -80,8 +80,8 @@ export const AppRoutes = {
         },
       },
     },
-    suppliers: {
-      url: "/dashboard/suppliers",
+    partners: {
+      url: "/dashboard/partners",
       role: UserRole.ADMIN,
     },
     setting: {

@@ -100,8 +100,8 @@ const Content = () => {
         icon: TagIcon,
       },
       {
-        title: "Suppliers",
-        url: AppRoutes.dashboard.suppliers.url,
+        title: "Partners",
+        url: AppRoutes.dashboard.partners.url,
         icon: Briefcase,
       },
       {
