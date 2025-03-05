@@ -44,8 +44,7 @@ public class ProductService {
                 .category(category)
                 .supplier(supplier)
                 .shop(shop)
-                .unit(UnitType.valueOf(dto
-                        .getUnit().toUpperCase()))
+                .unit(UnitType.valueOf(dto.getUnit().toUpperCase()))
                 .salePrice(dto.getSalePrice())
                 .wholesalePrice(dto.getWholesalePrice())
                 .description(dto.getDescription())

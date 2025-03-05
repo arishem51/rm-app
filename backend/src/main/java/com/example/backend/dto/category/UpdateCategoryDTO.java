@@ -1,10 +1,10 @@
 package com.example.backend.dto.category;
 
+import com.example.backend.enums.ActionStatus;
+import com.example.backend.security.validation.ValidEnum;
+
 import lombok.*;
 
-/**
- * DTO dùng để tạo mới một Category.
- */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,6 +14,6 @@ public class UpdateCategoryDTO {
     private String name;
     private String description;
     private String imageUrl;
-
-    //FIXME: validate-categoryDTO
+    @ValidEnum(enumClass = ActionStatus.class, message = "Invalid status!")
+    private String status;
 }

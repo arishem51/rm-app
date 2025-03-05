@@ -5,6 +5,8 @@ import com.example.backend.dto.warehouse.WarehouseUpdateDTO;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.entities.Warehouse;
+import com.example.backend.entities.Zone;
+import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.WarehouseRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,9 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,18 +46,24 @@ public class WarehouseService {
                 .name(dto.getName())
                 .address(dto.getAddress())
                 .shop(shop)
+                .status(ActionStatus.ACTIVE)
                 .build();
+
+        List<Zone> zones = new ArrayList<>();
+        zones.add(Zone.builder().name("1P").description("Vị trí kệ bên phải").warehouse(warehouse).build());
+        warehouse.setZones(zones);
 
         return warehouseRepository.save(warehouse);
     }
 
     public Warehouse createWarehouseByShop(Shop shop) {
-        // Tạo kho mới cho shop
         Warehouse warehouse = new Warehouse();
         warehouse.setName("Warehouse - " + shop.getName()); // Tên kho có thể dựa trên tên shop
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
-        // Cài đặt các thuộc tính khác của warehouse nếu cần
+        List<Zone> zones = new ArrayList<>();
+        zones.add(Zone.builder().name("1P").description("Vị trí kệ bên phải").build());
+        warehouse.setZones(zones);
         return warehouseRepository.save(warehouse);
     }
 
@@ -80,6 +91,7 @@ public class WarehouseService {
         if (dto.getName() != null) {
             warehouse.setAddress(dto.getAddress());
         }
+        warehouse.setStatus(ActionStatus.valueOf(dto.getStatus()));
 
         return warehouseRepository.save(warehouse);
     }

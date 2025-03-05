@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.example.backend.entities.Warehouse;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,8 @@ public class WarehouseDTO {
     private Long shopId;
     private Long id;
     private String shopName;
+    @NotNull
+    private String status;
     private LocalDateTime createdAt;
 
     public static WarehouseDTO fromEntity(Warehouse warehouse) {
@@ -31,6 +34,8 @@ public class WarehouseDTO {
                 .shopId(warehouse.getShop().getId())
                 .shopName(warehouse.getShop().getName())
                 .createdAt(warehouse.getCreatedAt())
+                .status(warehouse.getStatus().toString())
                 .build();
+
     }
 }

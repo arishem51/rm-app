@@ -3,15 +3,13 @@ package com.example.backend.entities;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-
+import com.example.backend.enums.ActionStatus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import com.example.backend.enums.Role;
-import com.example.backend.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -71,7 +69,7 @@ public class User implements UserDetails {
     @Column(nullable = true)
     @Schema(required = true)
     @Builder.Default
-    private UserStatus status = UserStatus.ACTIVE;
+    private ActionStatus status = ActionStatus.ACTIVE;
     @ManyToOne()
     @JoinColumn(name = "shop_id")
     @Schema(hidden = true)
@@ -119,6 +117,6 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return status == UserStatus.ACTIVE;
+        return status == ActionStatus.ACTIVE;
     }
 }
