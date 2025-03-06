@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "openapi": "npx swagger-typescript-api -p ./swagger.json -o ./types -n Api.ts"
+    "openapi": "npx swagger-typescript-api -p ./swagger.json -o ./types -n Api.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@bprogress/next": "^3.0.4",
