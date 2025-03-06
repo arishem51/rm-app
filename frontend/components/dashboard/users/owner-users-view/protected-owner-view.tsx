@@ -52,12 +52,12 @@ const ProtectedUserOwnerView = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Username</TableHead>
-                <TableHead>Phone number</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead>Tên đăng nhập</TableHead>
+                <TableHead>Số điện thoại</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead>Vai trò</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

@@ -95,10 +95,10 @@ const Facilities = () => {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead>Tên</TableHead>
               <TableHead>Address</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead>Thời điểm tạo</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

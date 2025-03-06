@@ -23,8 +23,8 @@ import { useMe } from "@/hooks/mutations/user";
 import { useRouter } from "next/navigation";
 
 const schemaFields = {
-  name: z.string().nonempty({ message: "Name is required" }),
-  address: z.string().nonempty({ message: "Address is required" }),
+  name: z.string().nonempty({ message: "Tên là bắt buộc" }),
+  address: z.string().nonempty({ message: "Địa chỉ là bắt buộc" }),
 };
 
 type Props = {
@@ -99,7 +99,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Shop Name</FormLabel>
+                <FormLabel>Shop Tên</FormLabel>
                 <FormControl>
                   <Input placeholder="Your shop name" {...field} />
                 </FormControl>
@@ -123,7 +123,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
         </div>
         <DialogFooter>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : "Save changes"}
+            {isPending ? "Saving..." : "Lưu thay đổi"}
           </Button>
         </DialogFooter>
       </form>

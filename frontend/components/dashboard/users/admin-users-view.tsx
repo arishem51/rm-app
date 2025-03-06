@@ -69,14 +69,14 @@ const AdminUsersView = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Username</TableHead>
-                <TableHead>Phone number</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead>Tên đăng nhập</TableHead>
+                <TableHead>Số điện thoại</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Shop</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead>Cửa hàng</TableHead>
+                <TableHead>Vai trò</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -89,7 +89,7 @@ const AdminUsersView = () => {
                       {user.name}{" "}
                       {isCurrentAccount && (
                         <Badge className=" text-xs p-[4px] py-0 ml-0.5">
-                          Current
+                          Tài khoản này
                         </Badge>
                       )}
                     </TableCell>
@@ -100,7 +100,7 @@ const AdminUsersView = () => {
                         user.email
                       ) : (
                         <Badge variant="outline" className="px-1 py-0.5">
-                          None
+                          Không tồn tại
                         </Badge>
                       )}
                     </TableCell>
@@ -109,7 +109,7 @@ const AdminUsersView = () => {
                         variant={user.shopName ? "default" : "outline"}
                         className="px-1 py-0.5"
                       >
-                        {user.shopName || "None"}
+                        {user.shopName || "Không tồn tại"}
                       </Badge>
                     </TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>

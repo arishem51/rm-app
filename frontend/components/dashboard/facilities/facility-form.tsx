@@ -30,8 +30,8 @@ type Props = {
 };
 
 const schemaFields = {
-  name: z.string().nonempty({ message: "Name is required" }),
-  address: z.string().nonempty({ message: "Address is required" }),
+  name: z.string().nonempty({ message: "Tên là bắt buộc" }),
+  address: z.string().nonempty({ message: "Địa chỉ là bắt buộc" }),
 };
 
 const FacilityForm = ({ warehouse, onClose }: Props) => {
@@ -117,7 +117,7 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Tên</FormLabel>
                 <FormControl>
                   <Input placeholder="Facility name" {...field} />
                 </FormControl>
@@ -140,7 +140,7 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
           />
           <DialogFooter className="mt-2">
             <Button type="submit" disabled={isPending}>
-              Save
+              Lưu
             </Button>
           </DialogFooter>
         </div>

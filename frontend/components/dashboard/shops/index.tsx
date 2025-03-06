@@ -66,11 +66,11 @@ const Shops = () => {
           <TableHeader>
             <TableRow>
               <TableHead>STT</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead>Tên</TableHead>
               <TableHead>Address</TableHead>
               <TableHead>Created By</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead>Thời điểm tạo</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

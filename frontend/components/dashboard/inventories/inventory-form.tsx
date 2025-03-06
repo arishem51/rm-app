@@ -162,7 +162,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
           />
           <DialogFooter className="mt-2">
             <Button type="submit" disabled={isPending}>
-              Save
+              Lưu
             </Button>
           </DialogFooter>
         </div>

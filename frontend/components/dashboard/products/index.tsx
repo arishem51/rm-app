@@ -68,15 +68,15 @@ const Products = () => {
           <TableHeader>
             <TableRow>
               <TableHead>STT</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Image</TableHead>
+              <TableHead>Tên</TableHead>
+              <TableHead>Ảnh</TableHead>
               <TableHead>Sale Price (VND)</TableHead>
               <TableHead>Wholesale Price (VND)</TableHead>
               <TableHead>Unit</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Supplier</TableHead>
-              {isAdmin && <TableHead>Shop</TableHead>}
-              <TableHead className="text-right">Action</TableHead>
+              {isAdmin && <TableHead>Cửa hàng</TableHead>}
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -103,7 +103,7 @@ const Products = () => {
                     variant={product.category?.name ? "default" : "outline"}
                     className="px-1 py-0.5"
                   >
-                    {product.category?.name || "None"}
+                    {product.category?.name || "Không tồn tại"}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -111,7 +111,7 @@ const Products = () => {
                     variant={product.supplier?.name ? "default" : "outline"}
                     className="px-1 py-0.5"
                   >
-                    {product.supplier?.name || "None"}
+                    {product.supplier?.name || "Không tồn tại"}
                   </Badge>
                 </TableCell>
                 {isAdmin && <TableCell>{product.shopName}</TableCell>}

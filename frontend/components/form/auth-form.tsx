@@ -50,8 +50,12 @@ const AuthForm: FC<Props> = ({
     () => ({
       username: z
         .string()
-        .min(3, { message: "Username must be between 3 and 20 characters" })
-        .max(20, { message: "Username must be between 3 and 20 characters" }),
+        .min(3, {
+          message: "Tên đăng nhập có độ dài ít nhất 3 ký tự và tối đa là 20",
+        })
+        .max(20, {
+          message: "Tên đăng nhập có độ dài ít nhất 3 ký tự và tối đa là 20",
+        }),
       password: z
         .string()
         .min(6, { message: "Password must be at least 6 characters long" }),
@@ -62,7 +66,7 @@ const AuthForm: FC<Props> = ({
   const signUpSchemaFields = useMemo(() => {
     const schemaFields = {
       ...signInSchemaFields,
-      name: z.string().nonempty({ message: "Name is required" }),
+      name: z.string().nonempty({ message: "Tên là bắt buộc" }),
       phoneNumber: z
         .string()
         .regex(/^\d{10,12}$/, {
@@ -125,12 +129,13 @@ const AuthForm: FC<Props> = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Tên</FormLabel>
                   <FormControl>
-                    <Input placeholder="Account Name" {...field} />
+                    <Input placeholder="Account Tên" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Public account display name, visible to others.
+                    Tên hiển thị của tài khoản công khai, người khác có thể nhìn
+                    thấy.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -141,7 +146,7 @@ const AuthForm: FC<Props> = ({
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>Số điện thoại</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
@@ -176,9 +181,9 @@ const AuthForm: FC<Props> = ({
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Tên đăng nhập</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input placeholder="Tên đăng nhập" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -219,7 +224,7 @@ const AuthForm: FC<Props> = ({
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
                     <PasswordInput placeholder="*********" {...field} />
                   </FormControl>

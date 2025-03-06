@@ -66,7 +66,7 @@ const Inventories = () => {
               <TableHead>Product</TableHead>
               <TableHead>Warehouse</TableHead>
               <TableHead>Quantity</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

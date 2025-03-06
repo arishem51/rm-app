@@ -22,7 +22,9 @@ const UserFooter = async () => {
       </div>
       <div className="flex flex-col">
         <span className="font-bold text-sm">{user?.name}</span>
-        <span className="font-light text-xs">Username: @{user?.username}</span>
+        <span className="font-light text-xs">
+          Tên đăng nhập: @{user?.username}
+        </span>
       </div>
     </div>
   );

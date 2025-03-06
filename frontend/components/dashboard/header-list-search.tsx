@@ -20,7 +20,7 @@ const HeaderListSearch = ({ onSearch, filterSearch }: Props) => {
     <div className="flex items-center gap-2 w-1/2">
       <div className="my-2 relative">
         <Input
-          placeholder="Search"
+          placeholder="Tìm kiếm"
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);

@@ -65,7 +65,7 @@ const Categories = () => {
             filterSearch={filter.search}
             onSearch={handleSearch}
           />
-          <span className="text-sm whitespace-nowrap">Created At:</span>
+          <span className="text-sm whitespace-nowrap">Thời điểm tạo:</span>
           <DatePicker
             onSelect={(e) => {
               setFilter({
@@ -83,7 +83,7 @@ const Categories = () => {
           }}
         >
           <Plus />
-          <span>Create Category</span>
+          <span>Tạo danh mục</span>
         </Button>
       </div>
       <Dialog
@@ -117,10 +117,10 @@ const Categories = () => {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Image</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead>Tên</TableHead>
+              <TableHead>Ảnh</TableHead>
+              <TableHead>Thời điểm tạo</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

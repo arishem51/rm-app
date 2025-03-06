@@ -18,7 +18,7 @@ const OwnerOverview = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-1">
               <UsersRound size={16} />
-              <span>Total Staff</span>
+              <span>Tổng nhân viên</span>
             </CardTitle>
             <CardDescription className="text-2xl">
               {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
@@ -29,7 +29,7 @@ const OwnerOverview = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-1">
               <Box size={16} />
-              <span>Total Product</span>
+              <span>Tổng sản phẩm</span>
             </CardTitle>
             <CardDescription className="text-2xl">
               {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
@@ -40,7 +40,7 @@ const OwnerOverview = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-1">
               <DollarSign size={16} />
-              <span>Total Revenue</span>
+              <span>Tổng lợi nhuận</span>
             </CardTitle>
             <CardDescription className="text-2xl">
               {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
@@ -51,7 +51,7 @@ const OwnerOverview = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-1">
               <CreditCard size={16} />
-              <span>Total Debt</span>
+              <span>Tổng nợ</span>
             </CardTitle>
             <CardDescription className="text-2xl">
               {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
@@ -62,7 +62,7 @@ const OwnerOverview = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Revenue</CardTitle>
+            <CardTitle>Doanh thu</CardTitle>
           </CardHeader>
           <CardContent className="pl-2">
             <RevenueChart />
@@ -70,7 +70,7 @@ const OwnerOverview = () => {
         </Card>
         <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
+            <CardTitle>Đơn gần đây</CardTitle>
           </CardHeader>
           <CardContent>
             <RecentOrders />
