@@ -76,7 +76,15 @@ const ProtectedUserOwnerView = () => {
                     </TableCell>
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.phoneNumber}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {user.email ? (
+                        user.email
+                      ) : (
+                        <Badge variant="outline" className="px-1 py-0.5">
+                          None
+                        </Badge>
+                      )}
+                    </TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>
                     <TableCell className="flex justify-end w-full">
                       {!isCurrentAccount && (

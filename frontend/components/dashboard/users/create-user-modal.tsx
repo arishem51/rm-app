@@ -27,8 +27,8 @@ const CreateUserModal = ({ children, isAdmin = false }: Props) => {
   return (
     <div className="flex items-center justify-between">
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTitle className="hidden">Create User</DialogTitle>
         <DialogContent className="sm:max-w-[425px]">
+          <DialogTitle>Create User</DialogTitle>
           <AuthForm
             requireEmail={false}
             onSubmit={(formData) => {

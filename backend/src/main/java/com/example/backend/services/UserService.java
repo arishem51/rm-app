@@ -124,6 +124,7 @@ public class UserService {
         // user.setRole(request.getRole() != null ? Role.valueOf(request.getRole()) :
         // user.getRole());
         // }
+
         String requestUserStatus = request.getStatus();
         if (UserRoleUtils.isAdmin(currentUser)) {
             user.setStatus(ActionStatus.valueOf(requestUserStatus));
