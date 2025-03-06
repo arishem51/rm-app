@@ -35,11 +35,15 @@ public class AuthController {
     @Operation(summary = "Sign up a new user", description = "Sign up a new user with a username and password.")
     @PostMapping("/sign-up")
     public ResponseEntity<BaseResponse<UserDTO>> signUp(@Valid @RequestBody SignUpRequest request) {
-        BaseResponse<UserDTO> response = authService.signUp(request);
-        if (response.getData() == null) {
-            return ResponseEntity.badRequest().body(response);
+        try {
+            BaseResponse<UserDTO> response = authService.signUp(request);
+            if (response.getData() == null) {
+                return ResponseEntity.badRequest().body(response);
+            }
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
-        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Sign in a user", description = "Perform authentication on a user to sign in!.")

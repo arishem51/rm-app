@@ -3,11 +3,18 @@ package com.example.backend.services;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.auth.request.ResetPasswordRequest;
@@ -27,12 +34,34 @@ public class AuthService {
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailService emailService;
 
+    @Value("${spring.recaptcha.secret}")
+    private String secretKey;
+
+    private final WebClient.Builder webClientBuilder;
+
     public BaseResponse<UserDTO> signUp(SignUpRequest request) {
         try {
-            User user = userService.signUpUser(request);
-            return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
+            String token = request.getReCaptchaToken();
+            UriComponentsBuilder builder = UriComponentsBuilder
+                    .fromUriString("https://www.google.com/recaptcha/api/siteverify")
+                    .queryParam("secret", secretKey)
+                    .queryParam("response", token);
+            Map<String, Object> response = webClientBuilder.build()
+                    .post()
+                    .uri(builder.toUriString())
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+
+            boolean success = (boolean) response.get("success");
+
+            if (success) {
+                User user = userService.signUpUser(request);
+                return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
+            }
+            throw new IllegalArgumentException("ReCaptcha verification failed!");
         } catch (IllegalArgumentException e) {
-            return new BaseResponse<>(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
