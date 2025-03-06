@@ -6,7 +6,7 @@ function InboxIcon(props: { className?: string }) {
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      fill="Không tồn tại"
+      fill="none"
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
@@ -25,12 +25,9 @@ const EmptyState = () => {
         <InboxIcon className="w-10 h-10 text-gray-500 dark:text-gray-400" />
       </div>
       <div className="space-y-2 text-center">
-        <h2 className="text-2xl font-bold tracking-tight">
-          No data to display
-        </h2>
+        <h2 className="text-2xl font-bold tracking-tight">Không có dữ liệu</h2>
         <p className="text-gray-500 dark:text-gray-400">
-          It looks like there&apos;s no data available yet. Try adding some new
-          items.
+          Có vẻ như chưa có dữ liệu nào khả dụng. Hãy thử thêm một số mục mới.
         </p>
       </div>
     </div>

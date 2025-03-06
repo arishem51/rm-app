@@ -42,20 +42,16 @@ const schemaFields = {
   phoneNumber: z
     .string()
     .regex(/^\d{10,12}$/, {
-      message: "Phone number must be 10-12 digits long",
+      message: "Số điện thoại phải dài từ 10-12 chữ số",
     })
-    .nonempty({ message: "Phone number is required" }),
+    .nonempty({ message: "Số điện thoại là bắt buộc" }),
   password: z.union([
-    z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.string().min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
     z.literal(""),
     z.literal(null),
   ]),
   confirmPassword: z.union([
-    z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.string().min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
     z.literal(""),
   ]),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),

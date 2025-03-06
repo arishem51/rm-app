@@ -36,12 +36,10 @@ type FormData = ResetPasswordRequest & {
 };
 
 const schemaFields = {
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
+  password: z.string().min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
   confirmPassword: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
+    .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
 };
 
 const ResetPasswordView = ({ token }: Props) => {

@@ -58,7 +58,7 @@ const AuthForm: FC<Props> = ({
         }),
       password: z
         .string()
-        .min(6, { message: "Password must be at least 6 characters long" }),
+        .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
     }),
     []
   );
@@ -70,12 +70,12 @@ const AuthForm: FC<Props> = ({
       phoneNumber: z
         .string()
         .regex(/^\d{10,12}$/, {
-          message: "Phone number must be 10-12 digits long",
+          message: "Số điện thoại phải dài từ 10-12 chữ số",
         })
-        .nonempty({ message: "Phone number is required" }),
+        .nonempty({ message: "Số điện thoại là bắt buộc" }),
       confirmPassword: z
         .string()
-        .min(6, { message: "Password must be at least 6 characters long" }),
+        .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
     };
     if (requireEmail) {
       return {
@@ -196,7 +196,7 @@ const AuthForm: FC<Props> = ({
             render={({ field }) => (
               <FormItem className="flex-1">
                 <div className="flex justify-between items-center">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Mật khẩu</FormLabel>
                   {!isSignUp && (
                     <Button
                       type="button"
