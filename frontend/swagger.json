@@ -1162,8 +1162,7 @@
           "role": { "type": "string" },
           "status": { "type": "string" },
           "email": { "type": "string" }
-        },
-        "required": ["email"]
+        }
       },
       "BaseResponseUserDTO": {
         "type": "object",
@@ -1493,9 +1492,17 @@
           },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
           "name": { "type": "string" },
-          "email": { "type": "string" }
+          "email": { "type": "string" },
+          "reCaptchaToken": { "type": "string" }
         },
-        "required": ["email", "name", "password", "phoneNumber", "username"]
+        "required": [
+          "email",
+          "name",
+          "password",
+          "phoneNumber",
+          "reCaptchaToken",
+          "username"
+        ]
       },
       "SignInRequest": {
         "type": "object",

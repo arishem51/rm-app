@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FC, Fragment, ReactNode, useMemo } from "react";
+import { FC, Fragment, ReactNode, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { PasswordInput } from "../ui/password-input";
 import Link from "next/link";
+import ReCAPTCHA from "react-google-recaptcha";
 
 type FormDataType = {
   username: string;
@@ -26,6 +27,7 @@ type FormDataType = {
   phoneNumber: string;
   email: string;
   confirmPassword?: string;
+  reCaptchaToken?: string;
 };
 
 type Props = {
@@ -35,6 +37,7 @@ type Props = {
   btnText?: string;
   onSubmit: (data: FormDataType) => void;
   requireEmail?: boolean;
+  enableReCaptcha?: boolean;
 };
 
 const AuthForm: FC<Props> = ({
@@ -44,7 +47,9 @@ const AuthForm: FC<Props> = ({
   btnText,
   onSubmit,
   requireEmail = true,
+  enableReCaptcha = false,
 }) => {
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const isSignUp = type === "sign-up";
   const signInSchemaFields = useMemo(
     () => ({
@@ -76,6 +81,7 @@ const AuthForm: FC<Props> = ({
       confirmPassword: z
         .string()
         .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
+      reCaptchaToken: z.string(),
     };
     if (requireEmail) {
       return {
@@ -94,6 +100,7 @@ const AuthForm: FC<Props> = ({
       phoneNumber: "",
       email: "",
       confirmPassword: "",
+      reCaptchaToken: "",
     },
     resolver: zodResolver(
       z
@@ -105,7 +112,7 @@ const AuthForm: FC<Props> = ({
                 (data as { confirmPassword?: string })?.confirmPassword
               : true,
           {
-            message: "Passwords don't match",
+            message: "Mật khẩu không khớp",
             path: ["confirmPassword"],
           }
         )
@@ -123,40 +130,42 @@ const AuthForm: FC<Props> = ({
       <form className={cn(className, "space-y-4")} onSubmit={handleSubmit}>
         {isSignUp && (
           <Fragment>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tên</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Account Tên" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Tên hiển thị của tài khoản công khai, người khác có thể nhìn
-                    thấy.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Số điện thoại</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="(+84) 123 456 78"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tên</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Tên của bạn" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Tên hiển thị của tài khoản công khai, người khác có thể
+                      nhìn thấy.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Số điện thoại</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        placeholder="(+84) 123 456 78"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             {requireEmail && (
               <FormField
                 control={form.control}
@@ -230,7 +239,22 @@ const AuthForm: FC<Props> = ({
             />
           )}
         </div>
-        <Button type="submit" className="w-full">
+        {enableReCaptcha && (
+          <ReCAPTCHA
+            sitekey="6LcM5-sqAAAAAGFDvyWQMFKDD4I8M69WxyUqtpPe"
+            onChange={(token) => {
+              if (token) {
+                setRecaptchaToken(token);
+                form.setValue("reCaptchaToken", token);
+              }
+            }}
+          />
+        )}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={enableReCaptcha && !recaptchaToken}
+        >
           {btnText ?? (isSignUp ? "Đăng ký" : "Đăng nhập")}
         </Button>
         {children}

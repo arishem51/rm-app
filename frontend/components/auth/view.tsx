@@ -57,7 +57,7 @@ const AuthView: FC<Props> = ({
   }, [atom.showToastErrorSignIn, setAtom, toast]);
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold flex items-center justify-between">
           <span>{title}</span>
@@ -77,26 +77,32 @@ const AuthView: FC<Props> = ({
       <CardContent>
         <AuthForm
           onSubmit={(formData) => {
-            if (type === "sign-up") {
-              signUp(formData, {
-                onError: (e) => {
-                  toast({
-                    title: ToastTitle.error,
-                    description: e.message || ToastTitle.somethingWentWrong,
-                    variant: "destructive",
-                  });
+            if (type === "sign-up" && formData.reCaptchaToken) {
+              signUp(
+                {
+                  ...formData,
+                  reCaptchaToken: formData.reCaptchaToken,
                 },
-                onSuccess: () => {
-                  toast({
-                    title: ToastTitle.success,
-                    description: "Sign up success!",
-                  });
-                  setTimeout(() => {
-                    router.replace("/auth/sign-in");
-                  }, 400);
-                },
-              });
-            } else {
+                {
+                  onError: (e) => {
+                    toast({
+                      title: ToastTitle.error,
+                      description: e.message || ToastTitle.somethingWentWrong,
+                      variant: "destructive",
+                    });
+                  },
+                  onSuccess: () => {
+                    toast({
+                      title: ToastTitle.success,
+                      description: "Sign up success!",
+                    });
+                    setTimeout(() => {
+                      router.replace("/auth/sign-in");
+                    }, 400);
+                  },
+                }
+              );
+            } else if (type === "sign-in") {
               signIn(formData, {
                 onError: (e) => {
                   toast({

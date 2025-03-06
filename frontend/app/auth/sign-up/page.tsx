@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <div className="h-screen flex flex-col justify-center">
+    <div className="flex flex-col justify-center py-6">
       <AuthView
         title="Đăng Ký"
         description="Nhập thông tin của bạn để đăng ký tài khoản"
