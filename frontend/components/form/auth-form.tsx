@@ -46,7 +46,6 @@ const AuthForm: FC<Props> = ({
   requireEmail = true,
 }) => {
   const isSignUp = type === "sign-up";
-
   const signInSchemaFields = useMemo(
     () => ({
       username: z
@@ -109,8 +108,6 @@ const AuthForm: FC<Props> = ({
     ),
   });
   const router = useRouter();
-
-  console.log(form.formState.errors);
 
   const handleSubmit = form.handleSubmit(async (formData) => {
     const { confirmPassword, ...rest } = formData;

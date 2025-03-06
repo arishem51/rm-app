@@ -55,7 +55,6 @@ const schemaFields = {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
   status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
 };
