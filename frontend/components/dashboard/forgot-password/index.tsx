@@ -50,7 +50,7 @@ const ForgotPasswordView = () => {
         toast({
           title: ToastTitle.success,
           description:
-            "We have sent to your email a link to reset your password",
+            "Chúng tôi đã gửi một email để đặt lại mật khẩu của bạn.",
         });
         router.push("/auth/sign-in");
       },
@@ -61,7 +61,7 @@ const ForgotPasswordView = () => {
     <Card className="mx-auto max-w-sm">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold flex items-center justify-between">
-          <span>Forgot password</span>
+          <span>Quên mật khẩu</span>
           <Button
             className="h-6 w-6 ml-auto"
             size="icon"
@@ -74,7 +74,7 @@ const ForgotPasswordView = () => {
           </Button>
         </CardTitle>
         <CardDescription>
-          Forgot your password? No worries! Enter your email below to reset it.
+          Nhập email của bạn bên dưới để đặt lại mật khẩu.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -94,7 +94,7 @@ const ForgotPasswordView = () => {
               )}
             />
             <Button className="w-full" type="submit" disabled={isPending}>
-              Reset password
+              Đặt lại mật khẩu
             </Button>
           </form>
         </Form>

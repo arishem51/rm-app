@@ -16,8 +16,8 @@ import {
   Form,
 } from "../ui/form";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { PasswordInput } from "../ui/password-input";
+import Link from "next/link";
 
 type FormDataType = {
   username: string;
@@ -111,7 +111,6 @@ const AuthForm: FC<Props> = ({
         )
     ),
   });
-  const router = useRouter();
 
   const handleSubmit = form.handleSubmit(async (formData) => {
     const { confirmPassword, ...rest } = formData;
@@ -198,17 +197,14 @@ const AuthForm: FC<Props> = ({
                 <div className="flex justify-between items-center">
                   <FormLabel>Mật khẩu</FormLabel>
                   {!isSignUp && (
-                    <Button
-                      type="button"
-                      variant="link"
-                      onClick={() => {
-                        router.push("/auth/forgot-password");
-                      }}
+                    <Link
+                      href="/auth/forgot-password"
+                      className="underline underline-offset-4"
                     >
                       <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer">
-                        Forgot you password?
+                        Quên mật khẩu?
                       </span>
-                    </Button>
+                    </Link>
                   )}
                 </div>
                 <FormControl>
@@ -235,7 +231,7 @@ const AuthForm: FC<Props> = ({
           )}
         </div>
         <Button type="submit" className="w-full">
-          {btnText ?? (isSignUp ? "Sign Up" : "Sign In")}
+          {btnText ?? (isSignUp ? "Đăng ký" : "Đăng nhập")}
         </Button>
         {children}
       </form>
