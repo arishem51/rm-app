@@ -12,7 +12,7 @@ INSERT INTO users (
 )
 VALUES (
     'admin',
-    'hungphung2002@gmail.com',
+    NULL,
     'Phùng Văn Hưng',
     '0383906221',
     '$2a$10$NYJYPrMnHEaXQSOyIaHHaOwbXHzy/kpoQUcupCAk5AwxQPQlQ5Jhu',

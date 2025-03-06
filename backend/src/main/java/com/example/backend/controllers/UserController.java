@@ -29,7 +29,7 @@ public class UserController {
     Logger logger = Logger.getLogger(getClass().getName());
 
     @Operation(summary = "Get all users", description = "Fetch a list of all registered users.")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<PaginateResponse<UserDTO>>> getUsers(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String search,
             @CurrentUser User user) {
@@ -62,11 +62,11 @@ public class UserController {
     }
 
     @Operation(summary = "Create a user", description = "Create a user by owner or admin.")
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<BaseResponse<UserDTO>> createUser(
-            @RequestBody @Valid CreateUserRequest request) {
+            @RequestBody @Valid CreateUserRequest request, @CurrentUser User currentUser) {
         try {
-            User user = userService.createUser(request);
+            User user = userService.createUser(request, currentUser);
             return ResponseEntity.ok().body(BaseResponse.success(UserDTO.fromEntity(user), "Create user success!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));

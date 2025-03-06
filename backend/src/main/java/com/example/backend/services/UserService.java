@@ -5,17 +5,15 @@ import java.util.Optional;
 import com.example.backend.enums.ActionStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.backend.dto.auth.request.CreateUserRequest;
+import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
-import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +34,9 @@ public class UserService {
                 : userRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
     }
 
-    private void validateCreateUser(CreateUserRequest request, User currentUser) {
-        if (currentUser != null && Role.STAFF == currentUser.getRole()) {
-            throw new IllegalArgumentException("Only Admin/Owner can create staff user");
+    public User createUser(CreateUserRequest request, User currentUser) {
+        if (UserRoleUtils.isStaff(currentUser)) {
+            throw new IllegalArgumentException("Permission denied!");
         }
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username is already taken!");
@@ -46,17 +44,7 @@ public class UserService {
         if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
             throw new IllegalArgumentException("Phone number is already taken!");
         }
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email is already taken!");
-        }
-    }
-
-    public User createUser(CreateUserRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isUserLogged = authentication.getPrincipal() instanceof User;
-        User currentUser = isUserLogged ? (User) authentication.getPrincipal() : null;
-        validateCreateUser(request, currentUser);
-        Role role = Role.valueOf(request.getRole());
+        Role role = UserRoleUtils.isAdmin(currentUser) ? Role.ADMIN : Role.STAFF;
         Shop shop = null;
         if (currentUser != null) {
             shop = currentUser.getShop();
@@ -69,6 +57,25 @@ public class UserService {
                 .status(ActionStatus.ACTIVE)
                 .name(request.getName())
                 .shop(shop)
+                .build();
+        return userRepository.save(user);
+    }
+
+    public User signUpUser(SignUpRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new IllegalArgumentException("Username is already taken!");
+        }
+        if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+            throw new IllegalArgumentException("Phone number is already taken!");
+        }
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phoneNumber(request.getPhoneNumber())
+                .role(Role.OWNER)
+                .status(ActionStatus.ACTIVE)
+                .name(request.getName())
+                .shop(null)
                 .email(request.getEmail())
                 .build();
         return userRepository.save(user);
