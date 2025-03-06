@@ -61,7 +61,7 @@ public class AuthController {
     public ResponseEntity<BaseResponse<Void>> forgotPassword(
             @Valid @RequestBody ForgotPasswordRequest request) {
         try {
-            authService.forgotPassword(request.getEmail());
+            authService.forgotPassword(request);
             return ResponseEntity.ok().body(new BaseResponse<>(null, "Success!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));

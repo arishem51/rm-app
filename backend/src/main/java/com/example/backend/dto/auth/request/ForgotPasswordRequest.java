@@ -11,4 +11,7 @@ public class ForgotPasswordRequest {
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
     private String email;
+
+    @NotBlank(message = "ReCaptchaToken is required")
+    private String reCaptchaToken;
 }

@@ -24,38 +24,41 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Home } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 type FormData = {
   email: string;
+  reCaptchaToken: string;
 };
 
 const schemaFields = {
   email: z.string().email({ message: "Invalid email address" }),
+  reCaptchaToken: z.string(),
 };
 
 const ForgotPasswordView = () => {
   const form = useForm<FormData>({
     defaultValues: {
       email: "",
+      reCaptchaToken: "",
     },
     resolver: zodResolver(z.object(schemaFields)),
   });
-  const { mutate: forgotPassword, isPending } = useForgotPassword();
+  const { mutate: forgotPassword } = useForgotPassword();
   const router = useRouter();
+  const recaptchaToken = form.watch("reCaptchaToken");
+
+  console.log({ recaptchaToken });
 
   const handleSubmit = form.handleSubmit((data: FormData) => {
-    forgotPassword(data, {
-      onSettled: () => {
-        toast({
-          title: ToastTitle.success,
-          description:
-            "Chúng tôi đã gửi một email để đặt lại mật khẩu của bạn.",
-        });
-        router.push("/auth/sign-in");
-      },
+    forgotPassword(data);
+    toast({
+      title: ToastTitle.success,
+      description: "Chúng tôi đã gửi một email để đặt lại mật khẩu của bạn.",
     });
+    router.push("/auth/sign-in");
   });
 
   return (
@@ -94,7 +97,15 @@ const ForgotPasswordView = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit" disabled={isPending}>
+            <ReCAPTCHA
+              sitekey="6LcM5-sqAAAAAGFDvyWQMFKDD4I8M69WxyUqtpPe"
+              onChange={(token) => {
+                if (token) {
+                  form.setValue("reCaptchaToken", token);
+                }
+              }}
+            />
+            <Button className="w-full" type="submit" disabled={!recaptchaToken}>
               Đặt lại mật khẩu
             </Button>
           </form>

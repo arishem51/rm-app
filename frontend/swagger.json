@@ -1573,8 +1573,11 @@
       },
       "ForgotPasswordRequest": {
         "type": "object",
-        "properties": { "email": { "type": "string" } },
-        "required": ["email"]
+        "properties": {
+          "email": { "type": "string" },
+          "reCaptchaToken": { "type": "string" }
+        },
+        "required": ["email", "reCaptchaToken"]
       },
       "BaseResponsePaginateResponseWarehouseDTO": {
         "type": "object",

@@ -386,6 +386,7 @@ export interface BaseResponseVoid {
 
 export interface ForgotPasswordRequest {
   email: string;
+  reCaptchaToken: string;
 }
 
 export interface BaseResponsePaginateResponseWarehouseDTO {
