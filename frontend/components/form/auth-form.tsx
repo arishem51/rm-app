@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FC, Fragment, ReactNode } from "react";
+import { FC, Fragment, ReactNode, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,30 +18,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "../ui/password-input";
-
-const signInSchemaFields = {
-  username: z
-    .string()
-    .min(3, { message: "Username must be between 3 and 20 characters" })
-    .max(20, { message: "Username must be between 3 and 20 characters" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
-};
-
-const signUpSchemaFields = {
-  ...signInSchemaFields,
-  name: z.string().nonempty({ message: "Name is required" }),
-  phoneNumber: z
-    .string()
-    .regex(/^\d{10,12}$/, {
-      message: "Phone number must be 10-12 digits long",
-    })
-    .nonempty({ message: "Phone number is required" }),
-  confirmPassword: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
-};
 
 type FormDataType = {
   username: string;
@@ -70,12 +46,42 @@ const AuthForm: FC<Props> = ({
   requireEmail = true,
 }) => {
   const isSignUp = type === "sign-up";
-  if (requireEmail) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (signUpSchemaFields as any).email = z
-      .string()
-      .email({ message: "Invalid email" });
-  }
+
+  const signInSchemaFields = useMemo(
+    () => ({
+      username: z
+        .string()
+        .min(3, { message: "Username must be between 3 and 20 characters" })
+        .max(20, { message: "Username must be between 3 and 20 characters" }),
+      password: z
+        .string()
+        .min(6, { message: "Password must be at least 6 characters long" }),
+    }),
+    []
+  );
+
+  const signUpSchemaFields = useMemo(() => {
+    const schemaFields = {
+      ...signInSchemaFields,
+      name: z.string().nonempty({ message: "Name is required" }),
+      phoneNumber: z
+        .string()
+        .regex(/^\d{10,12}$/, {
+          message: "Phone number must be 10-12 digits long",
+        })
+        .nonempty({ message: "Phone number is required" }),
+      confirmPassword: z
+        .string()
+        .min(6, { message: "Password must be at least 6 characters long" }),
+    };
+    if (requireEmail) {
+      return {
+        ...schemaFields,
+        email: z.string().email({ message: "Invalid email" }),
+      };
+    }
+    return schemaFields;
+  }, [requireEmail, signInSchemaFields]);
 
   const form = useForm<FormDataType>({
     defaultValues: {
