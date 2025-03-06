@@ -38,7 +38,6 @@ const signUpSchemaFields = {
       message: "Phone number must be 10-12 digits long",
     })
     .nonempty({ message: "Phone number is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
   confirmPassword: z
     .string()
     .min(6, { message: "Password must be at least 6 characters long" }),
@@ -59,6 +58,7 @@ type Props = {
   className?: string;
   btnText?: string;
   onSubmit: (data: FormDataType) => void;
+  requireEmail?: boolean;
 };
 
 const AuthForm: FC<Props> = ({
@@ -67,8 +67,18 @@ const AuthForm: FC<Props> = ({
   className,
   btnText,
   onSubmit,
+  requireEmail = true,
 }) => {
   const isSignUp = type === "sign-up";
+  if (requireEmail) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (signUpSchemaFields as any).email = z
+      .string()
+      .email({ message: "Invalid email" });
+  }
+
+  console.log({ signUpSchemaFields });
+
   const form = useForm<FormDataType>({
     defaultValues: {
       username: "",
@@ -140,19 +150,21 @@ const AuthForm: FC<Props> = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {requireEmail && (
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </Fragment>
         )}
 

@@ -24,7 +24,7 @@ public class Partner {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
+    @Column()
     private String email;
 
     @Column(nullable = false, columnDefinition = "NVARCHAR(255)")

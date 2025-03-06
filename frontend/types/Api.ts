@@ -12,6 +12,7 @@
 export interface WarehouseUpdateDTO {
   name?: string;
   address?: string;
+  status?: string;
 }
 
 export interface BaseResponseWarehouse {
@@ -35,6 +36,7 @@ export interface Warehouse {
   createdAt?: string;
   /** @format date-time */
   updatedAt?: string;
+  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface UpdateUserRequest {
@@ -150,6 +152,7 @@ export interface Category {
   createdAt?: string;
   /** @format date-time */
   updatedAt?: string;
+  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface Partner {
@@ -243,6 +246,7 @@ export interface UpdateCategoryDTO {
   name?: string;
   description?: string;
   imageUrl?: string;
+  status?: string;
 }
 
 export interface BaseResponseCategory {
@@ -261,7 +265,7 @@ export interface WarehouseCreateDTO {
   name?: string;
   address?: string;
   /** @format int64 */
-  shopId?: number;
+  shopId: number;
 }
 
 export interface CreateUserRequest {
@@ -278,8 +282,6 @@ export interface CreateUserRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
-  email: string;
-  role: string;
 }
 
 export interface CreateShopDTO {
@@ -417,6 +419,7 @@ export interface WarehouseDTO {
   /** @format int64 */
   id?: number;
   shopName?: string;
+  status: string;
   /** @format date-time */
   createdAt?: string;
 }
@@ -1070,7 +1073,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags User Management
      * @name GetUsers
      * @summary Get all users
-     * @request GET:/api/users/
+     * @request GET:/api/users
      * @secure
      */
     getUsers: (
@@ -1091,7 +1094,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<BaseResponsePaginateResponseUserDTO, any>({
-        path: `/api/users/`,
+        path: `/api/users`,
         method: "GET",
         query: query,
         secure: true,
@@ -1104,12 +1107,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags User Management
      * @name CreateUser
      * @summary Create a user
-     * @request POST:/api/users/
+     * @request POST:/api/users
      * @secure
      */
     createUser: (data: CreateUserRequest, params: RequestParams = {}) =>
       this.request<BaseResponseUserDTO, any>({
-        path: `/api/users/`,
+        path: `/api/users`,
         method: "POST",
         body: data,
         secure: true,

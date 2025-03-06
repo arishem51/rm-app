@@ -434,7 +434,7 @@
         }
       }
     },
-    "/api/users/": {
+    "/api/users": {
       "get": {
         "tags": ["User Management"],
         "summary": "Get all users",
@@ -1115,7 +1115,8 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "address": { "type": "string" }
+          "address": { "type": "string" },
+          "status": { "type": "string" }
         }
       },
       "BaseResponseWarehouse": {
@@ -1143,8 +1144,10 @@
           "name": { "type": "string" },
           "address": { "type": "string" },
           "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
-        }
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
+        },
+        "required": ["status"]
       },
       "UpdateUserRequest": {
         "type": "object",
@@ -1288,8 +1291,10 @@
           "description": { "type": "string" },
           "imageUrl": { "type": "string" },
           "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
-        }
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
+        },
+        "required": ["status"]
       },
       "Partner": {
         "type": "object",
@@ -1395,7 +1400,8 @@
         "properties": {
           "name": { "type": "string" },
           "description": { "type": "string" },
-          "imageUrl": { "type": "string" }
+          "imageUrl": { "type": "string" },
+          "status": { "type": "string" }
         }
       },
       "BaseResponseCategory": {
@@ -1422,7 +1428,8 @@
           "name": { "type": "string" },
           "address": { "type": "string" },
           "shopId": { "type": "integer", "format": "int64" }
-        }
+        },
+        "required": ["shopId"]
       },
       "CreateUserRequest": {
         "type": "object",
@@ -1434,18 +1441,9 @@
             "minLength": 6
           },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
-          "name": { "type": "string" },
-          "email": { "type": "string" },
-          "role": { "type": "string" }
+          "name": { "type": "string" }
         },
-        "required": [
-          "email",
-          "name",
-          "password",
-          "phoneNumber",
-          "role",
-          "username"
-        ]
+        "required": ["name", "password", "phoneNumber", "username"]
       },
       "CreateShopDTO": {
         "type": "object",
@@ -1612,8 +1610,10 @@
           "shopId": { "type": "integer", "format": "int64" },
           "id": { "type": "integer", "format": "int64" },
           "shopName": { "type": "string" },
+          "status": { "type": "string" },
           "createdAt": { "type": "string", "format": "date-time" }
-        }
+        },
+        "required": ["status"]
       },
       "BaseResponseListWarehouseDTO": {
         "type": "object",

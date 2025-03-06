@@ -34,7 +34,7 @@ public class User implements UserDetails {
     @Schema(required = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String email;
 
     @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
