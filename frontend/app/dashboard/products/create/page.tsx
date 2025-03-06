@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 const Page = () => {
   return (
     <div className="px-4">
-      <h1 className="text-3xl font-bold mt-2">Product</h1>
+      <h1 className="text-3xl font-bold mt-2">Sản phẩm</h1>
       <p className="text-sm text-muted-foreground">
         Add product information here
       </p>

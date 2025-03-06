@@ -56,24 +56,24 @@ const Content = () => {
     }
   > = {
     application: {
-      title: "Application",
+      title: "Ứng dụng",
       items: [
         {
-          title: "Home",
+          title: "Trang chủ",
           url: AppRoutes.dashboard.home.url,
           icon: Home,
         },
       ],
     },
     shop: {
-      title: "Shop Management",
+      title: "Quản lý cửa hàng",
       items: [],
     },
     setting: {
       title: "Setting",
       items: [
         {
-          title: "Profile",
+          title: "Thông tin cá nhân",
           url: AppRoutes.dashboard.setting.profile.url,
           icon: User2,
         },
@@ -84,28 +84,28 @@ const Content = () => {
   if (isAdmin) {
     itemGroups.application.items.push(
       {
-        title: "Users",
+        title: "Tài khoản",
         icon: Users,
         url: AppRoutes.dashboard.users.url,
         children: [],
       },
       {
-        title: "Shops",
+        title: "Cửa hàng",
         url: AppRoutes.dashboard.shops.url,
         icon: Store,
       },
       {
-        title: "Categories",
+        title: "Danh mục",
         url: AppRoutes.dashboard.categories.url,
         icon: TagIcon,
       },
       {
-        title: "Partners",
+        title: "Đối tác",
         url: AppRoutes.dashboard.partners.url,
         icon: Briefcase,
       },
       {
-        title: "Products",
+        title: "Sản phẩm",
         url: AppRoutes.dashboard.products.index.url,
         icon: Box,
       }
@@ -115,32 +115,32 @@ const Content = () => {
   if (user?.shopId && isOwner) {
     itemGroups.shop.items.push(
       {
-        title: "Users",
+        title: "Tài khoản",
         url: AppRoutes.dashboard.users.url,
         icon: Users,
       },
       {
-        title: "Products",
+        title: "Sản phẩm",
         url: AppRoutes.dashboard.products.index.url,
         icon: Box,
       },
       {
-        title: "Warehouses",
+        title: "Quản lý kho",
         icon: Warehouse,
         children: [
           {
-            title: "Facilities",
+            title: "Kho",
             url: AppRoutes.dashboard.warehouses.facilities.url,
           },
           {
-            title: "Inventories",
+            title: "Hàng hóa",
             url: AppRoutes.dashboard.warehouses.inventories.index.url,
           },
         ],
       }
     );
     itemGroups.setting.items.push({
-      title: "Shop",
+      title: "Cửa hàng",
       url: AppRoutes.dashboard.setting.shop.url,
       icon: ShoppingBag,
     });

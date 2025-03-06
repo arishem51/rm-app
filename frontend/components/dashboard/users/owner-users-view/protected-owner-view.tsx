@@ -52,12 +52,12 @@ const ProtectedUserOwnerView = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Username</TableHead>
-                <TableHead>Phone number</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead>Tên đăng nhập</TableHead>
+                <TableHead>Số điện thoại</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead>Vai trò</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -76,7 +76,15 @@ const ProtectedUserOwnerView = () => {
                     </TableCell>
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.phoneNumber}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {user.email ? (
+                        user.email
+                      ) : (
+                        <Badge variant="outline" className="px-1 py-0.5">
+                          None
+                        </Badge>
+                      )}
+                    </TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>
                     <TableCell className="flex justify-end w-full">
                       {!isCurrentAccount && (

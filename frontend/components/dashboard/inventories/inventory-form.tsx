@@ -33,9 +33,9 @@ type Props = {
 };
 
 const schemaFields = {
-  productId: z.coerce.number({ message: "Product is required" }),
-  warehouseId: z.coerce.number({ message: "Warehouse is required" }),
-  quantity: z.coerce.number({ message: "Invalid Number" }),
+  productId: z.coerce.number({ message: "Sản phẩm là bắt buộc" }),
+  warehouseId: z.coerce.number({ message: "Kho là bắt buộc" }),
+  quantity: z.coerce.number({ message: "Số không hợp lệ" }),
 };
 
 const InventoryForm = ({ inventory, onClose }: Props) => {
@@ -59,7 +59,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
       title: ToastTitle.success,
-      description: `${type === "create" ? "Create" : "Update"} inventory successfully`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} hàng thành công`,
     });
     onClose?.();
     queryClient.invalidateQueries({
@@ -71,7 +71,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
   const callbackFailed = (type: "create" | "update") => {
     toast({
       title: ToastTitle.error,
-      description: `${type === "create" ? "Create" : "Update"} inventory failed!`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} hàng thất bại`,
     });
     onClose?.();
   };
@@ -118,7 +118,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
             name="productId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Product</FormLabel>
+                <FormLabel>Sản phẩm</FormLabel>
                 <FormControl>
                   <ComboboxProducts
                     onSelect={field.onChange}
@@ -135,7 +135,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
             name="warehouseId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Warehouse</FormLabel>
+                <FormLabel>Kho</FormLabel>
                 <FormControl>
                   <ComboboxWarehouses
                     onSelect={field.onChange}
@@ -152,9 +152,9 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
             name="quantity"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quantity</FormLabel>
+                <FormLabel>Số lượng</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Quantity" {...field} />
+                  <Input type="number" placeholder="Số lượng" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -162,7 +162,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
           />
           <DialogFooter className="mt-2">
             <Button type="submit" disabled={isPending}>
-              Save
+              Lưu
             </Button>
           </DialogFooter>
         </div>

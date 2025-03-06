@@ -37,7 +37,7 @@ import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
 
 const schema = z.object({
-  name: z.string().nonempty({ message: "Name is required" }),
+  name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   description: z.string().optional(),
   salePrice: z.coerce
     .number()
@@ -121,7 +121,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       onSuccess: () => {
         toast({
           title: ToastTitle.success,
-          description: `Product ${type === "create" ? "created" : "updated"} successfully.`,
+          description: `Sản phẩm được ${type === "create" ? "tạo" : "sửa"} thành công.`,
         });
         queryClient.invalidateQueries({
           queryKey: ApiQuery.products.getProducts().queryKey,
@@ -178,9 +178,9 @@ const ProductForm = ({ onClose, product }: Props) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Tên</FormLabel>
                 <FormControl>
-                  <Input placeholder="Name" readOnly={!isOwner} {...field} />
+                  <Input placeholder="Tên" readOnly={!isOwner} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -323,7 +323,7 @@ const ProductForm = ({ onClose, product }: Props) => {
           </div>
 
           <FormItem className="w-full">
-            <FormLabel>Image URLs</FormLabel>
+            <FormLabel>URLs Ảnh</FormLabel>
             <div className="flex flex-col gap-2">
               {imageFields.map((field, index) => (
                 <div key={field.id} className="flex items-start gap-2">
@@ -335,7 +335,7 @@ const ProductForm = ({ onClose, product }: Props) => {
                         <FormControl>
                           <Input
                             readOnly={!isOwner}
-                            placeholder="Paste image URL"
+                            placeholder="Vui lòng nhập URL ảnh"
                             {...field}
                           />
                         </FormControl>
@@ -356,7 +356,7 @@ const ProductForm = ({ onClose, product }: Props) => {
               {imageFields.length < 5 && isOwner && (
                 <Button variant="outline" onClick={() => append({ url: "" })}>
                   <Plus className="h-4 w-4" />
-                  Add Image URL
+                  Thêm URL Ảnh
                 </Button>
               )}
             </div>
@@ -366,7 +366,7 @@ const ProductForm = ({ onClose, product }: Props) => {
         {isOwner && (
           <DialogFooter>
             <Button type="submit" disabled={isPending} className="mt-2">
-              Save changes
+              Lưu thay đổi
             </Button>
           </DialogFooter>
         )}

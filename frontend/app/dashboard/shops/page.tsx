@@ -9,9 +9,9 @@ const ShopPage = async () => {
       awaitQuery
     >
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Shop management</h1>
+        <h1 className="text-3xl font-bold mt-2">Quản lý cửa hàng</h1>
         <p className="text-sm  text-neutral-400 my-1">
-          Manage shops and their information here.
+          Quản lý cửa hàng và thay đổi thông tin cửa hàng tại đây
         </p>
         <Shops />
       </div>

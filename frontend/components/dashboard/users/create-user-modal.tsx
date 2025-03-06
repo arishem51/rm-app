@@ -27,8 +27,8 @@ const CreateUserModal = ({ children, isAdmin = false }: Props) => {
   return (
     <div className="flex items-center justify-between">
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTitle className="hidden">Create User</DialogTitle>
         <DialogContent className="sm:max-w-[425px]">
+          <DialogTitle>Tạo tài khoản</DialogTitle>
           <AuthForm
             requireEmail={false}
             onSubmit={(formData) => {
@@ -43,7 +43,7 @@ const CreateUserModal = ({ children, isAdmin = false }: Props) => {
                 onSuccess: () => {
                   toast({
                     title: ToastTitle.success,
-                    description: "Create user success!",
+                    description: "Tạo tài khoản thành công!",
                   });
                   queryClient.invalidateQueries({
                     queryKey: isAdmin
@@ -55,14 +55,14 @@ const CreateUserModal = ({ children, isAdmin = false }: Props) => {
               });
             }}
             type="sign-up"
-            btnText="Create Profile"
+            btnText="Tạo tài khoản"
           />
         </DialogContent>
         {children}
         <DialogTrigger asChild>
           <Button>
             <Plus />
-            <span>Create User</span>
+            <span>Tạo tài khoản</span>
           </Button>
         </DialogTrigger>
       </Dialog>

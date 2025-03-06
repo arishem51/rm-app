@@ -103,7 +103,7 @@ export const UserStatus: Record<UserDTO["status"], UserDTO["status"]> = {
 };
 
 export const ToastTitle = {
-  success: "Success.",
-  error: "Failed.",
-  somethingWentWrong: "Something went wrong!",
+  success: "Thành công",
+  error: "Thất bại",
+  somethingWentWrong: "Đã có lỗi xảy ra",
 } as const;

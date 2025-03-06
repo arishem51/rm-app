@@ -11,9 +11,9 @@ const InventoriesPage = () => {
         awaitQuery
       >
         <div className="px-4">
-          <h1 className="text-3xl font-bold mt-2">Inventory management</h1>
+          <h1 className="text-3xl font-bold mt-2">Quản lý hàng hóa</h1>
           <p className="text-sm  text-neutral-400 my-1">
-            Manage inventories and their information here.
+            Quản lý và thay đổi thông tin hàng hóa của bạn
           </p>
           <Inventories />
         </div>

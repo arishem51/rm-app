@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FC, Fragment, ReactNode } from "react";
+import { FC, Fragment, ReactNode, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,32 +16,9 @@ import {
   Form,
 } from "../ui/form";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { PasswordInput } from "../ui/password-input";
-
-const signInSchemaFields = {
-  username: z
-    .string()
-    .min(3, { message: "Username must be between 3 and 20 characters" })
-    .max(20, { message: "Username must be between 3 and 20 characters" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
-};
-
-const signUpSchemaFields = {
-  ...signInSchemaFields,
-  name: z.string().nonempty({ message: "Name is required" }),
-  phoneNumber: z
-    .string()
-    .regex(/^\d{10,12}$/, {
-      message: "Phone number must be 10-12 digits long",
-    })
-    .nonempty({ message: "Phone number is required" }),
-  confirmPassword: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
-};
+import Link from "next/link";
+import ReCAPTCHA from "react-google-recaptcha";
 
 type FormDataType = {
   username: string;
@@ -50,6 +27,7 @@ type FormDataType = {
   phoneNumber: string;
   email: string;
   confirmPassword?: string;
+  reCaptchaToken?: string;
 };
 
 type Props = {
@@ -59,6 +37,7 @@ type Props = {
   btnText?: string;
   onSubmit: (data: FormDataType) => void;
   requireEmail?: boolean;
+  enableReCaptcha?: boolean;
 };
 
 const AuthForm: FC<Props> = ({
@@ -68,16 +47,50 @@ const AuthForm: FC<Props> = ({
   btnText,
   onSubmit,
   requireEmail = true,
+  enableReCaptcha = false,
 }) => {
+  const [recaptchaToken, setRecaptchaToken] = useState("");
   const isSignUp = type === "sign-up";
-  if (requireEmail) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (signUpSchemaFields as any).email = z
-      .string()
-      .email({ message: "Invalid email" });
-  }
+  const signInSchemaFields = useMemo(
+    () => ({
+      username: z
+        .string()
+        .min(3, {
+          message: "Tên đăng nhập có độ dài ít nhất 3 ký tự và tối đa là 20",
+        })
+        .max(20, {
+          message: "Tên đăng nhập có độ dài ít nhất 3 ký tự và tối đa là 20",
+        }),
+      password: z
+        .string()
+        .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
+    }),
+    []
+  );
 
-  console.log({ signUpSchemaFields });
+  const signUpSchemaFields = useMemo(() => {
+    const schemaFields = {
+      ...signInSchemaFields,
+      name: z.string().nonempty({ message: "Tên là bắt buộc" }),
+      phoneNumber: z
+        .string()
+        .regex(/^\d{10,12}$/, {
+          message: "Số điện thoại phải dài từ 10-12 chữ số",
+        })
+        .nonempty({ message: "Số điện thoại là bắt buộc" }),
+      confirmPassword: z
+        .string()
+        .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
+      reCaptchaToken: z.string(),
+    };
+    if (requireEmail) {
+      return {
+        ...schemaFields,
+        email: z.string().email({ message: "Invalid email" }),
+      };
+    }
+    return schemaFields;
+  }, [requireEmail, signInSchemaFields]);
 
   const form = useForm<FormDataType>({
     defaultValues: {
@@ -87,6 +100,7 @@ const AuthForm: FC<Props> = ({
       phoneNumber: "",
       email: "",
       confirmPassword: "",
+      reCaptchaToken: "",
     },
     resolver: zodResolver(
       z
@@ -98,13 +112,12 @@ const AuthForm: FC<Props> = ({
                 (data as { confirmPassword?: string })?.confirmPassword
               : true,
           {
-            message: "Passwords don't match",
+            message: "Mật khẩu không khớp",
             path: ["confirmPassword"],
           }
         )
     ),
   });
-  const router = useRouter();
 
   const handleSubmit = form.handleSubmit(async (formData) => {
     const { confirmPassword, ...rest } = formData;
@@ -117,39 +130,42 @@ const AuthForm: FC<Props> = ({
       <form className={cn(className, "space-y-4")} onSubmit={handleSubmit}>
         {isSignUp && (
           <Fragment>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Account Name" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Public account display name, visible to others.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="(+84) 123 456 78"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tên</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Tên của bạn" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Tên hiển thị của tài khoản công khai, người khác có thể
+                      nhìn thấy.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Số điện thoại</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        placeholder="(+84) 123 456 78"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             {requireEmail && (
               <FormField
                 control={form.control}
@@ -173,9 +189,9 @@ const AuthForm: FC<Props> = ({
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Tên đăng nhập</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input placeholder="Tên đăng nhập" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -188,19 +204,16 @@ const AuthForm: FC<Props> = ({
             render={({ field }) => (
               <FormItem className="flex-1">
                 <div className="flex justify-between items-center">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Mật khẩu</FormLabel>
                   {!isSignUp && (
-                    <Button
-                      type="button"
-                      variant="link"
-                      onClick={() => {
-                        router.push("/auth/forgot-password");
-                      }}
+                    <Link
+                      href="/auth/forgot-password"
+                      className="underline underline-offset-4"
                     >
                       <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer">
-                        Forgot you password?
+                        Quên mật khẩu?
                       </span>
-                    </Button>
+                    </Link>
                   )}
                 </div>
                 <FormControl>
@@ -216,7 +229,7 @@ const AuthForm: FC<Props> = ({
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
                     <PasswordInput placeholder="*********" {...field} />
                   </FormControl>
@@ -226,8 +239,23 @@ const AuthForm: FC<Props> = ({
             />
           )}
         </div>
-        <Button type="submit" className="w-full">
-          {btnText ?? (isSignUp ? "Sign Up" : "Sign In")}
+        {enableReCaptcha && (
+          <ReCAPTCHA
+            sitekey="6LcM5-sqAAAAAGFDvyWQMFKDD4I8M69WxyUqtpPe"
+            onChange={(token) => {
+              if (token) {
+                setRecaptchaToken(token);
+                form.setValue("reCaptchaToken", token);
+              }
+            }}
+          />
+        )}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={enableReCaptcha && !recaptchaToken}
+        >
+          {btnText ?? (isSignUp ? "Đăng ký" : "Đăng nhập")}
         </Button>
         {children}
       </form>

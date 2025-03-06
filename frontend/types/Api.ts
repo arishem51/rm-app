@@ -50,7 +50,7 @@ export interface UpdateUserRequest {
   phoneNumber?: string;
   role?: string;
   status?: string;
-  email: string;
+  email?: string;
 }
 
 export interface BaseResponseUserDTO {
@@ -330,6 +330,7 @@ export interface SignUpRequest {
   phoneNumber: string;
   name: string;
   email: string;
+  reCaptchaToken: string;
 }
 
 export interface SignInRequest {
@@ -385,6 +386,7 @@ export interface BaseResponseVoid {
 
 export interface ForgotPasswordRequest {
   email: string;
+  reCaptchaToken: string;
 }
 
 export interface BaseResponsePaginateResponseWarehouseDTO {

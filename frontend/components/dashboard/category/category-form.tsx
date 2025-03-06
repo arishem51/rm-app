@@ -29,12 +29,12 @@ type Props = {
 };
 
 const schemaFields = {
-  name: z.string().nonempty({ message: "Name is required" }),
+  name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   description: z.string().optional(),
   imageUrl: z
     .string()
-    .max(500, "Image URL is too long (max 500 characters)")
-    .url("Invalid URL format")
+    .max(500, "URL ảnh quá dài, tối đa 500 ký tự")
+    .url("Sai định dạng URL")
     .optional(),
 };
 
@@ -56,7 +56,7 @@ const CategoryForm = ({ category, onClose }: Props) => {
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
       title: ToastTitle.success,
-      description: `${type === "create" ? "Create" : "Update"} category successfully`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} danh mục thành công`,
     });
     onClose?.();
     queryClient.invalidateQueries({
@@ -67,7 +67,7 @@ const CategoryForm = ({ category, onClose }: Props) => {
   const callbackFailed = (type: "create" | "update") => {
     toast({
       title: ToastTitle.error,
-      description: `${type === "create" ? "Create" : "Update"} category failed!`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} danh mục thất bại`,
     });
     onClose?.();
   };
@@ -118,7 +118,7 @@ const CategoryForm = ({ category, onClose }: Props) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Tên</FormLabel>
                 <FormControl>
                   <Input placeholder="Category name" {...field} />
                 </FormControl>
@@ -144,9 +144,9 @@ const CategoryForm = ({ category, onClose }: Props) => {
             name="imageUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Image</FormLabel>
+                <FormLabel>Ảnh</FormLabel>
                 <FormControl>
-                  <Input placeholder="Category image url" {...field} />
+                  <Input placeholder="Ảnh danh mục" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -154,7 +154,7 @@ const CategoryForm = ({ category, onClose }: Props) => {
           />
           <DialogFooter className="mt-2">
             <Button type="submit" disabled={isPending}>
-              Save
+              Lưu
             </Button>
           </DialogFooter>
         </div>

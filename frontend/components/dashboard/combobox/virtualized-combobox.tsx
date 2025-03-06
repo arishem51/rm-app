@@ -126,7 +126,7 @@ const VirtualizedCommand = ({
         onMouseDown={() => setIsKeyboardNavActive(false)}
         onMouseMove={() => setIsKeyboardNavActive(false)}
       >
-        <CommandEmpty>No item found.</CommandEmpty>
+        <CommandEmpty>Không có dữ liệu</CommandEmpty>
         <CommandGroup>
           <div
             style={{

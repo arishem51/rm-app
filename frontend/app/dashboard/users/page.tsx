@@ -31,9 +31,9 @@ const Page = async () => {
     <ProtectedShop shouldAdminByPass fallback={{ view: <CreateShopView /> }}>
       <HydrationPrefetchQuery query={getQuery()} awaitQuery>
         <div className="px-4">
-          <h1 className="text-3xl font-bold mt-2">User management</h1>
+          <h1 className="text-3xl font-bold mt-2">Quản lý người dùng</h1>
           <p className="text-sm  text-muted-foreground my-1">
-            Manage users member and their information here.
+            Quản lý người dùng của bạn tại đây
           </p>
           {isAdmin ? <AdminUsersView /> : <OwnerUsersView />}
         </div>

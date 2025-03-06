@@ -23,7 +23,7 @@ const AdminOverview = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-1">
             <UsersRound size={16} />
-            <span>Total users</span>
+            <span>Tổng tài khoản</span>
           </CardTitle>
           <CardDescription className="text-2xl">
             {isUserQueryLoading ? (
@@ -38,7 +38,7 @@ const AdminOverview = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-1">
             <ShoppingBagIcon size={16} />
-            <span>Total shops</span>
+            <span>Tổng cửa hàng</span>
           </CardTitle>
           <CardDescription className="text-2xl">
             {isShopQueryLoading ? (

@@ -3,13 +3,17 @@ package com.example.backend.services;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+
+import com.example.backend.controllers.ReCaptchaToken;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.UserDTO;
+import com.example.backend.dto.auth.request.ForgotPasswordRequest;
 import com.example.backend.dto.auth.request.ResetPasswordRequest;
 import com.example.backend.dto.auth.request.SignInRequest;
 import com.example.backend.dto.auth.request.SignUpRequest;
@@ -26,13 +30,18 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailService emailService;
+    private final ReCaptchaToken reCaptchaTokenService;
 
     public BaseResponse<UserDTO> signUp(SignUpRequest request) {
         try {
-            User user = userService.signUpUser(request);
-            return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
+            boolean success = reCaptchaTokenService.verifyToken(request.getReCaptchaToken());
+            if (success) {
+                User user = userService.signUpUser(request);
+                return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
+            }
+            throw new IllegalArgumentException("ReCaptcha verification failed!");
         } catch (IllegalArgumentException e) {
-            return new BaseResponse<>(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -56,14 +65,21 @@ public class AuthService {
         }
     }
 
-    public void forgotPassword(String email) {
+    public void forgotPassword(ForgotPasswordRequest request) {
         try {
-            userService.findByEmail(email);
-            String token = passwordResetTokenService.createToken(email);
-            String resetLink = "http://localhost:3000/auth/reset-password?token=" + token;
-            emailService.sendResetEmail(email, resetLink);
+            String reCaptchaToken = request.getReCaptchaToken();
+            boolean success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+            if (success) {
+                String email = request.getEmail();
+                userService.findByEmail(email);
+                String token = passwordResetTokenService.createToken(email);
+                String resetLink = "http://localhost:3000/auth/reset-password?token=" + token;
+                emailService.sendResetEmail(email, resetLink);
+            } else {
+                throw new IllegalArgumentException("ReCaptcha verification failed!");
+            }
         } catch (Exception e) {
-            throw new IllegalArgumentException("User not found!");
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 

@@ -27,7 +27,7 @@ const InventoryPage = async ({
       awaitQuery
     >
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Inventory</h1>
+        <h1 className="text-3xl font-bold mt-2">Hàng hóa</h1>
         <p className="text-sm text-muted-foreground">
           Edit inventory information here
         </p>

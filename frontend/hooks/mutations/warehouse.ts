@@ -8,7 +8,10 @@ export const useCreateWarehouse = () => {
     mutationFn: async (props: WarehouseCreateDTO & { shopId: number }) => {
       try {
         const { shopId, ...rest } = props;
-        const response = await apiClient.createWarehouse(shopId, rest);
+        const response = await apiClient.createWarehouse(shopId, {
+          shopId,
+          ...rest,
+        });
         return response;
       } catch (error) {
         throw createHttpResponseError(error);

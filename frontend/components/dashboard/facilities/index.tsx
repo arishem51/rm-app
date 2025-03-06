@@ -57,11 +57,11 @@ const Facilities = () => {
         />
         <Button
           onClick={() => {
-            setUpdateWarehouse({});
+            setUpdateWarehouse({} as WarehouseDTO);
           }}
         >
           <Plus />
-          Create facility
+          Tạo kho
         </Button>
       </div>
       <Dialog
@@ -74,12 +74,10 @@ const Facilities = () => {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {updateWarehouse?.id ? "Update" : "Create"} Category
-            </DialogTitle>
+            <DialogTitle>{updateWarehouse?.id ? "Sửa" : "Tạo"} kho</DialogTitle>
             <DialogDescription>
-              Enter the details for the new category. Click save once
-              you&apos;re finished to add it to your collection.
+              Nhập thông tin cho kho mới. Nhấn lưu khi bạn đã hoàn thành để thêm
+              vào bộ sưu tập của bạn.
             </DialogDescription>
           </DialogHeader>
           <FacilityForm
@@ -95,10 +93,10 @@ const Facilities = () => {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Address</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead>Tên</TableHead>
+              <TableHead>Địa chỉ</TableHead>
+              <TableHead>Thời điểm tạo</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
