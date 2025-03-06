@@ -68,7 +68,7 @@ const Shops = () => {
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Address</TableHead>
-              <TableHead>Created By</TableHead>
+              <TableHead>Người tạo</TableHead>
               <TableHead>Thời điểm tạo</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>

@@ -56,7 +56,7 @@ const Content = () => {
     }
   > = {
     application: {
-      title: "Application",
+      title: "Ứng dụng",
       items: [
         {
           title: "Trang chủ",
@@ -66,7 +66,7 @@ const Content = () => {
       ],
     },
     shop: {
-      title: "Shop Management",
+      title: "Quản lý cửa hàng",
       items: [],
     },
     setting: {
