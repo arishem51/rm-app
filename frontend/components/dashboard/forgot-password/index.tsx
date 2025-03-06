@@ -22,6 +22,7 @@ import { toast } from "@/hooks/use-toast";
 import { ToastTitle } from "@/lib/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Home } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -66,11 +67,11 @@ const ForgotPasswordView = () => {
             className="h-6 w-6 ml-auto"
             size="icon"
             variant="outline"
-            onClick={() => {
-              router.replace("/auth/sign-in");
-            }}
+            asChild
           >
-            <Home />
+            <Link href="/auth/sign-in">
+              <Home />
+            </Link>
           </Button>
         </CardTitle>
         <CardDescription>
