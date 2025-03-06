@@ -54,7 +54,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
     toast({
       variant: "default",
       title: "Success",
-      description: `${type === "create" ? "Create" : "Update"} shop successfully`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} cửa hàng thành công`,
     });
     onClose?.();
     queryClient.invalidateQueries({
@@ -112,7 +112,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address</FormLabel>
+                <FormLabel>Địa chỉ</FormLabel>
                 <FormControl>
                   <Input placeholder="Your shop address" {...field} />
                 </FormControl>

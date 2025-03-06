@@ -29,18 +29,18 @@ const Header = () => {
                 <div className="flex items-center justify-center p-2 bg-blue-700 rounded-lg overflow-hidden">
                   <GalleryVerticalEnd size={16} />
                 </div>
-                <div>Workspace</div>
+                <div>Không gian làm việc</div>
                 <ChevronsUpDown className="ml-auto" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
               <DropdownMenuItem disabled>
-                <span>Dashboard</span>
+                <span>Bảng điều khiển</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <SquareArrowOutUpRight />
                 <Link href={AppRoutes.home.url} className="w-full">
-                  Landing Page
+                  Trang giới thiệu
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -53,7 +53,7 @@ const Inventories = () => {
           <Link href="/dashboard/warehouses/inventories/create">
             <Button>
               <Plus />
-              Create Inventory
+              Tạo Hàng hóa
             </Button>
           </Link>
         )}
@@ -63,9 +63,9 @@ const Inventories = () => {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Warehouse</TableHead>
-              <TableHead>Quantity</TableHead>
+              <TableHead>Sản phẩm</TableHead>
+              <TableHead>Kho</TableHead>
+              <TableHead>Số lượng</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>

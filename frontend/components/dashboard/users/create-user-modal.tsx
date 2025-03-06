@@ -55,7 +55,7 @@ const CreateUserModal = ({ children, isAdmin = false }: Props) => {
               });
             }}
             type="sign-up"
-            btnText="Create Profile"
+            btnText="Tạo tài khoản"
           />
         </DialogContent>
         {children}

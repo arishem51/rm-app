@@ -9,9 +9,9 @@ const WarehousesPage = () => {
       awaitQuery
     >
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Facility management</h1>
+        <h1 className="text-3xl font-bold mt-2">Quản lý kho</h1>
         <p className="text-sm  text-neutral-400 my-1">
-          Manage facilities and their information here.
+          Quản lý kho và thay đổi thông tin kho ở đây
         </p>
         <Facilities />
       </div>

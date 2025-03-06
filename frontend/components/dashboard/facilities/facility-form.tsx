@@ -53,7 +53,7 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
       title: ToastTitle.success,
-      description: `${type === "create" ? "Create" : "Update"} facility successfully`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} kho thành công`,
     });
     onClose?.();
     queryClient.invalidateQueries({
@@ -64,7 +64,7 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
   const callbackFailed = (type: "create" | "update") => {
     toast({
       title: ToastTitle.error,
-      description: `${type === "create" ? "Create" : "Update"} facility failed!`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} kho thất bại`,
     });
     onClose?.();
   };
@@ -119,7 +119,7 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
               <FormItem>
                 <FormLabel>Tên</FormLabel>
                 <FormControl>
-                  <Input placeholder="Facility name" {...field} />
+                  <Input placeholder="Tên kho" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,9 +130,9 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address</FormLabel>
+                <FormLabel>Địa chỉ</FormLabel>
                 <FormControl>
-                  <Input placeholder="Facility address" {...field} />
+                  <Input placeholder="Địa chỉ kho" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

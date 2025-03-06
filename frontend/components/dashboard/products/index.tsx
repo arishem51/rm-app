@@ -58,7 +58,7 @@ const Products = () => {
           <Link href="/dashboard/products/create">
             <Button>
               <Plus />
-              Create Product
+              Tạo sản phẩm
             </Button>
           </Link>
         )}

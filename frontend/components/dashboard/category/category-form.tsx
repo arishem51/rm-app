@@ -56,7 +56,7 @@ const CategoryForm = ({ category, onClose }: Props) => {
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
       title: ToastTitle.success,
-      description: `${type === "create" ? "Create" : "Update"} category successfully`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} danh mục thành công`,
     });
     onClose?.();
     queryClient.invalidateQueries({
@@ -67,7 +67,7 @@ const CategoryForm = ({ category, onClose }: Props) => {
   const callbackFailed = (type: "create" | "update") => {
     toast({
       title: ToastTitle.error,
-      description: `${type === "create" ? "Create" : "Update"} category failed!`,
+      description: `${type === "create" ? "Tạo" : "Sửa"} danh mục thất bại`,
     });
     onClose?.();
   };

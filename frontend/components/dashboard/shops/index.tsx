@@ -67,7 +67,7 @@ const Shops = () => {
             <TableRow>
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
-              <TableHead>Address</TableHead>
+              <TableHead>Địa chỉ</TableHead>
               <TableHead>Người tạo</TableHead>
               <TableHead>Thời điểm tạo</TableHead>
               <TableHead className="text-right">Hành động</TableHead>

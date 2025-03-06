@@ -31,7 +31,7 @@ const ShopModal = ({ children, trigger }: Props) => {
           {trigger ?? (
             <Button>
               <Plus />
-              <span>Create Shop</span>
+              <span>Tạo cửa hàng</span>
             </Button>
           )}
         </DialogTrigger>

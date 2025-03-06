@@ -121,7 +121,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       onSuccess: () => {
         toast({
           title: ToastTitle.success,
-          description: `Product ${type === "create" ? "created" : "updated"} successfully.`,
+          description: `Sản phẩm được ${type === "create" ? "tạo" : "sửa"} thành công.`,
         });
         queryClient.invalidateQueries({
           queryKey: ApiQuery.products.getProducts().queryKey,
