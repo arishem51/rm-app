@@ -26,6 +26,7 @@ type Props = {
   description?: string;
   children?: ReactNode;
   type?: "sign-in" | "sign-up";
+  enableReCaptcha?: boolean;
 };
 
 const AuthView: FC<Props> = ({
@@ -33,6 +34,7 @@ const AuthView: FC<Props> = ({
   description,
   children,
   type = "sign-in",
+  enableReCaptcha = false,
 }) => {
   const router = useRouter();
   const { toast } = useToast();
@@ -76,6 +78,7 @@ const AuthView: FC<Props> = ({
       </CardHeader>
       <CardContent>
         <AuthForm
+          enableReCaptcha={enableReCaptcha}
           onSubmit={(formData) => {
             if (type === "sign-up" && formData.reCaptchaToken) {
               signUp(
