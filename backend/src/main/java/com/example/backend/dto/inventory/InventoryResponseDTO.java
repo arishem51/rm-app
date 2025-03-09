@@ -24,7 +24,7 @@ public class InventoryResponseDTO {
     private UserDTO createdBy;
     private String createdAt;
     private String updatedAt;
-
+    private String price;
     public static InventoryResponseDTO fromEntity(Inventory inventory) {
         return InventoryResponseDTO.builder()
                 .id(inventory.getId())
@@ -36,6 +36,7 @@ public class InventoryResponseDTO {
                 .createdBy(UserDTO.fromEntity(inventory.getCreatedBy()))
                 .createdAt(inventory.getCreatedAt().toString())
                 .updatedAt(inventory.getUpdatedAt() != null ? inventory.getUpdatedAt().toString() : null)
+                .price(inventory.getProduct().getSalePrice().toString())
                 .build();
     }
 }

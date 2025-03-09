@@ -5,8 +5,6 @@ export const inventories = {
   getInventories: createQuery(apiClient.getInventory, {
     placeholderData: keepPreviousData,
   }),
-  getAllInventories: createQuery(apiClient.getAllInventory, {
-    placeholderData: keepPreviousData,
-  }),
+  getAllInventory: createQuery(apiClient.getAllInventory, {}),
   getDetails: createQuery(apiClient.getInventoryById),
 };

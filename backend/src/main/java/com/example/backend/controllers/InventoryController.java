@@ -27,6 +27,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/inventories")
 @Tag(name = "Inventories Management", description = "Operations related to inventories")
@@ -54,10 +56,11 @@ public class InventoryController {
 
     @Operation(summary = "Get all inventories", description = "Fetch a list of all registered inventories.")
     @GetMapping("/all")
-    public ResponseEntity<BaseResponse<PaginateResponse<InventoryResponseDTO>>> getAllInventory(
+    public ResponseEntity<BaseResponse<List<Inventory>>> getAllInventory(
             @CurrentUser User user) {
         try {
-            return ResponseEntity.ok(new BaseResponse<>(null, "Success!"));
+            List<Inventory> items = inventoryService.findAllInventoriesByShop(user);
+            return ResponseEntity.ok(new BaseResponse<>(items, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

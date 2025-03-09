@@ -22,7 +22,9 @@ public class InventoryService {
     private final ProductService productService;
     private final WarehouseService warehouseService;
 
-    public List<Inventory> findAllInventoriesByShop(User currentUser, Long shopId) {
+    public List<Inventory> findAllInventoriesByShop(User currentUser) {
+        Shop shop = currentUser.getShop();
+        Long shopId = shop.getId();
         if (currentUser.getShop() == null) {
             throw new IllegalArgumentException("You must have a shop to manage products!");
         }
@@ -31,6 +33,7 @@ public class InventoryService {
         }
         return inventoryRepository.findByWarehouse_ShopId(shopId);
     }
+
 
     public Inventory findInventoryById(Long id, User currentUser) {
         Inventory inventory = inventoryRepository.findById(id)
