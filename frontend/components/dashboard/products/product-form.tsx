@@ -69,6 +69,7 @@ const ProductForm = ({ onClose, product }: Props) => {
           description: "",
           imageUrls: [],
           shopId: 1,
+          unit: 10,
         },
   });
   const {
@@ -175,12 +176,12 @@ const ProductForm = ({ onClose, product }: Props) => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Mô tả</FormLabel>
                 <FormControl>
                   <Textarea
                     readOnly={!isOwner}
                     rows={3}
-                    placeholder="Description"
+                    placeholder="Mô tả sản phẩm"
                     {...field}
                   />
                 </FormControl>
@@ -194,12 +195,12 @@ const ProductForm = ({ onClose, product }: Props) => {
               name="price"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Sale Price (VND)</FormLabel>
+                  <FormLabel>Gía (VNĐ)</FormLabel>
                   <FormControl>
                     <InputCurrency
                       className={className}
                       readOnly={!isOwner}
-                      placeholder="Sale Price"
+                      placeholder="Ví dụ: 100000"
                       {...field}
                     />
                   </FormControl>
@@ -216,7 +217,7 @@ const ProductForm = ({ onClose, product }: Props) => {
               <FormItem
                 className={cn("w-full", isOwner ? "" : "pointer-events-none")}
               >
-                <FormLabel>Supplier</FormLabel>
+                <FormLabel>Nhà cung cấp</FormLabel>
                 <br />
                 <FormControl>
                   <ComboboxSuppliers
@@ -240,7 +241,7 @@ const ProductForm = ({ onClose, product }: Props) => {
                       isOwner ? "" : "pointer-events-none"
                     )}
                   >
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Danh mục</FormLabel>
                     <br />
                     <FormControl>
                       <ComboboxCategories
@@ -259,11 +260,11 @@ const ProductForm = ({ onClose, product }: Props) => {
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Unit</FormLabel>
+                    <FormLabel>Số lượng Kg/Bao gạo</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="Nhập số lượng kg"
+                        placeholder="Nhập số lượng Kg/Bao"
                         {...field}
                       />
                     </FormControl>
