@@ -19,7 +19,6 @@ import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { createSttNumber, toCurrency } from "@/lib/utils";
-import { startCase } from "lodash";
 import ListPagination from "../pagination";
 import Image from "next/image";
 import defaultPic from "../../../public/images/default-product.png";
@@ -70,11 +69,10 @@ const Products = () => {
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Ảnh</TableHead>
-              <TableHead>Sale Price (VND)</TableHead>
-              <TableHead>Wholesale Price (VND)</TableHead>
-              <TableHead>Unit</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Supplier</TableHead>
+              <TableHead>Giá (VNĐ)</TableHead>
+              <TableHead>Số lượng KG/Bao</TableHead>
+              <TableHead>Danh mục</TableHead>
+              <TableHead>Nhà cung cấp</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -93,11 +91,8 @@ const Products = () => {
                   />
                 </TableCell>
 
-                <TableCell>{toCurrency(product.salePrice as number)}</TableCell>
-                <TableCell>
-                  {toCurrency(product.wholesalePrice as number)}
-                </TableCell>
-                <TableCell>{startCase(product.unit?.toLowerCase())}</TableCell>
+                <TableCell>{toCurrency(product.price as number)}</TableCell>
+                <TableCell>{product.unit}</TableCell>
                 <TableCell>
                   <Badge
                     variant={product.category?.name ? "default" : "outline"}
