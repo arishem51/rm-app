@@ -81,16 +81,4 @@ public class PartnerController {
         Partner savedPartner = partnerService.update(id, updatedPartner, currentUser);
         return ResponseEntity.ok(new BaseResponse<>(savedPartner, "Partner updated successfully", null));
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<Void>> deletePartner(@PathVariable Long id, @CurrentUser User currentUser) {
-        try {
-            partnerService.delete(id, currentUser);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new BaseResponse<>(null, "Delete Partner successfully", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new BaseResponse<>(null, e.getMessage()));
-        }
-    }
 }

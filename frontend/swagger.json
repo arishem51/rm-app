@@ -1492,17 +1492,9 @@
           },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
           "name": { "type": "string" },
-          "email": { "type": "string" },
-          "reCaptchaToken": { "type": "string" }
+          "email": { "type": "string" }
         },
-        "required": [
-          "email",
-          "name",
-          "password",
-          "phoneNumber",
-          "reCaptchaToken",
-          "username"
-        ]
+        "required": ["email", "name", "password", "phoneNumber", "username"]
       },
       "SignInRequest": {
         "type": "object",

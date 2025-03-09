@@ -330,7 +330,6 @@ export interface SignUpRequest {
   phoneNumber: string;
   name: string;
   email: string;
-  reCaptchaToken: string;
 }
 
 export interface SignInRequest {
