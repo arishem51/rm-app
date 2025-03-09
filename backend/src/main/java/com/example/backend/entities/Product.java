@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.example.backend.enums.UnitType;
 
 @Getter
 @Setter
@@ -42,15 +41,12 @@ public class Product {
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UnitType unit;
+    @Builder.Default
+    private int unit = 10;
 
-    @Column(name = "sale_price")
-    private BigDecimal salePrice;
-
-    @Column(name = "wholesale_price")
-    private BigDecimal wholesalePrice;
+    @Column(name = "price")
+    private BigDecimal price;
 
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
@@ -91,7 +87,7 @@ public class Product {
                 + ", category='" + (category != null ? category.getName() : "null") + '\''
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
                 + ", unit='" + unit + '\''
-                + ", salePrice='" + salePrice + '\''
+                + ", price='" + price + '\''
                 + "} ";
     }
 }
