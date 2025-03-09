@@ -11,13 +11,14 @@ import { FC, ReactNode, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useSignIn, useSignUp } from "@/hooks/mutations/user";
 import { ToastTitle } from "@/lib/constants";
-import AuthForm from "../auth-form";
+import AuthForm from "../form/auth-form";
 import { useRouter } from "next/navigation";
 import { setTokenAfterSignIn } from "@/server/actions";
 import { useAuthAtom } from "@/store/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { Home } from "lucide-react";
+import Link from "next/link";
 import { Button } from "../ui/button";
 
 type Props = {
@@ -25,6 +26,7 @@ type Props = {
   description?: string;
   children?: ReactNode;
   type?: "sign-in" | "sign-up";
+  enableReCaptcha?: boolean;
 };
 
 const AuthView: FC<Props> = ({
@@ -32,6 +34,7 @@ const AuthView: FC<Props> = ({
   description,
   children,
   type = "sign-in",
+  enableReCaptcha = false,
 }) => {
   const router = useRouter();
   const { toast } = useToast();
@@ -43,9 +46,9 @@ const AuthView: FC<Props> = ({
   useEffect(() => {
     if (atom.showToastErrorSignIn) {
       toast({
-        variant: "destructive",
         title: ToastTitle.somethingWentWrong,
         description: "Credentials expired, please sign in again!",
+        variant: "destructive",
       });
       setAtom({ showToastErrorSignIn: false, token: "" });
       fetch(`${window.origin}/api/auth`, {
@@ -56,35 +59,34 @@ const AuthView: FC<Props> = ({
   }, [atom.showToastErrorSignIn, setAtom, toast]);
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold flex items-center justify-between">
           <span>{title}</span>
-          {type === "sign-up" && (
-            <Button
-              className="h-6 w-6 ml-auto"
-              size="icon"
-              variant="outline"
-              onClick={() => {
-                router.replace("/auth/sign-in");
-              }}
-            >
+          <Button
+            className="h-6 w-6 ml-auto"
+            size="icon"
+            variant="outline"
+            asChild
+          >
+            <Link href={type === "sign-up" ? "/auth/sign-in" : "/"}>
               <Home />
-            </Button>
-          )}
+            </Link>
+          </Button>
         </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <AuthForm
+          enableReCaptcha={enableReCaptcha}
           onSubmit={(formData) => {
             if (type === "sign-up") {
               signUp(formData, {
                 onError: (e) => {
                   toast({
-                    variant: "destructive",
                     title: ToastTitle.error,
                     description: e.message || ToastTitle.somethingWentWrong,
+                    variant: "destructive",
                   });
                 },
                 onSuccess: () => {
@@ -101,9 +103,9 @@ const AuthView: FC<Props> = ({
               signIn(formData, {
                 onError: (e) => {
                   toast({
-                    variant: "destructive",
                     title: ToastTitle.error,
                     description: e.message,
+                    variant: "destructive",
                   });
                 },
                 async onSuccess({ data }) {

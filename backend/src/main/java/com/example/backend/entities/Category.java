@@ -1,17 +1,13 @@
 package com.example.backend.entities;
 
 import java.time.LocalDateTime;
+
+import com.example.backend.enums.ActionStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,4 +63,10 @@ public class Category {
                 + ", description='" + description + '\''
                 + '}';
     }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    @Schema(required = true)
+    @Builder.Default
+    private ActionStatus status = ActionStatus.ACTIVE;
+
 }

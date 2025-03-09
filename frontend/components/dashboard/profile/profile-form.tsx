@@ -34,28 +34,23 @@ type FormData = UserDTO & { newPassword?: string; confirmPassword?: string };
 
 const schemaFields = {
   username: z.string(),
-  name: z.string().nonempty({ message: "Name is required" }),
+  name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   newPassword: z.union([
-    z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.string().min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
     z.literal(""),
     z.null(),
   ]),
   confirmPassword: z.union([
-    z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.string().min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
     z.literal(""),
     z.null(),
   ]),
   phoneNumber: z
     .string()
     .regex(/^\d{10,12}$/, {
-      message: "Phone number must be 10-12 digits long",
+      message: "Số điện thoại phải dài từ 10-12 chữ số",
     })
-    .nonempty({ message: "Phone number is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
+    .nonempty({ message: "Số điện thoại là bắt buộc" }),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
   status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
 };
@@ -112,7 +107,7 @@ const ProfileForm = () => {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Tên đăng nhập</FormLabel>
               <FormControl>
                 <Input readOnly {...field} />
               </FormControl>
@@ -124,7 +119,7 @@ const ProfileForm = () => {
           name="name"
           render={({ field }) => (
             <FormItem className="mt-4">
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Tên</FormLabel>
               <FormControl>
                 <Input placeholder="Your name" {...field} />
               </FormControl>
@@ -136,9 +131,9 @@ const ProfileForm = () => {
           name="newPassword"
           render={({ field }) => (
             <FormItem className="mt-4">
-              <FormLabel>New Password</FormLabel>
+              <FormLabel>Mật khẩu mới</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="Your new password" {...field} />
+                <PasswordInput placeholder="Mật khẩu mới của bạn" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -149,9 +144,12 @@ const ProfileForm = () => {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem className="mt-4">
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel>Xác nhận mật khẩu</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="Your confirm password" {...field} />
+                <PasswordInput
+                  placeholder="Xác nhận mật khẩu của bạn"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -162,7 +160,7 @@ const ProfileForm = () => {
           name="phoneNumber"
           render={({ field }) => (
             <FormItem className="mt-4">
-              <FormLabel>Phone number</FormLabel>
+              <FormLabel>Số điện thoại</FormLabel>
               <FormControl>
                 <Input type="tel" placeholder="(+84) 123 456 78" {...field} />
               </FormControl>
@@ -175,16 +173,18 @@ const ProfileForm = () => {
           name="role"
           render={({ field }) => (
             <FormItem className="mt-4">
-              <FormLabel>Role</FormLabel>
+              <FormLabel>Vai trò</FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-full pointer-events-none">
-                    <SelectValue placeholder="Select a role" />
+                    <SelectValue placeholder="Chọn vai trò" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem value={UserRole.OWNER}>Owner</SelectItem>
-                      <SelectItem value={UserRole.STAFF}>Staff</SelectItem>
+                      <SelectItem value={UserRole.OWNER}>
+                        Chủ cửa hàng
+                      </SelectItem>
+                      <SelectItem value={UserRole.STAFF}>Nhân viên</SelectItem>
                       <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -196,7 +196,7 @@ const ProfileForm = () => {
         />
         <div className="mt-6 flex justify-end">
           <Button type="submit" disabled={isPending}>
-            Save changes
+            Lưu thay đổi
           </Button>
         </div>
       </form>

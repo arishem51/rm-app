@@ -25,7 +25,7 @@ import HeaderListSearch from "../../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 
 const ProtectedUserOwnerView = () => {
-  const [filter, setFilter] = useState({ search: "" });
+  const [filter, setFilter] = useState({ page: 0, search: "" });
   const [updatedUser, setUpdatedUser] = useState<UserDTO>();
   const { data: currentUser } = useMe();
 
@@ -35,7 +35,7 @@ const ProtectedUserOwnerView = () => {
   });
 
   const handleSearch = (search: string) => {
-    setFilter({ search });
+    setFilter({ page: 0, search });
   };
   const users = data?.users || [];
 
@@ -52,12 +52,12 @@ const ProtectedUserOwnerView = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Username</TableHead>
-                <TableHead>Phone number</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead>Tên đăng nhập</TableHead>
+                <TableHead>Số điện thoại</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead>Vai trò</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -76,7 +76,15 @@ const ProtectedUserOwnerView = () => {
                     </TableCell>
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.phoneNumber}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {user.email ? (
+                        user.email
+                      ) : (
+                        <Badge variant="outline" className="px-1 py-0.5">
+                          None
+                        </Badge>
+                      )}
+                    </TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>
                     <TableCell className="flex justify-end w-full">
                       {!isCurrentAccount && (
@@ -105,6 +113,12 @@ const ProtectedUserOwnerView = () => {
         ) : (
           <EmptyState />
         )}
+        {/* <ListPagination
+          isLeftButtonDisabled={filter.page === 0}
+          isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
+          handleNavigateFullPage={handleNavigateFullPage}
+          handleNavigatePage={handleNavigatePage}
+        /> */}
       </UserUpdateModal>
     </Fragment>
   );

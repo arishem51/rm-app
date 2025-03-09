@@ -5,13 +5,17 @@ import { ApiQuery } from "@/services/query";
 const CategoriesPage = async () => {
   return (
     <HydrationPrefetchQuery
-      query={ApiQuery.categories.getCategories({ page: 0, search: "" })}
+      query={ApiQuery.categories.getCategories({
+        page: 0,
+        search: "",
+        createdAt: "",
+      })}
       awaitQuery
     >
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Category management</h1>
+        <h1 className="text-3xl font-bold mt-2">Quản lý danh mục</h1>
         <p className="text-sm  text-neutral-400 my-1">
-          Manage Category and their information here.
+          Thay đổi thông tin của danh mục ở đây
         </p>
         <Categories />
       </div>

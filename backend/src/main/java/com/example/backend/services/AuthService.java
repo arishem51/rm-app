@@ -3,21 +3,23 @@ package com.example.backend.services;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+
+import com.example.backend.controllers.ReCaptchaToken;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.UserDTO;
-import com.example.backend.dto.auth.request.CreateUserRequest;
+import com.example.backend.dto.auth.request.ForgotPasswordRequest;
 import com.example.backend.dto.auth.request.ResetPasswordRequest;
 import com.example.backend.dto.auth.request.SignInRequest;
 import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.response.SignInResponse;
 import com.example.backend.entities.PasswordResetToken;
 import com.example.backend.entities.User;
-import com.example.backend.enums.Role;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,16 +30,14 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailService emailService;
+    private final ReCaptchaToken reCaptchaTokenService;
 
     public BaseResponse<UserDTO> signUp(SignUpRequest request) {
         try {
-            CreateUserRequest userRequest = CreateUserRequest.builder().name(request.getName())
-                    .password(request.getPassword()).phoneNumber(request.getPhoneNumber()).role(Role.OWNER.name())
-                    .email(request.getEmail()).username(request.getUsername()).build();
-            User user = userService.createUser(userRequest);
+            User user = userService.signUpUser(request);
             return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
         } catch (IllegalArgumentException e) {
-            return new BaseResponse<>(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -61,14 +61,21 @@ public class AuthService {
         }
     }
 
-    public void forgotPassword(String email) {
+    public void forgotPassword(ForgotPasswordRequest request) {
         try {
-            userService.findByEmail(email);
-            String token = passwordResetTokenService.createToken(email);
-            String resetLink = "http://localhost:3000/auth/reset-password?token=" + token;
-            emailService.sendResetEmail(email, resetLink);
+            String reCaptchaToken = request.getReCaptchaToken();
+            boolean success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+            if (success) {
+                String email = request.getEmail();
+                userService.findByEmail(email);
+                String token = passwordResetTokenService.createToken(email);
+                String resetLink = "http://localhost:3000/auth/reset-password?token=" + token;
+                emailService.sendResetEmail(email, resetLink);
+            } else {
+                throw new IllegalArgumentException("ReCaptcha verification failed!");
+            }
         } catch (Exception e) {
-            throw new IllegalArgumentException("User not found!");
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 

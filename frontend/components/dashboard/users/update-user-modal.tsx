@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMe, useUpdateUser } from "@/hooks/mutations/user";
+import { useUpdateUser } from "@/hooks/mutations/user";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
@@ -38,25 +38,20 @@ import { isEmpty } from "lodash";
 import { PasswordInput } from "@/components/ui/password-input";
 
 const schemaFields = {
-  name: z.string().nonempty({ message: "Name is required" }),
+  name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   phoneNumber: z
     .string()
     .regex(/^\d{10,12}$/, {
-      message: "Phone number must be 10-12 digits long",
+      message: "Số điện thoại phải dài từ 10-12 chữ số",
     })
-    .nonempty({ message: "Phone number is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
+    .nonempty({ message: "Số điện thoại là bắt buộc" }),
   password: z.union([
-    z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.string().min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
     z.literal(""),
     z.literal(null),
   ]),
   confirmPassword: z.union([
-    z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters long" }),
+    z.string().min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
     z.literal(""),
   ]),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
@@ -66,10 +61,10 @@ const schemaFields = {
 type Props = {
   children?: ReactNode;
   user?: UserDTO;
-  isAdmin?: boolean;
+  isAdminPage?: boolean;
 };
 
-const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
+const UserUpdateModal = ({ children, isAdminPage = false, user }: Props) => {
   const [open, setOpen] = useState(false);
   const form = useForm<UpdateUserRequest & { confirmPassword?: string }>({
     defaultValues: {
@@ -77,7 +72,6 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
       phoneNumber: "",
       password: "",
       role: UserRole.ADMIN,
-      email: "",
       confirmPassword: "",
     },
     resolver: zodResolver(
@@ -91,8 +85,6 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
   });
   const { mutate: updateUser, isPending } = useUpdateUser();
   const queryClient = useQueryClient();
-  const { data: currentUser } = useMe();
-
   const { reset } = form;
 
   useEffect(() => {
@@ -121,7 +113,7 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
               title: ToastTitle.success,
               description: "User updated successfully",
             });
-            if (isAdmin) {
+            if (isAdminPage) {
               queryClient.invalidateQueries({
                 queryKey: ApiQuery.users.getUsers().queryKey,
               });
@@ -134,9 +126,9 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
           },
           onError: (e) => {
             toast({
-              variant: "destructive",
               title: ToastTitle.error,
               description: e.message,
+              variant: "destructive",
             });
           },
         }
@@ -151,10 +143,10 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
         <DialogContent className="sm:max-w-[425px]">
           <form onSubmit={handleSubmit} className="mt-4">
             <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
+              <DialogTitle>Sửa thông tin</DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save when you&apos;re
-                done.
+                Thay đổi thông tin của bạn ở đây. Nhấn lưu khi bạn đã hoàn
+                thành.
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-2 my-4">
@@ -163,9 +155,9 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your Name" {...field} />
+                      <Input placeholder="Your Tên" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -176,7 +168,7 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
+                    <FormLabel>Số điện thoại</FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
@@ -190,23 +182,10 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
               />
               <FormField
                 control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>New Password</FormLabel>
+                    <FormLabel>Mật khẩu mới</FormLabel>
                     <FormControl>
                       <PasswordInput placeholder="*********" {...field} />
                     </FormControl>
@@ -219,7 +198,7 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>Xác nhận mật khẩu</FormLabel>
                     <FormControl>
                       <PasswordInput placeholder="*********" {...field} />
                     </FormControl>
@@ -227,13 +206,13 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
                   </FormItem>
                 )}
               />
-              {currentUser?.role === UserRole.ADMIN && (
+              {user?.role !== UserRole.ADMIN && (
                 <FormField
                   control={form.control}
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Role</FormLabel>
+                      <FormLabel>Vai trò</FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -245,13 +224,10 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
                           <SelectContent>
                             <SelectGroup>
                               <SelectItem value={UserRole.OWNER}>
-                                Owner
+                                Chủ cửa hàng
                               </SelectItem>
                               <SelectItem value={UserRole.STAFF}>
-                                Staff
-                              </SelectItem>
-                              <SelectItem value={UserRole.ADMIN}>
-                                Admin
+                                Nhân viên
                               </SelectItem>
                             </SelectGroup>
                           </SelectContent>
@@ -262,13 +238,13 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
                   )}
                 />
               )}
-              {isAdmin && (
+              {isAdminPage && (
                 <FormField
                   control={form.control}
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel>Trạng thái</FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -297,7 +273,7 @@ const UserUpdateModal = ({ children, isAdmin = false, user }: Props) => {
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
-                {isPending ? "Saving..." : "Save changes"}
+                {isPending ? "Saving..." : "Lưu thay đổi"}
               </Button>
             </DialogFooter>
           </form>

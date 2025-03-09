@@ -7,7 +7,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import { UsersRound } from "lucide-react";
+import { ShoppingBagIcon, UsersRound } from "lucide-react";
 
 const AdminOverview = () => {
   const { data: shopQuery, isLoading: isShopQueryLoading } = useAppQuery(
@@ -23,9 +23,9 @@ const AdminOverview = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-1">
             <UsersRound size={16} />
-            <span>Total users</span>
+            <span>Tổng tài khoản</span>
           </CardTitle>
-          <CardDescription className="text-neutral-50 text-2xl">
+          <CardDescription className="text-2xl">
             {isUserQueryLoading ? (
               <Skeleton className="h-6 w-[100px] mt-1" />
             ) : (
@@ -37,10 +37,10 @@ const AdminOverview = () => {
       <Card className="flex-1">
         <CardHeader>
           <CardTitle className="flex items-center gap-1">
-            <UsersRound size={16} />
-            <span>Total shops</span>
+            <ShoppingBagIcon size={16} />
+            <span>Tổng cửa hàng</span>
           </CardTitle>
-          <CardDescription className="text-neutral-50 text-2xl">
+          <CardDescription className="text-2xl">
             {isShopQueryLoading ? (
               <Skeleton className="h-6 w-[100px] mt-1" />
             ) : (

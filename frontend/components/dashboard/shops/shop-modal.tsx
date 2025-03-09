@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dialog,
   DialogContent,
@@ -6,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ReactNode, useState } from "react";
-import ShopForm from "@/components/shop-form";
+import ShopForm from "@/components/form/shop-form";
 import { Plus } from "lucide-react";
 
 type Props = {
@@ -29,7 +31,7 @@ const ShopModal = ({ children, trigger }: Props) => {
           {trigger ?? (
             <Button>
               <Plus />
-              <span>Create Shop</span>
+              <span>Tạo cửa hàng</span>
             </Button>
           )}
         </DialogTrigger>

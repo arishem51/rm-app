@@ -24,11 +24,9 @@ export const { api: apiClient } = new Api({
     let token;
 
     if (typeof window === "undefined") {
-      // Running on the server: Get token from cookies
       const { cookies } = await import("next/headers");
       token = (await cookies()).get("token")?.value;
     } else {
-      // Running on the client: Get token from globalStore
       token = globalStore.get(authAtom)?.token;
     }
     if (token) {
@@ -89,3 +87,11 @@ export const createQuery = <T, K>(
     });
   };
 };
+
+export const toCurrency = (value: number) =>
+  new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);

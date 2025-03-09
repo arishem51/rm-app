@@ -5,12 +5,12 @@ export default function Page() {
   return (
     <div className="h-screen flex flex-col justify-center">
       <AuthView
-        title="Sign In"
-        description="Enter your username and password to sign in to your account"
+        title="Đăng Nhập"
+        description="Nhập tên người dùng và mật khẩu của bạn để đăng nhập vào tài khoản"
       >
         <div className="flex text-sm justify-center">
           <Link className="underline underline-offset-4" href="/auth/sign-up">
-            Don&apos;t have an account? Sign up
+            Chưa có tài khoản? Đăng ký
           </Link>
         </div>
       </AuthView>

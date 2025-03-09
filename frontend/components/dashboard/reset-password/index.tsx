@@ -36,12 +36,10 @@ type FormData = ResetPasswordRequest & {
 };
 
 const schemaFields = {
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
+  password: z.string().min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
   confirmPassword: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
+    .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
 };
 
 const ResetPasswordView = ({ token }: Props) => {
@@ -76,9 +74,9 @@ const ResetPasswordView = ({ token }: Props) => {
         },
         onError: (e) => {
           toast({
-            variant: "destructive",
             title: ToastTitle.error,
             description: e.message,
+            variant: "destructive",
           });
         },
       }
@@ -114,9 +112,12 @@ const ResetPasswordView = ({ token }: Props) => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel>Mật khẩu mới</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder="Your new password" {...field} />
+                    <PasswordInput
+                      placeholder="Mật khẩu mới của bạn"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -127,10 +128,10 @@ const ResetPasswordView = ({ token }: Props) => {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
                     <PasswordInput
-                      placeholder="Your confirm password"
+                      placeholder="Xác nhận mật khẩu của bạn"
                       {...field}
                     />
                   </FormControl>
@@ -139,7 +140,7 @@ const ResetPasswordView = ({ token }: Props) => {
               )}
             />
             <Button className="w-full" type="submit" disabled={isPending}>
-              Save
+              Lưu
             </Button>
           </form>
         </Form>

@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { AppPathURL } from "@/lib/constants";
+import { AppRoutes } from "@/lib/constants";
 import {
   ChevronsUpDown,
   GalleryVerticalEnd,
@@ -29,18 +29,18 @@ const Header = () => {
                 <div className="flex items-center justify-center p-2 bg-blue-700 rounded-lg overflow-hidden">
                   <GalleryVerticalEnd size={16} />
                 </div>
-                <div>Workspace</div>
+                <div>Không gian làm việc</div>
                 <ChevronsUpDown className="ml-auto" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
               <DropdownMenuItem disabled>
-                <span>Dashboard</span>
+                <span>Bảng điều khiển</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <SquareArrowOutUpRight />
-                <Link href={AppPathURL.home} className="w-full">
-                  Landing Page
+                <Link href={AppRoutes.home.url} className="w-full">
+                  Trang giới thiệu
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>

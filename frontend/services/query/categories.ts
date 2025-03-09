@@ -5,4 +5,5 @@ export const categories = {
   getCategories: createQuery(apiClient.getCategories, {
     placeholderData: keepPreviousData,
   }),
+  getAllCategories: createQuery(apiClient.getAllCategories, {}),
 };

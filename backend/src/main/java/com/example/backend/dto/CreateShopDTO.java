@@ -7,7 +7,8 @@ public class CreateShopDTO {
     private String name;
     private String address;
 
-    public CreateShopDTO() {}
+    public CreateShopDTO() {
+    }
 
     public CreateShopDTO(String name, String address) {
         this.name = name;

@@ -31,7 +31,7 @@ const Footer = () => {
             >
               <DropdownSignOut>
                 <LogOut />
-                <span>Sign Out</span>
+                <span>Đăng Xuất</span>
               </DropdownSignOut>
             </DropdownMenuContent>
           </DropdownMenu>

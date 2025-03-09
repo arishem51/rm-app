@@ -1,11 +1,10 @@
 package com.example.backend.dto.auth.request;
 
+import com.example.backend.enums.ActionStatus;
 import com.example.backend.enums.Role;
-import com.example.backend.enums.UserStatus;
 import com.example.backend.security.validation.ValidEnum;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -15,7 +14,6 @@ import lombok.Setter;
 @Setter
 public class UpdateUserRequest {
     private String name;
-
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
@@ -25,12 +23,9 @@ public class UpdateUserRequest {
     @ValidEnum(enumClass = Role.class, message = "Invalid user role!")
     private String role;
 
-    @ValidEnum(enumClass = UserStatus.class, message = "Invalid user status!")
+    @ValidEnum(enumClass = ActionStatus.class, message = "Invalid user status!")
     private String status;
 
     @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is required")
     private String email;
-
-
 }

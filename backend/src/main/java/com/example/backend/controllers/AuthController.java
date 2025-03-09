@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.auth.request.ForgotPasswordRequest;
@@ -17,7 +16,6 @@ import com.example.backend.dto.auth.request.SignInRequest;
 import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.response.SignInResponse;
 import com.example.backend.services.AuthService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -37,11 +35,15 @@ public class AuthController {
     @Operation(summary = "Sign up a new user", description = "Sign up a new user with a username and password.")
     @PostMapping("/sign-up")
     public ResponseEntity<BaseResponse<UserDTO>> signUp(@Valid @RequestBody SignUpRequest request) {
-        BaseResponse<UserDTO> response = authService.signUp(request);
-        if (response.getData() == null) {
-            return ResponseEntity.badRequest().body(response);
+        try {
+            BaseResponse<UserDTO> response = authService.signUp(request);
+            if (response.getData() == null) {
+                return ResponseEntity.badRequest().body(response);
+            }
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
-        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Sign in a user", description = "Perform authentication on a user to sign in!.")
@@ -59,7 +61,7 @@ public class AuthController {
     public ResponseEntity<BaseResponse<Void>> forgotPassword(
             @Valid @RequestBody ForgotPasswordRequest request) {
         try {
-            authService.forgotPassword(request.getEmail());
+            authService.forgotPassword(request);
             return ResponseEntity.ok().body(new BaseResponse<>(null, "Success!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));

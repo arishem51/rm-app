@@ -1,17 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getMe } from "./server/actions";
+import { AppRoutes } from "./lib/constants";
 
 export async function middleware(request: NextRequest) {
-  if (
-    request.url.includes("/auth/sign-in") ||
-    request.url.includes("/auth/sign-up") ||
-    request.url.includes("/auth/forgot-password")
-  ) {
+  const { signIn, signUp, forgotPassword, resetPassword } = AppRoutes.auth;
+  const checkIncludes = (url: string) => request.url.includes(url);
+  const isAuthRoute =
+    checkIncludes(signIn.url) ||
+    checkIncludes(signUp.url) ||
+    checkIncludes(forgotPassword.url) ||
+    checkIncludes(resetPassword.url);
+
+  if (isAuthRoute) {
     const query = await getMe();
     if (query?.data?.data) {
       return NextResponse.redirect(request.nextUrl.origin + "/dashboard");
     }
   }
+
   return NextResponse.next();
 }
 

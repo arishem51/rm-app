@@ -11,7 +11,6 @@ import {
 import { ApiQuery } from "@/services/query";
 import { lowerCase, startCase } from "lodash";
 import { Fragment, useCallback, useState } from "react";
-import UserPagination from "./pagination";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import useAppQuery from "@/hooks/use-app-query";
@@ -24,6 +23,7 @@ import { UserDTO } from "@/types/Api";
 import CreateUserModal from "./create-user-modal";
 import HeaderListSearch from "../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
+import ListPagination from "../pagination";
 
 const AdminUsersView = () => {
   const createFilterValue = useCallback(
@@ -64,19 +64,19 @@ const AdminUsersView = () => {
           onSearch={handleSearch}
         />
       </CreateUserModal>
-      <UserUpdateModal isAdmin user={updatedUser}>
+      <UserUpdateModal isAdminPage user={updatedUser}>
         {(data?.data?.length || 0) > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Username</TableHead>
-                <TableHead>Phone number</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead>Tên đăng nhập</TableHead>
+                <TableHead>Số điện thoại</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Shop</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead>Cửa hàng</TableHead>
+                <TableHead>Vai trò</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -89,19 +89,27 @@ const AdminUsersView = () => {
                       {user.name}{" "}
                       {isCurrentAccount && (
                         <Badge className=" text-xs p-[4px] py-0 ml-0.5">
-                          Current
+                          Tài khoản này
                         </Badge>
                       )}
                     </TableCell>
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.phoneNumber}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {user.email ? (
+                        user.email
+                      ) : (
+                        <Badge variant="outline" className="px-1 py-0.5">
+                          Không tồn tại
+                        </Badge>
+                      )}
+                    </TableCell>
                     <TableCell>
                       <Badge
                         variant={user.shopName ? "default" : "outline"}
                         className="px-1 py-0.5"
                       >
-                        {user.shopName || "None"}
+                        {user.shopName || "Không tồn tại"}
                       </Badge>
                     </TableCell>
                     <TableCell>{startCase(lowerCase(user.role))}</TableCell>
@@ -141,7 +149,7 @@ const AdminUsersView = () => {
         ) : (
           <EmptyState />
         )}
-        <UserPagination
+        <ListPagination
           isLeftButtonDisabled={filter.page === 0}
           isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
           handleNavigateFullPage={handleNavigateFullPage}

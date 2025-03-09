@@ -1,0 +1,5 @@
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+           WHERE TABLE_NAME = 'products' AND COLUMN_NAME = 'quantity')
+BEGIN
+    ALTER TABLE products DROP COLUMN quantity;
+END

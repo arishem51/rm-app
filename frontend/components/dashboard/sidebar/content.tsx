@@ -1,4 +1,8 @@
+"use client";
+
 import {
+  Box,
+  Briefcase,
   ChevronsUpDown,
   Home,
   LucideIcon,
@@ -7,7 +11,7 @@ import {
   TagIcon,
   User2,
   Users,
-  Package
+  Warehouse,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -26,9 +30,9 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { AppPathURL } from "@/lib/constants";
-import { getMe } from "@/server/actions";
+import { AppRoutes } from "@/lib/constants";
 import { checkRole } from "@/lib/helpers";
+import { useMe } from "@/hooks/mutations/user";
 
 type Item = {
   title: string;
@@ -39,10 +43,9 @@ type Item = {
 
 type SidebarGroupType = "application" | "shop" | "setting";
 
-const Content = async () => {
-  const query = await getMe();
-  const { data } = query ?? {};
-  const { data: user } = data ?? {};
+const Content = () => {
+  const query = useMe();
+  const { data: user } = query ?? {};
   const { isAdmin, isOwner } = checkRole(user);
 
   const itemGroups: Record<
@@ -53,25 +56,25 @@ const Content = async () => {
     }
   > = {
     application: {
-      title: "Application",
+      title: "Ứng dụng",
       items: [
         {
-          title: "Home",
-          url: AppPathURL.dashboard.home,
+          title: "Trang chủ",
+          url: AppRoutes.dashboard.home.url,
           icon: Home,
         },
       ],
     },
     shop: {
-      title: "Shop Management",
+      title: "Quản lý cửa hàng",
       items: [],
     },
     setting: {
       title: "Setting",
       items: [
         {
-          title: "Profile",
-          url: AppPathURL.dashboard.setting.profile,
+          title: "Thông tin cá nhân",
+          url: AppRoutes.dashboard.setting.profile.url,
           icon: User2,
         },
       ],
@@ -81,48 +84,66 @@ const Content = async () => {
   if (isAdmin) {
     itemGroups.application.items.push(
       {
-        title: "Users",
+        title: "Tài khoản",
         icon: Users,
-        url: AppPathURL.dashboard.users,
+        url: AppRoutes.dashboard.users.url,
         children: [],
       },
       {
-        title: "Shops",
-        url: AppPathURL.dashboard.shops,
+        title: "Cửa hàng",
+        url: AppRoutes.dashboard.shops.url,
         icon: Store,
       },
       {
-        title: "Categories",
-        url: AppPathURL.dashboard.categories,
+        title: "Danh mục",
+        url: AppRoutes.dashboard.categories.url,
         icon: TagIcon,
       },
       {
-        title: "Suppliers",
-        url: AppPathURL.dashboard.suppliers,
-        icon: TagIcon,
+        title: "Sản phẩm",
+        url: AppRoutes.dashboard.products.index.url,
+        icon: Box,
       }
     );
   }
 
-  if (isOwner) {
-    itemGroups.shop.items.push({
-      title: "Users",
-      url: AppPathURL.dashboard.users,
-      icon: Users,
+  if (user?.shopId && isOwner) {
+    itemGroups.shop.items.push(
+      {
+        title: "Tài khoản",
+        url: AppRoutes.dashboard.users.url,
+        icon: Users,
+      },
+      {
+        title: "Sản phẩm",
+        url: AppRoutes.dashboard.products.index.url,
+        icon: Box,
+      },
+      {
+        title: "Quản lý kho",
+        icon: Warehouse,
+        children: [
+          {
+            title: "Kho",
+            url: AppRoutes.dashboard.warehouses.facilities.url,
+          },
+          {
+            title: "Hàng hóa",
+            url: AppRoutes.dashboard.warehouses.inventories.index.url,
+          },
+        ],
+      },
+      {
+        title: "Đối tác",
+        url: AppRoutes.dashboard.partners.url,
+        icon: Briefcase,
+      }
+    );
+    itemGroups.setting.items.push({
+      title: "Cửa hàng",
+      url: AppRoutes.dashboard.setting.shop.url,
+      icon: ShoppingBag,
     });
-    itemGroups.shop.items.push({
-      title: "Suppliers",
-      url: AppPathURL.dashboard.suppliers,
-      icon: Package,
-    });
-    //FIXME: should revalidate
-    if (user?.shopId) {
-      itemGroups.setting.items.push({
-        title: "Shop",
-        url: AppPathURL.dashboard.setting.shop,
-        icon: ShoppingBag,
-      });
-    }
   }
 
   const groups = Object.keys(itemGroups).map(
@@ -172,7 +193,9 @@ const Content = async () => {
                                 <SidebarMenuSub key={child.title}>
                                   <SidebarMenuSubItem>
                                     <SidebarMenuButton asChild>
-                                      <span>{child.title}</span>
+                                      <Link href={child.url as string}>
+                                        <span>{child.title}</span>
+                                      </Link>
                                     </SidebarMenuButton>
                                   </SidebarMenuSubItem>
                                 </SidebarMenuSub>

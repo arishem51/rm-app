@@ -17,15 +17,22 @@ import lombok.RequiredArgsConstructor;
 public class PasswordResetTokenService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public String createToken(String email) {
-        Optional<PasswordResetToken> optionalToken = passwordResetTokenRepository.findByEmail(email);
-        PasswordResetToken resetToken = optionalToken.isPresent() ? optionalToken.get() : new PasswordResetToken();
-        String token = UUID.randomUUID().toString();
-        LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(5);
+    @Transactional
+    public void deleteToken(String email) {
+        passwordResetTokenRepository.deleteByEmail(email);
+    }
 
+    @Transactional
+    public String createToken(String email) {
+        this.deleteToken(email);
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(10);
+
+        PasswordResetToken resetToken = new PasswordResetToken();
         resetToken.setEmail(email);
         resetToken.setToken(token);
         resetToken.setExpiryTime(expiryTime);
+
         passwordResetTokenRepository.save(resetToken);
         return token;
     }
@@ -42,8 +49,4 @@ public class PasswordResetTokenService {
         return resetToken;
     }
 
-    @Transactional
-    public void deleteToken(String email) {
-        passwordResetTokenRepository.deleteByEmail(email);
-    }
 }
