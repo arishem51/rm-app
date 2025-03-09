@@ -18,7 +18,7 @@ import HeaderListSearch from "../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { toCurrency } from "@/lib/utils";
+import { createSttNumber, toCurrency } from "@/lib/utils";
 import { startCase } from "lodash";
 import ListPagination from "../pagination";
 import Image from "next/image";
@@ -82,7 +82,7 @@ const Products = () => {
           <TableBody>
             {data?.data?.map((product, index) => (
               <TableRow key={product.id}>
-                <TableCell>{index + 1}</TableCell>
+                <TableCell>{createSttNumber(index, filter.page)}</TableCell>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>
                   <Image
