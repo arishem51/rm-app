@@ -43,17 +43,24 @@ public class AuthService {
 
     public BaseResponse<SignInResponse> signIn(SignInRequest request) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            String reCaptchaToken = request.getReCaptchaToken();
+            boolean success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+            if (success) {
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String username = userDetails.getUsername();
-            String token = jwtService.createToken(username);
-            User user = userService.findByUsername(username);
-            return new BaseResponse<>(new SignInResponse(token, UserDTO.fromEntity(user)),
-                    "Sign In successfully!");
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                String username = userDetails.getUsername();
+                String token = jwtService.createToken(username);
+                User user = userService.findByUsername(username);
+                return new BaseResponse<>(new SignInResponse(token, UserDTO.fromEntity(user)),
+                        "Sign In successfully!");
+            } else {
+                throw new IllegalArgumentException("ReCaptcha verification failed!");
+            }
+
         } catch (BadCredentialsException e) {
             return new BaseResponse<>(null, "Invalid username or password!");
         } catch (DisabledException e) {

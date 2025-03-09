@@ -79,7 +79,7 @@ const AuthView: FC<Props> = ({
       <CardContent>
         <AuthForm
           enableReCaptcha={enableReCaptcha}
-          onSubmit={(formData) => {
+          onSubmit={(formData, config) => {
             if (type === "sign-up") {
               signUp(formData, {
                 onError: (e) => {
@@ -88,12 +88,14 @@ const AuthView: FC<Props> = ({
                     description: e.message || ToastTitle.somethingWentWrong,
                     variant: "destructive",
                   });
+                  config?.onError?.();
                 },
                 onSuccess: () => {
                   toast({
                     title: ToastTitle.success,
                     description: "Sign up success!",
                   });
+                  config?.onSuccess?.();
                   setTimeout(() => {
                     router.replace("/auth/sign-in");
                   }, 400);
@@ -107,6 +109,7 @@ const AuthView: FC<Props> = ({
                     description: e.message,
                     variant: "destructive",
                   });
+                  config?.onError?.();
                 },
                 async onSuccess({ data }) {
                   if (data.data) {
@@ -114,7 +117,6 @@ const AuthView: FC<Props> = ({
                       title: ToastTitle.success,
                       description: "Sign in success!",
                     });
-
                     if (data.data.token) {
                       setTokenAfterSignIn(data.data.token);
                       setAtom({
@@ -128,6 +130,7 @@ const AuthView: FC<Props> = ({
                         router.replace("/dashboard");
                       }, 50);
                     }
+                    config?.onSuccess?.();
                   }
                 },
               });
