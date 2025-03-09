@@ -23,7 +23,4 @@ public class SignUpRequest extends SignInRequest {
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
     private String email;
-
-    @NotBlank(message = "ReCaptcha token is required")
-    private String reCaptchaToken;
 }

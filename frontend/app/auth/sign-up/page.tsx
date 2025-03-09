@@ -8,7 +8,6 @@ export default function Page() {
         title="Đăng Ký"
         description="Nhập thông tin của bạn để đăng ký tài khoản"
         type="sign-up"
-        enableReCaptcha
       >
         <div className="flex justify-center">
           <Link

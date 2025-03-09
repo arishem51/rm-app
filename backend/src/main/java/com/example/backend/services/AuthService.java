@@ -34,12 +34,8 @@ public class AuthService {
 
     public BaseResponse<UserDTO> signUp(SignUpRequest request) {
         try {
-            boolean success = reCaptchaTokenService.verifyToken(request.getReCaptchaToken());
-            if (success) {
-                User user = userService.signUpUser(request);
-                return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
-            }
-            throw new IllegalArgumentException("ReCaptcha verification failed!");
+            User user = userService.signUpUser(request);
+            return new BaseResponse<>(UserDTO.fromEntity(user), "Create user successfully!");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
