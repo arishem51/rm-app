@@ -276,28 +276,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": ["Partner Management"],
-        "operationId": "deletePartner",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
-              }
-            }
-          }
-        }
       }
     },
     "/api/inventories/{id}": {
@@ -1257,9 +1235,13 @@
           "categoryId": { "type": "integer", "format": "int64" },
           "supplierId": { "type": "integer", "format": "int64" },
           "shopId": { "type": "integer", "format": "int64" },
-          "salePrice": { "type": "number", "minimum": 0.0 },
-          "wholesalePrice": { "type": "number", "minimum": 0.0 },
-          "unit": { "type": "string" },
+          "price": { "type": "number", "minimum": 0.0 },
+          "unit": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Unit of the product (unit kg/bg)",
+            "example": 10
+          },
           "imageUrls": { "type": "array", "items": { "type": "string" } }
         },
         "required": ["name", "shopId"]
@@ -1318,9 +1300,8 @@
           "supplier": { "$ref": "#/components/schemas/Partner" },
           "shopId": { "type": "integer", "format": "int64" },
           "shopName": { "type": "string" },
-          "salePrice": { "type": "number" },
-          "wholesalePrice": { "type": "number" },
-          "unit": { "type": "string", "enum": ["KG", "BAG"] },
+          "price": { "type": "number" },
+          "unit": { "type": "integer", "format": "int32" },
           "imageUrls": { "type": "array", "items": { "type": "string" } }
         }
       },

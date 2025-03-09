@@ -123,10 +123,13 @@ export interface RequestProductDTO {
   /** @format int64 */
   shopId: number;
   /** @min 0 */
-  salePrice?: number;
-  /** @min 0 */
-  wholesalePrice?: number;
-  unit?: string;
+  price?: number;
+  /**
+   * Unit of the product (unit kg/bg)
+   * @format int32
+   * @example 10
+   */
+  unit?: number;
   imageUrls?: string[];
 }
 
@@ -177,9 +180,9 @@ export interface ResponseProductDTO {
   /** @format int64 */
   shopId?: number;
   shopName?: string;
-  salePrice?: number;
-  wholesalePrice?: number;
-  unit?: "KG" | "BAG";
+  price?: number;
+  /** @format int32 */
+  unit?: number;
   imageUrls?: string[];
 }
 
@@ -975,22 +978,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Partner Management
-     * @name DeletePartner
-     * @request DELETE:/api/partners/{id}
-     * @secure
-     */
-    deletePartner: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseVoid, any>({
-        path: `/api/partners/${id}`,
-        method: "DELETE",
-        secure: true,
         ...params,
       }),
 

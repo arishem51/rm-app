@@ -50,8 +50,6 @@ const ForgotPasswordView = () => {
   const router = useRouter();
   const recaptchaToken = form.watch("reCaptchaToken");
 
-  console.log({ recaptchaToken });
-
   const handleSubmit = form.handleSubmit((data: FormData) => {
     forgotPassword(data);
     toast({

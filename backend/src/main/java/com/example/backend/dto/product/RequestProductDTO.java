@@ -4,8 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.util.List;
-import com.example.backend.enums.UnitType;
-import com.example.backend.security.validation.ValidEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @Setter
@@ -22,13 +21,10 @@ public class RequestProductDTO {
     @NotNull(message = "Shop ID is required!")
     private Long shopId;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Sale price must be greater than zero")
-    private BigDecimal salePrice;
-    @DecimalMin(value = "0.0", inclusive = false, message = "Wholesale price must be greater than zero")
-    private BigDecimal wholesalePrice;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
+    private BigDecimal price;
 
-    @ValidEnum(enumClass = UnitType.class, message = "Invalid product unit!")
-    private String unit;
-
+    @Schema(description = "Unit of the product (unit kg/bg)", example = "10", type = "integer", format = "int32")
+    private Integer unit;
     private List<String> imageUrls;
 }
