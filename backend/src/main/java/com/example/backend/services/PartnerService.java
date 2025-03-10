@@ -65,17 +65,15 @@ public class PartnerService {
             throw new IllegalArgumentException("Partner not found");
         }
 
-        Partner partner = Partner.builder()
-                .name(partnerDto.getName() != null ? partnerDto.getName() : dbPartner.get().getName())
-                .contactName(partnerDto.getContactName() != null ? partnerDto.getContactName()
-                        : dbPartner.get().getContactName())
-                .phone(partnerDto.getPhone() != null ? partnerDto.getPhone() : dbPartner.get().getPhone())
-                .email(partnerDto.getEmail() != null ? partnerDto.getEmail() : dbPartner.get().getEmail())
-                .address(partnerDto.getAddress() != null ? partnerDto.getAddress() : dbPartner.get().getAddress())
-                .website(partnerDto.getWebsite() != null ? partnerDto.getWebsite() : dbPartner.get().getWebsite())
-                .description(partnerDto.getDescription() != null ? partnerDto.getDescription()
-                        : dbPartner.get().getDescription())
-                .build();
+        Partner partner = dbPartner.get();
+        partner.setName(partnerDto.getName());
+        partner.setContactName(partnerDto.getContactName());
+        partner.setPhone(partnerDto.getPhone());
+        partner.setEmail(partnerDto.getEmail());
+        partner.setAddress(partnerDto.getAddress());
+        partner.setWebsite(partnerDto.getWebsite());
+        partner.setDescription(partnerDto.getDescription());
+        partnerRepository.save(partner);
 
         partnerRepository.save(partner);
         return partner;

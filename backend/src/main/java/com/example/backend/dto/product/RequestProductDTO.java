@@ -17,7 +17,7 @@ public class RequestProductDTO {
     private String name;
     private String description;
     private Long categoryId;
-    private Long supplierId;
+    private Long partnerId;
 
     @NotNull(message = "Shop ID is required!")
     private Long shopId;

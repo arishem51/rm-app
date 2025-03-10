@@ -36,7 +36,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "partner_id")
-    private Partner supplier;
+    private Partner partner;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
@@ -89,7 +89,7 @@ public class Product {
         return "Product{id=" + id
                 + ", name='" + name + '\''
                 + ", category='" + (category != null ? category.getName() : "null") + '\''
-                + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
+                + ", supplier='" + (partner != null ? partner.getName() : "null") + '\''
                 + ", unit='" + unit + '\''
                 + ", salePrice='" + salePrice + '\''
                 + "} ";

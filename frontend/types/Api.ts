@@ -119,7 +119,7 @@ export interface RequestProductDTO {
   /** @format int64 */
   categoryId?: number;
   /** @format int64 */
-  supplierId?: number;
+  partnerId?: number;
   /** @format int64 */
   shopId: number;
   /** @min 0 */
@@ -173,7 +173,7 @@ export interface ResponseProductDTO {
   name?: string;
   description?: string;
   category?: Category;
-  supplier?: Partner;
+  partner?: Partner;
   /** @format int64 */
   shopId?: number;
   shopName?: string;

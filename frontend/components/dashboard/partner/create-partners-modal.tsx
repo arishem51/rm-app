@@ -11,31 +11,32 @@ import { ToastTitle } from "@/lib/constants";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import SupplierForm from "@/components/supplier-form";
-import { useCreateSupplier } from "@/hooks/mutations/suppliers";
+import PartnerForm from "@/components/partner-form";
+// import { useCreateUser } from "@/hooks/mutations/user";
+import { useCreatePartner } from "@/hooks/mutations/partner";
 
 type Props = {
   children?: ReactNode;
   isAdmin?: boolean;
 };
 
-const CreateSuppliersModal = ({ children, isAdmin = false }: Props) => {
-  const { mutate } = useCreateSupplier();
+const CreatePartnersModal = ({ children}: Props) => {
+  const { mutate } = useCreatePartner();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
   return (
     <div className="flex items-center justify-between">
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTitle className="hidden">Create Supplier</DialogTitle>
+        <DialogTitle className="hidden">Create Partner</DialogTitle>
         <DialogContent className="sm:max-w-[425px]">
-          <SupplierForm
+          <PartnerForm
             onSubmit={(formData) => {
               console.log("Check formData: ", formData);
               mutate(
-                {
-                  ...formData,
-                },
+                  {
+                    ...formData,
+                  },
                 {
                   onError: (error) => {
                     toast({
@@ -47,10 +48,10 @@ const CreateSuppliersModal = ({ children, isAdmin = false }: Props) => {
                   onSuccess: () => {
                     toast({
                       title: ToastTitle.success,
-                      description: "Create supplier success!",
+                      description: "Create partner success!",
                     });
                     queryClient.invalidateQueries({
-                      queryKey: ApiQuery.suppliers.getSuppliers().queryKey,
+                      queryKey: ApiQuery.partners.getPartners().queryKey,
                     });
                     setOpen(false);
                   },
@@ -58,14 +59,14 @@ const CreateSuppliersModal = ({ children, isAdmin = false }: Props) => {
               );
             }}
             type="sign-up"
-            btnText="Create Supplier"
+            btnText="Create Partner"
           />
         </DialogContent>
         {children}
         <DialogTrigger asChild>
           <Button>
             <Plus />
-            <span>Create Supplier</span>
+            <span>Create Partner</span>
           </Button>
         </DialogTrigger>
       </Dialog>
@@ -73,4 +74,4 @@ const CreateSuppliersModal = ({ children, isAdmin = false }: Props) => {
   );
 };
 
-export default CreateSuppliersModal;
+export default CreatePartnersModal;

@@ -103,7 +103,15 @@ const Content = () => {
         title: "Sản phẩm",
         url: AppRoutes.dashboard.products.index.url,
         icon: Box,
+      },
+      //   ssssssssssssssssssssssssssssssssssssssssssssssssss
+      {
+        title: "Đối tác",
+        url: '/dashboard/suppliers',
+        // url: AppRoutes.dashboard.products.index.url,
+        icon: Briefcase,
       }
+        //   ssssssssssssssssssssssssssssssssssssssssssssssssss
     );
   }
 

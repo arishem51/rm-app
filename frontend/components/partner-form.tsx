@@ -15,7 +15,7 @@ import {
 } from "./ui/form";
 import { cn } from "@/lib/utils";
 
-type FormDataSupplierType = {
+type FormDataPartnerType = {
   name: string;
   contactName: string;
   phone: string;
@@ -31,11 +31,11 @@ type Props = {
   type?: "sign-in" | "sign-up";
   className?: string;
   btnText?: string;
-  onSubmit: (data: FormDataSupplierType) => void;
+  onSubmit: (data: FormDataPartnerType) => void;
 };
 
-const SupplierForm: FC<Props> = ({ children, className, onSubmit }) => {
-  const form = useForm<FormDataSupplierType>({
+const PartnerForm: FC<Props> = ({ children, className, onSubmit }) => {
+  const form = useForm<FormDataPartnerType>({
     defaultValues: {
       name: "",
       contactName: "",
@@ -151,7 +151,7 @@ const SupplierForm: FC<Props> = ({ children, className, onSubmit }) => {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="taxCode"
           render={({ field }) => (
@@ -163,10 +163,10 @@ const SupplierForm: FC<Props> = ({ children, className, onSubmit }) => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <Button type="submit" className="w-full">
-          Create Supplier
+          Create Partner
         </Button>
         {children}
       </form>
@@ -174,4 +174,4 @@ const SupplierForm: FC<Props> = ({ children, className, onSubmit }) => {
   );
 };
 
-export default SupplierForm;
+export default PartnerForm;

@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, XIcon } from "lucide-react";
-import { ComboboxSuppliers } from "../combobox/supplier";
+import { ComboboxPartners } from "../combobox/partner";
 import InputCurrency from "@/components/input-currency";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
@@ -54,7 +54,7 @@ const schema = z.object({
     )
     .default([]),
   categoryId: z.string().nullable().optional(),
-  supplierId: z.string().nullable().optional(),
+  partnerId: z.string().nullable().optional(),
   shopId: z.coerce.number(),
 });
 
@@ -74,7 +74,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       ? {
           ...product,
           categoryId: product.category?.id?.toString(),
-          supplierId: product.supplier?.id?.toString(),
+          partnerId: product.partner?.id?.toString(),
           imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
         }
       : {
@@ -110,7 +110,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       reset({
         ...product,
         categoryId: product.category?.id?.toString(),
-        supplierId: product.supplier?.id?.toString(),
+        partnerId: product.partner?.id?.toString(),
         imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
       });
     }
@@ -143,7 +143,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       const payload = {
         ...data,
         categoryId: data.categoryId ? Number(data.categoryId) : undefined,
-        supplierId: data.supplierId ? Number(data.supplierId) : undefined,
+        partnerId: data.partnerId ? Number(data.partnerId) : undefined,
       };
 
       const mutateData: RequestProductDTO = {
@@ -245,15 +245,15 @@ const ProductForm = ({ onClose, product }: Props) => {
 
           <FormField
             control={form.control}
-            name="supplierId"
+            name="partnerId"
             render={({ field }) => (
               <FormItem
                 className={cn("w-full", isOwner ? "" : "pointer-events-none")}
               >
-                <FormLabel>Supplier</FormLabel>
+                <FormLabel>Partner</FormLabel>
                 <br />
                 <FormControl>
-                  <ComboboxSuppliers
+                  <ComboboxPartners
                     onSelect={field.onChange}
                     formValue={field.value?.toString()}
                   />

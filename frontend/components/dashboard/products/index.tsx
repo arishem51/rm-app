@@ -74,7 +74,7 @@ const Products = () => {
               <TableHead>Wholesale Price (VND)</TableHead>
               <TableHead>Unit</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Supplier</TableHead>
+              <TableHead>Partner</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -108,10 +108,10 @@ const Products = () => {
                 </TableCell>
                 <TableCell>
                   <Badge
-                    variant={product.supplier?.name ? "default" : "outline"}
+                    variant={product.partner?.name ? "default" : "outline"}
                     className="px-1 py-0.5"
                   >
-                    {product.supplier?.name || "Không tồn tại"}
+                    {product.partner?.name || "Không tồn tại"}
                   </Badge>
                 </TableCell>
                 {isAdmin && <TableCell>{product.shopName}</TableCell>}

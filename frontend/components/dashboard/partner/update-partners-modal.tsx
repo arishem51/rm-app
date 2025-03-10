@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { SupplierDTO, UpdateSupplierDTO } from "@/types/Api";
+import { Partner, PartnerUpdateDTO } from "@/types/Api";
 import { ToastTitle } from "@/lib/constants";
 import {
   Form,
@@ -24,16 +24,16 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { useUpdateSupplier } from "@/hooks/mutations/suppliers";
+import { useUpdatePartner } from "@/hooks/mutations/partner";
 
 type Props = {
   children?: ReactNode;
-  supplier?: SupplierDTO;
+  partner?: Partner;
 };
 
-const SuppliersUpdateModal = ({ children, supplier }: Props) => {
+const PartnersUpdateModal = ({ children, partner }: Props) => {
   const [open, setOpen] = useState(false);
-  const form = useForm<UpdateSupplierDTO>({
+  const form = useForm<PartnerUpdateDTO>({
     defaultValues: {
       name: "",
       phone: "",
@@ -42,44 +42,44 @@ const SuppliersUpdateModal = ({ children, supplier }: Props) => {
       address: "",
       website: "",
       description: "",
-      taxCode: "",
+      // taxCode: "", ???
     },
   });
-  const { mutate: updateSupplier, isPending } = useUpdateSupplier();
+  const { mutate: updatePartner, isPending } = useUpdatePartner();
   const queryClient = useQueryClient();
 
   const { reset } = form;
 
   useEffect(() => {
-    if (supplier && open) {
+    if (partner && open) {
       reset({
-        name: supplier.name || "",
-        phone: supplier.phone || "",
-        email: supplier.email || "",
-        contactName: supplier.contactName || "",
-        address: supplier.address || "",
-        website: supplier.website || "",
-        description: supplier.description || "",
-        taxCode: supplier.taxCode || "",
+        name: partner.name || "",
+        phone: partner.phone || "",
+        email: partner.email || "",
+        contactName: partner.contactName || "",
+        address: partner.address || "",
+        website: partner.website || "",
+        description: partner.description || "",
+        // taxCode: partner.taxCode || "",
       });
     }
-  }, [reset, supplier, open]);
+  }, [reset, partner, open]);
 
-  const handleSubmit = form.handleSubmit((data: UpdateSupplierDTO) => {
-    if (supplier?.id) {
-      updateSupplier(
-        {
-          id: supplier.id,
-          ...data,
-        },
+  const handleSubmit = form.handleSubmit(() => {
+    if (partner?.id) {
+      updatePartner(
+          {
+              id: partner.id,
+              ...form.getValues()
+          },
         {
           onSuccess: () => {
             toast({
               title: ToastTitle.success,
-              description: "Supplier updated successfully",
+              description: "Partner updated successfully",
             });
             queryClient.invalidateQueries({
-              queryKey: ApiQuery.suppliers.getSuppliers.queryKey,
+              queryKey: ApiQuery.partners.getPartners().queryKey,
             });
             setOpen(false);
           },
@@ -102,9 +102,9 @@ const SuppliersUpdateModal = ({ children, supplier }: Props) => {
         <DialogContent className="sm:max-w-[425px]">
           <form onSubmit={handleSubmit} className="mt-4">
             <DialogHeader>
-              <DialogTitle>Edit supplier</DialogTitle>
+              <DialogTitle>Edit partner</DialogTitle>
               <DialogDescription>
-                Make changes to suppliers here. Click save when you&apos;re
+                Make changes to partners here. Click save when you&apos;re
                 done.
               </DialogDescription>
             </DialogHeader>
@@ -208,7 +208,7 @@ const SuppliersUpdateModal = ({ children, supplier }: Props) => {
                 )}
               />
 
-              <FormField
+              {/*<FormField
                 control={form.control}
                 name="taxCode"
                 render={({ field }) => (
@@ -220,7 +220,7 @@ const SuppliersUpdateModal = ({ children, supplier }: Props) => {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              />*/}
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
@@ -234,4 +234,4 @@ const SuppliersUpdateModal = ({ children, supplier }: Props) => {
   );
 };
 
-export default SuppliersUpdateModal;
+export default PartnersUpdateModal;

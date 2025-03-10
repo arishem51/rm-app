@@ -15,13 +15,14 @@ import EmptyState from "../empty-state";
 import { UserPen } from "lucide-react";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { SupplierDTO } from "@/types/Api";
+import { PartnerUpdateDTO } from "@/types/Api";
 import HeaderListSearch from "../header-list-search";
-import CreateSuppliersModal from "./create-suppliers-modal";
-import SuppliersUpdateModal from "./update-suppliers-modal";
-import UserPagination from "../users/pagination";
+import CreatePartnersModal from "./create-partners-modal";
+import PartnersUpdateModal from "./update-partners-modal";
+// import UserPagination from "../users/pagination";
+import UserPagination from "../../dashboard/pagination";
 
-const AdminSuppliersView = () => {
+const AdminPartnersView = () => {
   const createFilterValue = useCallback(
     (page: number, search: string) => ({
       page,
@@ -29,11 +30,11 @@ const AdminSuppliersView = () => {
     }),
     []
   );
-  const [updatedSupplier, setUpdatedSupplier] = useState<SupplierDTO>();
+  const [updatedPartner, setUpdatedPartner] = useState<PartnerUpdateDTO>();
   const [filter, setFilter] = useState(createFilterValue(0, ""));
 
   const { data: { data } = {} } = useAppQuery(
-    ApiQuery.suppliers.getSuppliers(filter)
+    ApiQuery.partners.getPartners(filter)
   );
 
   const handleNavigatePage = (page: number) => {
@@ -55,13 +56,13 @@ const AdminSuppliersView = () => {
 
   return (
     <Fragment>
-      <CreateSuppliersModal >
+      <CreatePartnersModal >
         <HeaderListSearch
           filterSearch={filter.search}
           onSearch={handleSearch}
         />
-      </CreateSuppliersModal>
-      <SuppliersUpdateModal  supplier={updatedSupplier}>
+      </CreatePartnersModal>
+      <PartnersUpdateModal partner={updatedPartner}>
         {(data?.data?.length || 0) > 0 ? (
           <Table>
             <TableHeader>
@@ -71,24 +72,24 @@ const AdminSuppliersView = () => {
                 <TableHead>Phone</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Address</TableHead>
-                <TableHead>Tax code</TableHead>
+                {/*<TableHead>Tax code</TableHead>*/}
                 <TableHead>Description</TableHead>
                 <TableHead>Website</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.data?.map((supplier) => {
+              {data?.data?.map((partner) => {
                 return (
-                  <TableRow key={supplier.id}>
-                    <TableCell>{supplier.name}</TableCell>
-                    <TableCell>{supplier.contactName}</TableCell>
-                    <TableCell>{supplier.phone}</TableCell>
-                    <TableCell>{supplier.email}</TableCell>
-                    <TableCell>{supplier.address}</TableCell>
-                    <TableCell>{supplier.taxId}</TableCell>
-                    <TableCell>{supplier.description}</TableCell>
-                    <TableCell>{supplier.website}</TableCell>
+                  <TableRow key={partner.id}>
+                    <TableCell>{partner.name}</TableCell>
+                    <TableCell>{partner.contactName}</TableCell>
+                    <TableCell>{partner.phone}</TableCell>
+                    <TableCell>{partner.email}</TableCell>
+                    <TableCell>{partner.address}</TableCell>
+                    {/*<TableCell>{partner.taxId}</TableCell>*/}
+                    <TableCell>{partner.description}</TableCell>
+                    <TableCell>{partner.website}</TableCell>
                     <TableCell className="flex justify-end w-full">
                       <DialogTrigger asChild>
                         <Button
@@ -96,7 +97,7 @@ const AdminSuppliersView = () => {
                           className="w-6 h-6"
                           variant="outline"
                           onClick={() => {
-                            setUpdatedSupplier(supplier);
+                            setUpdatedPartner(partner);
                           }}
                         >
                           <UserPen />
@@ -117,9 +118,9 @@ const AdminSuppliersView = () => {
           handleNavigateFullPage={handleNavigateFullPage}
           handleNavigatePage={handleNavigatePage}
         />
-      </SuppliersUpdateModal>
+      </PartnersUpdateModal>
     </Fragment>
   );
 };
 
-export default AdminSuppliersView;
+export default AdminPartnersView;

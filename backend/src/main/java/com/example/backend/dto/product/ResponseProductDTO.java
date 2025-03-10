@@ -18,7 +18,7 @@ public class ResponseProductDTO {
     private String name;
     private String description;
     private Category category;
-    private Partner supplier;
+    private Partner partner;
 
     private Long shopId;
     private String shopName;
@@ -33,7 +33,7 @@ public class ResponseProductDTO {
                 .name(product.getName())
                 .description(product.getDescription())
                 .category(product.getCategory())
-                .supplier(product.getSupplier())
+                .partner(product.getPartner())
                 .shopId(product.getShop().getId())
                 .shopName(product.getShop().getName())
                 .salePrice(product.getSalePrice())
