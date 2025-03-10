@@ -82,7 +82,7 @@ export const AppRoutes = {
     },
     partners: {
       url: "/dashboard/partners",
-      role: UserRole.ADMIN,
+      role: UserRole.OWNER,
     },
     setting: {
       profile: {
