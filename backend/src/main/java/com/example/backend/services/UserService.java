@@ -1,6 +1,9 @@
 package com.example.backend.services;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.example.backend.enums.ActionStatus;
 import org.springframework.data.domain.Page;
@@ -16,6 +19,7 @@ import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.enums.Role;
+import com.example.backend.repositories.ShopRepository;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,8 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ShopRepository shopRepository;
+    private final WarehouseService warehouseService;
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -79,6 +85,7 @@ public class UserService {
         if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
             throw new IllegalArgumentException("Phone number is already taken!");
         }
+
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -89,7 +96,16 @@ public class UserService {
                 .shop(null)
                 .email(request.getEmail())
                 .build();
-        return userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+
+        Set<User> users = new HashSet<>();
+        users.add(savedUser);
+        Shop shop = Shop.builder().name("Cửa hàng của " + request.getName()).address("Việt Nam").users(users)
+                .createBy(savedUser)
+                .build();
+        savedUser.setShop(shopRepository.save(shop));
+        return userRepository.save(savedUser);
     }
 
     public User updateUser(Long id, UpdateUserRequest request, User currentUser) {
