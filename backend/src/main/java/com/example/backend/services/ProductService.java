@@ -1,12 +1,17 @@
 package com.example.backend.services;
 
-import com.example.backend.dto.product.RequestProductDTO;
+import com.example.backend.dto.product.ProductCreateDTO;
+import com.example.backend.dto.product.ProductUpdateDTO;
 import com.example.backend.entities.Category;
+import com.example.backend.entities.Inventory;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
+import com.example.backend.entities.Zone;
+import com.example.backend.repositories.InventoryRepository;
 import com.example.backend.repositories.ProductRepository;
+import com.example.backend.repositories.ZoneRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +26,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final PartnerService partnerService;
     private final CategoryService categoryService;
+    private final InventoryRepository inventoryRepository;
+    private final ZoneRepository zoneRepository;
 
     private void validateUserCanManageProduct(User user) {
         if (!UserRoleUtils.isOwner(user)) {
@@ -31,8 +38,10 @@ public class ProductService {
         }
     }
 
-    public Product createProduct(RequestProductDTO dto, User user) {
+    public Product createProduct(ProductCreateDTO dto, User user) {
         validateUserCanManageProduct(user);
+        Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(dto.getZoneId(), user.getShop().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Zone not found!"));
 
         Shop shop = user.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
@@ -49,7 +58,10 @@ public class ProductService {
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
                 .build();
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        Inventory inventory = Inventory.builder().product(product).zone(zone).createdBy(user).build();
+        inventoryRepository.save(inventory);
+        return savedProduct;
     }
 
     public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
@@ -77,7 +89,7 @@ public class ProductService {
         return productRepository.findAllByShopId(shopId);
     }
 
-    public Product updateProduct(Long id, RequestProductDTO dto, User user) {
+    public Product updateProduct(Long id, ProductUpdateDTO dto, User user) {
         validateUserCanManageProduct(user);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {

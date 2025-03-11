@@ -3,7 +3,8 @@ package com.example.backend.controllers;
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
-import com.example.backend.dto.product.RequestProductDTO;
+import com.example.backend.dto.product.ProductCreateDTO;
+import com.example.backend.dto.product.ProductUpdateDTO;
 import com.example.backend.dto.product.ResponseProductDTO;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.User;
@@ -12,10 +13,8 @@ import com.example.backend.utils.UserRoleUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,13 +80,12 @@ public class ProductController {
     @Operation(summary = "Create a product", description = "Create a new product")
     @PostMapping("")
     public ResponseEntity<BaseResponse<ResponseProductDTO>> createProduct(
-            @RequestBody RequestProductDTO productDTO,
+            @RequestBody ProductCreateDTO productDTO,
             @CurrentUser User user) {
         try {
             if (UserRoleUtils.isStaff(user)) {
                 throw new IllegalArgumentException("You are not authorized to create a product!");
             }
-
             Product createdProduct = productService.createProduct(productDTO, user);
             return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(createdProduct),
                     "Product created successfully!"));
@@ -101,7 +99,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<ResponseProductDTO>> updateProduct(
             @PathVariable Long id,
-            @RequestBody RequestProductDTO dto,
+            @RequestBody ProductUpdateDTO dto,
             @CurrentUser User user) {
         try {
             Product updatedProduct = productService.updateProduct(id, dto, user);

@@ -43,7 +43,8 @@ public class ZoneService {
     public Zone update(Long id, ZoneRequestDTO dto, User currentUser) {
         Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(dto.getWarehouseId(),
                 currentUser);
-        Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(id, warehouse.getShop().getId());
+        Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(id, warehouse.getShop().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Zone not found!"));
         if (zone == null) {
             throw new IllegalArgumentException("Zone not found.");
         }
