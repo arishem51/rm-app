@@ -244,7 +244,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/RequestProductDTO" }
+              "schema": { "$ref": "#/components/schemas/ProductUpdateDTO" }
             }
           },
           "required": true
@@ -690,7 +690,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/RequestProductDTO" }
+              "schema": { "$ref": "#/components/schemas/ProductCreateDTO" }
             }
           },
           "required": true
@@ -1562,7 +1562,7 @@
         },
         "required": ["createdAt"]
       },
-      "RequestProductDTO": {
+      "ProductUpdateDTO": {
         "type": "object",
         "properties": {
           "name": { "type": "string" },
@@ -1820,7 +1820,8 @@
           "createdBy": { "$ref": "#/components/schemas/UserDTO" },
           "createdAt": { "type": "string" },
           "updatedAt": { "type": "string" },
-          "price": { "type": "string" }
+          "price": { "type": "string" },
+          "warehouseName": { "type": "string" }
         }
       },
       "UpdateCategoryDTO": {
@@ -1873,6 +1874,26 @@
           "name": { "type": "string" }
         },
         "required": ["name", "password", "phoneNumber", "username"]
+      },
+      "ProductCreateDTO": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "categoryId": { "type": "integer", "format": "int64" },
+          "supplierId": { "type": "integer", "format": "int64" },
+          "shopId": { "type": "integer", "format": "int64" },
+          "zoneId": { "type": "integer", "format": "int64" },
+          "price": { "type": "number", "minimum": 0.0 },
+          "unit": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Unit of the product (unit kg/bg)",
+            "example": 10
+          },
+          "imageUrls": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["name", "shopId", "zoneId"]
       },
       "PartnerCreateDTO": {
         "type": "object",
@@ -2422,6 +2443,8 @@
         "properties": {
           "totalElements": { "type": "integer", "format": "int64" },
           "totalPages": { "type": "integer", "format": "int32" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
           "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
@@ -2429,8 +2452,6 @@
           },
           "number": { "type": "integer", "format": "int32" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
-          "first": { "type": "boolean" },
-          "last": { "type": "boolean" },
           "numberOfElements": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
           "empty": { "type": "boolean" }
@@ -2441,9 +2462,9 @@
         "properties": {
           "offset": { "type": "integer", "format": "int64" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageNumber": { "type": "integer", "format": "int32" },
           "paged": { "type": "boolean" },
           "pageSize": { "type": "integer", "format": "int32" },
-          "pageNumber": { "type": "integer", "format": "int32" },
           "unpaged": { "type": "boolean" }
         }
       },

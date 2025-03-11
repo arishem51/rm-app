@@ -53,7 +53,7 @@ const Inventories = () => {
               <TableHead>ID</TableHead>
               <TableHead>Sản phẩm</TableHead>
               <TableHead>Kho</TableHead>
-              <TableHead>Số lượng</TableHead>
+              <TableHead>Khu vực trong kho</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
@@ -70,13 +70,13 @@ const Inventories = () => {
                   </Link>
                 </TableCell>
                 <TableCell>{item.warehouseName}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
+                <TableCell>{item.zoneName}</TableCell>
                 <TableCell className="text-right">
-                  <Link href={`/dashboard/warehouses/inventories/${item.id}`}>
-                    <Button variant="outline" className="w-6 h-6" size="icon">
-                      <Edit />
-                    </Button>
-                  </Link>
+                  {/* <Link href={`/dashboard/warehouses/inventories/${item.id}`}> */}
+                  <Button variant="outline" className="w-6 h-6" size="icon">
+                    <Edit />
+                  </Button>
+                  {/* </Link> */}
                 </TableCell>
               </TableRow>
             ))}

@@ -1,7 +1,10 @@
 "use client";
 
 import { Combobox } from "./index";
-import { useAllWarehouses, useAllZones } from "@/services/hooks/warehouses";
+import {
+  useAllWarehouses,
+  useAllZonesByWarehouses,
+} from "@/services/hooks/warehouses";
 
 type Props = {
   onSelect: (value: string) => void;
@@ -31,12 +34,13 @@ export function ComboboxWarehouses({
   );
 }
 
-export function ComboboxZones({
+export function ComboboxZonesWarehouse({
   onSelect,
   formValue,
   warehouseId,
 }: ZoneComboboxProps) {
-  const { data: { data: items = [] } = {} } = useAllZones(warehouseId);
+  const { data: { data: items = [] } = {} } =
+    useAllZonesByWarehouses(warehouseId);
 
   const options =
     items.length > 0

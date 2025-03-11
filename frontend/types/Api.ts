@@ -147,7 +147,7 @@ export interface ShopDTO {
   updatedAt?: string;
 }
 
-export interface RequestProductDTO {
+export interface ProductUpdateDTO {
   name: string;
   description?: string;
   /** @format int64 */
@@ -379,6 +379,7 @@ export interface InventoryResponseDTO {
   createdAt?: string;
   updatedAt?: string;
   price?: string;
+  warehouseName?: string;
 }
 
 export interface UpdateCategoryDTO {
@@ -422,6 +423,28 @@ export interface CreateUserRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
+}
+
+export interface ProductCreateDTO {
+  name: string;
+  description?: string;
+  /** @format int64 */
+  categoryId?: number;
+  /** @format int64 */
+  supplierId?: number;
+  /** @format int64 */
+  shopId: number;
+  /** @format int64 */
+  zoneId: number;
+  /** @min 0 */
+  price?: number;
+  /**
+   * Unit of the product (unit kg/bg)
+   * @format int32
+   * @example 10
+   */
+  unit?: number;
+  imageUrls?: string[];
 }
 
 export interface PartnerCreateDTO {
@@ -827,14 +850,14 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
@@ -845,11 +868,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
+  /** @format int32 */
+  pageNumber?: number;
   paged?: boolean;
   /** @format int32 */
   pageSize?: number;
-  /** @format int32 */
-  pageNumber?: number;
   unpaged?: boolean;
 }
 
@@ -1290,7 +1313,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/api/products/{id}
      * @secure
      */
-    updateProduct: (id: number, data: RequestProductDTO, params: RequestParams = {}) =>
+    updateProduct: (id: number, data: ProductUpdateDTO, params: RequestParams = {}) =>
       this.request<BaseResponseResponseProductDTO, any>({
         path: `/api/products/${id}`,
         method: "PUT",
@@ -1593,7 +1616,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/products
      * @secure
      */
-    createProduct: (data: RequestProductDTO, params: RequestParams = {}) =>
+    createProduct: (data: ProductCreateDTO, params: RequestParams = {}) =>
       this.request<BaseResponseResponseProductDTO, any>({
         path: `/api/products`,
         method: "POST",
