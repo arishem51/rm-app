@@ -23,10 +23,8 @@ export default async function Page({
       awaitQuery
     >
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Khu vực trong kho</h1>
-        <p className="text-sm text-muted-foreground">
-          Thay đổi thông tin khu vực
-        </p>
+        <h1 className="text-3xl font-bold mt-2">Kho</h1>
+        <p className="text-sm text-muted-foreground">Thay đổi thông tin kho</p>
         <FacilityDetails id={id} />
       </div>
     </HydrationPrefetchQuery>

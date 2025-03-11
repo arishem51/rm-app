@@ -6,7 +6,7 @@ import {
   FormMessage,
   Form,
 } from "@/components/ui/form";
-import { ZoneDTO, ZoneRequestDTO } from "@/types/Api";
+import { WarehouseDTO, ZoneDTO, ZoneRequestDTO } from "@/types/Api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -19,12 +19,11 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { ToastTitle } from "@/lib/constants";
-import { ComboboxWarehouses } from "../../combobox/warehouses";
-import { useMe } from "@/hooks/mutations/user";
 
 type Props = {
   onClose?: () => void;
   zone?: ZoneDTO;
+  warehouse: WarehouseDTO;
 };
 
 const schemaFields = {
@@ -32,15 +31,15 @@ const schemaFields = {
   warehouseId: z.coerce.number().min(1, { message: "Kho là bắt buộc" }),
 };
 
-const ZoneForm = ({ zone, onClose }: Props) => {
+const ZoneForm = ({ zone, onClose, warehouse }: Props) => {
+  const warehouseId = warehouse.id!;
   const form = useForm<ZoneRequestDTO>({
     defaultValues: {
       name: zone?.name || "",
-      warehouseId: zone?.warehouseId,
+      warehouseId: warehouseId,
     },
     resolver: zodResolver(z.object(schemaFields)),
   });
-  const { data: currentUser } = useMe();
 
   const { mutate: createZone, isPending: isCreating } = useCreateZone();
   const { mutate: updateZone, isPending: isUpdating } = useUpdateZone();
@@ -54,7 +53,7 @@ const ZoneForm = ({ zone, onClose }: Props) => {
     });
     onClose?.();
     queryClient.invalidateQueries({
-      queryKey: ApiQuery.zones.getAllByWarehouse(zone?.warehouseId).queryKey,
+      queryKey: ApiQuery.zones.getAllByWarehouse(warehouseId).queryKey,
     });
   };
 
@@ -123,16 +122,12 @@ const ZoneForm = ({ zone, onClose }: Props) => {
           <FormField
             control={form.control}
             name="warehouseId"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
-                <FormLabel>Chọn Kho</FormLabel>
+                <FormLabel>Kho</FormLabel>
                 <FormControl>
                   <FormControl>
-                    <ComboboxWarehouses
-                      onSelect={field.onChange}
-                      formValue={field.value?.toString()}
-                      shopId={currentUser!.shopId!}
-                    />
+                    <Input readOnly value={warehouse.name} />
                   </FormControl>
                 </FormControl>
                 <FormMessage />

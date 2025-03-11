@@ -1,5 +1,3 @@
-import { UserDTO } from "@/types/Api";
-
 export const UserRole = {
   ADMIN: "ADMIN",
   OWNER: "OWNER",
@@ -123,7 +121,9 @@ export const AppRoutes = {
   },
 } as const;
 
-export const UserStatus: Record<UserDTO["status"], UserDTO["status"]> = {
+type ActionStatusType = "ACTIVE" | "INACTIVE";
+
+export const ActionStatus: Record<ActionStatusType, ActionStatusType> = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
 };

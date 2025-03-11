@@ -23,7 +23,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { ToastTitle } from "@/lib/constants";
+import { ActionStatus, ToastTitle } from "@/lib/constants";
 import { WarehouseDTO, WarehouseUpdateDTO, ZoneDTO } from "@/types/Api";
 import {
   useCreateWarehouse,
@@ -41,24 +41,32 @@ import {
 import { Edit } from "lucide-react";
 import EmptyState from "../empty-state";
 import ZoneForm from "./zones/zone-form";
+import { useRouter } from "next/navigation";
 
 type Props = {
   onClose?: () => void;
   warehouse?: WarehouseDTO;
   zones?: ZoneDTO[];
+  detailsForm?: boolean;
 };
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   address: z.string().nonempty({ message: "Địa chỉ là bắt buộc" }),
+  status: z.enum([ActionStatus.ACTIVE, ActionStatus.INACTIVE]),
 };
 
-const FacilityForm = ({ warehouse, onClose, zones }: Props) => {
+const FacilityForm = ({
+  warehouse,
+  onClose,
+  zones,
+  detailsForm = false,
+}: Props) => {
   const form = useForm<WarehouseUpdateDTO & { zones?: number[] }>({
     defaultValues: {
       name: "",
       address: "",
-      status: "ACTIVE",
+      status: ActionStatus.ACTIVE,
     },
     resolver: zodResolver(z.object(schemaFields)),
   });
@@ -70,6 +78,7 @@ const FacilityForm = ({ warehouse, onClose, zones }: Props) => {
   const queryClient = useQueryClient();
   const { data: currentUser } = useMe();
   const [zone, setZone] = useState<ZoneDTO>();
+  const router = useRouter();
 
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
@@ -80,6 +89,7 @@ const FacilityForm = ({ warehouse, onClose, zones }: Props) => {
     queryClient.invalidateQueries({
       queryKey: ApiQuery.warehouses.getWarehouses().queryKey,
     });
+    router.push("/dashboard/warehouses/facilities");
   };
 
   const callbackFailed = (type: "create" | "update") => {
@@ -131,31 +141,48 @@ const FacilityForm = ({ warehouse, onClose, zones }: Props) => {
 
   return (
     <Form {...form}>
-      <Dialog
-        open={!!zone}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setZone(undefined);
-          }
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{zone?.id ? "Cập nhật" : "Tạo"} Category</DialogTitle>
-            <DialogDescription>
-              Cập nhật thông tin khu vực. Nhấn lưu khi hoàn thành.
-            </DialogDescription>
-          </DialogHeader>
-          <ZoneForm
-            onClose={() => {
+      {warehouse && (
+        <Dialog
+          open={!!zone}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
               setZone(undefined);
-            }}
-            zone={zone}
-          />
-        </DialogContent>
-      </Dialog>
+            }
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {zone?.id ? "Cập nhật" : "Tạo"} khu vực trong kho
+              </DialogTitle>
+              <DialogDescription>
+                Cập nhật thông tin khu vực. Nhấn lưu khi hoàn thành.
+              </DialogDescription>
+            </DialogHeader>
+            <ZoneForm
+              onClose={() => {
+                setZone(undefined);
+              }}
+              zone={zone}
+              warehouse={warehouse}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 mb-4">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input type="hidden" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="name"
@@ -182,51 +209,55 @@ const FacilityForm = ({ warehouse, onClose, zones }: Props) => {
               </FormItem>
             )}
           />
-          <div className="mt-8 mb-2 flex items-center justify-between">
-            <FormLabel>Khu vực trong kho</FormLabel>
-            <Button
-              onClick={() => {
-                setZone({} as ZoneDTO);
-              }}
-              type="button"
-            >
-              Thêm khu vực
-            </Button>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>STT</TableHead>
-                <TableHead>Tên</TableHead>
-                <TableHead className="text-right">Hành động</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {zones ? (
-                zones?.map((zone, index) => (
-                  <TableRow key={zone.id}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{zone.name}</TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        onClick={() => {
-                          setZone(zone);
-                        }}
-                        size="icon"
-                        variant="outline"
-                        className="w-6 h-6"
-                        type="button"
-                      >
-                        <Edit />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
+          {detailsForm && (
+            <>
+              <div className="mt-8 mb-2 flex items-center justify-between">
+                <FormLabel>Khu vực trong kho</FormLabel>
+                <Button
+                  onClick={() => {
+                    setZone({} as ZoneDTO);
+                  }}
+                  type="button"
+                >
+                  Thêm khu vực
+                </Button>
+              </div>
+              {(zones ?? []).length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>STT</TableHead>
+                      <TableHead>Tên</TableHead>
+                      <TableHead className="text-right">Hành động</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {zones?.map((zone, index) => (
+                      <TableRow key={zone.id}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{zone.name}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            onClick={() => {
+                              setZone(zone);
+                            }}
+                            size="icon"
+                            variant="outline"
+                            className="w-6 h-6"
+                            type="button"
+                          >
+                            <Edit />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               ) : (
                 <EmptyState />
               )}
-            </TableBody>
-          </Table>
+            </>
+          )}
           <DialogFooter className="mt-2">
             <Button type="submit" disabled={isPending}>
               Lưu

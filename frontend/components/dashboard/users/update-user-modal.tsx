@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { UpdateUserRequest, UserDTO } from "@/types/Api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ToastTitle, UserRole, UserStatus } from "@/lib/constants";
+import { ToastTitle, UserRole, ActionStatus } from "@/lib/constants";
 import {
   Form,
   FormControl,
@@ -55,7 +55,7 @@ const schemaFields = {
     z.literal(""),
   ]),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
-  status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
+  status: z.enum([ActionStatus.ACTIVE, ActionStatus.INACTIVE]),
 };
 
 type Props = {
@@ -255,10 +255,10 @@ const UserUpdateModal = ({ children, isAdminPage = false, user }: Props) => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectItem value={UserStatus.ACTIVE}>
+                              <SelectItem value={ActionStatus.ACTIVE}>
                                 Active
                               </SelectItem>
-                              <SelectItem value={UserStatus.INACTIVE}>
+                              <SelectItem value={ActionStatus.INACTIVE}>
                                 Inactive
                               </SelectItem>
                             </SelectGroup>

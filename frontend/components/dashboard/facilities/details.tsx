@@ -25,7 +25,7 @@ const FacilityDetails = ({ id }: Props) => {
   return (
     <div className="w-2/3">
       <Separator className="my-4" />
-      <FacilityForm warehouse={warehouse} zones={zones ?? []} />
+      <FacilityForm detailsForm warehouse={warehouse} zones={zones ?? []} />
     </div>
   );
 };

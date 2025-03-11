@@ -50,7 +50,7 @@ public class ZoneService {
         if (dto.getName() != null) {
             zone.setName(dto.getName());
         }
-        zone.setWarehouse(warehouse);
+        // zone.setWarehouse(warehouse);
         return zoneRepository.save(zone);
     }
 }
