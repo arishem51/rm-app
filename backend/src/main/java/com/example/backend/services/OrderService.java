@@ -42,7 +42,8 @@ public class OrderService {
     public Order createOrder(CreateOrderDTO orderDTO, User user) {
         Order order = Order.builder()
                 .user(user)
-                .partner(partnerRepository.getById(orderDTO.getPartnerId()))
+                .partner(partnerRepository.findById(orderDTO.getPartnerId())
+                        .orElseThrow(() -> new IllegalArgumentException("Partner not found")))
                 .shop(user.getShop())
                 .totalAmount(calculateTotalAmount(orderDTO.getOrderItems()))
                 .createdAt(LocalDateTime.now())
