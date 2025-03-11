@@ -1,6 +1,6 @@
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
 import ProductDetails from "@/components/dashboard/products/details";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import AlertInvalidId from "@/components/view/alert/alert-invalid-id";
 import { ApiQuery } from "@/services/query";
 
 export default async function Page({
@@ -11,14 +11,7 @@ export default async function Page({
   const id = (await params).id;
 
   if (isNaN(Number(id))) {
-    return (
-      <div className="px-4 mt-14">
-        <Alert variant="destructive">
-          <AlertTitle>Invalid ID</AlertTitle>
-          <AlertDescription>The provided ID is not valid.</AlertDescription>
-        </Alert>
-      </div>
-    );
+    return <AlertInvalidId />;
   }
 
   return (

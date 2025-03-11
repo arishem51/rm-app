@@ -1,4 +1,3 @@
-
 import { UserDTO } from "@/types/Api";
 
 export const UserRole = {
@@ -44,21 +43,20 @@ export const AppRoutes = {
         url: "/dashboard/orders",
         role: "ALL",
       },
-      create:{
+      create: {
         url: "/dashboard/orders/create",
         role: "ALL",
-      }
-      
+      },
     },
-    invoices:{
+    invoices: {
       index: {
         url: "/dashboard/invoice",
         role: "ALL",
       },
-      detail:{
+      detail: {
         url: "/dashboard/invoice/[id]",
         role: "ALL",
-      }
+      },
     },
     shops: {
       url: "/dashboard/shops",
@@ -84,8 +82,14 @@ export const AppRoutes = {
     },
     warehouses: {
       facilities: {
-        url: "/dashboard/warehouses/facilities",
-        role: UserRole.OWNER,
+        index: {
+          url: "/dashboard/warehouses/facilities",
+          role: UserRole.OWNER,
+        },
+        detail: {
+          url: "/dashboard/warehouses/facilities/[id]",
+          role: UserRole.OWNER,
+        },
       },
       inventories: {
         index: {
