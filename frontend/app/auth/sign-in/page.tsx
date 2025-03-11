@@ -7,6 +7,7 @@ export default function Page() {
       <AuthView
         title="Đăng Nhập"
         description="Nhập tên người dùng và mật khẩu của bạn để đăng nhập vào tài khoản"
+        enableReCaptcha
       >
         <div className="flex text-sm justify-center">
           <Link className="underline underline-offset-4" href="/auth/sign-up">

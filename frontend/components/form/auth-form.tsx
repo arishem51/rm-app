@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FC, Fragment, ReactNode, useMemo, useState } from "react";
+import { FC, Fragment, ReactNode, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -35,7 +35,10 @@ type Props = {
   type?: "sign-in" | "sign-up";
   className?: string;
   btnText?: string;
-  onSubmit: (data: FormDataType) => void;
+  onSubmit: (
+    data: FormDataType,
+    config?: { onError?: () => void; onSuccess?: () => void }
+  ) => void;
   requireEmail?: boolean;
   enableReCaptcha?: boolean;
 };
@@ -50,6 +53,7 @@ const AuthForm: FC<Props> = ({
   enableReCaptcha = false,
 }) => {
   const [recaptchaToken, setRecaptchaToken] = useState("");
+  const reCaptchaRef = useRef<ReCAPTCHA>(null);
   const isSignUp = type === "sign-up";
   const signInSchemaFields = useMemo(
     () => ({
@@ -64,6 +68,7 @@ const AuthForm: FC<Props> = ({
       password: z
         .string()
         .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
+      reCaptchaToken: z.string().optional(),
     }),
     []
   );
@@ -81,7 +86,6 @@ const AuthForm: FC<Props> = ({
       confirmPassword: z
         .string()
         .min(6, { message: "Mật khẩu phải dài ít nhất 6 ký tự" }),
-      reCaptchaToken: z.string(),
     };
     if (requireEmail) {
       return {
@@ -122,7 +126,12 @@ const AuthForm: FC<Props> = ({
   const handleSubmit = form.handleSubmit(async (formData) => {
     const { confirmPassword, ...rest } = formData;
     void confirmPassword;
-    onSubmit(rest);
+    onSubmit(rest, {
+      onError: () => {
+        setRecaptchaToken("");
+        reCaptchaRef.current?.reset();
+      },
+    });
   });
 
   return (
@@ -242,6 +251,7 @@ const AuthForm: FC<Props> = ({
         {enableReCaptcha && (
           <ReCAPTCHA
             sitekey="6LcM5-sqAAAAAGFDvyWQMFKDD4I8M69WxyUqtpPe"
+            ref={reCaptchaRef}
             onChange={(token) => {
               if (token) {
                 setRecaptchaToken(token);

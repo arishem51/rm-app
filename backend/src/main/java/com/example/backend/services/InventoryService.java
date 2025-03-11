@@ -60,7 +60,8 @@ public class InventoryService {
         Warehouse warehouse = warehouseService.findWarehouseById(inventoryDto.getWarehouseId());
         Shop shop = currentUser.getShop();
 
-        if (!shop.getId().equals(warehouse.getShop().getId())) {
+        // FIXME: throw different message for product and warehouse
+        if (!shop.getId().equals(warehouse.getShop().getId()) || !shop.getId().equals(product.getShop().getId())) {
             throw new IllegalArgumentException("You do not have permission to manage inventory for this warehouse.");
         }
 
@@ -82,14 +83,12 @@ public class InventoryService {
         if (inventoryDto.getProductId() != null) {
             product = productService.findProductById(inventoryDto.getProductId(), currentUser);
         }
-
         Warehouse warehouse = warehouseService.findWarehouseById(inventoryDto.getWarehouseId());
         Shop shop = currentUser.getShop();
-
-        if (!shop.getId().equals(warehouse.getShop().getId())) {
+        // FIXME: throw different message for product and warehouse
+        if (!shop.getId().equals(warehouse.getShop().getId()) || !shop.getId().equals(product.getShop().getId())) {
             throw new IllegalArgumentException("You do not have permission to manage inventory for this warehouse.");
         }
-
         if (product != null) {
             inventory.setProduct(product);
         }

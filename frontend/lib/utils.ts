@@ -95,3 +95,11 @@ export const toCurrency = (value: number) =>
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value);
+
+export const createSttNumber = (
+  index: number,
+  page: number,
+  pageSize: number = 10
+) => {
+  return page * pageSize + index + 1;
+};

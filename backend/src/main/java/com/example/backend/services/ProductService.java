@@ -6,7 +6,6 @@ import com.example.backend.entities.Product;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
-import com.example.backend.enums.UnitType;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -44,9 +43,8 @@ public class ProductService {
                 .category(category)
                 .supplier(supplier)
                 .shop(shop)
-                .unit(UnitType.valueOf(dto.getUnit().toUpperCase()))
-                .salePrice(dto.getSalePrice())
-                .wholesalePrice(dto.getWholesalePrice())
+                .unit(dto.getUnit())
+                .price(dto.getPrice())
                 .description(dto.getDescription())
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
                 .build();
@@ -55,7 +53,6 @@ public class ProductService {
     }
 
     public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
-
         if (UserRoleUtils.isAdmin(currentUser)) {
             return search.isEmpty()
                     ? productRepository.findAll(PageRequest.of(page, pageSize))
@@ -83,16 +80,13 @@ public class ProductService {
     public Product updateProduct(Long id, RequestProductDTO dto, User user) {
         validateUserCanManageProduct(user);
         Optional<Product> optionalProduct = productRepository.findById(id);
-
         if (optionalProduct.isEmpty()) {
             throw new IllegalArgumentException("Product not found!");
         }
-
         Product product = optionalProduct.get();
         if (product.getShop().getId() != user.getShop().getId()) {
             throw new IllegalArgumentException("You can only update products from your own shop!");
         }
-
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
         Partner supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
         product.setCategory(category);
@@ -100,13 +94,10 @@ public class ProductService {
 
         if (dto.getName() != null)
             product.setName(dto.getName());
-
         if (dto.getUnit() != null)
-            product.setUnit(UnitType.valueOf(dto.getUnit().toUpperCase()));
-        if (dto.getSalePrice() != null)
-            product.setSalePrice(dto.getSalePrice());
-        if (dto.getWholesalePrice() != null)
-            product.setWholesalePrice(dto.getWholesalePrice());
+            product.setUnit(dto.getUnit());
+        if (dto.getPrice() != null)
+            product.setPrice(dto.getPrice());
         if (dto.getDescription() != null)
             product.setDescription(dto.getDescription());
         if (dto.getImageUrls() != null) {

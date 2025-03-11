@@ -24,13 +24,16 @@ public class OrderService {
     private final PartnerRepository partnerRepository;
     private final PaymentHistoryRepository paymentHistoryRepository;
     private final InventoryRepository inventoryRepository;
+
     public Page<Order> findOrders(int page, int pageSize) {
         PageRequest pageRequest = PageRequest.of(page, pageSize);
-        return orderRepository.findAll( pageRequest);
+        return orderRepository.findAll(pageRequest);
     }
+
     public Order findOrderById(Long id) {
         return orderRepository.findById(id).orElse(null);
     }
+
     public List<Order> findAllOrders(User user) {
         return orderRepository.findByShopIdOrderByCreatedAtDesc(user.getShop().getId());
     }
@@ -45,22 +48,23 @@ public class OrderService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .orderItems(orderDTO.getOrderItems().stream().map(itemDTO -> {
-                    Inventory inventory = inventoryRepository.findById(itemDTO.getProductId()).orElseThrow(() -> new IllegalArgumentException("Inventory not found"));
+                    Inventory inventory = inventoryRepository.findById(itemDTO.getProductId())
+                            .orElseThrow(() -> new IllegalArgumentException("Inventory not found"));
                     inventory.setQuantity(inventory.getQuantity() - itemDTO.getQuantity());
                     inventoryRepository.save(inventory);
                     Product product = inventory.getProduct();
                     return OrderItem.builder()
                             .product(product)
                             .quantity(itemDTO.getQuantity())
-                            .price(product.getSalePrice()) // Sử dụng giá từ product
+                            .price(product.getPrice()) // Sử dụng giá từ product
                             .build();
                 }).toList())
                 .build();
 
         order.getOrderItems().forEach(item -> item.setOrder(order));
-       orderRepository.save(order);
-       BigDecimal discount = calculateDiscount(orderDTO.getOrderItems());
-       BigDecimal shippingFee = calculateShippingFee(orderDTO.getOrderItems());
+        orderRepository.save(order);
+        BigDecimal discount = calculateDiscount(orderDTO.getOrderItems());
+        BigDecimal shippingFee = calculateShippingFee(orderDTO.getOrderItems());
         PaymentHistory payment = PaymentHistory.builder()
                 .order(order)
                 .isDebt(orderDTO.isDebt())
@@ -108,11 +112,13 @@ public class OrderService {
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
     private BigDecimal calculateDiscount(List<OrderItemDTO> items) {
         return items.stream()
                 .map(item -> BigDecimal.valueOf(300).multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
     private BigDecimal calculateShippingFee(List<OrderItemDTO> items) {
         return items.stream()
                 .map(item -> BigDecimal.valueOf(2000).multiply(BigDecimal.valueOf(item.getQuantity())))

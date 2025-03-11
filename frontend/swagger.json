@@ -1,33 +1,17 @@
 {
   "openapi": "3.1.0",
-  "info": {
-    "title": "API Documentation",
-    "version": "1.0"
-  },
+  "info": { "title": "API Documentation", "version": "1.0" },
   "servers": [
-    {
-      "url": "http://localhost:8080",
-      "description": "Generated server url"
-    }
+    { "url": "http://localhost:8080", "description": "Generated server url" }
   ],
-  "security": [
-    {
-      "Bearer Authentication": []
-    }
-  ],
+  "security": [{ "Bearer Authentication": [] }],
   "tags": [
     {
       "name": "Order Management",
       "description": "Operations related to orders"
     },
-    {
-      "name": "Shop Management",
-      "description": "Operations related to shops"
-    },
-    {
-      "name": "User Management",
-      "description": "Operations related to users"
-    },
+    { "name": "Shop Management", "description": "Operations related to shops" },
+    { "name": "User Management", "description": "Operations related to users" },
     {
       "name": "Authentication",
       "description": "Operations related to authentication"
@@ -56,9 +40,7 @@
   "paths": {
     "/api/warehouses/{warehouseId}": {
       "put": {
-        "tags": [
-          "Warehouse Management"
-        ],
+        "tags": ["Warehouse Management"],
         "summary": "Update a warehouse by ID",
         "description": "Update the details of an existing warehouse by ID",
         "operationId": "updateWarehouse",
@@ -67,18 +49,13 @@
             "name": "warehouseId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/WarehouseUpdateDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/WarehouseUpdateDTO" }
             }
           },
           "required": true
@@ -99,9 +76,7 @@
     },
     "/api/users/{id}": {
       "put": {
-        "tags": [
-          "User Management"
-        ],
+        "tags": ["User Management"],
         "summary": "Update a user",
         "description": "Update a user by their name.",
         "operationId": "updateUser",
@@ -110,18 +85,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUserRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/UpdateUserRequest" }
             }
           },
           "required": true
@@ -131,9 +101,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseUserDTO"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseUserDTO" }
               }
             }
           }
@@ -142,9 +110,7 @@
     },
     "/api/shops/{id}": {
       "get": {
-        "tags": [
-          "Shop Management"
-        ],
+        "tags": ["Shop Management"],
         "summary": "Get shop by id",
         "description": "Fetch shop details by shop id. Accessible only if the current user is an admin, staff or owner of the shop.",
         "operationId": "getShopById",
@@ -153,10 +119,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -164,18 +127,14 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseShopDTO"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseShopDTO" }
               }
             }
           }
         }
       },
       "put": {
-        "tags": [
-          "Shop Management"
-        ],
+        "tags": ["Shop Management"],
         "summary": "Update a shop",
         "description": "Update a shop by its ID.",
         "operationId": "updateShop",
@@ -184,18 +143,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateShopDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/UpdateShopDTO" }
             }
           },
           "required": true
@@ -205,9 +159,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseShopDTO"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseShopDTO" }
               }
             }
           }
@@ -216,9 +168,7 @@
     },
     "/api/products/{id}": {
       "get": {
-        "tags": [
-          "Product Management"
-        ],
+        "tags": ["Product Management"],
         "summary": "Get a product",
         "description": "Fetch a product by ID.",
         "operationId": "getProduct",
@@ -227,10 +177,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -247,9 +194,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Product Management"
-        ],
+        "tags": ["Product Management"],
         "summary": "Update a product",
         "description": "Update an existing product by ID.",
         "operationId": "updateProduct",
@@ -258,18 +203,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RequestProductDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/RequestProductDTO" }
             }
           },
           "required": true
@@ -290,19 +230,14 @@
     },
     "/api/partners/{id}": {
       "get": {
-        "tags": [
-          "Partner Management"
-        ],
+        "tags": ["Partner Management"],
         "operationId": "getPartnerById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -310,36 +245,27 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePartner"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponsePartner" }
               }
             }
           }
         }
       },
       "put": {
-        "tags": [
-          "Partner Management"
-        ],
+        "tags": ["Partner Management"],
         "operationId": "updatePartner",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartnerUpdateDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/PartnerUpdateDTO" }
             }
           },
           "required": true
@@ -349,38 +275,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePartner"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Partner Management"
-        ],
-        "operationId": "deletePartner",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseVoid"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponsePartner" }
               }
             }
           }
@@ -389,9 +284,7 @@
     },
     "/api/orders/{id}": {
       "get": {
-        "tags": [
-          "Order Management"
-        ],
+        "tags": ["Order Management"],
         "summary": "Get order by ID",
         "description": "Fetch an order by ID.",
         "operationId": "getOrderById",
@@ -400,10 +293,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -420,9 +310,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Order Management"
-        ],
+        "tags": ["Order Management"],
         "summary": "Update an order",
         "description": "Update an existing order by ID.",
         "operationId": "updateOrder",
@@ -431,18 +319,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateOrderDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/UpdateOrderDTO" }
             }
           },
           "required": true
@@ -452,18 +335,14 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseOrder"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseOrder" }
               }
             }
           }
         }
       },
       "delete": {
-        "tags": [
-          "Order Management"
-        ],
+        "tags": ["Order Management"],
         "summary": "Delete an order",
         "description": "Delete an existing order by ID.",
         "operationId": "deleteOrder",
@@ -472,10 +351,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -483,9 +359,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseVoid"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
               }
             }
           }
@@ -494,9 +368,7 @@
     },
     "/api/inventories/{id}": {
       "get": {
-        "tags": [
-          "Inventories Management"
-        ],
+        "tags": ["Inventories Management"],
         "summary": "Get a inventory",
         "description": "Update a inventory by its ID.",
         "operationId": "getInventoryById",
@@ -505,10 +377,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -525,9 +394,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Inventories Management"
-        ],
+        "tags": ["Inventories Management"],
         "summary": "Update a inventory",
         "description": "Update a inventory by its ID.",
         "operationId": "updateInventory",
@@ -536,18 +403,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InventoryUpdateDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/InventoryUpdateDTO" }
             }
           },
           "required": true
@@ -568,9 +430,7 @@
     },
     "/api/categories/{id}": {
       "put": {
-        "tags": [
-          "Category Management"
-        ],
+        "tags": ["Category Management"],
         "summary": "Update a category",
         "description": "Update an existing category by ID.",
         "operationId": "updateCategory",
@@ -579,18 +439,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateCategoryDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/UpdateCategoryDTO" }
             }
           },
           "required": true
@@ -611,9 +466,7 @@
     },
     "/api/warehouses/{shopId}": {
       "post": {
-        "tags": [
-          "Warehouse Management"
-        ],
+        "tags": ["Warehouse Management"],
         "summary": "Create a new warehouse for a shop",
         "description": "Create a new warehouse under the specified shop",
         "operationId": "createWarehouse",
@@ -622,18 +475,13 @@
             "name": "shopId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/WarehouseCreateDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/WarehouseCreateDTO" }
             }
           },
           "required": true
@@ -654,9 +502,7 @@
     },
     "/api/users": {
       "get": {
-        "tags": [
-          "User Management"
-        ],
+        "tags": ["User Management"],
         "summary": "Get all users",
         "description": "Fetch a list of all registered users.",
         "operationId": "getUsers",
@@ -665,30 +511,19 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "pageSize",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
           },
           {
             "name": "search",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {
@@ -705,18 +540,14 @@
         }
       },
       "post": {
-        "tags": [
-          "User Management"
-        ],
+        "tags": ["User Management"],
         "summary": "Create a user",
         "description": "Create a user by owner or admin.",
         "operationId": "createUser",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/CreateUserRequest" }
             }
           },
           "required": true
@@ -726,9 +557,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseUserDTO"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseUserDTO" }
               }
             }
           }
@@ -737,18 +566,14 @@
     },
     "/api/shops": {
       "post": {
-        "tags": [
-          "Shop Management"
-        ],
+        "tags": ["Shop Management"],
         "summary": "Create a shop",
         "description": "Create a shop by owner or admin.",
         "operationId": "createShop",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateShopDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/CreateShopDTO" }
             }
           },
           "required": true
@@ -758,9 +583,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseShopDTO"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseShopDTO" }
               }
             }
           }
@@ -769,9 +592,7 @@
     },
     "/api/products": {
       "get": {
-        "tags": [
-          "Product Management"
-        ],
+        "tags": ["Product Management"],
         "summary": "Get page products",
         "description": "Fetch a list of page registered products.",
         "operationId": "getProducts",
@@ -780,30 +601,19 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "pageSize",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
           },
           {
             "name": "search",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {
@@ -820,18 +630,14 @@
         }
       },
       "post": {
-        "tags": [
-          "Product Management"
-        ],
+        "tags": ["Product Management"],
         "summary": "Create a product",
         "description": "Create a new product",
         "operationId": "createProduct",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RequestProductDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/RequestProductDTO" }
             }
           },
           "required": true
@@ -852,39 +658,26 @@
     },
     "/api/partners": {
       "get": {
-        "tags": [
-          "Partner Management"
-        ],
+        "tags": ["Partner Management"],
         "operationId": "getPartners",
         "parameters": [
           {
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "pageSize",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
           },
           {
             "name": "search",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {
@@ -901,16 +694,12 @@
         }
       },
       "post": {
-        "tags": [
-          "Partner Management"
-        ],
+        "tags": ["Partner Management"],
         "operationId": "createPartner",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PartnerCreateDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/PartnerCreateDTO" }
             }
           },
           "required": true
@@ -920,9 +709,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePartner"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponsePartner" }
               }
             }
           }
@@ -931,18 +718,14 @@
     },
     "/api/orders": {
       "post": {
-        "tags": [
-          "Order Management"
-        ],
+        "tags": ["Order Management"],
         "summary": "Create an order",
         "description": "Create a new order.",
         "operationId": "createOrder",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrderDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/CreateOrderDTO" }
             }
           },
           "required": true
@@ -952,9 +735,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseOrder"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseOrder" }
               }
             }
           }
@@ -963,9 +744,7 @@
     },
     "/api/inventories/": {
       "get": {
-        "tags": [
-          "Inventories Management"
-        ],
+        "tags": ["Inventories Management"],
         "summary": "Get the inventories",
         "description": "Fetch a list of the registered inventories.",
         "operationId": "getInventory",
@@ -974,30 +753,19 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "pageSize",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
           },
           {
             "name": "search",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {
@@ -1014,18 +782,14 @@
         }
       },
       "post": {
-        "tags": [
-          "Inventories Management"
-        ],
+        "tags": ["Inventories Management"],
         "summary": "Create a inventory",
         "description": "Create a inventory with the provided data.",
         "operationId": "createInventory",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InventoryCreateDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/InventoryCreateDTO" }
             }
           },
           "required": true
@@ -1046,18 +810,14 @@
     },
     "/api/categories": {
       "post": {
-        "tags": [
-          "Category Management"
-        ],
+        "tags": ["Category Management"],
         "summary": "Create a category",
         "description": "Create a new category under a specific shop.",
         "operationId": "createCategory",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCategoryDTO"
-              }
+              "schema": { "$ref": "#/components/schemas/CreateCategoryDTO" }
             }
           },
           "required": true
@@ -1078,18 +838,14 @@
     },
     "/api/auth/sign-up": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "summary": "Sign up a new user",
         "description": "Sign up a new user with a username and password.",
         "operationId": "signUp",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SignUpRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/SignUpRequest" }
             }
           },
           "required": true
@@ -1099,9 +855,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseUserDTO"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseUserDTO" }
               }
             }
           }
@@ -1110,18 +864,14 @@
     },
     "/api/auth/sign-in": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "summary": "Sign in a user",
         "description": "Perform authentication on a user to sign in!.",
         "operationId": "signIn",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SignInRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/SignInRequest" }
             }
           },
           "required": true
@@ -1142,16 +892,12 @@
     },
     "/api/auth/reset-password": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "operationId": "resetPassword",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResetPasswordRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/ResetPasswordRequest" }
             }
           },
           "required": true
@@ -1161,9 +907,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseVoid"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
               }
             }
           }
@@ -1172,18 +916,14 @@
     },
     "/api/auth/forgot-password": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "summary": "Forgot password",
         "description": "Validate email and send a code to reset password.",
         "operationId": "forgotPassword",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ForgotPasswordRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/ForgotPasswordRequest" }
             }
           },
           "required": true
@@ -1193,9 +933,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseVoid"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
               }
             }
           }
@@ -1204,9 +942,7 @@
     },
     "/api/warehouses": {
       "get": {
-        "tags": [
-          "Warehouse Management"
-        ],
+        "tags": ["Warehouse Management"],
         "summary": "Get paginate warehouses of a shop",
         "description": "Get paginate warehouses of a shop",
         "operationId": "getWarehouses",
@@ -1215,30 +951,19 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "pageSize",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
           },
           {
             "name": "search",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {
@@ -1257,9 +982,7 @@
     },
     "/api/warehouses/all": {
       "get": {
-        "tags": [
-          "Warehouse Management"
-        ],
+        "tags": ["Warehouse Management"],
         "summary": "Get all warehouses of a shop",
         "description": "Get all warehouses of a shop",
         "operationId": "getAllWarehouses",
@@ -1268,10 +991,7 @@
             "name": "shopId",
             "in": "query",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -1290,9 +1010,7 @@
     },
     "/api/users/me": {
       "get": {
-        "tags": [
-          "User Management"
-        ],
+        "tags": ["User Management"],
         "summary": "Current user",
         "description": "Get current user by client token.",
         "operationId": "getMe",
@@ -1301,9 +1019,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseUserDTO"
-                }
+                "schema": { "$ref": "#/components/schemas/BaseResponseUserDTO" }
               }
             }
           }
@@ -1312,9 +1028,7 @@
     },
     "/api/shops/": {
       "get": {
-        "tags": [
-          "Shop Management"
-        ],
+        "tags": ["Shop Management"],
         "summary": "Get all shops",
         "description": "Fetch a list of all registered shops.",
         "operationId": "getShops",
@@ -1323,30 +1037,19 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "pageSize",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
           },
           {
             "name": "search",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {
@@ -1365,9 +1068,7 @@
     },
     "/api/products/all": {
       "get": {
-        "tags": [
-          "Product Management"
-        ],
+        "tags": ["Product Management"],
         "summary": "Get all products",
         "description": "Fetch a list of page registered products of a shop.",
         "operationId": "getAllProducts",
@@ -1376,10 +1077,7 @@
             "name": "shopId",
             "in": "query",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -1398,19 +1096,14 @@
     },
     "/api/payment-histories/{id}": {
       "get": {
-        "tags": [
-          "payment-history-controller"
-        ],
+        "tags": ["payment-history-controller"],
         "operationId": "getPaymentById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -1429,9 +1122,7 @@
     },
     "/api/payment-histories/all": {
       "get": {
-        "tags": [
-          "payment-history-controller"
-        ],
+        "tags": ["payment-history-controller"],
         "operationId": "getAllPayment",
         "responses": {
           "200": {
@@ -1449,9 +1140,7 @@
     },
     "/api/partners/all": {
       "get": {
-        "tags": [
-          "Partner Management"
-        ],
+        "tags": ["Partner Management"],
         "summary": "Get all Partners",
         "description": "Fetch all Partners.",
         "operationId": "getAllPartners",
@@ -1471,9 +1160,7 @@
     },
     "/api/orders/all": {
       "get": {
-        "tags": [
-          "Order Management"
-        ],
+        "tags": ["Order Management"],
         "summary": "Get all orders",
         "description": "Fetch all orders.",
         "operationId": "getAllOrders",
@@ -1493,9 +1180,7 @@
     },
     "/api/orders/": {
       "get": {
-        "tags": [
-          "Order Management"
-        ],
+        "tags": ["Order Management"],
         "summary": "Get paginate orders",
         "description": "Fetch a list of orders.",
         "operationId": "getOrders",
@@ -1504,21 +1189,13 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "pageSize",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
           }
         ],
         "responses": {
@@ -1537,9 +1214,7 @@
     },
     "/api/inventories/all": {
       "get": {
-        "tags": [
-          "Inventories Management"
-        ],
+        "tags": ["Inventories Management"],
         "summary": "Get all inventories",
         "description": "Fetch a list of all registered inventories.",
         "operationId": "getAllInventory",
@@ -1559,9 +1234,7 @@
     },
     "/api/categories/all": {
       "get": {
-        "tags": [
-          "Category Management"
-        ],
+        "tags": ["Category Management"],
         "summary": "Get all categories",
         "description": "Fetch all categories.",
         "operationId": "getAllCategories",
@@ -1581,9 +1254,7 @@
     },
     "/api/categories/": {
       "get": {
-        "tags": [
-          "Category Management"
-        ],
+        "tags": ["Category Management"],
         "summary": "Get paginate categories",
         "description": "Fetch a list of categories.",
         "operationId": "getCategories",
@@ -1592,38 +1263,25 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "pageSize",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
           },
           {
             "name": "search",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
+            "schema": { "type": "string", "default": "" }
           },
           {
             "name": "createdAt",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1646,26 +1304,16 @@
       "WarehouseUpdateDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "status": { "type": "string" }
         }
       },
       "BaseResponseWarehouse": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/Warehouse"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/Warehouse" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -1682,71 +1330,35 @@
       "Warehouse": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
         },
-        "required": [
-          "status"
-        ]
+        "required": ["status"]
       },
       "UpdateUserRequest": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
+          "name": { "type": "string" },
           "password": {
             "type": "string",
             "maxLength": 2147483647,
             "minLength": 6
           },
-          "phoneNumber": {
-            "type": "string",
-            "pattern": "^\\d{10,12}$"
-          },
-          "role": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
+          "phoneNumber": { "type": "string", "pattern": "^\\d{10,12}$" },
+          "role": { "type": "string" },
+          "status": { "type": "string" },
+          "email": { "type": "string" }
         }
       },
       "BaseResponseUserDTO": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/UserDTO"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/UserDTO" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -1763,43 +1375,17 @@
       "UserDTO": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "username": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "role": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "shopId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "shopName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "username": { "type": "string" },
+          "name": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "role": { "type": "string" },
+          "status": { "type": "string" },
+          "shopId": { "type": "integer", "format": "int64" },
+          "shopName": { "type": "string" },
+          "email": { "type": "string" }
         },
         "required": [
           "createdAt",
@@ -1815,23 +1401,15 @@
       "UpdateShopDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          }
+          "name": { "type": "string" },
+          "address": { "type": "string" }
         }
       },
       "BaseResponseShopDTO": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/ShopDTO"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/ShopDTO" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -1848,91 +1426,43 @@
       "ShopDTO": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
           "users": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserDTO"
-            }
+            "items": { "$ref": "#/components/schemas/UserDTO" }
           },
-          "createdBy": {
-            "$ref": "#/components/schemas/UserDTO"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "createdBy": { "$ref": "#/components/schemas/UserDTO" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         },
-        "required": [
-          "createdAt"
-        ]
+        "required": ["createdAt"]
       },
       "RequestProductDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "categoryId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "supplierId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "shopId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "salePrice": {
-            "type": "number",
-            "minimum": 0
-          },
-          "wholesalePrice": {
-            "type": "number",
-            "minimum": 0
-          },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "categoryId": { "type": "integer", "format": "int64" },
+          "supplierId": { "type": "integer", "format": "int64" },
+          "shopId": { "type": "integer", "format": "int64" },
+          "price": { "type": "number", "minimum": 0.0 },
           "unit": {
-            "type": "string"
+            "type": "integer",
+            "format": "int32",
+            "description": "Unit of the product (unit kg/bg)",
+            "example": 10
           },
-          "imageUrls": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "imageUrls": { "type": "array", "items": { "type": "string" } }
         },
-        "required": [
-          "name",
-          "shopId"
-        ]
+        "required": ["name", "shopId"]
       },
       "BaseResponseResponseProductDTO": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/ResponseProductDTO"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/ResponseProductDTO" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -1949,151 +1479,61 @@
       "Category": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "imageUrl": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "imageUrl": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
         },
-        "required": [
-          "status"
-        ]
+        "required": ["status"]
       },
       "Partner": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "contactName": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "website": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "contactName": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string" },
+          "address": { "type": "string" },
+          "website": { "type": "string" },
+          "description": { "type": "string" }
         }
       },
       "ResponseProductDTO": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "category": {
-            "$ref": "#/components/schemas/Category"
-          },
-          "supplier": {
-            "$ref": "#/components/schemas/Partner"
-          },
-          "shopId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "shopName": {
-            "type": "string"
-          },
-          "salePrice": {
-            "type": "number"
-          },
-          "wholesalePrice": {
-            "type": "number"
-          },
-          "unit": {
-            "type": "string",
-            "enum": [
-              "KG",
-              "BAG"
-            ]
-          },
-          "imageUrls": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "category": { "$ref": "#/components/schemas/Category" },
+          "supplier": { "$ref": "#/components/schemas/Partner" },
+          "shopId": { "type": "integer", "format": "int64" },
+          "shopName": { "type": "string" },
+          "price": { "type": "number" },
+          "unit": { "type": "integer", "format": "int32" },
+          "imageUrls": { "type": "array", "items": { "type": "string" } }
         }
       },
       "PartnerUpdateDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "contactName": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "website": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
+          "name": { "type": "string" },
+          "contactName": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string" },
+          "address": { "type": "string" },
+          "website": { "type": "string" },
+          "description": { "type": "string" }
         }
       },
       "BaseResponsePartner": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/Partner"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/Partner" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2110,46 +1550,28 @@
       "OrderItemDTO": {
         "type": "object",
         "properties": {
-          "productId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "price": {
-            "type": "number"
-          }
+          "inventoryId": { "type": "integer", "format": "int64" },
+          "productId": { "type": "integer", "format": "int64" },
+          "quantity": { "type": "integer", "format": "int32" },
+          "price": { "type": "number" }
         }
       },
       "UpdateOrderDTO": {
         "type": "object",
         "properties": {
-          "partnerId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalAmount": {
-            "type": "number"
-          },
+          "partnerId": { "type": "integer", "format": "int64" },
+          "totalAmount": { "type": "number" },
           "orderItems": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrderItemDTO"
-            }
+            "items": { "$ref": "#/components/schemas/OrderItemDTO" }
           }
         }
       },
       "BaseResponseOrder": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/Order"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/Order" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2166,229 +1588,91 @@
       "Order": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "partner": {
-            "$ref": "#/components/schemas/Partner"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "shop": {
-            "$ref": "#/components/schemas/Shop"
-          },
-          "totalAmount": {
-            "type": "number"
-          },
+          "id": { "type": "integer", "format": "int64" },
+          "partner": { "$ref": "#/components/schemas/Partner" },
+          "user": { "$ref": "#/components/schemas/User" },
+          "shop": { "$ref": "#/components/schemas/Shop" },
+          "totalAmount": { "type": "number" },
           "orderItems": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrderItem"
-            }
+            "items": { "$ref": "#/components/schemas/OrderItem" }
           },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
       "OrderItem": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "order": {
-            "$ref": "#/components/schemas/Order"
-          },
-          "product": {
-            "$ref": "#/components/schemas/Product"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "price": {
-            "type": "number"
-          },
-          "subtotal": {
-            "type": "number"
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "order": { "$ref": "#/components/schemas/Order" },
+          "product": { "$ref": "#/components/schemas/Product" },
+          "quantity": { "type": "integer", "format": "int32" },
+          "price": { "type": "number" },
+          "subtotal": { "type": "number" }
         }
       },
       "Product": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "category": {
-            "$ref": "#/components/schemas/Category"
-          },
-          "supplier": {
-            "$ref": "#/components/schemas/Partner"
-          },
-          "shop": {
-            "$ref": "#/components/schemas/Shop"
-          },
-          "unit": {
-            "type": "string",
-            "enum": [
-              "KG",
-              "BAG"
-            ]
-          },
-          "salePrice": {
-            "type": "number"
-          },
-          "wholesalePrice": {
-            "type": "number"
-          },
-          "description": {
-            "type": "string"
-          },
-          "imageUrls": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deletedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "category": { "$ref": "#/components/schemas/Category" },
+          "supplier": { "$ref": "#/components/schemas/Partner" },
+          "shop": { "$ref": "#/components/schemas/Shop" },
+          "unit": { "type": "integer", "format": "int32" },
+          "price": { "type": "number" },
+          "description": { "type": "string" },
+          "imageUrls": { "type": "array", "items": { "type": "string" } },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "deletedAt": { "type": "string", "format": "date-time" }
         }
       },
       "Shop": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "createBy": {
-            "$ref": "#/components/schemas/User"
-          },
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "createBy": { "$ref": "#/components/schemas/User" },
           "users": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/User"
-            },
+            "items": { "$ref": "#/components/schemas/User" },
             "uniqueItems": true
           },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
       "User": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "username": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "role": {
-            "type": "string",
-            "enum": [
-              "OWNER",
-              "STAFF",
-              "ADMIN"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "username": { "type": "string" },
+          "email": { "type": "string" },
+          "name": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "role": { "type": "string", "enum": ["OWNER", "STAFF", "ADMIN"] },
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
         },
-        "required": [
-          "id",
-          "name",
-          "phoneNumber",
-          "role",
-          "status",
-          "username"
-        ]
+        "required": ["id", "name", "phoneNumber", "role", "status", "username"]
       },
       "InventoryUpdateDTO": {
         "type": "object",
         "properties": {
-          "productId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "warehouseId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          }
+          "productId": { "type": "integer", "format": "int64" },
+          "warehouseId": { "type": "integer", "format": "int64" },
+          "quantity": { "type": "integer", "format": "int32" }
         }
       },
       "BaseResponseInventoryResponseDTO": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/InventoryResponseDTO"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/InventoryResponseDTO" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2405,68 +1689,32 @@
       "InventoryResponseDTO": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "productId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "warehouseId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "productName": {
-            "type": "string"
-          },
-          "warehouseName": {
-            "type": "string"
-          },
-          "createdBy": {
-            "$ref": "#/components/schemas/UserDTO"
-          },
-          "createdAt": {
-            "type": "string"
-          },
-          "updatedAt": {
-            "type": "string"
-          },
-          "price": {
-            "type": "string"
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "productId": { "type": "integer", "format": "int64" },
+          "warehouseId": { "type": "integer", "format": "int64" },
+          "quantity": { "type": "integer", "format": "int32" },
+          "productName": { "type": "string" },
+          "warehouseName": { "type": "string" },
+          "createdBy": { "$ref": "#/components/schemas/UserDTO" },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" },
+          "price": { "type": "string" }
         }
       },
       "UpdateCategoryDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "imageUrl": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "imageUrl": { "type": "string" },
+          "status": { "type": "string" }
         }
       },
       "BaseResponseCategory": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/Category"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/Category" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2483,180 +1731,96 @@
       "WarehouseCreateDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "shopId": {
-            "type": "integer",
-            "format": "int64"
-          }
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "shopId": { "type": "integer", "format": "int64" }
         },
-        "required": [
-          "shopId"
-        ]
+        "required": ["shopId"]
       },
       "CreateUserRequest": {
         "type": "object",
         "properties": {
-          "username": {
-            "type": "string",
-            "maxLength": 20,
-            "minLength": 3
-          },
+          "username": { "type": "string", "maxLength": 20, "minLength": 3 },
           "password": {
             "type": "string",
             "maxLength": 2147483647,
             "minLength": 6
           },
-          "phoneNumber": {
-            "type": "string",
-            "pattern": "^[0-9]{10,12}$"
-          },
-          "name": {
-            "type": "string"
-          }
+          "reCaptchaToken": { "type": "string" },
+          "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
+          "name": { "type": "string" }
         },
         "required": [
           "name",
           "password",
           "phoneNumber",
+          "reCaptchaToken",
           "username"
         ]
       },
       "CreateShopDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          }
+          "name": { "type": "string" },
+          "address": { "type": "string" }
         }
       },
       "PartnerCreateDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "contactName": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string",
-            "pattern": "^(\\+?\\d{1,3})?\\d{10}$"
-          },
-          "email": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "website": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
+          "name": { "type": "string" },
+          "contactName": { "type": "string" },
+          "phone": { "type": "string", "pattern": "^(\\+?\\d{1,3})?\\d{10}$" },
+          "email": { "type": "string" },
+          "address": { "type": "string" },
+          "website": { "type": "string" },
+          "description": { "type": "string" }
         },
-        "required": [
-          "address",
-          "contactName",
-          "email",
-          "name",
-          "phone"
-        ]
+        "required": ["address", "contactName", "email", "name", "phone"]
       },
       "CreateOrderDTO": {
         "type": "object",
         "properties": {
-          "partnerId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalAmount": {
-            "type": "number"
-          },
+          "partnerId": { "type": "integer", "format": "int64" },
+          "totalAmount": { "type": "number" },
           "orderItems": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrderItemDTO"
-            }
+            "items": { "$ref": "#/components/schemas/OrderItemDTO" }
           },
-          "shipping": {
-            "type": "boolean"
-          },
-          "debt": {
-            "type": "boolean"
-          }
+          "shipping": { "type": "boolean" },
+          "debt": { "type": "boolean" }
         }
       },
       "InventoryCreateDTO": {
         "type": "object",
         "properties": {
-          "productId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "warehouseId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          }
+          "productId": { "type": "integer", "format": "int64" },
+          "warehouseId": { "type": "integer", "format": "int64" },
+          "quantity": { "type": "integer", "format": "int32" }
         },
-        "required": [
-          "productId",
-          "quantity",
-          "warehouseId"
-        ]
+        "required": ["productId", "quantity", "warehouseId"]
       },
       "CreateCategoryDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "imageUrl": {
-            "type": "string"
-          }
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "imageUrl": { "type": "string" }
         }
       },
       "SignUpRequest": {
         "type": "object",
         "properties": {
-          "username": {
-            "type": "string",
-            "maxLength": 20,
-            "minLength": 3
-          },
+          "username": { "type": "string", "maxLength": 20, "minLength": 3 },
           "password": {
             "type": "string",
             "maxLength": 2147483647,
             "minLength": 6
           },
-          "phoneNumber": {
-            "type": "string",
-            "pattern": "^[0-9]{10,12}$"
-          },
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "reCaptchaToken": {
-            "type": "string"
-          }
+          "reCaptchaToken": { "type": "string" },
+          "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
+          "name": { "type": "string" },
+          "email": { "type": "string" }
         },
         "required": [
           "email",
@@ -2670,31 +1834,21 @@
       "SignInRequest": {
         "type": "object",
         "properties": {
-          "username": {
-            "type": "string",
-            "maxLength": 20,
-            "minLength": 3
-          },
+          "username": { "type": "string", "maxLength": 20, "minLength": 3 },
           "password": {
             "type": "string",
             "maxLength": 2147483647,
             "minLength": 6
-          }
+          },
+          "reCaptchaToken": { "type": "string" }
         },
-        "required": [
-          "password",
-          "username"
-        ]
+        "required": ["password", "reCaptchaToken", "username"]
       },
       "BaseResponseSignInResponse": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/SignInResponse"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/SignInResponse" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2711,12 +1865,8 @@
       "SignInResponse": {
         "type": "object",
         "properties": {
-          "token": {
-            "type": "string"
-          },
-          "user": {
-            "$ref": "#/components/schemas/UserDTO"
-          }
+          "token": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/UserDTO" }
         }
       },
       "ResetPasswordRequest": {
@@ -2727,24 +1877,15 @@
             "maxLength": 2147483647,
             "minLength": 6
           },
-          "token": {
-            "type": "string"
-          }
+          "token": { "type": "string" }
         },
-        "required": [
-          "password",
-          "token"
-        ]
+        "required": ["password", "token"]
       },
       "BaseResponseVoid": {
         "type": "object",
         "properties": {
-          "data": {
-            "type": "object"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "type": "object" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2761,17 +1902,10 @@
       "ForgotPasswordRequest": {
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string"
-          },
-          "reCaptchaToken": {
-            "type": "string"
-          }
+          "email": { "type": "string" },
+          "reCaptchaToken": { "type": "string" }
         },
-        "required": [
-          "email",
-          "reCaptchaToken"
-        ]
+        "required": ["email", "reCaptchaToken"]
       },
       "BaseResponsePaginateResponseWarehouseDTO": {
         "type": "object",
@@ -2779,9 +1913,7 @@
           "data": {
             "$ref": "#/components/schemas/PaginateResponseWarehouseDTO"
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2798,74 +1930,37 @@
       "PaginateResponseWarehouseDTO": {
         "type": "object",
         "properties": {
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/WarehouseDTO"
-            }
+            "items": { "$ref": "#/components/schemas/WarehouseDTO" }
           }
         }
       },
       "WarehouseDTO": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "shopId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "shopName": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "shopId": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "shopName": { "type": "string" },
+          "status": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
         },
-        "required": [
-          "status"
-        ]
+        "required": ["status"]
       },
       "BaseResponseListWarehouseDTO": {
         "type": "object",
         "properties": {
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/WarehouseDTO"
-            }
+            "items": { "$ref": "#/components/schemas/WarehouseDTO" }
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2882,12 +1977,8 @@
       "BaseResponsePaginateResponseUserDTO": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/PaginateResponseUserDTO"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/PaginateResponseUserDTO" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2904,39 +1995,21 @@
       "PaginateResponseUserDTO": {
         "type": "object",
         "properties": {
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserDTO"
-            }
+            "items": { "$ref": "#/components/schemas/UserDTO" }
           }
         }
       },
       "BaseResponsePaginateResponseShopDTO": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/PaginateResponseShopDTO"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/PaginateResponseShopDTO" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -2953,27 +2026,13 @@
       "PaginateResponseShopDTO": {
         "type": "object",
         "properties": {
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ShopDTO"
-            }
+            "items": { "$ref": "#/components/schemas/ShopDTO" }
           }
         }
       },
@@ -2983,9 +2042,7 @@
           "data": {
             "$ref": "#/components/schemas/PaginateResponseResponseProductDTO"
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3002,27 +2059,13 @@
       "PaginateResponseResponseProductDTO": {
         "type": "object",
         "properties": {
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResponseProductDTO"
-            }
+            "items": { "$ref": "#/components/schemas/ResponseProductDTO" }
           }
         }
       },
@@ -3031,13 +2074,9 @@
         "properties": {
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ResponseProductDTO"
-            }
+            "items": { "$ref": "#/components/schemas/ResponseProductDTO" }
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3054,12 +2093,8 @@
       "BaseResponsePaymentHistoryDetailDTO": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/PaymentHistoryDetailDTO"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/PaymentHistoryDetailDTO" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3076,41 +2111,19 @@
       "PaymentHistoryDetailDTO": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "partnerName": {
-            "type": "string"
-          },
-          "partnerPhone": {
-            "type": "string"
-          },
-          "orderAmount": {
-            "type": "number"
-          },
-          "discount": {
-            "type": "number"
-          },
-          "shippingFee": {
-            "type": "number"
-          },
-          "totalAmount": {
-            "type": "number"
-          },
+          "id": { "type": "integer", "format": "int64" },
+          "partnerName": { "type": "string" },
+          "partnerPhone": { "type": "string" },
+          "orderAmount": { "type": "number" },
+          "discount": { "type": "number" },
+          "shippingFee": { "type": "number" },
+          "totalAmount": { "type": "number" },
           "orderItems": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrderItemDTO"
-            }
+            "items": { "$ref": "#/components/schemas/OrderItemDTO" }
           },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "debt": {
-            "type": "boolean"
-          }
+          "createdAt": { "type": "string", "format": "date-time" },
+          "debt": { "type": "boolean" }
         }
       },
       "BaseResponseListPaymentHistoryResponseDTO": {
@@ -3122,9 +2135,7 @@
               "$ref": "#/components/schemas/PaymentHistoryResponseDTO"
             }
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3141,46 +2152,22 @@
       "PaymentHistoryResponseDTO": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "partnerName": {
-            "type": "string"
-          },
-          "partnerPhone": {
-            "type": "string"
-          },
-          "orderAmount": {
-            "type": "number"
-          },
-          "discount": {
-            "type": "number"
-          },
-          "shippingFee": {
-            "type": "number"
-          },
-          "totalAmount": {
-            "type": "number"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "debt": {
-            "type": "boolean"
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "partnerName": { "type": "string" },
+          "partnerPhone": { "type": "string" },
+          "orderAmount": { "type": "number" },
+          "discount": { "type": "number" },
+          "shippingFee": { "type": "number" },
+          "totalAmount": { "type": "number" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "debt": { "type": "boolean" }
         }
       },
       "BaseResponsePaginateResponsePartner": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/PaginateResponsePartner"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/PaginateResponsePartner" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3197,27 +2184,13 @@
       "PaginateResponsePartner": {
         "type": "object",
         "properties": {
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Partner"
-            }
+            "items": { "$ref": "#/components/schemas/Partner" }
           }
         }
       },
@@ -3226,13 +2199,9 @@
         "properties": {
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Partner"
-            }
+            "items": { "$ref": "#/components/schemas/Partner" }
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3249,12 +2218,8 @@
       "BaseResponseOrderResponseDTO": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/OrderResponseDTO"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/OrderResponseDTO" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3271,34 +2236,14 @@
       "OrderResponseDTO": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "partnerName": {
-            "type": "string"
-          },
-          "partnerPhone": {
-            "type": "string"
-          },
-          "userName": {
-            "type": "string"
-          },
-          "shopId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "totalAmount": {
-            "type": "number"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "partnerName": { "type": "string" },
+          "partnerPhone": { "type": "string" },
+          "userName": { "type": "string" },
+          "shopId": { "type": "integer", "format": "int64" },
+          "totalAmount": { "type": "number" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
       "BaseResponseListOrderResponseDTO": {
@@ -3306,13 +2251,9 @@
         "properties": {
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrderResponseDTO"
-            }
+            "items": { "$ref": "#/components/schemas/OrderResponseDTO" }
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3329,12 +2270,8 @@
       "BaseResponsePageOrder": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/PageOrder"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/PageOrder" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3351,87 +2288,39 @@
       "PageOrder": {
         "type": "object",
         "properties": {
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Order"
-            }
+            "items": { "$ref": "#/components/schemas/Order" }
           },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "$ref": "#/components/schemas/SortObject"
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "empty": {
-            "type": "boolean"
-          }
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "empty": { "type": "boolean" }
         }
       },
       "PageableObject": {
         "type": "object",
         "properties": {
-          "offset": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "sort": {
-            "$ref": "#/components/schemas/SortObject"
-          },
-          "paged": {
-            "type": "boolean"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unpaged": {
-            "type": "boolean"
-          }
+          "offset": { "type": "integer", "format": "int64" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "paged": { "type": "boolean" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "unpaged": { "type": "boolean" }
         }
       },
       "SortObject": {
         "type": "object",
         "properties": {
-          "empty": {
-            "type": "boolean"
-          },
-          "sorted": {
-            "type": "boolean"
-          },
-          "unsorted": {
-            "type": "boolean"
-          }
+          "empty": { "type": "boolean" },
+          "sorted": { "type": "boolean" },
+          "unsorted": { "type": "boolean" }
         }
       },
       "BaseResponseListInventory": {
@@ -3439,13 +2328,9 @@
         "properties": {
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Inventory"
-            }
+            "items": { "$ref": "#/components/schemas/Inventory" }
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3462,31 +2347,13 @@
       "Inventory": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "product": {
-            "$ref": "#/components/schemas/Product"
-          },
-          "warehouse": {
-            "$ref": "#/components/schemas/Warehouse"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "createdBy": {
-            "$ref": "#/components/schemas/User"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "id": { "type": "integer", "format": "int64" },
+          "product": { "$ref": "#/components/schemas/Product" },
+          "warehouse": { "$ref": "#/components/schemas/Warehouse" },
+          "quantity": { "type": "integer", "format": "int32" },
+          "createdBy": { "$ref": "#/components/schemas/User" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
       "BaseResponsePaginateResponseInventoryResponseDTO": {
@@ -3495,9 +2362,7 @@
           "data": {
             "$ref": "#/components/schemas/PaginateResponseInventoryResponseDTO"
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3514,27 +2379,13 @@
       "PaginateResponseInventoryResponseDTO": {
         "type": "object",
         "properties": {
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/InventoryResponseDTO"
-            }
+            "items": { "$ref": "#/components/schemas/InventoryResponseDTO" }
           }
         }
       },
@@ -3543,13 +2394,9 @@
         "properties": {
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Category"
-            }
+            "items": { "$ref": "#/components/schemas/Category" }
           },
-          "message": {
-            "type": "string"
-          },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3566,12 +2413,8 @@
       "BaseResponsePaginateResponseCategory": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/PaginateResponseCategory"
-          },
-          "message": {
-            "type": "string"
-          },
+          "data": { "$ref": "#/components/schemas/PaginateResponseCategory" },
+          "message": { "type": "string" },
           "errorCode": {
             "type": "string",
             "enum": [
@@ -3588,27 +2431,13 @@
       "PaginateResponseCategory": {
         "type": "object",
         "properties": {
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int32" },
+          "totalPages": { "type": "integer", "format": "int32" },
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Category"
-            }
+            "items": { "$ref": "#/components/schemas/Category" }
           }
         }
       }

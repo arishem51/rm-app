@@ -123,10 +123,13 @@ export interface RequestProductDTO {
   /** @format int64 */
   shopId: number;
   /** @min 0 */
-  salePrice?: number;
-  /** @min 0 */
-  wholesalePrice?: number;
-  unit?: string;
+  price?: number;
+  /**
+   * Unit of the product (unit kg/bg)
+   * @format int32
+   * @example 10
+   */
+  unit?: number;
   imageUrls?: string[];
 }
 
@@ -177,9 +180,9 @@ export interface ResponseProductDTO {
   /** @format int64 */
   shopId?: number;
   shopName?: string;
-  salePrice?: number;
-  wholesalePrice?: number;
-  unit?: "KG" | "BAG";
+  price?: number;
+  /** @format int32 */
+  unit?: number;
   imageUrls?: string[];
 }
 
@@ -206,6 +209,8 @@ export interface BaseResponsePartner {
 }
 
 export interface OrderItemDTO {
+  /** @format int64 */
+  inventoryId?: number;
   /** @format int64 */
   productId?: number;
   /** @format int32 */
@@ -264,9 +269,9 @@ export interface Product {
   category?: Category;
   supplier?: Partner;
   shop?: Shop;
-  unit?: "KG" | "BAG";
-  salePrice?: number;
-  wholesalePrice?: number;
+  /** @format int32 */
+  unit?: number;
+  price?: number;
   description?: string;
   imageUrls?: string[];
   /** @format date-time */
@@ -381,6 +386,7 @@ export interface CreateUserRequest {
    * @maxLength 2147483647
    */
   password: string;
+  reCaptchaToken: string;
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
@@ -437,11 +443,11 @@ export interface SignUpRequest {
    * @maxLength 2147483647
    */
   password: string;
+  reCaptchaToken: string;
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
   email: string;
-  reCaptchaToken: string;
 }
 
 export interface SignInRequest {
@@ -455,6 +461,7 @@ export interface SignInRequest {
    * @maxLength 2147483647
    */
   password: string;
+  reCaptchaToken: string;
 }
 
 export interface BaseResponseSignInResponse {
@@ -774,10 +781,12 @@ export interface BaseResponsePageOrder {
 }
 
 export interface PageOrder {
-  /** @format int32 */
-  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
@@ -786,8 +795,6 @@ export interface PageOrder {
   sort?: SortObject;
   /** @format int32 */
   numberOfElements?: number;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -796,9 +803,9 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
+  paged?: boolean;
   /** @format int32 */
   pageSize?: number;
   unpaged?: boolean;
@@ -1254,22 +1261,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Partner Management
-     * @name DeletePartner
-     * @request DELETE:/api/partners/{id}
-     * @secure
-     */
-    deletePartner: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseVoid, any>({
-        path: `/api/partners/${id}`,
-        method: "DELETE",
-        secure: true,
         ...params,
       }),
 

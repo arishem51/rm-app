@@ -79,33 +79,29 @@ const AuthView: FC<Props> = ({
       <CardContent>
         <AuthForm
           enableReCaptcha={enableReCaptcha}
-          onSubmit={(formData) => {
-            if (type === "sign-up" && formData.reCaptchaToken) {
-              signUp(
-                {
-                  ...formData,
-                  reCaptchaToken: formData.reCaptchaToken,
+          onSubmit={(formData, config) => {
+            if (type === "sign-up") {
+              signUp(formData, {
+                onError: (e) => {
+                  toast({
+                    title: ToastTitle.error,
+                    description: e.message || ToastTitle.somethingWentWrong,
+                    variant: "destructive",
+                  });
+                  config?.onError?.();
                 },
-                {
-                  onError: (e) => {
-                    toast({
-                      title: ToastTitle.error,
-                      description: e.message || ToastTitle.somethingWentWrong,
-                      variant: "destructive",
-                    });
-                  },
-                  onSuccess: () => {
-                    toast({
-                      title: ToastTitle.success,
-                      description: "Sign up success!",
-                    });
-                    setTimeout(() => {
-                      router.replace("/auth/sign-in");
-                    }, 400);
-                  },
-                }
-              );
-            } else if (type === "sign-in") {
+                onSuccess: () => {
+                  toast({
+                    title: ToastTitle.success,
+                    description: "Sign up success!",
+                  });
+                  config?.onSuccess?.();
+                  setTimeout(() => {
+                    router.replace("/auth/sign-in");
+                  }, 400);
+                },
+              });
+            } else {
               signIn(formData, {
                 onError: (e) => {
                   toast({
@@ -113,6 +109,7 @@ const AuthView: FC<Props> = ({
                     description: e.message,
                     variant: "destructive",
                   });
+                  config?.onError?.();
                 },
                 async onSuccess({ data }) {
                   if (data.data) {
@@ -120,7 +117,6 @@ const AuthView: FC<Props> = ({
                       title: ToastTitle.success,
                       description: "Sign in success!",
                     });
-
                     if (data.data.token) {
                       setTokenAfterSignIn(data.data.token);
                       setAtom({
@@ -134,6 +130,7 @@ const AuthView: FC<Props> = ({
                         router.replace("/dashboard");
                       }, 50);
                     }
+                    config?.onSuccess?.();
                   }
                 },
               });
