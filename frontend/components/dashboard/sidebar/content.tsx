@@ -13,6 +13,7 @@ import {
   Users,
   Warehouse,
 } from "lucide-react";
+import { BadgeCent } from 'lucide-react';
 import Link from "next/link";
 import {
   Collapsible,
@@ -33,7 +34,7 @@ import {
 import { AppRoutes } from "@/lib/constants";
 import { checkRole } from "@/lib/helpers";
 import { useMe } from "@/hooks/mutations/user";
-
+import { ShoppingBasket } from 'lucide-react';
 type Item = {
   title: string;
   url?: string;
@@ -123,6 +124,16 @@ const Content = () => {
         title: "Sản phẩm",
         url: AppRoutes.dashboard.products.index.url,
         icon: Box,
+      },
+      {
+        title: "Đơn hàng",
+        url: AppRoutes.dashboard.orders.index.url,
+        icon: ShoppingBasket,
+      },
+      {
+        title: "Hóa đơn",
+        url: AppRoutes.dashboard.invoices.index.url,
+        icon: BadgeCent,
       },
       {
         title: "Quản lý kho",
