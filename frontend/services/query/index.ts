@@ -8,6 +8,7 @@ import { inventories } from "./inventories";
 import { orders } from "./orders";
 import { payment } from "./payment";
 import { zones } from "./zones";
+import { statistics } from "./statistics";
 
 const ApiQuery = {
   users,
@@ -20,6 +21,7 @@ const ApiQuery = {
   orders,
   payment,
   zones,
+  statistics,
 };
 
 export { ApiQuery };

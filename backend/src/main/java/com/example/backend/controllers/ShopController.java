@@ -25,7 +25,7 @@ public class ShopController {
     private final ShopService shopService;
 
     @Operation(summary = "Get all shops", description = "Fetch a list of all registered shops.")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<PaginateResponse<ShopDTO>>> getShops(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,

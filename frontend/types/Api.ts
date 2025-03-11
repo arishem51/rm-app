@@ -645,6 +645,29 @@ export interface PaginateResponseUserDTO {
   data?: UserDTO[];
 }
 
+export interface BaseResponseStatisticsOverviewResponse {
+  data?: StatisticsOverviewResponse;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface StatisticsOverviewResponse {
+  /** @format int32 */
+  totalStaff?: number;
+  /** @format int32 */
+  totalProduct?: number;
+  /** @format int32 */
+  totalRevenue?: number;
+  /** @format int32 */
+  totalDebt?: number;
+}
+
 export interface BaseResponsePaginateResponseShopDTO {
   data?: PaginateResponseShopDTO;
   message?: string;
@@ -1900,12 +1923,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch overview statistics of the current user.
+     *
+     * @tags StatisticsManagement
+     * @name GetOverviewStatistics
+     * @summary Get overview statistics
+     * @request GET:/api/statistics/overview
+     * @secure
+     */
+    getOverviewStatistics: (params: RequestParams = {}) =>
+      this.request<BaseResponseStatisticsOverviewResponse, any>({
+        path: `/api/statistics/overview`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Fetch a list of all registered shops.
      *
      * @tags Shop Management
      * @name GetShops
      * @summary Get all shops
-     * @request GET:/api/shops/
+     * @request GET:/api/shops
      * @secure
      */
     getShops: (
@@ -1926,7 +1966,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<BaseResponsePaginateResponseShopDTO, any>({
-        path: `/api/shops/`,
+        path: `/api/shops`,
         method: "GET",
         query: query,
         secure: true,

@@ -9,8 +9,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Box, CreditCard, DollarSign, UsersRound } from "lucide-react";
 import { RevenueChart } from "./revenue-chart";
 import { RecentOrders } from "./recent-orders";
+import useAppQuery from "@/hooks/use-app-query";
+import { ApiQuery } from "@/services/query";
+import { toCurrency } from "@/lib/utils";
 
 const OwnerOverview = () => {
+  const { data = {}, isLoading } = useAppQuery(
+    ApiQuery.statistics.getOverview()
+  );
+  const { data: overviewStatistics } = data;
+
   return (
     <div>
       <div className="mt-4 flex gap-4">
@@ -21,7 +29,11 @@ const OwnerOverview = () => {
               <span>Tổng nhân viên</span>
             </CardTitle>
             <CardDescription className="text-2xl">
-              {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
+              {isLoading ? (
+                <Skeleton className="h-6 w-[100px] mt-1" />
+              ) : (
+                overviewStatistics?.totalStaff
+              )}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -32,7 +44,11 @@ const OwnerOverview = () => {
               <span>Tổng sản phẩm</span>
             </CardTitle>
             <CardDescription className="text-2xl">
-              {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
+              {isLoading ? (
+                <Skeleton className="h-6 w-[100px] mt-1" />
+              ) : (
+                overviewStatistics?.totalProduct
+              )}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -43,7 +59,11 @@ const OwnerOverview = () => {
               <span>Tổng doanh thu</span>
             </CardTitle>
             <CardDescription className="text-2xl">
-              {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
+              {isLoading ? (
+                <Skeleton className="h-6 w-[100px] mt-1" />
+              ) : (
+                toCurrency(overviewStatistics?.totalRevenue ?? 0)
+              )}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -54,7 +74,11 @@ const OwnerOverview = () => {
               <span>Tổng nợ</span>
             </CardTitle>
             <CardDescription className="text-2xl">
-              {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
+              {isLoading ? (
+                <Skeleton className="h-6 w-[100px] mt-1" />
+              ) : (
+                toCurrency(overviewStatistics?.totalDebt ?? 0)
+              )}
             </CardDescription>
           </CardHeader>
         </Card>

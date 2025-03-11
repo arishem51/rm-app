@@ -7,6 +7,10 @@
   "security": [{ "Bearer Authentication": [] }],
   "tags": [
     {
+      "name": "StatisticsManagement",
+      "description": "Operations related to Statistics"
+    },
+    {
       "name": "Order Management",
       "description": "Operations related to orders"
     },
@@ -1069,7 +1073,27 @@
         }
       }
     },
-    "/api/shops/": {
+    "/api/statistics/overview": {
+      "get": {
+        "tags": ["StatisticsManagement"],
+        "summary": "Get overview statistics",
+        "description": "Fetch overview statistics of the current user.",
+        "operationId": "getOverviewStatistics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseStatisticsOverviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shops": {
       "get": {
         "tags": ["Shop Management"],
         "summary": "Get all shops",
@@ -2156,6 +2180,33 @@
             "type": "array",
             "items": { "$ref": "#/components/schemas/UserDTO" }
           }
+        }
+      },
+      "BaseResponseStatisticsOverviewResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/StatisticsOverviewResponse" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "StatisticsOverviewResponse": {
+        "type": "object",
+        "properties": {
+          "totalStaff": { "type": "integer", "format": "int32" },
+          "totalProduct": { "type": "integer", "format": "int32" },
+          "totalRevenue": { "type": "integer", "format": "int32" },
+          "totalDebt": { "type": "integer", "format": "int32" }
         }
       },
       "BaseResponsePaginateResponseShopDTO": {
