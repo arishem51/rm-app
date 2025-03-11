@@ -386,7 +386,6 @@ export interface CreateUserRequest {
    * @maxLength 2147483647
    */
   password: string;
-  reCaptchaToken: string;
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
@@ -443,7 +442,6 @@ export interface SignUpRequest {
    * @maxLength 2147483647
    */
   password: string;
-  reCaptchaToken: string;
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;

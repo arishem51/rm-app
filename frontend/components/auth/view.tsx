@@ -102,38 +102,50 @@ const AuthView: FC<Props> = ({
                 },
               });
             } else {
-              signIn(formData, {
-                onError: (e) => {
-                  toast({
-                    title: ToastTitle.error,
-                    description: e.message,
-                    variant: "destructive",
-                  });
-                  config?.onError?.();
-                },
-                async onSuccess({ data }) {
-                  if (data.data) {
-                    toast({
-                      title: ToastTitle.success,
-                      description: "Sign in success!",
-                    });
-                    if (data.data.token) {
-                      setTokenAfterSignIn(data.data.token);
-                      setAtom({
-                        showToastErrorSignIn: false,
-                        token: data.data.token,
+              if (formData.reCaptchaToken) {
+                signIn(
+                  {
+                    ...formData,
+                    reCaptchaToken: formData.reCaptchaToken,
+                  },
+                  {
+                    onError: (e) => {
+                      toast({
+                        title: ToastTitle.error,
+                        description: e.message,
+                        variant: "destructive",
                       });
-                      await queryClient.invalidateQueries(
-                        ApiQuery.users.getMe()
-                      );
-                      setTimeout(() => {
-                        router.replace("/dashboard");
-                      }, 50);
-                    }
-                    config?.onSuccess?.();
+                      config?.onError?.();
+                    },
+                    async onSuccess({ data }) {
+                      if (data.data) {
+                        toast({
+                          title: ToastTitle.success,
+                          description: "Sign in success!",
+                        });
+                        if (data.data.token) {
+                          setTokenAfterSignIn(data.data.token);
+                          setAtom({
+                            showToastErrorSignIn: false,
+                            token: data.data.token,
+                          });
+                          await queryClient.invalidateQueries(
+                            ApiQuery.users.getMe()
+                          );
+                          setTimeout(() => {
+                            router.replace("/dashboard");
+                          }, 50);
+                        }
+                        config?.onSuccess?.();
+                      }
+                    },
                   }
-                },
-              });
+                );
+              } else {
+                console.debug("reCaptchaToken is required");
+                console.error("reCaptchaToken is required");
+                console.log("reCaptchaToken is required");
+              }
             }
           }}
           type={type}

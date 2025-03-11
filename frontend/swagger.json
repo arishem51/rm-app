@@ -1746,17 +1746,10 @@
             "maxLength": 2147483647,
             "minLength": 6
           },
-          "reCaptchaToken": { "type": "string" },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
           "name": { "type": "string" }
         },
-        "required": [
-          "name",
-          "password",
-          "phoneNumber",
-          "reCaptchaToken",
-          "username"
-        ]
+        "required": ["name", "password", "phoneNumber", "username"]
       },
       "CreateShopDTO": {
         "type": "object",
@@ -1817,19 +1810,11 @@
             "maxLength": 2147483647,
             "minLength": 6
           },
-          "reCaptchaToken": { "type": "string" },
           "phoneNumber": { "type": "string", "pattern": "^[0-9]{10,12}$" },
           "name": { "type": "string" },
           "email": { "type": "string" }
         },
-        "required": [
-          "email",
-          "name",
-          "password",
-          "phoneNumber",
-          "reCaptchaToken",
-          "username"
-        ]
+        "required": ["email", "name", "password", "phoneNumber", "username"]
       },
       "SignInRequest": {
         "type": "object",
