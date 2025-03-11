@@ -195,7 +195,7 @@ const ProductForm = ({ onClose, product }: Props) => {
               name="price"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Gía (VNĐ)</FormLabel>
+                  <FormLabel>Giá (VNĐ)</FormLabel>
                   <FormControl>
                     <InputCurrency
                       className={className}

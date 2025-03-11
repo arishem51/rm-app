@@ -15,7 +15,14 @@ export default async function Page({
   }
 
   return (
-    <HydrationPrefetchQuery query={ApiQuery.products.getProduct(id)} awaitQuery>
+    <HydrationPrefetchQuery
+      queries={[
+        ApiQuery.products.getProduct(id),
+        ApiQuery.partners.getAllPartners(),
+        ApiQuery.categories.getAllCategories(),
+      ]}
+      awaitQuery
+    >
       <div className="px-4">
         <h1 className="text-3xl font-bold mt-2">Sản phẩm</h1>
         <p className="text-sm text-muted-foreground">

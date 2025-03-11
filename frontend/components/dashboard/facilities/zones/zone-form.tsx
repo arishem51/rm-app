@@ -29,7 +29,7 @@ type Props = {
 
 const schemaFields = {
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
-  warehouseId: z.number().min(1, { message: "Kho là bắt buộc" }),
+  warehouseId: z.coerce.number().min(1, { message: "Kho là bắt buộc" }),
 };
 
 const ZoneForm = ({ zone, onClose }: Props) => {
