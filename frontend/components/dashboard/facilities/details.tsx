@@ -10,19 +10,22 @@ import { Separator } from "@/components/ui/separator";
 type Props = { id: number };
 
 const FacilityDetails = ({ id }: Props) => {
-  const { data: { data } = {}, error } = useAppQuery(
+  const { data: { data: warehouse } = {}, error } = useAppQuery(
     ApiQuery.warehouses.getDetails(id)
+  );
+  const { data: { data: zones } = {} } = useAppQuery(
+    ApiQuery.zones.getAllByWarehouse(id)
   );
   useToastErrorDetailsPage(error);
 
-  if (!data) {
+  if (!warehouse) {
     return <DetailsPageAlert />;
   }
 
   return (
     <div className="w-2/3">
       <Separator className="my-4" />
-      <FacilityForm warehouse={data} />
+      <FacilityForm warehouse={warehouse} zones={zones ?? []} />
     </div>
   );
 };

@@ -7,26 +7,45 @@ import {
   Form,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { ToastTitle } from "@/lib/constants";
-import { WarehouseCreateDTO, WarehouseDTO } from "@/types/Api";
+import { WarehouseDTO, WarehouseUpdateDTO, ZoneDTO } from "@/types/Api";
 import {
   useCreateWarehouse,
   useUpdateWarehouse,
 } from "@/hooks/mutations/warehouse";
 import { useMe } from "@/hooks/mutations/user";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Edit } from "lucide-react";
+import EmptyState from "../empty-state";
+import ZoneForm from "./zones/zone-form";
 
 type Props = {
   onClose?: () => void;
   warehouse?: WarehouseDTO;
+  zones?: ZoneDTO[];
 };
 
 const schemaFields = {
@@ -34,11 +53,12 @@ const schemaFields = {
   address: z.string().nonempty({ message: "Địa chỉ là bắt buộc" }),
 };
 
-const FacilityForm = ({ warehouse, onClose }: Props) => {
-  const form = useForm<WarehouseCreateDTO>({
+const FacilityForm = ({ warehouse, onClose, zones }: Props) => {
+  const form = useForm<WarehouseUpdateDTO & { zones?: number[] }>({
     defaultValues: {
       name: "",
       address: "",
+      status: "ACTIVE",
     },
     resolver: zodResolver(z.object(schemaFields)),
   });
@@ -49,6 +69,7 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
     useUpdateWarehouse();
   const queryClient = useQueryClient();
   const { data: currentUser } = useMe();
+  const [zone, setZone] = useState<ZoneDTO>();
 
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
@@ -75,9 +96,9 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
     if (warehouse) {
       form.reset(warehouse);
     }
-  }, [form, warehouse]);
+  }, [form, warehouse, zones]);
 
-  const handleSubmit = form.handleSubmit((data: WarehouseCreateDTO) => {
+  const handleSubmit = form.handleSubmit((data: WarehouseUpdateDTO) => {
     if (warehouse?.id) {
       updateFacility(
         { warehouseId: warehouse.id, ...data },
@@ -110,6 +131,29 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
 
   return (
     <Form {...form}>
+      <Dialog
+        open={!!zone}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setZone(undefined);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{zone?.id ? "Cập nhật" : "Tạo"} Category</DialogTitle>
+            <DialogDescription>
+              Cập nhật thông tin khu vực. Nhấn lưu khi hoàn thành.
+            </DialogDescription>
+          </DialogHeader>
+          <ZoneForm
+            onClose={() => {
+              setZone(undefined);
+            }}
+            zone={zone}
+          />
+        </DialogContent>
+      </Dialog>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 mb-4">
           <FormField
@@ -138,6 +182,51 @@ const FacilityForm = ({ warehouse, onClose }: Props) => {
               </FormItem>
             )}
           />
+          <div className="mt-8 mb-2 flex items-center justify-between">
+            <FormLabel>Khu vực trong kho</FormLabel>
+            <Button
+              onClick={() => {
+                setZone({} as ZoneDTO);
+              }}
+              type="button"
+            >
+              Thêm khu vực
+            </Button>
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>STT</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {zones ? (
+                zones?.map((zone, index) => (
+                  <TableRow key={zone.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{zone.name}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        onClick={() => {
+                          setZone(zone);
+                        }}
+                        size="icon"
+                        variant="outline"
+                        className="w-6 h-6"
+                        type="button"
+                      >
+                        <Edit />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <EmptyState />
+              )}
+            </TableBody>
+          </Table>
           <DialogFooter className="mt-2">
             <Button type="submit" disabled={isPending}>
               Lưu

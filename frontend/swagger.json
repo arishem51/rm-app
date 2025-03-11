@@ -44,7 +44,7 @@
         "tags": ["Zone Management"],
         "summary": "Update a zone",
         "description": "Update a zone by its ID.",
-        "operationId": "updateShop",
+        "operationId": "updateZone",
         "parameters": [
           {
             "name": "id",
@@ -172,7 +172,7 @@
         "tags": ["Shop Management"],
         "summary": "Update a shop",
         "description": "Update a shop by its ID.",
-        "operationId": "updateShop_1",
+        "operationId": "updateShop",
         "parameters": [
           {
             "name": "id",

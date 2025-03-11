@@ -63,7 +63,7 @@ public class ZoneController {
 
     @Operation(summary = "Update a zone", description = "Update a zone by its ID.")
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<ZoneDTO>> updateShop(
+    public ResponseEntity<BaseResponse<ZoneDTO>> updateZone(
             @PathVariable Long id,
             @RequestBody ZoneRequestDTO dto,
             @CurrentUser User currentUser) {

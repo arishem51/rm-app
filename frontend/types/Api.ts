@@ -1175,12 +1175,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Update a zone by its ID.
      *
      * @tags Zone Management
-     * @name UpdateShop
+     * @name UpdateZone
      * @summary Update a zone
      * @request PUT:/api/zones/{id}
      * @secure
      */
-    updateShop: (id: number, data: ZoneRequestDTO, params: RequestParams = {}) =>
+    updateZone: (id: number, data: ZoneRequestDTO, params: RequestParams = {}) =>
       this.request<BaseResponseZoneDTO, any>({
         path: `/api/zones/${id}`,
         method: "PUT",
@@ -1249,12 +1249,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Update a shop by its ID.
      *
      * @tags Shop Management
-     * @name UpdateShop1
+     * @name UpdateShop
      * @summary Update a shop
      * @request PUT:/api/shops/{id}
      * @secure
      */
-    updateShop1: (id: number, data: UpdateShopDTO, params: RequestParams = {}) =>
+    updateShop: (id: number, data: UpdateShopDTO, params: RequestParams = {}) =>
       this.request<BaseResponseShopDTO, any>({
         path: `/api/shops/${id}`,
         method: "PUT",

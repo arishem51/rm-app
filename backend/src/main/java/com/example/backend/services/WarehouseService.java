@@ -48,7 +48,7 @@ public class WarehouseService {
 
     public Warehouse createWarehouseByShop(Shop shop) {
         Warehouse warehouse = new Warehouse();
-        warehouse.setName("Warehouse - " + shop.getName());
+        warehouse.setName("Kho - " + shop.getName());
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
         return warehouseRepository.save(warehouse);
