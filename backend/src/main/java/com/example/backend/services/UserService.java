@@ -17,9 +17,11 @@ import com.example.backend.dto.auth.request.SignUpRequest;
 import com.example.backend.dto.auth.request.UpdateUserRequest;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
+import com.example.backend.entities.Zone;
 import com.example.backend.enums.Role;
 import com.example.backend.repositories.ShopRepository;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.repositories.ZoneRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +31,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ShopRepository shopRepository;
+    private final ZoneRepository zoneRepository;
     private final WarehouseService warehouseService;
 
     public User getCurrentUser() {
@@ -104,7 +107,9 @@ public class UserService {
                 .createBy(savedUser)
                 .build();
         savedUser.setShop(shopRepository.save(shop));
-        warehouseService.createWarehouseByShop(shop);
+        Zone zone = Zone.builder().name("Bên phải cửa kho").warehouse(
+                warehouseService.createWarehouseByShop(shop)).build();
+        zoneRepository.save(zone);
         return userRepository.save(savedUser);
     }
 
