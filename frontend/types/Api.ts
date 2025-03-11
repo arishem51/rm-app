@@ -1768,6 +1768,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch a list of zones in a warehouse of a shop.
+     *
+     * @tags Zone Management
+     * @name GetZonesByWarehouseId
+     * @summary Get zones in warehouse
+     * @request GET:/api/zones/{warehouseId}
+     * @secure
+     */
+    getZonesByWarehouseId: (warehouseId: number, params: RequestParams = {}) =>
+      this.request<BaseResponseListZoneDTO, any>({
+        path: `/api/zones/${warehouseId}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Get paginate warehouses of a shop
      *
      * @tags Warehouse Management

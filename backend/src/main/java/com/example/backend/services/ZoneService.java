@@ -28,6 +28,11 @@ public class ZoneService {
         return zoneRepository.findByWarehouse_ShopId(shop.getId());
     }
 
+    public List<Zone> findAllZonesByWarehouseAndShop(Long warehouseId, User currentUser) {
+        Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(warehouseId, currentUser);
+        return zoneRepository.findByWarehouseIdAndWarehouse_ShopId(warehouseId, warehouse.getShop().getId());
+    }
+
     public Zone create(ZoneRequestDTO dto, User currentUser) {
         Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(dto.getWarehouseId(),
                 currentUser);

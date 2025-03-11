@@ -9,5 +9,7 @@ import com.example.backend.entities.Zone;
 public interface ZoneRepository extends JpaRepository<Zone, Long> {
     List<Zone> findByWarehouse_ShopId(Long shopId);
 
+    List<Zone> findByWarehouseIdAndWarehouse_ShopId(Long warehouseId, Long shopId);
+
     Zone findByIdAndWarehouse_ShopId(Long id, Long shopId);
 }

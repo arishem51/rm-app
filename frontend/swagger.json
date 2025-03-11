@@ -927,6 +927,34 @@
         }
       }
     },
+    "/api/zones/{warehouseId}": {
+      "get": {
+        "tags": ["Zone Management"],
+        "summary": "Get zones in warehouse",
+        "description": "Fetch a list of zones in a warehouse of a shop.",
+        "operationId": "getZonesByWarehouseId",
+        "parameters": [
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListZoneDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/warehouses": {
       "get": {
         "tags": ["Warehouse Management"],

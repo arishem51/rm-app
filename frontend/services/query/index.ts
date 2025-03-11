@@ -7,6 +7,7 @@ import { warehouses } from "./warehouses";
 import { inventories } from "./inventories";
 import { orders } from "./orders";
 import { payment } from "./payment";
+import { zones } from "./zones";
 
 const ApiQuery = {
   users,
@@ -18,6 +19,7 @@ const ApiQuery = {
   inventories,
   orders,
   payment,
+  zones,
 };
 
 export { ApiQuery };

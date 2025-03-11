@@ -16,7 +16,10 @@ export default async function Page({
 
   return (
     <HydrationPrefetchQuery
-      query={ApiQuery.warehouses.getDetails(id)}
+      queries={[
+        ApiQuery.warehouses.getDetails(id),
+        ApiQuery.zones.getAllByWarehouse(id),
+      ]}
       awaitQuery
     >
       <div className="px-4">

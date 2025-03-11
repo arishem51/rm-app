@@ -35,6 +35,20 @@ public class ZoneController {
         }
     }
 
+    @Operation(summary = "Get zones in warehouse", description = "Fetch a list of zones in a warehouse of a shop.")
+    @GetMapping("/{warehouseId}")
+    public ResponseEntity<BaseResponse<List<ZoneDTO>>> getZonesByWarehouseId(
+            @PathVariable Long warehouseId,
+            @CurrentUser User user) {
+        try {
+            List<Zone> zones = zoneService.findAllZonesByWarehouseAndShop(warehouseId, user);
+            List<ZoneDTO> response = zones.stream().map(ZoneDTO::fromEntity).toList();
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
     @Operation(summary = "Create a zone", description = "Create a zone by owner or staff of the shop.")
     @PostMapping("")
     public ResponseEntity<BaseResponse<ZoneDTO>> createZone(@RequestBody ZoneRequestDTO dto,
