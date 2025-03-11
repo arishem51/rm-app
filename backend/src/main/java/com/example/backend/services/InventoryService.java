@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import com.example.backend.dto.inventory.InventoryCreateDTO;
 import com.example.backend.dto.inventory.InventoryUpdateDTO;
 import com.example.backend.entities.Inventory;
 import com.example.backend.entities.Product;
@@ -34,7 +33,6 @@ public class InventoryService {
         return inventoryRepository.findByWarehouse_ShopId(shopId);
     }
 
-
     public Inventory findInventoryById(Long id, User currentUser) {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Inventory not found!"));
@@ -55,25 +53,29 @@ public class InventoryService {
                         PageRequest.of(page, pageSize));
     }
 
-    public Inventory create(InventoryCreateDTO inventoryDto, User currentUser) {
-        Product product = productService.findProductById(inventoryDto.getProductId(), currentUser);
-        Warehouse warehouse = warehouseService.findWarehouseById(inventoryDto.getWarehouseId());
-        Shop shop = currentUser.getShop();
+    // public Inventory create(InventoryCreateDTO inventoryDto, User currentUser) {
+    // Product product = productService.findProductById(inventoryDto.getProductId(),
+    // currentUser);
+    // Warehouse warehouse =
+    // warehouseService.findWarehouseById(inventoryDto.getWarehouseId());
+    // Shop shop = currentUser.getShop();
 
-        // FIXME: throw different message for product and warehouse
-        if (!shop.getId().equals(warehouse.getShop().getId()) || !shop.getId().equals(product.getShop().getId())) {
-            throw new IllegalArgumentException("You do not have permission to manage inventory for this warehouse.");
-        }
+    // // FIXME: throw different message for product and warehouse
+    // if (!shop.getId().equals(warehouse.getShop().getId()) ||
+    // !shop.getId().equals(product.getShop().getId())) {
+    // throw new IllegalArgumentException("You do not have permission to manage
+    // inventory for this warehouse.");
+    // }
 
-        Inventory inventory = Inventory.builder()
-                .product(product)
-                .warehouse(warehouse)
-                .quantity(inventoryDto.getQuantity())
-                .createdBy(currentUser)
-                .build();
+    // Inventory inventory = Inventory.builder()
+    // .product(product)
+    // .warehouse(warehouse)
+    // .quantity(inventoryDto.getQuantity())
+    // .createdBy(currentUser)
+    // .build();
 
-        return inventoryRepository.save(inventory);
-    }
+    // return inventoryRepository.save(inventory);
+    // }
 
     public Inventory update(Long id, InventoryUpdateDTO inventoryDto, User currentUser) {
         Inventory inventory = inventoryRepository.findById(id)

@@ -12,6 +12,7 @@ import lombok.*;
 public class WarehouseUpdateDTO {
     private String name;
     private String address;
+    private String description;
 
     @ValidEnum(enumClass = ActionStatus.class, message = "Invalid status!")
     private String status;

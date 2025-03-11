@@ -11,22 +11,18 @@ import {
 } from "@/components/ui/table";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import { Edit, Plus } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
 import HeaderListSearch from "../header-list-search";
 import Link from "next/link";
 import ListPagination from "../pagination";
-import { checkRole } from "@/lib/helpers";
-import { useMe } from "@/hooks/mutations/user";
 
 const Inventories = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.inventories.getInventories(filter)
   );
-  const { data: currentUser } = useMe();
-  const { isOwner } = checkRole(currentUser);
 
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
@@ -49,14 +45,6 @@ const Inventories = () => {
           filterSearch={filter.search}
           onSearch={handleSearch}
         />
-        {isOwner && (
-          <Link href="/dashboard/warehouses/inventories/create">
-            <Button>
-              <Plus />
-              Tạo Hàng hóa
-            </Button>
-          </Link>
-        )}
       </div>
       {(data?.data || []).length > 0 ? (
         <Table>
