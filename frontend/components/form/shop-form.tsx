@@ -99,9 +99,9 @@ const ShopForm = ({ onClose, shop }: Props) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Shop Tên</FormLabel>
+                <FormLabel>Tên cửa hàng</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your shop name" {...field} />
+                  <Input placeholder="Ví dụ: Gạo Hưng Thịnh" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -114,7 +114,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
               <FormItem>
                 <FormLabel>Địa chỉ</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your shop address" {...field} />
+                  <Input placeholder="Ví dụ: Hà Đông, Hà Nội" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

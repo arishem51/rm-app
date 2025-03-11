@@ -16,14 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 @RequiredArgsConstructor
 public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
 
-    // Kiểm tra quyền của người dùng để quản lý kho
     private void validateUserCanManageWarehouse(User user) {
         if (!UserRoleUtils.isOwner(user)) {
             throw new IllegalArgumentException("You are not authorized to manage warehouses!");
@@ -119,6 +116,14 @@ public class WarehouseService {
             throw new IllegalArgumentException("You do not have permission to view warehouses from this shop.");
         }
         return warehouseRepository.findAllByShopId(shopId);
+    }
+
+    public Warehouse findWarehouseByIdAndShopId(Long warehouseId, Long shopId, User currentUser) {
+        if (currentUser.getShop() == null || !currentUser.getShop().getId().equals(shopId)) {
+            throw new IllegalArgumentException("You do not have permission to view warehouses from this shop.");
+        }
+        return warehouseRepository.findByIdAndShopId(warehouseId, shopId)
+                .orElseThrow(() -> new IllegalArgumentException("Warehouse not found with ID: " + warehouseId));
     }
 
 }

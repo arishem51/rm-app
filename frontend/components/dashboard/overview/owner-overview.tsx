@@ -40,7 +40,7 @@ const OwnerOverview = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-1">
               <DollarSign size={16} />
-              <span>Tổng lợi nhuận</span>
+              <span>Tổng doanh thu</span>
             </CardTitle>
             <CardDescription className="text-2xl">
               {false ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}

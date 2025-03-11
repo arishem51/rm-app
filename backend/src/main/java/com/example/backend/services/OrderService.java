@@ -50,7 +50,6 @@ public class OrderService {
                 .orderItems(orderDTO.getOrderItems().stream().map(itemDTO -> {
                     Inventory inventory = inventoryRepository.findById(itemDTO.getProductId())
                             .orElseThrow(() -> new IllegalArgumentException("Inventory not found"));
-                    inventory.setQuantity(inventory.getQuantity() - itemDTO.getQuantity());
                     inventoryRepository.save(inventory);
                     Product product = inventory.getProduct();
                     return OrderItem.builder()

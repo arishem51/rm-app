@@ -10,7 +10,6 @@ import com.example.backend.entities.Inventory;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
-import com.example.backend.entities.Warehouse;
 import com.example.backend.repositories.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -30,15 +29,19 @@ public class InventoryService {
         if (!currentUser.getShop().getId().equals(shopId)) {
             throw new IllegalArgumentException("You do not have permission to manage inventory for this shop.");
         }
-        return inventoryRepository.findByWarehouse_ShopId(shopId);
+        return inventoryRepository.findByZone_Warehouse_Shop_Id(shopId);
     }
 
     public Inventory findInventoryById(Long id, User currentUser) {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Inventory not found!"));
-        if (!currentUser.getShop().getId().equals(inventory.getWarehouse().getShop().getId())) {
-            throw new IllegalArgumentException("You do not have permission to manage inventory for this shop.");
-        }
+        // FIXME: Warehouse -> Zone
+        // if
+        // (!currentUser.getShop().getId().equals(inventory.getWarehouse().getShop().getId()))
+        // {
+        // throw new IllegalArgumentException("You do not have permission to manage
+        // inventory for this shop.");
+        // }
         return inventory;
     }
 
@@ -48,8 +51,9 @@ public class InventoryService {
             throw new IllegalArgumentException("You must have a shop to manage products!");
         }
         return search.isEmpty()
-                ? inventoryRepository.findByWarehouse_ShopId(shop.getId(), PageRequest.of(page, pageSize))
-                : inventoryRepository.findByWarehouse_ShopIdAndProduct_NameContainingIgnoreCase(shop.getId(), search,
+                ? inventoryRepository.findByZone_Warehouse_Shop_Id(shop.getId(), PageRequest.of(page, pageSize))
+                : inventoryRepository.findByZone_Warehouse_Shop_IdAndProduct_NameContainingIgnoreCase(shop.getId(),
+                        search,
                         PageRequest.of(page, pageSize));
     }
 
@@ -85,17 +89,18 @@ public class InventoryService {
         if (inventoryDto.getProductId() != null) {
             product = productService.findProductById(inventoryDto.getProductId(), currentUser);
         }
-        Warehouse warehouse = warehouseService.findWarehouseById(inventoryDto.getWarehouseId());
+        // Warehouse warehouse =
+        // warehouseService.findWarehouseById(inventoryDto.getWarehouseId());
         Shop shop = currentUser.getShop();
-        // FIXME: throw different message for product and warehouse
-        if (!shop.getId().equals(warehouse.getShop().getId()) || !shop.getId().equals(product.getShop().getId())) {
-            throw new IllegalArgumentException("You do not have permission to manage inventory for this warehouse.");
-        }
+        // if (!shop.getId().equals(warehouse.getShop().getId()) ||
+        // !shop.getId().equals(product.getShop().getId())) {
+        // throw new IllegalArgumentException("You do not have permission to manage
+        // inventory for this warehouse.");
+        // }
         if (product != null) {
             inventory.setProduct(product);
         }
-        inventory.setWarehouse(warehouse);
-        inventory.setQuantity(inventoryDto.getQuantity());
+        // inventory.setWarehouse(warehouse);
 
         return inventoryRepository.save(inventory);
     }

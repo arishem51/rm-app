@@ -2,10 +2,8 @@ package com.example.backend.controllers;
 
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
-import com.example.backend.dto.order.OrderResponseDTO;
 import com.example.backend.dto.payment.PaymentHistoryDetailDTO;
 import com.example.backend.dto.payment.PaymentHistoryResponseDTO;
-import com.example.backend.entities.Order;
 import com.example.backend.entities.PaymentHistory;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.PaymentHistoryRepository;
@@ -24,11 +22,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PaymentHistoryController {
     private final PaymentHistoryRepository paymentHistoryRepository;
+
     @GetMapping("/all")
     public ResponseEntity<BaseResponse<List<PaymentHistoryResponseDTO>>> getAllPayment(@CurrentUser User currentUser) {
         List<PaymentHistory> payment = paymentHistoryRepository.findAllByShopId(currentUser.getShop().getId());
         return ResponseEntity.ok(new BaseResponse<>(PaymentHistoryResponseDTO.fromEntity(payment), "Success!"));
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<PaymentHistoryDetailDTO>> getPaymentById(@PathVariable Long id) {
         Optional<PaymentHistory> payment = paymentHistoryRepository.findById(id);

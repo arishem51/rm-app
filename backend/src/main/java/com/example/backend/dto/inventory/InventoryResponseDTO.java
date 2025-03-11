@@ -17,10 +17,9 @@ import lombok.Setter;
 public class InventoryResponseDTO {
     private Long id;
     private Long productId;
-    private Long warehouseId;
-    private Integer quantity;
+    private Long zoneId;
+    private String zoneName;
     private String productName;
-    private String warehouseName;
     private UserDTO createdBy;
     private String createdAt;
     private String updatedAt;
@@ -30,10 +29,9 @@ public class InventoryResponseDTO {
         return InventoryResponseDTO.builder()
                 .id(inventory.getId())
                 .productId(inventory.getProduct().getId())
-                .warehouseId(inventory.getWarehouse().getId())
-                .quantity(inventory.getQuantity())
+                .zoneId(inventory.getZone().getId())
+                .zoneName(inventory.getZone().getName())
                 .productName(inventory.getProduct().getName())
-                .warehouseName(inventory.getWarehouse().getName())
                 .createdBy(UserDTO.fromEntity(inventory.getCreatedBy()))
                 .createdAt(inventory.getCreatedAt().toString())
                 .updatedAt(inventory.getUpdatedAt() != null ? inventory.getUpdatedAt().toString() : null)
