@@ -118,11 +118,12 @@ public class WarehouseService {
         return warehouseRepository.findAllByShopId(shopId);
     }
 
-    public Warehouse findWarehouseByIdAndShopId(Long warehouseId, Long shopId, User currentUser) {
-        if (currentUser.getShop() == null || !currentUser.getShop().getId().equals(shopId)) {
-            throw new IllegalArgumentException("You do not have permission to view warehouses from this shop.");
+    public Warehouse findWarehouseByIdAndShopId(Long warehouseId, User currentUser) {
+        if (currentUser.getShop() == null) {
+            throw new IllegalArgumentException("You must have a shop to manage warehouses!");
         }
-        return warehouseRepository.findByIdAndShopId(warehouseId, shopId)
+        return warehouseRepository.findByIdAndShopId(warehouseId,
+                currentUser.getShop().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Warehouse not found with ID: " + warehouseId));
     }
 

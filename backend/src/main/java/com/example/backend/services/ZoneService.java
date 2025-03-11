@@ -20,32 +20,25 @@ public class ZoneService {
     private final ShopService shopService;
     private final WarehouseService warehouseService;
 
-    private Shop getShopOrThrowException(User currentUser) throws IllegalArgumentException {
+    public List<Zone> findAllZonesByShopId(User currentUser) {
         Shop shop = shopService.getShopById(currentUser.getShop().getId());
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage zones!");
         }
-        return shop;
-    }
-
-    public List<Zone> findAllZonesByShopId(User currentUser) {
-        Shop shop = getShopOrThrowException(currentUser);
         return zoneRepository.findByWarehouse_ShopId(shop.getId());
     }
 
     public Zone create(ZoneRequestDTO dto, User currentUser) {
-        Shop shop = getShopOrThrowException(currentUser);
-        Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(dto.getWarehouseId(), shop.getId(),
+        Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(dto.getWarehouseId(),
                 currentUser);
         Zone zone = Zone.builder().name(dto.getName()).warehouse(warehouse).build();
         return zoneRepository.save(zone);
     }
 
     public Zone update(Long id, ZoneRequestDTO dto, User currentUser) {
-        Shop shop = getShopOrThrowException(currentUser);
-        Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(dto.getWarehouseId(), shop.getId(),
+        Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(dto.getWarehouseId(),
                 currentUser);
-        Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(id, shop.getId());
+        Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(id, warehouse.getShop().getId());
         if (zone == null) {
             throw new IllegalArgumentException("Zone not found.");
         }
