@@ -48,7 +48,7 @@ public class WarehouseService {
 
     public Warehouse createWarehouseByShop(Shop shop) {
         Warehouse warehouse = new Warehouse();
-        warehouse.setName("Warehouse - " + shop.getName()); // Tên kho có thể dựa trên tên shop
+        warehouse.setName("Warehouse - " + shop.getName());
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
         return warehouseRepository.save(warehouse);

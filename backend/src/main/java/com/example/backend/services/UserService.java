@@ -1,7 +1,6 @@
 package com.example.backend.services;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -105,6 +104,7 @@ public class UserService {
                 .createBy(savedUser)
                 .build();
         savedUser.setShop(shopRepository.save(shop));
+        warehouseService.createWarehouseByShop(shop);
         return userRepository.save(savedUser);
     }
 
