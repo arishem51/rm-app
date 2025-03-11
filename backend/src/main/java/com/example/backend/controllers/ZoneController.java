@@ -36,7 +36,7 @@ public class ZoneController {
     }
 
     @Operation(summary = "Create a zone", description = "Create a zone by owner or staff of the shop.")
-    @PostMapping()
+    @PostMapping("")
     public ResponseEntity<BaseResponse<ZoneDTO>> createZone(@RequestBody ZoneRequestDTO dto,
             @CurrentUser User user) {
         try {

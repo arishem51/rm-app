@@ -15,7 +15,7 @@ import HeaderListSearch from "../header-list-search";
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
 import { Button } from "@/components/ui/button";
-import { Edit, Plus } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import { WarehouseDTO } from "@/types/Api";
 import {
   Dialog,
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import FacilityForm from "./facility-form";
 import { format } from "date-fns";
+import Link from "next/link";
 
 const Facilities = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -109,16 +110,13 @@ const Facilities = () => {
                   {format(warehouse.createdAt!, "yyyy-MM-dd")}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button
-                    size="icon"
-                    onClick={() => {
-                      setUpdateWarehouse(warehouse);
-                    }}
-                    variant="outline"
-                    className="w-6 h-6"
+                  <Link
+                    href={`/dashboard/warehouses/facilities/${warehouse.id}`}
                   >
-                    <Edit />
-                  </Button>
+                    <Button size="icon" variant="outline" className="w-6 h-6">
+                      <ArrowUpRight />
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

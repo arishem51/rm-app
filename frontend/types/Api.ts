@@ -9,9 +9,42 @@
  * ---------------------------------------------------------------
  */
 
+export interface ZoneRequestDTO {
+  name?: string;
+  /** @format int64 */
+  warehouseId: number;
+}
+
+export interface BaseResponseZoneDTO {
+  data?: ZoneDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface ZoneDTO {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+  /** @format int64 */
+  warehouseId?: number;
+  warehouseName?: string;
+  status?: "ACTIVE" | "INACTIVE";
+}
+
 export interface WarehouseUpdateDTO {
   name?: string;
   address?: string;
+  description?: string;
   status?: string;
 }
 
@@ -31,6 +64,7 @@ export interface Warehouse {
   /** @format int64 */
   id?: number;
   name?: string;
+  description?: string;
   address?: string;
   /** @format date-time */
   createdAt?: string;
@@ -315,7 +349,7 @@ export interface InventoryUpdateDTO {
   /** @format int64 */
   productId?: number;
   /** @format int64 */
-  warehouseId?: number;
+  zoneId?: number;
   /** @format int32 */
   quantity?: number;
 }
@@ -338,11 +372,9 @@ export interface InventoryResponseDTO {
   /** @format int64 */
   productId?: number;
   /** @format int64 */
-  warehouseId?: number;
-  /** @format int32 */
-  quantity?: number;
+  zoneId?: number;
+  zoneName?: string;
   productName?: string;
-  warehouseName?: string;
   createdBy?: UserDTO;
   createdAt?: string;
   updatedAt?: string;
@@ -371,6 +403,7 @@ export interface BaseResponseCategory {
 export interface WarehouseCreateDTO {
   name?: string;
   address?: string;
+  description?: string;
   /** @format int64 */
   shopId: number;
 }
@@ -391,11 +424,6 @@ export interface CreateUserRequest {
   name: string;
 }
 
-export interface CreateShopDTO {
-  name?: string;
-  address?: string;
-}
-
 export interface PartnerCreateDTO {
   name: string;
   contactName: string;
@@ -414,15 +442,6 @@ export interface CreateOrderDTO {
   orderItems?: OrderItemDTO[];
   shipping?: boolean;
   debt?: boolean;
-}
-
-export interface InventoryCreateDTO {
-  /** @format int64 */
-  productId: number;
-  /** @format int64 */
-  warehouseId: number;
-  /** @format int32 */
-  quantity: number;
 }
 
 export interface CreateCategoryDTO {
@@ -505,6 +524,18 @@ export interface ForgotPasswordRequest {
   reCaptchaToken: string;
 }
 
+export interface BaseResponseListZoneDTO {
+  data?: ZoneDTO[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
 export interface BaseResponsePaginateResponseWarehouseDTO {
   data?: PaginateResponseWarehouseDTO;
   message?: string;
@@ -531,6 +562,7 @@ export interface PaginateResponseWarehouseDTO {
 
 export interface WarehouseDTO {
   name?: string;
+  description?: string;
   address?: string;
   /** @format int64 */
   shopId?: number;
@@ -540,6 +572,18 @@ export interface WarehouseDTO {
   status: string;
   /** @format date-time */
   createdAt?: string;
+}
+
+export interface BaseResponseWarehouseDTO {
+  data?: WarehouseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface BaseResponseListWarehouseDTO {
@@ -783,14 +827,14 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  first?: boolean;
-  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
@@ -801,11 +845,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  /** @format int32 */
-  pageNumber?: number;
   paged?: boolean;
   /** @format int32 */
   pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
   unpaged?: boolean;
 }
 
@@ -831,14 +875,23 @@ export interface Inventory {
   /** @format int64 */
   id?: number;
   product?: Product;
-  warehouse?: Warehouse;
-  /** @format int32 */
-  quantity?: number;
+  zone?: Zone;
   createdBy?: User;
   /** @format date-time */
   createdAt?: string;
   /** @format date-time */
   updatedAt?: string;
+}
+
+export interface Zone {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface BaseResponsePaginateResponseInventoryResponseDTO {
@@ -1119,6 +1172,25 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
     /**
+     * @description Update a zone by its ID.
+     *
+     * @tags Zone Management
+     * @name UpdateShop
+     * @summary Update a zone
+     * @request PUT:/api/zones/{id}
+     * @secure
+     */
+    updateShop: (id: number, data: ZoneRequestDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseZoneDTO, any>({
+        path: `/api/zones/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Update the details of an existing warehouse by ID
      *
      * @tags Warehouse Management
@@ -1177,12 +1249,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Update a shop by its ID.
      *
      * @tags Shop Management
-     * @name UpdateShop
+     * @name UpdateShop1
      * @summary Update a shop
      * @request PUT:/api/shops/{id}
      * @secure
      */
-    updateShop: (id: number, data: UpdateShopDTO, params: RequestParams = {}) =>
+    updateShop1: (id: number, data: UpdateShopDTO, params: RequestParams = {}) =>
       this.request<BaseResponseShopDTO, any>({
         path: `/api/shops/${id}`,
         method: "PUT",
@@ -1371,6 +1443,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch a list of all registered zones.
+     *
+     * @tags Zone Management
+     * @name GetAllZonesOfUser
+     * @summary Get all zones
+     * @request GET:/api/zones
+     * @secure
+     */
+    getAllZonesOfUser: (params: RequestParams = {}) =>
+      this.request<BaseResponseListZoneDTO, any>({
+        path: `/api/zones`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Create a zone by owner or staff of the shop.
+     *
+     * @tags Zone Management
+     * @name CreateZone
+     * @summary Create a zone
+     * @request POST:/api/zones
+     * @secure
+     */
+    createZone: (data: ZoneRequestDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseZoneDTO, any>({
+        path: `/api/zones`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Create a new warehouse under the specified shop
      *
      * @tags Warehouse Management
@@ -1435,25 +1543,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     createUser: (data: CreateUserRequest, params: RequestParams = {}) =>
       this.request<BaseResponseUserDTO, any>({
         path: `/api/users`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Create a shop by owner or admin.
-     *
-     * @tags Shop Management
-     * @name CreateShop
-     * @summary Create a shop
-     * @request POST:/api/shops
-     * @secure
-     */
-    createShop: (data: CreateShopDTO, params: RequestParams = {}) =>
-      this.request<BaseResponseShopDTO, any>({
-        path: `/api/shops`,
         method: "POST",
         body: data,
         secure: true,
@@ -1585,59 +1674,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of the registered inventories.
-     *
-     * @tags Inventories Management
-     * @name GetInventory
-     * @summary Get the inventories
-     * @request GET:/api/inventories/
-     * @secure
-     */
-    getInventory: (
-      query?: {
-        /**
-         * @format int32
-         * @default 0
-         */
-        page?: number;
-        /**
-         * @format int32
-         * @default 10
-         */
-        pageSize?: number;
-        /** @default "" */
-        search?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
-        path: `/api/inventories/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Create a inventory with the provided data.
-     *
-     * @tags Inventories Management
-     * @name CreateInventory
-     * @summary Create a inventory
-     * @request POST:/api/inventories/
-     * @secure
-     */
-    createInventory: (data: InventoryCreateDTO, params: RequestParams = {}) =>
-      this.request<BaseResponseInventoryResponseDTO, any>({
-        path: `/api/inventories/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
      * @description Create a new category under a specific shop.
      *
      * @tags Category Management
@@ -1761,6 +1797,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/warehouses`,
         method: "GET",
         query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Get details warehouse of a shop
+     *
+     * @tags Warehouse Management
+     * @name GetWarehouseDetail
+     * @summary Get details warehouse of a shop
+     * @request GET:/api/warehouses/{id}
+     * @secure
+     */
+    getWarehouseDetail: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseWarehouseDTO, any>({
+        path: `/api/warehouses/${id}`,
+        method: "GET",
         secure: true,
         ...params,
       }),
@@ -1975,6 +2028,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<BaseResponseListInventory, any>({
         path: `/api/inventories/all`,
         method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch a list of the registered inventories.
+     *
+     * @tags Inventories Management
+     * @name GetInventory
+     * @summary Get the inventories
+     * @request GET:/api/inventories/
+     * @secure
+     */
+    getInventory: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
+        path: `/api/inventories/`,
+        method: "GET",
+        query: query,
         secure: true,
         ...params,
       }),
