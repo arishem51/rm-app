@@ -101,11 +101,6 @@ const Content = () => {
         icon: TagIcon,
       },
       {
-        title: "Đối tác",
-        url: AppRoutes.dashboard.partners.url,
-        icon: Briefcase,
-      },
-      {
         title: "Sản phẩm",
         url: AppRoutes.dashboard.products.index.url,
         icon: Box,
@@ -148,6 +143,11 @@ const Content = () => {
             url: AppRoutes.dashboard.warehouses.inventories.index.url,
           },
         ],
+      },
+      {
+        title: "Đối tác",
+        url: AppRoutes.dashboard.partners.url,
+        icon: Briefcase,
       }
     );
     itemGroups.setting.items.push({
