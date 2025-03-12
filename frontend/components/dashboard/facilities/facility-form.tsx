@@ -42,6 +42,7 @@ import { Edit } from "lucide-react";
 import EmptyState from "../empty-state";
 import ZoneForm from "./zones/zone-form";
 import { useRouter } from "next/navigation";
+import { Textarea } from "@/components/ui/textarea";
 
 type Props = {
   onClose?: () => void;
@@ -54,6 +55,7 @@ const schemaFields = {
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   address: z.string().nonempty({ message: "Địa chỉ là bắt buộc" }),
   status: z.enum([ActionStatus.ACTIVE, ActionStatus.INACTIVE]),
+  description: z.string().optional(),
 };
 
 const FacilityForm = ({
@@ -66,6 +68,7 @@ const FacilityForm = ({
     defaultValues: {
       name: "",
       address: "",
+      description: "",
       status: ActionStatus.ACTIVE,
     },
     resolver: zodResolver(z.object(schemaFields)),
@@ -204,6 +207,24 @@ const FacilityForm = ({
                 <FormLabel>Địa chỉ</FormLabel>
                 <FormControl>
                   <Input placeholder="Địa chỉ kho" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả</FormLabel>
+                <FormControl>
+                  <Textarea
+                    rows={3}
+                    placeholder="Ví dụ: Kho chuyên chứa gạo làm bánh, kẹo, dự trữ"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
