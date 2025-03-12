@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -37,12 +38,9 @@ public class Inventory {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "warehouse_id", nullable = false)
-    private Warehouse warehouse;
-
-    @Column(nullable = false)
-    private int quantity;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "zone_id", nullable = false)
+    private Zone zone;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by", nullable = false)

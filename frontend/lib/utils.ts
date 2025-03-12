@@ -74,7 +74,7 @@ export const createQuery = <T, K>(
       queryKey.push(
         typeof params === "object"
           ? serialize(params as Record<string, string>)
-          : params
+          : String(params)
       );
     }
     return queryOptions<T>({

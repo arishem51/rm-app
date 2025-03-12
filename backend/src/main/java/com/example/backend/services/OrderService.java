@@ -42,7 +42,8 @@ public class OrderService {
     public Order createOrder(CreateOrderDTO orderDTO, User user) {
         Order order = Order.builder()
                 .user(user)
-                .partner(partnerRepository.getById(orderDTO.getPartnerId()))
+                .partner(partnerRepository.findById(orderDTO.getPartnerId())
+                        .orElseThrow(() -> new IllegalArgumentException("Partner not found")))
                 .shop(user.getShop())
                 .totalAmount(calculateTotalAmount(orderDTO.getOrderItems()))
                 .createdAt(LocalDateTime.now())
@@ -50,7 +51,6 @@ public class OrderService {
                 .orderItems(orderDTO.getOrderItems().stream().map(itemDTO -> {
                     Inventory inventory = inventoryRepository.findById(itemDTO.getProductId())
                             .orElseThrow(() -> new IllegalArgumentException("Inventory not found"));
-                    inventory.setQuantity(inventory.getQuantity() - itemDTO.getQuantity());
                     inventoryRepository.save(inventory);
                     Product product = inventory.getProduct();
                     return OrderItem.builder()

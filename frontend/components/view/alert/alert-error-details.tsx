@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
-const DetailsPageAlert = () => {
+const AlertErrorDetailPage = () => {
   return (
     <Alert variant="destructive">
       <AlertTitle>Error</AlertTitle>
@@ -9,4 +9,4 @@ const DetailsPageAlert = () => {
   );
 };
 
-export default DetailsPageAlert;
+export default AlertErrorDetailPage;

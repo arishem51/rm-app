@@ -17,7 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/mutations/product";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { RequestProductDTO, ResponseProductDTO } from "@/types/Api";
+import { ProductUpdateDTO, ResponseProductDTO, ZoneDTO } from "@/types/Api";
 import { ToastTitle, UserRole } from "@/lib/constants";
 import { Textarea } from "@/components/ui/textarea";
 import { ComboboxCategories } from "../combobox/category";
@@ -27,6 +27,16 @@ import InputCurrency from "@/components/input-currency";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useAllZonesByShop } from "@/services/hooks/warehouses";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
@@ -34,7 +44,7 @@ const schema = z.object({
   price: z.coerce
     .number()
     .min(0, { message: "Wholesale price must be positive" }),
-  unit: z.number().optional(),
+  unit: z.coerce.number().optional(),
   imageUrls: z
     .array(
       z.object({ url: z.string().url({ message: "Must be a valid URL" }) })
@@ -43,6 +53,7 @@ const schema = z.object({
   categoryId: z.string().nullable().optional(),
   supplierId: z.string().nullable().optional(),
   shopId: z.coerce.number(),
+  zoneId: z.coerce.number().optional(),
 });
 
 type ProductFormDTO = z.infer<typeof schema>;
@@ -54,7 +65,6 @@ type Props = {
 
 const ProductForm = ({ onClose, product }: Props) => {
   const { data: currentUser } = useMe();
-
   const form = useForm<ProductFormDTO>({
     resolver: zodResolver(schema),
     defaultValues: product
@@ -80,11 +90,31 @@ const ProductForm = ({ onClose, product }: Props) => {
     control: form.control,
     name: "imageUrls",
   });
-
   const queryClient = useQueryClient();
+  const { data = {} } = useAllZonesByShop();
+  const { data: zones = [] } = data;
   const { mutate: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
   const router = useRouter();
+
+  const groupZoneByWarehouseId = zones.reduce(
+    (acc, zone) => {
+      if (!acc[zone.warehouseId!]) {
+        acc[zone.warehouseId!] = {
+          warehouseId: zone.warehouseId!,
+          warehouseName: zone.warehouseName,
+          zones: [zone],
+        };
+      } else {
+        acc[zone.warehouseId!].zones.push(zone);
+      }
+      return acc;
+    },
+    {} as Record<
+      number,
+      { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
+    >
+  );
 
   const isPending = isCreating || isUpdating;
   const { reset } = form;
@@ -131,7 +161,7 @@ const ProductForm = ({ onClose, product }: Props) => {
         supplierId: data.supplierId ? Number(data.supplierId) : undefined,
       };
 
-      const mutateData: RequestProductDTO = {
+      const mutateData: ProductUpdateDTO = {
         ...payload,
         imageUrls: payload.imageUrls.map((image) => image.url),
         shopId: currentUser?.shopId,
@@ -142,7 +172,13 @@ const ProductForm = ({ onClose, product }: Props) => {
           factoryMutateConfig("update")
         );
       } else {
-        createProduct(mutateData, factoryMutateConfig("create"));
+        createProduct(
+          {
+            ...mutateData,
+            zoneId: data.zoneId!,
+          },
+          factoryMutateConfig("create")
+        );
       }
     }
   });
@@ -153,6 +189,9 @@ const ProductForm = ({ onClose, product }: Props) => {
         [&::-webkit-inner-spin-button]:appearance-none
         [&::-webkit-outer-spin-button]:appearance-none
     `;
+
+  const zoneId = form.watch("zoneId");
+  console.log({ zoneId });
 
   return (
     <Form {...form}>
@@ -195,7 +234,7 @@ const ProductForm = ({ onClose, product }: Props) => {
               name="price"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Gía (VNĐ)</FormLabel>
+                  <FormLabel>Giá (VNĐ)</FormLabel>
                   <FormControl>
                     <InputCurrency
                       className={className}
@@ -210,25 +249,87 @@ const ProductForm = ({ onClose, product }: Props) => {
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="supplierId"
-            render={({ field }) => (
-              <FormItem
-                className={cn("w-full", isOwner ? "" : "pointer-events-none")}
-              >
-                <FormLabel>Nhà cung cấp</FormLabel>
-                <br />
-                <FormControl>
-                  <ComboboxSuppliers
-                    onSelect={field.onChange}
-                    formValue={field.value?.toString()}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+          <div className="flex justify-between gap-2">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="supplierId"
+                render={({ field }) => (
+                  <FormItem
+                    className={cn(
+                      "w-full",
+                      isOwner ? "" : "pointer-events-none"
+                    )}
+                  >
+                    <FormLabel>Nhà cung cấp</FormLabel>
+                    <br />
+                    <FormControl>
+                      <ComboboxSuppliers
+                        onSelect={field.onChange}
+                        formValue={field.value?.toString()}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            {!product?.id && (
+              <div className="flex-1">
+                <FormField
+                  control={form.control}
+                  name="zoneId"
+                  render={({ field }) => (
+                    <FormItem
+                      className={cn(
+                        "w-full",
+                        isOwner ? "" : "pointer-events-none"
+                      )}
+                    >
+                      <FormLabel>Kho chứa</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value?.toString()}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn kho - khu trong kho" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(groupZoneByWarehouseId).map(
+                              ([key, value]) => {
+                                return (
+                                  <SelectGroup key={key}>
+                                    <SelectLabel>
+                                      Tên Kho: {value.warehouseName}
+                                    </SelectLabel>
+                                    {value.zones.map((zone) => {
+                                      const id = zone.id!.toString();
+                                      return (
+                                        <SelectItem
+                                          key={id}
+                                          value={id}
+                                          className="ml-2"
+                                        >
+                                          {zone.name}
+                                        </SelectItem>
+                                      );
+                                    })}
+                                  </SelectGroup>
+                                );
+                              }
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             )}
-          />
+          </div>
+
           <div className="flex justify-between gap-2">
             <div className="flex-1">
               <FormField

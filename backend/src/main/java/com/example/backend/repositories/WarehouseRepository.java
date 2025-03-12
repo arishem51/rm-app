@@ -3,6 +3,7 @@ package com.example.backend.repositories;
 import com.example.backend.entities.Warehouse;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,5 +19,7 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
     Page<Warehouse> findAllByShopId(Long shopId, PageRequest pageRequest);
 
     List<Warehouse> findAllByShopId(Long shopId);
+
+    Optional<Warehouse> findByIdAndShopId(Long id, Long shopId);
 
 }

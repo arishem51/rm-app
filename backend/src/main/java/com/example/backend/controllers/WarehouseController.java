@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 public class WarehouseController {
     private final WarehouseService warehouseService;
 
-    // Lấy tất cả kho của cửa hàng
     @Operation(summary = "Get paginate warehouses of a shop", description = "Get paginate warehouses of a shop")
     @GetMapping("")
     public ResponseEntity<BaseResponse<PaginateResponse<WarehouseDTO>>> getWarehouses(
@@ -60,7 +59,20 @@ public class WarehouseController {
         }
     }
 
-    // Tạo kho mới cho cửa hàng
+    @Operation(summary = "Get details warehouse of a shop", description = "Get details warehouse of a shop")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<WarehouseDTO>> getWarehouseDetail(
+            @PathVariable Long id,
+            @CurrentUser User user) {
+        try {
+            Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(id, user);
+            WarehouseDTO response = WarehouseDTO.fromEntity(warehouse);
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
     @Operation(summary = "Create a new warehouse for a shop", description = "Create a new warehouse under the specified shop")
     @PostMapping("/{shopId}")
     public ResponseEntity<BaseResponse<Warehouse>> createWarehouse(
@@ -75,7 +87,6 @@ public class WarehouseController {
         }
     }
 
-    // Cập nhật kho theo ID
     @Operation(summary = "Update a warehouse by ID", description = "Update the details of an existing warehouse by ID")
     @PutMapping("/{warehouseId}")
     public ResponseEntity<BaseResponse<Warehouse>> updateWarehouse(

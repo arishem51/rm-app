@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { CreateShopDTO, ShopDTO } from "@/types/Api";
+import { UpdateShopDTO, ShopDTO } from "@/types/Api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { useCreateShop, useUpdateShop } from "@/hooks/mutations/shop";
+import { useUpdateShop } from "@/hooks/mutations/shop";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { useEffect } from "react";
@@ -33,13 +33,12 @@ type Props = {
 };
 
 const ShopForm = ({ onClose, shop }: Props) => {
-  const form = useForm<CreateShopDTO>({
+  const form = useForm<UpdateShopDTO>({
     defaultValues: shop ?? { name: "", address: "" },
     resolver: zodResolver(z.object(schemaFields)),
   });
-  const { mutate: createShop, isPending: isCreating } = useCreateShop();
   const { mutate: updateShop, isPending: isUpdating } = useUpdateShop();
-  const isPending = isCreating || isUpdating;
+  const isPending = isUpdating;
   const queryClient = useQueryClient();
   const { data: user } = useMe();
   const router = useRouter();
@@ -68,22 +67,13 @@ const ShopForm = ({ onClose, shop }: Props) => {
     router.push("/dashboard");
   };
 
-  const handleSubmit = form.handleSubmit((data: CreateShopDTO) => {
+  const handleSubmit = form.handleSubmit((data: UpdateShopDTO) => {
     if (shop?.id) {
       updateShop(
         { id: shop.id, ...data },
         {
           onSuccess: () => {
             callbackSuccess("update");
-          },
-        }
-      );
-    } else {
-      createShop(
-        { ...data },
-        {
-          onSuccess: () => {
-            callbackSuccess("create");
           },
         }
       );
@@ -99,9 +89,9 @@ const ShopForm = ({ onClose, shop }: Props) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Shop Tên</FormLabel>
+                <FormLabel>Tên cửa hàng</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your shop name" {...field} />
+                  <Input placeholder="Ví dụ: Gạo Hưng Thịnh" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -114,7 +104,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
               <FormItem>
                 <FormLabel>Địa chỉ</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your shop address" {...field} />
+                  <Input placeholder="Ví dụ: Hà Đông, Hà Nội" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,7 +113,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
         </div>
         <DialogFooter>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : "Lưu thay đổi"}
+            {isPending ? "Đang lưu..." : "Lưu thay đổi"}
           </Button>
         </DialogFooter>
       </form>

@@ -1,6 +1,3 @@
-
-import { UserDTO } from "@/types/Api";
-
 export const UserRole = {
   ADMIN: "ADMIN",
   OWNER: "OWNER",
@@ -44,21 +41,20 @@ export const AppRoutes = {
         url: "/dashboard/orders",
         role: "ALL",
       },
-      create:{
+      create: {
         url: "/dashboard/orders/create",
         role: "ALL",
-      }
-      
+      },
     },
-    invoices:{
+    invoices: {
       index: {
         url: "/dashboard/invoice",
         role: "ALL",
       },
-      detail:{
+      detail: {
         url: "/dashboard/invoice/[id]",
         role: "ALL",
-      }
+      },
     },
     shops: {
       url: "/dashboard/shops",
@@ -84,8 +80,14 @@ export const AppRoutes = {
     },
     warehouses: {
       facilities: {
-        url: "/dashboard/warehouses/facilities",
-        role: UserRole.OWNER,
+        index: {
+          url: "/dashboard/warehouses/facilities",
+          role: UserRole.OWNER,
+        },
+        detail: {
+          url: "/dashboard/warehouses/facilities/[id]",
+          role: UserRole.OWNER,
+        },
       },
       inventories: {
         index: {
@@ -119,7 +121,9 @@ export const AppRoutes = {
   },
 } as const;
 
-export const UserStatus: Record<UserDTO["status"], UserDTO["status"]> = {
+type ActionStatusType = "ACTIVE" | "INACTIVE";
+
+export const ActionStatus: Record<ActionStatusType, ActionStatusType> = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
 };

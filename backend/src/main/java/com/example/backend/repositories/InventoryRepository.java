@@ -11,11 +11,11 @@ import com.example.backend.entities.Inventory;
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     Optional<Inventory> findById(Long id);
 
-    Page<Inventory> findByWarehouse_ShopId(Long shopId, Pageable pageable);
+    Page<Inventory> findByZone_Warehouse_Shop_Id(Long shopId, Pageable pageable);
 
-    List<Inventory> findByWarehouse_ShopId(Long shopId);
+    List<Inventory> findByZone_Warehouse_Shop_Id(Long shopId);
 
-    Page<Inventory> findByWarehouse_ShopIdAndProduct_NameContainingIgnoreCase(Long shopId, String name,
+    Page<Inventory> findByZone_Warehouse_Shop_IdAndProduct_NameContainingIgnoreCase(Long shopId,
+            String name,
             Pageable pageable);
-
 }

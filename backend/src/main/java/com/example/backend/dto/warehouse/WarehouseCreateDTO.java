@@ -11,6 +11,7 @@ import lombok.*;
 public class WarehouseCreateDTO {
     private String name;
     private String address;
-    @NotNull(message = "Shop ID cannot be null")
+    private String description;
+    @NotNull(message = "Shop Id cannot be null")
     private Long shopId;
 }

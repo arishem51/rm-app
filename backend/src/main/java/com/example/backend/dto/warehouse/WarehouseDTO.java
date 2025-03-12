@@ -18,6 +18,7 @@ import lombok.Setter;
 @Builder
 public class WarehouseDTO {
     private String name;
+    private String description;
     private String address;
     private Long shopId;
     private Long id;
@@ -30,12 +31,12 @@ public class WarehouseDTO {
         return WarehouseDTO.builder()
                 .id(warehouse.getId())
                 .name(warehouse.getName())
+                .description(warehouse.getDescription())
                 .address(warehouse.getAddress())
                 .shopId(warehouse.getShop().getId())
                 .shopName(warehouse.getShop().getName())
                 .createdAt(warehouse.getCreatedAt())
                 .status(warehouse.getStatus().toString())
                 .build();
-
     }
 }

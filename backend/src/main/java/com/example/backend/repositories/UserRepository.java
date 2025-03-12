@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
+import com.example.backend.enums.ActionStatus;
 import com.example.backend.enums.Role;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -24,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByNameContainingIgnoreCase(String search, PageRequest pageRequest);
 
     List<User> findByShopAndRole(Shop shop, Role role);
+
+    Long countByShopIdAndStatus(Long shopId, ActionStatus status);
 }

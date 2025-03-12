@@ -13,7 +13,7 @@ import {
   Users,
   Warehouse,
 } from "lucide-react";
-import { BadgeCent } from 'lucide-react';
+import { BadgeCent } from "lucide-react";
 import Link from "next/link";
 import {
   Collapsible,
@@ -34,7 +34,7 @@ import {
 import { AppRoutes } from "@/lib/constants";
 import { checkRole } from "@/lib/helpers";
 import { useMe } from "@/hooks/mutations/user";
-import { ShoppingBasket } from 'lucide-react';
+import { ShoppingBasket } from "lucide-react";
 type Item = {
   title: string;
   url?: string;
@@ -141,7 +141,7 @@ const Content = () => {
         children: [
           {
             title: "Kho",
-            url: AppRoutes.dashboard.warehouses.facilities.url,
+            url: AppRoutes.dashboard.warehouses.facilities.index.url,
           },
           {
             title: "Hàng hóa",

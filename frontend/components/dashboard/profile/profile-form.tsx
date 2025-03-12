@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useMe, useUpdateUser } from "@/hooks/mutations/user";
-import { UserRole, UserStatus } from "@/lib/constants";
+import { UserRole, ActionStatus } from "@/lib/constants";
 import { UserDTO } from "@/types/Api";
 import { isEmpty } from "lodash";
 import { useForm } from "react-hook-form";
@@ -52,7 +52,7 @@ const schemaFields = {
     })
     .nonempty({ message: "Số điện thoại là bắt buộc" }),
   role: z.enum([UserRole.ADMIN, UserRole.OWNER, UserRole.STAFF]),
-  status: z.enum([UserStatus.ACTIVE, UserStatus.INACTIVE]),
+  status: z.enum([ActionStatus.ACTIVE, ActionStatus.INACTIVE]),
 };
 
 const ProfileForm = () => {
