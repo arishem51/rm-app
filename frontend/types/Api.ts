@@ -645,6 +645,40 @@ export interface PaginateResponseUserDTO {
   data?: UserDTO[];
 }
 
+export interface BaseResponseListRevenueByMonthResponse {
+  data?: RevenueByMonthResponse[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface RevenueByMonthResponse {
+  month?: string;
+  totalRevenue?: number;
+}
+
+export interface BaseResponseListRecentOrder {
+  data?: RecentOrder[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface RecentOrder {
+  userName?: string;
+  totalAmount?: number;
+}
+
 export interface BaseResponseStatisticsOverviewResponse {
   data?: StatisticsOverviewResponse;
   message?: string;
@@ -869,20 +903,20 @@ export interface BaseResponsePageOrder {
 }
 
 export interface PageOrder {
-  /** @format int64 */
-  totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  /** @format int64 */
+  totalElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -892,10 +926,10 @@ export interface PageableObject {
   offset?: number;
   sort?: SortObject;
   /** @format int32 */
-  pageNumber?: number;
+  pageSize?: number;
   paged?: boolean;
   /** @format int32 */
-  pageSize?: number;
+  pageNumber?: number;
   unpaged?: boolean;
 }
 
@@ -1917,6 +1951,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getMe: (params: RequestParams = {}) =>
       this.request<BaseResponseUserDTO, any>({
         path: `/api/users/me`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch overview statistics by revenue/month of the current user.
+     *
+     * @tags StatisticsManagement
+     * @name GetRevenueByMonth
+     * @summary Get revenue by month statistics
+     * @request GET:/api/statistics/revenue-by-month
+     * @secure
+     */
+    getRevenueByMonth: (params: RequestParams = {}) =>
+      this.request<BaseResponseListRevenueByMonthResponse, any>({
+        path: `/api/statistics/revenue-by-month`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch recent orders of the current user.
+     *
+     * @tags StatisticsManagement
+     * @name GetRecentOrders
+     * @summary Get recent order
+     * @request GET:/api/statistics/recent-orders
+     * @secure
+     */
+    getRecentOrders: (params: RequestParams = {}) =>
+      this.request<BaseResponseListRecentOrder, any>({
+        path: `/api/statistics/recent-orders`,
         method: "GET",
         secure: true,
         ...params,

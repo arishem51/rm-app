@@ -3,6 +3,7 @@ package com.example.backend.repositories;
 import com.example.backend.entities.PaymentHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -18,5 +19,13 @@ public interface PaymentHistoryRepository extends JpaRepository<PaymentHistory, 
 
     @Query("SELECT SUM(p.totalAmount) FROM PaymentHistory p WHERE p.isDebt = true")
     BigDecimal getTotalDebt();
+
+    @Query("SELECT FORMAT(o.createdAt, 'yyyy-MM') AS month, SUM(p.totalAmount) AS totalRevenue " +
+            "FROM PaymentHistory p " +
+            "JOIN p.order o " +
+            "WHERE o.shop.id = :shopId " +
+            "GROUP BY FORMAT(o.createdAt, 'yyyy-MM') " +
+            "ORDER BY month DESC")
+    List<Object[]> getRevenueByMonthForShop(@Param("shopId") Long shopId);
 
 }

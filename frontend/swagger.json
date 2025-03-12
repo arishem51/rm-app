@@ -1073,6 +1073,46 @@
         }
       }
     },
+    "/api/statistics/revenue-by-month": {
+      "get": {
+        "tags": ["StatisticsManagement"],
+        "summary": "Get revenue by month statistics",
+        "description": "Fetch overview statistics by revenue/month of the current user.",
+        "operationId": "getRevenueByMonth",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListRevenueByMonthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/statistics/recent-orders": {
+      "get": {
+        "tags": ["StatisticsManagement"],
+        "summary": "Get recent order",
+        "description": "Fetch recent orders of the current user.",
+        "operationId": "getRecentOrders",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListRecentOrder"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/statistics/overview": {
       "get": {
         "tags": ["StatisticsManagement"],
@@ -2182,6 +2222,62 @@
           }
         }
       },
+      "BaseResponseListRevenueByMonthResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RevenueByMonthResponse" }
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "RevenueByMonthResponse": {
+        "type": "object",
+        "properties": {
+          "month": { "type": "string" },
+          "totalRevenue": { "type": "number" }
+        }
+      },
+      "BaseResponseListRecentOrder": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RecentOrder" }
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "RecentOrder": {
+        "type": "object",
+        "properties": {
+          "userName": { "type": "string" },
+          "totalAmount": { "type": "number" }
+        }
+      },
       "BaseResponseStatisticsOverviewResponse": {
         "type": "object",
         "properties": {
@@ -2492,10 +2588,11 @@
       "PageOrder": {
         "type": "object",
         "properties": {
-          "totalElements": { "type": "integer", "format": "int64" },
           "totalPages": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
           "first": { "type": "boolean" },
           "last": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
           "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
@@ -2503,7 +2600,6 @@
           },
           "number": { "type": "integer", "format": "int32" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
-          "numberOfElements": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
           "empty": { "type": "boolean" }
         }
@@ -2513,9 +2609,9 @@
         "properties": {
           "offset": { "type": "integer", "format": "int64" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
-          "pageNumber": { "type": "integer", "format": "int32" },
-          "paged": { "type": "boolean" },
           "pageSize": { "type": "integer", "format": "int32" },
+          "paged": { "type": "boolean" },
+          "pageNumber": { "type": "integer", "format": "int32" },
           "unpaged": { "type": "boolean" }
         }
       },
