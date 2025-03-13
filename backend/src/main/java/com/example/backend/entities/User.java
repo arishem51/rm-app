@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.example.backend.enums.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -70,9 +69,11 @@ public class User implements UserDetails {
     @Schema(required = true)
     @Builder.Default
     private ActionStatus status = ActionStatus.ACTIVE;
+
     @ManyToOne()
     @JoinColumn(name = "shop_id")
     @Schema(hidden = true)
+    @JsonIgnore
     private Shop shop;
 
     @Override

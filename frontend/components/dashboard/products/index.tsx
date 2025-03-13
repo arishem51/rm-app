@@ -69,8 +69,7 @@ const Products = () => {
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Ảnh</TableHead>
-              <TableHead>Giá (VNĐ)</TableHead>
-              <TableHead>Số lượng Kg/Bao</TableHead>
+              <TableHead>Giá (VNĐ/Kg)</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead>Nhà cung cấp</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
@@ -92,7 +91,6 @@ const Products = () => {
                 </TableCell>
 
                 <TableCell>{toCurrency(product.price as number)}</TableCell>
-                <TableCell>{product.unit} Kg/Bao</TableCell>
                 <TableCell>
                   <Badge
                     variant={product.category?.name ? "default" : "outline"}

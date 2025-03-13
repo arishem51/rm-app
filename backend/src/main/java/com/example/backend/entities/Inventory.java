@@ -54,6 +54,10 @@ public class Inventory {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "quantity", nullable = false)
+    @Builder.Default
+    private Integer quantity = 0;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

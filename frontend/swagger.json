@@ -248,7 +248,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ProductUpdateDTO" }
+              "schema": { "$ref": "#/components/schemas/ProductRequestDTO" }
             }
           },
           "required": true
@@ -694,7 +694,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ProductCreateDTO" }
+              "schema": { "$ref": "#/components/schemas/ProductRequestDTO" }
             }
           },
           "required": true
@@ -1626,7 +1626,7 @@
         },
         "required": ["createdAt"]
       },
-      "ProductUpdateDTO": {
+      "ProductRequestDTO": {
         "type": "object",
         "properties": {
           "name": { "type": "string" },
@@ -1635,12 +1635,6 @@
           "supplierId": { "type": "integer", "format": "int64" },
           "shopId": { "type": "integer", "format": "int64" },
           "price": { "type": "number", "minimum": 0.0 },
-          "unit": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Unit of the product (unit kg/bg)",
-            "example": 10
-          },
           "imageUrls": { "type": "array", "items": { "type": "string" } }
         },
         "required": ["name", "shopId"]
@@ -1700,7 +1694,6 @@
           "shopId": { "type": "integer", "format": "int64" },
           "shopName": { "type": "string" },
           "price": { "type": "number" },
-          "unit": { "type": "integer", "format": "int32" },
           "imageUrls": { "type": "array", "items": { "type": "string" } }
         }
       },
@@ -1807,7 +1800,6 @@
           "category": { "$ref": "#/components/schemas/Category" },
           "supplier": { "$ref": "#/components/schemas/Partner" },
           "shop": { "$ref": "#/components/schemas/Shop" },
-          "unit": { "type": "integer", "format": "int32" },
           "price": { "type": "number" },
           "description": { "type": "string" },
           "imageUrls": { "type": "array", "items": { "type": "string" } },
@@ -1938,26 +1930,6 @@
           "name": { "type": "string" }
         },
         "required": ["name", "password", "phoneNumber", "username"]
-      },
-      "ProductCreateDTO": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "categoryId": { "type": "integer", "format": "int64" },
-          "supplierId": { "type": "integer", "format": "int64" },
-          "shopId": { "type": "integer", "format": "int64" },
-          "zoneId": { "type": "integer", "format": "int64" },
-          "price": { "type": "number", "minimum": 0.0 },
-          "unit": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Unit of the product (unit kg/bg)",
-            "example": 10
-          },
-          "imageUrls": { "type": "array", "items": { "type": "string" } }
-        },
-        "required": ["name", "shopId", "zoneId"]
       },
       "PartnerCreateDTO": {
         "type": "object",
@@ -2588,11 +2560,10 @@
       "PageOrder": {
         "type": "object",
         "properties": {
-          "totalPages": { "type": "integer", "format": "int32" },
           "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
           "first": { "type": "boolean" },
           "last": { "type": "boolean" },
-          "numberOfElements": { "type": "integer", "format": "int32" },
           "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
@@ -2600,6 +2571,7 @@
           },
           "number": { "type": "integer", "format": "int32" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
           "empty": { "type": "boolean" }
         }
@@ -2609,9 +2581,9 @@
         "properties": {
           "offset": { "type": "integer", "format": "int64" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
-          "pageSize": { "type": "integer", "format": "int32" },
           "paged": { "type": "boolean" },
           "pageNumber": { "type": "integer", "format": "int32" },
+          "pageSize": { "type": "integer", "format": "int32" },
           "unpaged": { "type": "boolean" }
         }
       },
@@ -2652,7 +2624,8 @@
           "zone": { "$ref": "#/components/schemas/Zone" },
           "createdBy": { "$ref": "#/components/schemas/User" },
           "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "quantity": { "type": "integer", "format": "int32" }
         }
       },
       "Zone": {
