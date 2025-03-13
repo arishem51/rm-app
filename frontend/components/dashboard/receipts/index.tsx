@@ -20,20 +20,8 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { createSttNumber } from "@/lib/utils";
 import ListPagination from "../pagination";
-import { checkRole } from "@/lib/helpers";
-import { ReceiptResponseDTO } from "@/types/Api";
+import { checkRole, generateReceiptCode } from "@/lib/helpers";
 import { format } from "date-fns";
-
-function generateReceiptCode(receipt: ReceiptResponseDTO) {
-  const createdAt = new Date(receipt.createdAt ?? new Date());
-  const year = createdAt.getFullYear();
-  const month = String(createdAt.getMonth() + 1).padStart(2, "0");
-  const day = String(createdAt.getDate()).padStart(2, "0");
-  const datePart = `${year}${month}${day}`;
-  const idPart = String(receipt.id).padStart(5, "0");
-  const prefix = "REC";
-  return `${prefix}${datePart}${idPart}`;
-}
 
 const Receipts = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -65,7 +53,7 @@ const Receipts = () => {
           onSearch={handleSearch}
         />
         {isOwner && (
-          <Link href="/dashboard/receipts/create">
+          <Link href="/dashboard/receipts/create" prefetch>
             <Button>
               <Plus />
               Tạo phiếu nhập
@@ -105,7 +93,7 @@ const Receipts = () => {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Link href={`/dashboard/receipts/${item.id}`}>
+                  <Link href={`/dashboard/receipts/${item.id}`} prefetch>
                     <Button variant="outline" className="w-6 h-6" size="icon">
                       <ArrowUpRight />
                     </Button>

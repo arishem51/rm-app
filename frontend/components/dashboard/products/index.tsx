@@ -54,7 +54,7 @@ const Products = () => {
           onSearch={handleSearch}
         />
         {isOwner && (
-          <Link href="/dashboard/products/create">
+          <Link href="/dashboard/products/create" prefetch>
             <Button>
               <Plus />
               Tạo sản phẩm
@@ -109,7 +109,7 @@ const Products = () => {
                 </TableCell>
                 {isAdmin && <TableCell>{product.shopName}</TableCell>}
                 <TableCell className="text-right">
-                  <Link href={`/dashboard/products/${product.id}`}>
+                  <Link href={`/dashboard/products/${product.id}`} prefetch>
                     <Button variant="outline" className="w-6 h-6" size="icon">
                       <ArrowUpRight />
                     </Button>

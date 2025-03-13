@@ -2144,6 +2144,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch a registered receipt.
+     *
+     * @tags Receipt Controller
+     * @name GetReceipt
+     * @summary Get a receipt
+     * @request GET:/api/receipts/{id}
+     * @secure
+     */
+    getReceipt: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseReceiptResponseDTO, any>({
+        path: `/api/receipts/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Fetch a list of page registered products of a shop.
      *
      * @tags Product Management

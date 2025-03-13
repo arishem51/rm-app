@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import com.example.backend.repositories.InventoryRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.repositories.ReceiptRepository;
 import com.example.backend.repositories.ZoneRepository;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -100,5 +98,14 @@ public class ReceiptService {
         }
         return receiptRepository.findByShopId(user.getShop().getId(),
                 PageRequest.of(page, pageSize));
+    }
+
+    public Receipt findReceipt(Long id, User user) {
+        if (user.getShop() == null) {
+            throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
+        }
+
+        return receiptRepository.findByIdAndShopId(id, user.getShop().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phiếu nhập"));
     }
 }

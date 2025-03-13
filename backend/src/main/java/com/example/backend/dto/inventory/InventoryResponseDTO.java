@@ -25,6 +25,7 @@ public class InventoryResponseDTO {
     private String updatedAt;
     private String price;
     private String warehouseName;
+    private Integer quantity;
 
     public static InventoryResponseDTO fromEntity(Inventory inventory) {
         return InventoryResponseDTO.builder()
@@ -38,6 +39,7 @@ public class InventoryResponseDTO {
                 .createdAt(inventory.getCreatedAt().toString())
                 .updatedAt(inventory.getUpdatedAt() != null ? inventory.getUpdatedAt().toString() : null)
                 .price(inventory.getProduct().getPrice().toString())
+                .quantity(inventory.getQuantity())
                 .build();
     }
 }

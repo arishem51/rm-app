@@ -70,7 +70,7 @@ const ForgotPasswordView = () => {
             variant="outline"
             asChild
           >
-            <Link href="/auth/sign-in">
+            <Link href="/auth/sign-in" prefetch>
               <Home />
             </Link>
           </Button>

@@ -69,7 +69,7 @@ const AuthView: FC<Props> = ({
             variant="outline"
             asChild
           >
-            <Link href={type === "sign-up" ? "/auth/sign-in" : "/"}>
+            <Link prefetch href={type === "sign-up" ? "/auth/sign-in" : "/"}>
               <Home />
             </Link>
           </Button>

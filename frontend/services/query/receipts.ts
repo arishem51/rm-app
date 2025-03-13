@@ -5,4 +5,5 @@ export const receipts = {
   getReceipts: createQuery(apiClient.getReceipts, {
     placeholderData: keepPreviousData,
   }),
+  getReceipt: createQuery(apiClient.getReceipt),
 };

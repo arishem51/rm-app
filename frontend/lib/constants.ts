@@ -47,6 +47,10 @@ export const AppRoutes = {
         url: "/dashboard/receipts/create",
         accessRoles: [UserRole.OWNER, UserRole.STAFF],
       },
+      detail: {
+        url: "/dashboard/receipts/[id]",
+        accessRoles: [UserRole.OWNER, UserRole.STAFF],
+      },
     },
     orders: {
       index: {

@@ -111,6 +111,7 @@ const Facilities = () => {
                 </TableCell>
                 <TableCell className="text-right">
                   <Link
+                    prefetch
                     href={`/dashboard/warehouses/facilities/${warehouse.id}`}
                   >
                     <Button size="icon" variant="outline" className="w-6 h-6">

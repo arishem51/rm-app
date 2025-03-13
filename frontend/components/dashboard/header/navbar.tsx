@@ -36,7 +36,9 @@ const Navbar = () => {
                   isLast ? (
                     segmentPath
                   ) : (
-                    <Link href={"/".concat(originSegment)}>{segmentPath}</Link>
+                    <Link prefetch href={"/".concat(originSegment)}>
+                      {segmentPath}
+                    </Link>
                   )
                 )}
               </BreadcrumbItem>

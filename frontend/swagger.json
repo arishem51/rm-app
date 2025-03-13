@@ -1243,6 +1243,34 @@
         }
       }
     },
+    "/api/receipts/{id}": {
+      "get": {
+        "tags": ["Receipt Controller"],
+        "summary": "Get a receipt",
+        "description": "Fetch a registered receipt.",
+        "operationId": "getReceipt",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseReceiptResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/products/all": {
       "get": {
         "tags": ["Product Management"],

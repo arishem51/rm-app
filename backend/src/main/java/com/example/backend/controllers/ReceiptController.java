@@ -53,4 +53,17 @@ public class ReceiptController {
         }
     }
 
+    @Operation(summary = "Get a receipt", description = "Fetch a registered receipt.")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<ReceiptResponseDTO>> getReceipt(
+            @PathVariable Long id,
+            @CurrentUser User user) {
+        try {
+            Receipt item = receiptService.findReceipt(id, user);
+            ReceiptResponseDTO response = ReceiptResponseDTO.fromEntity(item);
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
 }
