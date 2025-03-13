@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import com.example.backend.dto.receipt.ReceiptCreateDTO;
 import com.example.backend.dto.receipt.ReceiptRequestItemDTO;
@@ -33,6 +35,10 @@ public class ReceiptService {
 
     @Transactional
     public Receipt create(ReceiptCreateDTO dto, User currentUser) {
+        if (currentUser.getShop() == null) {
+            throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
+        }
+
         Receipt receipt = Receipt.builder().createdBy(currentUser).build();
         List<ReceiptItem> receiptItems = new ArrayList<>();
         List<Inventory> inventoriesToSave = new ArrayList<>();
@@ -83,7 +89,16 @@ public class ReceiptService {
         }
         receipt.setStatus(ReceiptStatus.SUCCESS);
         receipt.setItems(receiptItems);
+        receipt.setShop(currentUser.getShop());
         inventoryRepository.saveAll(inventoriesToSave);
         return receiptRepository.save(receipt);
+    }
+
+    public Page<Receipt> findReceipts(int page, int pageSize, String search, User user) {
+        if (user.getShop() == null) {
+            throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
+        }
+        return receiptRepository.findByShopId(user.getShop().getId(),
+                PageRequest.of(page, pageSize));
     }
 }

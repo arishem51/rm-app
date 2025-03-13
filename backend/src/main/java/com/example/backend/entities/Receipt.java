@@ -30,6 +30,10 @@ public class Receipt {
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "shop_id", nullable = false)
+    private Shop shop;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
