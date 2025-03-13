@@ -36,14 +36,24 @@ export const AppRoutes = {
       url: "/dashboard/users",
       role: "ALL",
     },
+    receipts: {
+      index: {
+        url: "/dashboard/receipts",
+        role: UserRole.OWNER,
+      },
+      create: {
+        url: "/dashboard/receipts/create",
+        role: UserRole.OWNER,
+      },
+    },
     orders: {
       index: {
         url: "/dashboard/orders",
-        role: "ALL",
+        role: UserRole.OWNER,
       },
       create: {
         url: "/dashboard/orders/create",
-        role: "ALL",
+        role: UserRole.OWNER,
       },
     },
     invoices: {

@@ -47,7 +47,7 @@ type SidebarGroupType = "application" | "shop" | "setting";
 const Content = () => {
   const query = useMe();
   const { data: user } = query ?? {};
-  const { isAdmin, isOwner } = checkRole(user);
+  const { isAdmin, isOwner, isStaff } = checkRole(user);
 
   const itemGroups: Record<
     SidebarGroupType,
@@ -116,7 +116,7 @@ const Content = () => {
   if (user?.shopId && isOwner) {
     itemGroups.shop.items.push(
       {
-        title: "Tài khoản",
+        title: "Nhân viên",
         url: AppRoutes.dashboard.users.url,
         icon: Users,
       },
@@ -127,8 +127,17 @@ const Content = () => {
       },
       {
         title: "Đơn hàng",
-        url: AppRoutes.dashboard.orders.index.url,
         icon: ShoppingBasket,
+        children: [
+          {
+            title: "Phiếu nhập",
+            url: AppRoutes.dashboard.receipts.index.url,
+          },
+          {
+            title: "Đơn hàng",
+            url: AppRoutes.dashboard.orders.index.url,
+          },
+        ],
       },
       {
         title: "Hóa đơn",
@@ -154,6 +163,23 @@ const Content = () => {
       title: "Cửa hàng",
       url: AppRoutes.dashboard.setting.shop.url,
       icon: ShoppingBag,
+    });
+  }
+
+  if (user?.shopId && isStaff) {
+    itemGroups.shop.items.push({
+      title: "Đơn hàng",
+      icon: ShoppingBasket,
+      children: [
+        {
+          title: "Phiếu nhập",
+          url: AppRoutes.dashboard.receipts.index.url,
+        },
+        {
+          title: "Đơn hàng",
+          url: AppRoutes.dashboard.orders.index.url,
+        },
+      ],
     });
   }
 
