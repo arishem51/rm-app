@@ -13,7 +13,7 @@ export type UserRoleType = "ADMIN" | "STAFF" | "OWNER";
 
 export type RouteItem = {
   url: string;
-  role: UserRoleType | "ALL";
+  accessRoles: UserRoleType[];
 };
 export type AppRoutesType = {
   [key: string]: RouteItem | AppRoutesType;

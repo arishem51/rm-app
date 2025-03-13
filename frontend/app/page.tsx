@@ -31,9 +31,9 @@ export default function Page() {
         <p className="text-lg text-center">
           Ứng dụng Quản Lý Gạo là dự án học thuật được phát triển bởi nhóm sinh
           viên của <strong>FPT University Hà Nội</strong> trong khuôn khổ môn
-          SWP. Dự án được xây dựng nhằm cung cấp một hệ thống quản lý kho, nhập
-          hàng và theo dõi giao dịch cho các cửa hàng bán gạo, giúp tối ưu hóa
-          quy trình vận hành và nâng cao hiệu quả kinh doanh.
+          SWP. Dự án được xây dựng nhằm cung cấp một hệ thống nhập hàng và theo
+          dõi giao dịch cho các cửa hàng bán gạo, giúp tối ưu hóa quy trình vận
+          hành và nâng cao hiệu quả kinh doanh.
         </p>
       </section>
 

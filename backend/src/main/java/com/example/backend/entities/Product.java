@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.example.backend.enums.ActionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,10 +43,6 @@ public class Product {
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private int unit = 10;
-
     @Column(name = "price")
     private BigDecimal price;
 
@@ -70,6 +68,12 @@ public class Product {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deletedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    @Schema(required = true)
+    @Builder.Default
+    private ActionStatus status = ActionStatus.ACTIVE;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -86,7 +90,6 @@ public class Product {
                 + ", name='" + name + '\''
                 + ", category='" + (category != null ? category.getName() : "null") + '\''
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
-                + ", unit='" + unit + '\''
                 + ", price='" + price + '\''
                 + "} ";
     }

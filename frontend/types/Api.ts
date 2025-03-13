@@ -147,7 +147,7 @@ export interface ShopDTO {
   updatedAt?: string;
 }
 
-export interface ProductUpdateDTO {
+export interface ProductRequestDTO {
   name: string;
   description?: string;
   /** @format int64 */
@@ -158,12 +158,6 @@ export interface ProductUpdateDTO {
   shopId: number;
   /** @min 0 */
   price?: number;
-  /**
-   * Unit of the product (unit kg/bg)
-   * @format int32
-   * @example 10
-   */
-  unit?: number;
   imageUrls?: string[];
 }
 
@@ -215,8 +209,6 @@ export interface ResponseProductDTO {
   shopId?: number;
   shopName?: string;
   price?: number;
-  /** @format int32 */
-  unit?: number;
   imageUrls?: string[];
 }
 
@@ -303,8 +295,6 @@ export interface Product {
   category?: Category;
   supplier?: Partner;
   shop?: Shop;
-  /** @format int32 */
-  unit?: number;
   price?: number;
   description?: string;
   imageUrls?: string[];
@@ -423,28 +413,6 @@ export interface CreateUserRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
-}
-
-export interface ProductCreateDTO {
-  name: string;
-  description?: string;
-  /** @format int64 */
-  categoryId?: number;
-  /** @format int64 */
-  supplierId?: number;
-  /** @format int64 */
-  shopId: number;
-  /** @format int64 */
-  zoneId: number;
-  /** @min 0 */
-  price?: number;
-  /**
-   * Unit of the product (unit kg/bg)
-   * @format int32
-   * @example 10
-   */
-  unit?: number;
-  imageUrls?: string[];
 }
 
 export interface PartnerCreateDTO {
@@ -903,20 +871,20 @@ export interface BaseResponsePageOrder {
 }
 
 export interface PageOrder {
-  /** @format int32 */
-  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
   first?: boolean;
   last?: boolean;
-  /** @format int32 */
-  numberOfElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  /** @format int32 */
+  numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -925,11 +893,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  /** @format int32 */
-  pageSize?: number;
   paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
   unpaged?: boolean;
 }
 
@@ -961,6 +929,8 @@ export interface Inventory {
   createdAt?: string;
   /** @format date-time */
   updatedAt?: string;
+  /** @format int32 */
+  quantity?: number;
 }
 
 export interface Zone {
@@ -1370,7 +1340,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/api/products/{id}
      * @secure
      */
-    updateProduct: (id: number, data: ProductUpdateDTO, params: RequestParams = {}) =>
+    updateProduct: (id: number, data: ProductRequestDTO, params: RequestParams = {}) =>
       this.request<BaseResponseResponseProductDTO, any>({
         path: `/api/products/${id}`,
         method: "PUT",
@@ -1673,7 +1643,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/products
      * @secure
      */
-    createProduct: (data: ProductCreateDTO, params: RequestParams = {}) =>
+    createProduct: (data: ProductRequestDTO, params: RequestParams = {}) =>
       this.request<BaseResponseResponseProductDTO, any>({
         path: `/api/products`,
         method: "POST",

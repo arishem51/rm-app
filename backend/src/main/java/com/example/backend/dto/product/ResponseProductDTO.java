@@ -22,7 +22,6 @@ public class ResponseProductDTO {
     private Long shopId;
     private String shopName;
     private BigDecimal price;
-    private int unit;
     private List<String> imageUrls;
 
     public static ResponseProductDTO fromEntity(Product product) {
@@ -35,7 +34,6 @@ public class ResponseProductDTO {
                 .shopId(product.getShop().getId())
                 .shopName(product.getShop().getName())
                 .price(product.getPrice())
-                .unit(product.getUnit())
                 .imageUrls(product.getImageUrls())
                 .build();
     }
