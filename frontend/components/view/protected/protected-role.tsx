@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import UnSupportRole from "../un-suppport/un-support-role";
 import { AppRoutes, UserRole } from "@/lib/constants";
-import { AppRoutesType, RouteItem } from "@/types";
+import { AppRoutesType, RouteItem, UserRoleType } from "@/types";
 
 type Props = {
   children: ReactNode;
@@ -25,9 +25,10 @@ const ProtectedRole = ({ children, user }: Props) => {
 
   const checkSupportRole = () => {
     let isSupport = false;
-    const checkRouteSupportRole = ({ url, role }: RouteItem) => {
+    const checkRouteSupportRole = ({ url, accessRoles }: RouteItem) => {
       const result =
-        checkUrlAndPathname(url) && (user.role === role || role === "ALL");
+        checkUrlAndPathname(url) &&
+        accessRoles.includes(user.role as UserRoleType);
       if (result) {
         isSupport = true;
       }
@@ -35,14 +36,14 @@ const ProtectedRole = ({ children, user }: Props) => {
     };
     const entriesRoutes = (routes: AppRoutesType): boolean => {
       return Object.values(routes).some((value) => {
-        if ("role" in value && "url" in value) {
+        if ("accessRoles" in value && "url" in value) {
           return checkRouteSupportRole(value as RouteItem);
         }
         return entriesRoutes(value);
       });
     };
 
-    entriesRoutes(AppRoutes);
+    entriesRoutes(AppRoutes as unknown as AppRoutesType);
     return isSupport;
   };
   const isSupport = checkSupportRole();
