@@ -37,7 +37,7 @@ public class ReceiptController {
 
     @Operation(summary = "Get all receipts", description = "Fetch a list of all registered receipts.")
     @GetMapping("")
-    public ResponseEntity<BaseResponse<PaginateResponse<ReceiptResponseDTO>>> getShops(
+    public ResponseEntity<BaseResponse<PaginateResponse<ReceiptResponseDTO>>> getReceipts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "") String search,

@@ -304,6 +304,7 @@ export interface Product {
   updatedAt?: string;
   /** @format date-time */
   deletedAt?: string;
+  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface Shop {
@@ -413,6 +414,60 @@ export interface CreateUserRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
+}
+
+export interface ReceiptCreateDTO {
+  items?: ReceiptRequestItemDTO[];
+}
+
+export interface ReceiptRequestItemDTO {
+  /** @format int64 */
+  productId?: number;
+  /** @format int32 */
+  quantity?: number;
+  /** @format int64 */
+  zoneId?: number;
+}
+
+export interface BaseResponseReceiptResponseDTO {
+  data?: ReceiptResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface ReceiptItemResponseDTO {
+  /** @format int64 */
+  id?: number;
+  /** @format int64 */
+  receiptId?: number;
+  /** @format int64 */
+  productId?: number;
+  productName?: string;
+  /** @format double */
+  productPrice?: number;
+  /** @format int32 */
+  quantity?: number;
+  /** @format int64 */
+  zoneId?: number;
+  zoneName?: string;
+}
+
+export interface ReceiptResponseDTO {
+  /** @format int64 */
+  id?: number;
+  createdBy?: UserDTO;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+  status?: "SUCCESS" | "FAILED" | "PENDING";
+  receiptItems?: ReceiptItemResponseDTO[];
 }
 
 export interface PartnerCreateDTO {
@@ -694,6 +749,30 @@ export interface PaginateResponseShopDTO {
   data?: ShopDTO[];
 }
 
+export interface BaseResponsePaginateResponseReceiptResponseDTO {
+  data?: PaginateResponseReceiptResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface PaginateResponseReceiptResponseDTO {
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: ReceiptResponseDTO[];
+}
+
 export interface BaseResponsePaginateResponseResponseProductDTO {
   data?: PaginateResponseResponseProductDTO;
   message?: string;
@@ -875,14 +954,14 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  first?: boolean;
-  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
@@ -903,8 +982,8 @@ export interface PageableObject {
 
 export interface SortObject {
   empty?: boolean;
-  sorted?: boolean;
   unsorted?: boolean;
+  sorted?: boolean;
 }
 
 export interface BaseResponseListInventory {
@@ -1601,6 +1680,59 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch a list of all registered receipts.
+     *
+     * @tags Receipt Controller
+     * @name GetReceipts
+     * @summary Get all receipts
+     * @request GET:/api/receipts
+     * @secure
+     */
+    getReceipts: (
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseReceiptResponseDTO, any>({
+        path: `/api/receipts`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Create a receipt by owner or staff of the shop.
+     *
+     * @tags Receipt Controller
+     * @name CreateReceipt
+     * @summary Create a receipt
+     * @request POST:/api/receipts
+     * @secure
+     */
+    createReceipt: (data: ReceiptCreateDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseReceiptResponseDTO, any>({
+        path: `/api/receipts`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Fetch a list of page registered products.
      *
      * @tags Product Management
@@ -1929,7 +2061,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * @description Fetch overview statistics by revenue/month of the current user.
      *
-     * @tags StatisticsManagement
+     * @tags Statistics Controller
      * @name GetRevenueByMonth
      * @summary Get revenue by month statistics
      * @request GET:/api/statistics/revenue-by-month
@@ -1946,7 +2078,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * @description Fetch recent orders of the current user.
      *
-     * @tags StatisticsManagement
+     * @tags Statistics Controller
      * @name GetRecentOrders
      * @summary Get recent order
      * @request GET:/api/statistics/recent-orders
@@ -1963,7 +2095,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * @description Fetch overview statistics of the current user.
      *
-     * @tags StatisticsManagement
+     * @tags Statistics Controller
      * @name GetOverviewStatistics
      * @summary Get overview statistics
      * @request GET:/api/statistics/overview
@@ -2020,17 +2152,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/products/all
      * @secure
      */
-    getAllProducts: (
-      query: {
-        /** @format int64 */
-        shopId: number;
-      },
-      params: RequestParams = {},
-    ) =>
+    getAllProducts: (params: RequestParams = {}) =>
       this.request<BaseResponseListResponseProductDTO, any>({
         path: `/api/products/all`,
         method: "GET",
-        query: query,
         secure: true,
         ...params,
       }),
