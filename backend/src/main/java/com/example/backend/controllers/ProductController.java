@@ -52,10 +52,9 @@ public class ProductController {
     @Operation(summary = "Get all products", description = "Fetch a list of page registered products of a shop.")
     @GetMapping("/all")
     public ResponseEntity<BaseResponse<List<ResponseProductDTO>>> getAllProducts(
-            Long shopId,
             @CurrentUser User user) {
         try {
-            List<Product> products = productService.findAllProductsFromShop(shopId, user);
+            List<Product> products = productService.findAllProductsFromShop(user);
             List<ResponseProductDTO> response = products.stream().map(ResponseProductDTO::fromEntity)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));

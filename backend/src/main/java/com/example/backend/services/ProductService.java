@@ -68,11 +68,11 @@ public class ProductService {
                         PageRequest.of(page, pageSize));
     }
 
-    public List<Product> findAllProductsFromShop(Long shopId, User currentUser) {
-        if (currentUser.getShop() == null || !currentUser.getShop().getId().equals(shopId)) {
+    public List<Product> findAllProductsFromShop(User currentUser) {
+        if (currentUser.getShop() == null) {
             throw new IllegalArgumentException("You do not have permission to view products from this shop.");
         }
-        return productRepository.findAllByShopId(shopId);
+        return productRepository.findAllByShopId(currentUser.getShop().getId());
     }
 
     public Product updateProduct(Long id, ProductRequestDTO dto, User user) {
