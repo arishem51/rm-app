@@ -41,10 +41,6 @@ public class Product {
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private int unit = 10;
-
     @Column(name = "price")
     private BigDecimal price;
 
@@ -86,7 +82,6 @@ public class Product {
                 + ", name='" + name + '\''
                 + ", category='" + (category != null ? category.getName() : "null") + '\''
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
-                + ", unit='" + unit + '\''
                 + ", price='" + price + '\''
                 + "} ";
     }

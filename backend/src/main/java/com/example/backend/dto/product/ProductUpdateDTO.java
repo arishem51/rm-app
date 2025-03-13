@@ -2,8 +2,6 @@ package com.example.backend.dto.product;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,8 +26,5 @@ public class ProductUpdateDTO {
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
     private BigDecimal price;
-
-    @Schema(description = "Unit of the product (unit kg/bg)", example = "10", type = "integer", format = "int32")
-    private Integer unit;
     private List<String> imageUrls;
 }

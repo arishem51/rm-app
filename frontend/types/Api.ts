@@ -158,12 +158,6 @@ export interface ProductUpdateDTO {
   shopId: number;
   /** @min 0 */
   price?: number;
-  /**
-   * Unit of the product (unit kg/bg)
-   * @format int32
-   * @example 10
-   */
-  unit?: number;
   imageUrls?: string[];
 }
 
@@ -215,8 +209,6 @@ export interface ResponseProductDTO {
   shopId?: number;
   shopName?: string;
   price?: number;
-  /** @format int32 */
-  unit?: number;
   imageUrls?: string[];
 }
 
@@ -303,8 +295,6 @@ export interface Product {
   category?: Category;
   supplier?: Partner;
   shop?: Shop;
-  /** @format int32 */
-  unit?: number;
   price?: number;
   description?: string;
   imageUrls?: string[];
@@ -438,12 +428,6 @@ export interface ProductCreateDTO {
   zoneId: number;
   /** @min 0 */
   price?: number;
-  /**
-   * Unit of the product (unit kg/bg)
-   * @format int32
-   * @example 10
-   */
-  unit?: number;
   imageUrls?: string[];
 }
 
@@ -903,20 +887,20 @@ export interface BaseResponsePageOrder {
 }
 
 export interface PageOrder {
-  /** @format int32 */
-  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
   first?: boolean;
   last?: boolean;
-  /** @format int32 */
-  numberOfElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  /** @format int32 */
+  numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -925,11 +909,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  /** @format int32 */
-  pageSize?: number;
   paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
   unpaged?: boolean;
 }
 

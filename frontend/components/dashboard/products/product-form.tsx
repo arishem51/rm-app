@@ -44,7 +44,6 @@ const schema = z.object({
   price: z.coerce
     .number()
     .min(0, { message: "Wholesale price must be positive" }),
-  unit: z.coerce.number().optional(),
   imageUrls: z
     .array(
       z.object({ url: z.string().url({ message: "Must be a valid URL" }) })
@@ -79,7 +78,6 @@ const ProductForm = ({ onClose, product }: Props) => {
           description: "",
           imageUrls: [],
           shopId: 1,
-          unit: 10,
         },
   });
   const {
@@ -234,7 +232,7 @@ const ProductForm = ({ onClose, product }: Props) => {
               name="price"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Giá (VNĐ)</FormLabel>
+                  <FormLabel>Giá (VNĐ/Kg)</FormLabel>
                   <FormControl>
                     <InputCurrency
                       className={className}
@@ -348,25 +346,6 @@ const ProductForm = ({ onClose, product }: Props) => {
                       <ComboboxCategories
                         onSelect={field.onChange}
                         formValue={field.value?.toString()}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex-1">
-              <FormField
-                control={form.control}
-                name="unit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Số lượng Kg/Bao gạo</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Nhập số lượng Kg/Bao"
-                        {...field}
                       />
                     </FormControl>
                     <FormMessage />

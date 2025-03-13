@@ -30,8 +30,5 @@ public class ProductCreateDTO {
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
     private BigDecimal price;
-
-    @Schema(description = "Unit of the product (unit kg/bg)", example = "10", type = "integer", format = "int32")
-    private Integer unit;
     private List<String> imageUrls;
 }
