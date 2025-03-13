@@ -17,7 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/mutations/product";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { ProductUpdateDTO, ResponseProductDTO, ZoneDTO } from "@/types/Api";
+import { ProductRequestDTO, ResponseProductDTO } from "@/types/Api";
 import { ToastTitle, UserRole } from "@/lib/constants";
 import { Textarea } from "@/components/ui/textarea";
 import { ComboboxCategories } from "../combobox/category";
@@ -27,16 +27,6 @@ import InputCurrency from "@/components/input-currency";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useAllZonesByShop } from "@/services/hooks/warehouses";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
@@ -52,7 +42,6 @@ const schema = z.object({
   categoryId: z.string().nullable().optional(),
   supplierId: z.string().nullable().optional(),
   shopId: z.coerce.number(),
-  zoneId: z.coerce.number().optional(),
 });
 
 type ProductFormDTO = z.infer<typeof schema>;
@@ -89,30 +78,30 @@ const ProductForm = ({ onClose, product }: Props) => {
     name: "imageUrls",
   });
   const queryClient = useQueryClient();
-  const { data = {} } = useAllZonesByShop();
-  const { data: zones = [] } = data;
+  // const { data = {} } = useAllZonesByShop();
+  // const { data: zones = [] } = data;
   const { mutate: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
   const router = useRouter();
 
-  const groupZoneByWarehouseId = zones.reduce(
-    (acc, zone) => {
-      if (!acc[zone.warehouseId!]) {
-        acc[zone.warehouseId!] = {
-          warehouseId: zone.warehouseId!,
-          warehouseName: zone.warehouseName,
-          zones: [zone],
-        };
-      } else {
-        acc[zone.warehouseId!].zones.push(zone);
-      }
-      return acc;
-    },
-    {} as Record<
-      number,
-      { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
-    >
-  );
+  // const groupZoneByWarehouseId = zones.reduce(
+  //   (acc, zone) => {
+  //     if (!acc[zone.warehouseId!]) {
+  //       acc[zone.warehouseId!] = {
+  //         warehouseId: zone.warehouseId!,
+  //         warehouseName: zone.warehouseName,
+  //         zones: [zone],
+  //       };
+  //     } else {
+  //       acc[zone.warehouseId!].zones.push(zone);
+  //     }
+  //     return acc;
+  //   },
+  //   {} as Record<
+  //     number,
+  //     { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
+  //   >
+  // );
 
   const isPending = isCreating || isUpdating;
   const { reset } = form;
@@ -159,7 +148,7 @@ const ProductForm = ({ onClose, product }: Props) => {
         supplierId: data.supplierId ? Number(data.supplierId) : undefined,
       };
 
-      const mutateData: ProductUpdateDTO = {
+      const mutateData: ProductRequestDTO = {
         ...payload,
         imageUrls: payload.imageUrls.map((image) => image.url),
         shopId: currentUser?.shopId,
@@ -170,13 +159,7 @@ const ProductForm = ({ onClose, product }: Props) => {
           factoryMutateConfig("update")
         );
       } else {
-        createProduct(
-          {
-            ...mutateData,
-            zoneId: data.zoneId!,
-          },
-          factoryMutateConfig("create")
-        );
+        createProduct(mutateData, factoryMutateConfig("create"));
       }
     }
   });
@@ -187,9 +170,6 @@ const ProductForm = ({ onClose, product }: Props) => {
         [&::-webkit-inner-spin-button]:appearance-none
         [&::-webkit-outer-spin-button]:appearance-none
     `;
-
-  const zoneId = form.watch("zoneId");
-  console.log({ zoneId });
 
   return (
     <Form {...form}>
@@ -272,7 +252,31 @@ const ProductForm = ({ onClose, product }: Props) => {
                 )}
               />
             </div>
-            {!product?.id && (
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem
+                    className={cn(
+                      "w-full",
+                      isOwner ? "" : "pointer-events-none"
+                    )}
+                  >
+                    <FormLabel>Danh mục</FormLabel>
+                    <br />
+                    <FormControl>
+                      <ComboboxCategories
+                        onSelect={field.onChange}
+                        formValue={field.value?.toString()}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            {/* {!product?.id && (
               <div className="flex-1">
                 <FormField
                   control={form.control}
@@ -325,34 +329,7 @@ const ProductForm = ({ onClose, product }: Props) => {
                   )}
                 />
               </div>
-            )}
-          </div>
-
-          <div className="flex justify-between gap-2">
-            <div className="flex-1">
-              <FormField
-                control={form.control}
-                name="categoryId"
-                render={({ field }) => (
-                  <FormItem
-                    className={cn(
-                      "w-full",
-                      isOwner ? "" : "pointer-events-none"
-                    )}
-                  >
-                    <FormLabel>Danh mục</FormLabel>
-                    <br />
-                    <FormControl>
-                      <ComboboxCategories
-                        onSelect={field.onChange}
-                        formValue={field.value?.toString()}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            )} */}
           </div>
 
           <FormItem className="w-full">

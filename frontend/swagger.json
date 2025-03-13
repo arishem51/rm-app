@@ -248,7 +248,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ProductUpdateDTO" }
+              "schema": { "$ref": "#/components/schemas/ProductRequestDTO" }
             }
           },
           "required": true
@@ -694,7 +694,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ProductCreateDTO" }
+              "schema": { "$ref": "#/components/schemas/ProductRequestDTO" }
             }
           },
           "required": true
@@ -1626,7 +1626,7 @@
         },
         "required": ["createdAt"]
       },
-      "ProductUpdateDTO": {
+      "ProductRequestDTO": {
         "type": "object",
         "properties": {
           "name": { "type": "string" },
@@ -1930,20 +1930,6 @@
           "name": { "type": "string" }
         },
         "required": ["name", "password", "phoneNumber", "username"]
-      },
-      "ProductCreateDTO": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "categoryId": { "type": "integer", "format": "int64" },
-          "supplierId": { "type": "integer", "format": "int64" },
-          "shopId": { "type": "integer", "format": "int64" },
-          "zoneId": { "type": "integer", "format": "int64" },
-          "price": { "type": "number", "minimum": 0.0 },
-          "imageUrls": { "type": "array", "items": { "type": "string" } }
-        },
-        "required": ["name", "shopId", "zoneId"]
       },
       "PartnerCreateDTO": {
         "type": "object",
@@ -2638,7 +2624,8 @@
           "zone": { "$ref": "#/components/schemas/Zone" },
           "createdBy": { "$ref": "#/components/schemas/User" },
           "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "quantity": { "type": "integer", "format": "int32" }
         }
       },
       "Zone": {

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -44,17 +45,24 @@ public class StatisticsService {
 
                 return StatisticsOverviewResponse.builder()
                                 .totalStaff(
-                                                userRepository.countByShopIdAndStatus(
-                                                                shopId, ActionStatus.ACTIVE)
-                                                                .intValue())
+                                                Optional.ofNullable(userRepository.countByShopIdAndStatus(shopId,
+                                                                ActionStatus.ACTIVE))
+                                                                .map(Long::intValue)
+                                                                .orElse(0))
                                 .totalProduct(
-                                                productRepository.countByShopId(
-                                                                shopId).intValue())
+                                                Optional.ofNullable(productRepository.countByShopId(shopId))
+                                                                .map(Long::intValue)
+                                                                .orElse(0))
                                 .totalRevenue(
-                                                paymentHistoryRepository.getTotalRevenue().intValue())
+                                                Optional.ofNullable(paymentHistoryRepository.getTotalRevenue())
+                                                                .map(BigDecimal::intValue)
+                                                                .orElse(0))
                                 .totalDebt(
-                                                paymentHistoryRepository.getTotalDebt().intValue())
+                                                Optional.ofNullable(paymentHistoryRepository.getTotalDebt())
+                                                                .map(BigDecimal::intValue)
+                                                                .orElse(0))
                                 .build();
+
         }
 
         public List<RevenueByMonthResponse> getRevenueByMonth(User currentUser) {

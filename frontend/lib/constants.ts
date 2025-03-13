@@ -79,7 +79,7 @@ export const AppRoutes = {
     products: {
       index: {
         url: "/dashboard/products",
-        accessRoles: AllRoles,
+        accessRoles: [UserRole.OWNER],
       },
       detail: {
         url: "/dashboard/products/[id]",
@@ -104,7 +104,7 @@ export const AppRoutes = {
       inventories: {
         index: {
           url: "/dashboard/warehouses/inventories",
-          accessRoles: AllRoles,
+          accessRoles: [UserRole.OWNER],
         },
         detail: {
           url: "/dashboard/warehouses/inventories/[id]",

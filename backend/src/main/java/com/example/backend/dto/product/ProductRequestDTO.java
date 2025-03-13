@@ -2,6 +2,7 @@ package com.example.backend.dto.product;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductUpdateDTO {
+public class ProductRequestDTO {
     @NotBlank(message = "Name is required!")
     private String name;
     private String description;

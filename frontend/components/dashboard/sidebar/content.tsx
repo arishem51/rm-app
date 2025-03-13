@@ -126,7 +126,7 @@ const Content = () => {
         icon: Box,
       },
       {
-        title: "Đơn hàng",
+        title: "Nhập/Xuất",
         icon: ShoppingBasket,
         children: [
           {

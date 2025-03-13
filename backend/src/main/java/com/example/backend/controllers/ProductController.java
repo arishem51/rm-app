@@ -3,8 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
-import com.example.backend.dto.product.ProductCreateDTO;
-import com.example.backend.dto.product.ProductUpdateDTO;
+import com.example.backend.dto.product.ProductRequestDTO;
 import com.example.backend.dto.product.ResponseProductDTO;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.User;
@@ -80,7 +79,7 @@ public class ProductController {
     @Operation(summary = "Create a product", description = "Create a new product")
     @PostMapping("")
     public ResponseEntity<BaseResponse<ResponseProductDTO>> createProduct(
-            @RequestBody ProductCreateDTO productDTO,
+            @RequestBody ProductRequestDTO productDTO,
             @CurrentUser User user) {
         try {
             if (UserRoleUtils.isStaff(user)) {
@@ -99,7 +98,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<ResponseProductDTO>> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductUpdateDTO dto,
+            @RequestBody ProductRequestDTO dto,
             @CurrentUser User user) {
         try {
             Product updatedProduct = productService.updateProduct(id, dto, user);

@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/statistics")
-@Tag(name = "StatisticsManagement", description = "Operations related to Statistics")
+@Tag(name = "Statistics Controller", description = "Operations related to Statistics")
 @RequiredArgsConstructor
 public class StatisticsController {
     private final StatisticsService statisticsService;

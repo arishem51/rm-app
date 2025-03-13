@@ -147,7 +147,7 @@ export interface ShopDTO {
   updatedAt?: string;
 }
 
-export interface ProductUpdateDTO {
+export interface ProductRequestDTO {
   name: string;
   description?: string;
   /** @format int64 */
@@ -413,22 +413,6 @@ export interface CreateUserRequest {
   /** @pattern ^[0-9]{10,12}$ */
   phoneNumber: string;
   name: string;
-}
-
-export interface ProductCreateDTO {
-  name: string;
-  description?: string;
-  /** @format int64 */
-  categoryId?: number;
-  /** @format int64 */
-  supplierId?: number;
-  /** @format int64 */
-  shopId: number;
-  /** @format int64 */
-  zoneId: number;
-  /** @min 0 */
-  price?: number;
-  imageUrls?: string[];
 }
 
 export interface PartnerCreateDTO {
@@ -945,6 +929,8 @@ export interface Inventory {
   createdAt?: string;
   /** @format date-time */
   updatedAt?: string;
+  /** @format int32 */
+  quantity?: number;
 }
 
 export interface Zone {
@@ -1354,7 +1340,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/api/products/{id}
      * @secure
      */
-    updateProduct: (id: number, data: ProductUpdateDTO, params: RequestParams = {}) =>
+    updateProduct: (id: number, data: ProductRequestDTO, params: RequestParams = {}) =>
       this.request<BaseResponseResponseProductDTO, any>({
         path: `/api/products/${id}`,
         method: "PUT",
@@ -1657,7 +1643,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/products
      * @secure
      */
-    createProduct: (data: ProductCreateDTO, params: RequestParams = {}) =>
+    createProduct: (data: ProductRequestDTO, params: RequestParams = {}) =>
       this.request<BaseResponseResponseProductDTO, any>({
         path: `/api/products`,
         method: "POST",

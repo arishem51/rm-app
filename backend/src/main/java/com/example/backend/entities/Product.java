@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.example.backend.enums.ActionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -65,6 +67,12 @@ public class Product {
     @Column(name = "deleted_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deletedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    @Schema(required = true)
+    @Builder.Default
+    private ActionStatus status = ActionStatus.ACTIVE;
 
     @PrePersist
     protected void onCreate() {
