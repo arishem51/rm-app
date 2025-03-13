@@ -136,7 +136,7 @@ const Content = () => {
         icon: BadgeCent,
       },
       {
-        title: "Quản lý kho",
+        title: "Kho hàng",
         icon: Warehouse,
         children: [
           {
