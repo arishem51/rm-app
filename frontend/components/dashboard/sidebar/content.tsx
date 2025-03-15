@@ -204,7 +204,7 @@ const Content = () => {
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
-                          <Link href={item.url}>
+                          <Link href={item.url} prefetch>
                             {item.icon && <item.icon />}
                             <span>{item.title}</span>
                           </Link>
@@ -230,7 +230,7 @@ const Content = () => {
                                 <SidebarMenuSub key={child.title}>
                                   <SidebarMenuSubItem>
                                     <SidebarMenuButton asChild>
-                                      <Link href={child.url as string}>
+                                      <Link href={child.url as string} prefetch>
                                         <span>{child.title}</span>
                                       </Link>
                                     </SidebarMenuButton>

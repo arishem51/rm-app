@@ -6,11 +6,10 @@ import { useAllProducts } from "@/services/hooks/products";
 type Props = {
   onSelect: (value: string) => void;
   formValue?: string;
-  shopId: number;
 };
 
-export function ComboboxProducts({ onSelect, formValue, shopId }: Props) {
-  const { data: { data: products = [] } = {} } = useAllProducts(shopId);
+export function ComboboxProducts({ onSelect, formValue }: Props) {
+  const { data: { data: products = [] } = {} } = useAllProducts();
 
   const options =
     products.length > 0

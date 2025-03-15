@@ -52,9 +52,9 @@ const Inventories = () => {
             <TableRow>
               <TableHead>ID</TableHead>
               <TableHead>Sản phẩm</TableHead>
-              <TableHead>Kho</TableHead>
+              <TableHead>Tên kho</TableHead>
               <TableHead>Khu vực trong kho</TableHead>
-              <TableHead className="text-right">Hành động</TableHead>
+              <TableHead>Số lượng</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -63,6 +63,7 @@ const Inventories = () => {
                 <TableCell>{item.id}</TableCell>
                 <TableCell>
                   <Link
+                    prefetch
                     href={`/dashboard/products/${item.productId}`}
                     className="hover:underline"
                   >
@@ -71,13 +72,7 @@ const Inventories = () => {
                 </TableCell>
                 <TableCell>{item.warehouseName}</TableCell>
                 <TableCell>{item.zoneName}</TableCell>
-                <TableCell className="text-right">
-                  {/* <Link href={`/dashboard/warehouses/inventories/${item.id}`}> */}
-                  <Button variant="outline" className="w-6 h-6" size="icon">
-                    <Edit />
-                  </Button>
-                  {/* </Link> */}
-                </TableCell>
+                <TableCell>{item.quantity}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -218,6 +218,7 @@ const AuthForm: FC<Props> = ({
                     <Link
                       href="/auth/forgot-password"
                       className="underline underline-offset-4"
+                      prefetch
                     >
                       <span className="text-sm ml-auto hover:underline underline-offset-4 cursor-pointer">
                         Quên mật khẩu?
