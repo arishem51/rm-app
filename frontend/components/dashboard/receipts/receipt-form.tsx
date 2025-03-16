@@ -47,6 +47,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { useRouter } from "next/navigation";
 import EmptyState from "../empty-state";
+import { format } from "date-fns";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -158,24 +159,22 @@ const ReceiptForm = ({ receipt }: Props) => {
     <Form {...form}>
       <form onSubmit={onSubmit} className="mb-12">
         <div className="flex flex-col gap-3 mb-4">
+          {!isCreateReceipt && (
+            <FormField
+              control={form.control}
+              name="receiptCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mã phiếu</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Mã phiếu" readOnly {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <div className="flex gap-2">
-            {!isCreateReceipt && (
-              <div className="flex-1">
-                <FormField
-                  control={form.control}
-                  name="receiptCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mã phiếu</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Mã phiếu" readOnly {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            )}
             <div className="flex-1">
               <FormField
                 control={form.control}
@@ -191,8 +190,16 @@ const ReceiptForm = ({ receipt }: Props) => {
                 )}
               />
             </div>
+            <div className="flex-1">
+              <FormItem>
+                <FormLabel>Ngày tạo</FormLabel>
+                <FormControl>
+                  <Input readOnly value={format(new Date(), "yyyy-MM-dd")} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </div>
           </div>
-
           <FormItem className="mt-3">
             <div className="flex justify-between items-center">
               <FormLabel>Danh sách sản phẩm</FormLabel>

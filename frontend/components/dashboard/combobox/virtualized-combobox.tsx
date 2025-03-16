@@ -23,6 +23,7 @@ interface VirtualizedCommandProps {
   placeholder: string;
   selectedOption: string;
   onSelectOption?: (option: string) => void;
+  renderLabel?: (option: Option) => React.ReactNode;
 }
 
 const VirtualizedCommand = ({
@@ -31,6 +32,7 @@ const VirtualizedCommand = ({
   placeholder,
   selectedOption,
   onSelectOption,
+  renderLabel,
 }: VirtualizedCommandProps) => {
   const [filteredOptions, setFilteredOptions] =
     React.useState<Option[]>(options);
@@ -167,7 +169,9 @@ const VirtualizedCommand = ({
                       : "opacity-0"
                   )}
                 />
-                {filteredOptions[virtualOption.index].label}
+                {renderLabel
+                  ? renderLabel(filteredOptions[virtualOption.index])
+                  : filteredOptions[virtualOption.index].label}
               </CommandItem>
             ))}
           </div>

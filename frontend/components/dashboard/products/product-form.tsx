@@ -32,12 +32,10 @@ const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   description: z.string().optional(),
   price: z.coerce
-    .number()
-    .min(0, { message: "Wholesale price must be positive" }),
+    .number({ message: "Giá không hợp lệ" })
+    .min(0, { message: "Giá phải lớn hơn 0" }),
   imageUrls: z
-    .array(
-      z.object({ url: z.string().url({ message: "Must be a valid URL" }) })
-    )
+    .array(z.object({ url: z.string().url({ message: "URL phải hợp lệ" }) }))
     .default([]),
   categoryId: z.string().nullable().optional(),
   supplierId: z.string().nullable().optional(),
@@ -66,6 +64,7 @@ const ProductForm = ({ onClose, product }: Props) => {
           name: "",
           description: "",
           imageUrls: [],
+          price: 0,
           shopId: 1,
         },
   });
