@@ -69,7 +69,7 @@ const AuthView: FC<Props> = ({
             variant="outline"
             asChild
           >
-            <Link href={type === "sign-up" ? "/auth/sign-in" : "/"}>
+            <Link prefetch href={type === "sign-up" ? "/auth/sign-in" : "/"}>
               <Home />
             </Link>
           </Button>
@@ -93,7 +93,7 @@ const AuthView: FC<Props> = ({
                 onSuccess: () => {
                   toast({
                     title: ToastTitle.success,
-                    description: "Sign up success!",
+                    description: "Đăng ký thành công!",
                   });
                   config?.onSuccess?.();
                   setTimeout(() => {
@@ -121,7 +121,7 @@ const AuthView: FC<Props> = ({
                       if (data.data) {
                         toast({
                           title: ToastTitle.success,
-                          description: "Sign in success!",
+                          description: "Đăng nhập thành công!",
                         });
                         if (data.data.token) {
                           setTokenAfterSignIn(data.data.token);

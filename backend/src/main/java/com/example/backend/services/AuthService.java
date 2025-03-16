@@ -3,7 +3,7 @@ package com.example.backend.services;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -32,6 +32,9 @@ public class AuthService {
     private final EmailService emailService;
     private final ReCaptchaToken reCaptchaTokenService;
 
+    @Value("${spring.captcha.enabled}")
+    private String captchaEnabled;
+
     public BaseResponse<UserDTO> signUp(SignUpRequest request) {
         try {
             User user = userService.signUpUser(request);
@@ -44,7 +47,10 @@ public class AuthService {
     public BaseResponse<SignInResponse> signIn(SignInRequest request) {
         try {
             String reCaptchaToken = request.getReCaptchaToken();
-            boolean success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+            boolean success = true;
+            if (captchaEnabled.equals("true")) {
+                success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+            }
             if (success) {
                 Authentication authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));

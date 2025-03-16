@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   TableHeader,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import {  Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Fragment, useState, useMemo } from "react";
 import HeaderListSearch from "../header-list-search";
 
@@ -19,7 +19,6 @@ import ListPagination from "../pagination";
 import { Order, OrderResponseDTO } from "@/types/Api";
 import Link from "next/link";
 
-
 const Orders = () => {
   const [filter, setFilter] = useState({ page: 0, search: "", createdAt: "" });
   const { data } = useAppQuery(ApiQuery.orders.getAllOrders());
@@ -27,7 +26,7 @@ const Orders = () => {
 
   const filteredData = useMemo(() => {
     if (!data) return [];
-    return data?.data.filter((order:OrderResponseDTO) =>
+    return data?.data.filter((order: OrderResponseDTO) =>
       order?.partnerName.toLowerCase().includes(filter.search.toLowerCase())
     );
   }, [data, filter.search]);
@@ -58,14 +57,17 @@ const Orders = () => {
     <Fragment>
       <div className="flex justify-between">
         <div className="flex w-full items-center">
-          <HeaderListSearch filterSearch={filter.search} onSearch={handleSearch} />
+          <HeaderListSearch
+            filterSearch={filter.search}
+            onSearch={handleSearch}
+          />
         </div>
-        <Link href="/dashboard/orders/create">
-            <Button>
-              <Plus />
-              Tạo Hàng hóa
-            </Button>
-          </Link>
+        <Link href="/dashboard/orders/create" prefetch>
+          <Button>
+            <Plus />
+            Tạo Hàng hóa
+          </Button>
+        </Link>
       </div>
       {paginatedData.length > 0 ? (
         <Table>

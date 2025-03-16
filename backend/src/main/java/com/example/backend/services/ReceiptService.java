@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import com.example.backend.dto.receipt.ReceiptCreateDTO;
 import com.example.backend.dto.receipt.ReceiptRequestItemDTO;
@@ -33,6 +35,10 @@ public class ReceiptService {
 
     @Transactional
     public Receipt create(ReceiptCreateDTO dto, User currentUser) {
+        if (currentUser.getShop() == null) {
+            throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
+        }
+
         Receipt receipt = Receipt.builder().createdBy(currentUser).build();
         List<ReceiptItem> receiptItems = new ArrayList<>();
         List<Inventory> inventoriesToSave = new ArrayList<>();
@@ -61,7 +67,13 @@ public class ReceiptService {
                     if (inventory.getProduct().getId() != item.getProductId()) {
                         throw new IllegalArgumentException("Sản phẩm không tồn tại trong kho");
                     }
-                    inventory.setQuantity(inventory.getQuantity() + item.getQuantity());
+                    Integer quantity = inventory.getQuantity() + item.getQuantity();
+                    long startTime = System.currentTimeMillis(); // Lấy thời gian bắt đầu
+                    long endTime = startTime + 5000; // Đặt thời gian kết thúc (5 giây)
+
+                    while (System.currentTimeMillis() < endTime) {
+                    }
+                    inventory.setQuantity(quantity);
                 } else {
                     inventory = Inventory.builder().zone(zone)
                             .product(productRepository.findById(item.getProductId())
@@ -83,7 +95,29 @@ public class ReceiptService {
         }
         receipt.setStatus(ReceiptStatus.SUCCESS);
         receipt.setItems(receiptItems);
-        inventoryRepository.saveAll(inventoriesToSave);
+        receipt.setShop(currentUser.getShop());
+        try {
+            inventoryRepository.saveAll(inventoriesToSave);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new IllegalArgumentException("Dữ liệu đã bị thay đổi, vui lòng thử lại!");
+        }
         return receiptRepository.save(receipt);
+    }
+
+    public Page<Receipt> findReceipts(int page, int pageSize, String search, User user) {
+        if (user.getShop() == null) {
+            throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
+        }
+        return receiptRepository.findByShopId(user.getShop().getId(),
+                PageRequest.of(page, pageSize));
+    }
+
+    public Receipt findReceipt(Long id, User user) {
+        if (user.getShop() == null) {
+            throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
+        }
+
+        return receiptRepository.findByIdAndShopId(id, user.getShop().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phiếu nhập"));
     }
 }

@@ -32,12 +32,10 @@ const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   description: z.string().optional(),
   price: z.coerce
-    .number()
-    .min(0, { message: "Wholesale price must be positive" }),
+    .number({ message: "Giá không hợp lệ" })
+    .min(0, { message: "Giá phải lớn hơn 0" }),
   imageUrls: z
-    .array(
-      z.object({ url: z.string().url({ message: "Must be a valid URL" }) })
-    )
+    .array(z.object({ url: z.string().url({ message: "URL phải hợp lệ" }) }))
     .default([]),
   categoryId: z.string().nullable().optional(),
   supplierId: z.string().nullable().optional(),
@@ -66,6 +64,7 @@ const ProductForm = ({ onClose, product }: Props) => {
           name: "",
           description: "",
           imageUrls: [],
+          price: 0,
           shopId: 1,
         },
   });
@@ -78,30 +77,10 @@ const ProductForm = ({ onClose, product }: Props) => {
     name: "imageUrls",
   });
   const queryClient = useQueryClient();
-  // const { data = {} } = useAllZonesByShop();
-  // const { data: zones = [] } = data;
+
   const { mutate: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
   const router = useRouter();
-
-  // const groupZoneByWarehouseId = zones.reduce(
-  //   (acc, zone) => {
-  //     if (!acc[zone.warehouseId!]) {
-  //       acc[zone.warehouseId!] = {
-  //         warehouseId: zone.warehouseId!,
-  //         warehouseName: zone.warehouseName,
-  //         zones: [zone],
-  //       };
-  //     } else {
-  //       acc[zone.warehouseId!].zones.push(zone);
-  //     }
-  //     return acc;
-  //   },
-  //   {} as Record<
-  //     number,
-  //     { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
-  //   >
-  // );
 
   const isPending = isCreating || isUpdating;
   const { reset } = form;
@@ -276,60 +255,6 @@ const ProductForm = ({ onClose, product }: Props) => {
                 )}
               />
             </div>
-            {/* {!product?.id && (
-              <div className="flex-1">
-                <FormField
-                  control={form.control}
-                  name="zoneId"
-                  render={({ field }) => (
-                    <FormItem
-                      className={cn(
-                        "w-full",
-                        isOwner ? "" : "pointer-events-none"
-                      )}
-                    >
-                      <FormLabel>Kho chứa</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Chọn kho - khu trong kho" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Object.entries(groupZoneByWarehouseId).map(
-                              ([key, value]) => {
-                                return (
-                                  <SelectGroup key={key}>
-                                    <SelectLabel>
-                                      Tên Kho: {value.warehouseName}
-                                    </SelectLabel>
-                                    {value.zones.map((zone) => {
-                                      const id = zone.id!.toString();
-                                      return (
-                                        <SelectItem
-                                          key={id}
-                                          value={id}
-                                          className="ml-2"
-                                        >
-                                          {zone.name}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectGroup>
-                                );
-                              }
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            )} */}
           </div>
 
           <FormItem className="w-full">

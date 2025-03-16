@@ -15,23 +15,20 @@ import { ArrowUpRight, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
 import HeaderListSearch from "../header-list-search";
-import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { createSttNumber, toCurrency } from "@/lib/utils";
 import ListPagination from "../pagination";
-import Image from "next/image";
-import defaultPic from "../../../public/images/default-product.png";
-import { checkRole } from "@/lib/helpers";
+import { generateReceiptCode } from "@/lib/helpers";
+import { format } from "date-fns";
+import { ReceiptItemResponseDTO } from "@/types/Api";
 
-const Products = () => {
+const Receipts = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useAppQuery(
-    ApiQuery.products.getProducts(filter)
+    ApiQuery.receipts.getReceipts(filter)
   );
-  const { data: currentUser } = useMe();
 
-  const { isAdmin, isOwner } = checkRole(currentUser);
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
   };
@@ -46,6 +43,22 @@ const Products = () => {
     });
   };
 
+  const renderReceiptItems = (items?: ReceiptItemResponseDTO[]) => {
+    return (
+      <div className="flex flex-col">
+        {items?.slice(0, 2).map((item) => (
+          <div key={item.id} className="flex items-center">
+            <div className="text-sm w-[158px] overflow-hidden text-ellipsis whitespace-nowrap">
+              {item.productName} - {toCurrency(item.productPrice ?? 0)} -{" "}
+              {item.quantity} bao
+            </div>
+          </div>
+        ))}
+        {(items?.length ?? 0) > 2 && <div>...</div>}
+      </div>
+    );
+  };
+
   return (
     <Fragment>
       <div className="flex justify-between">
@@ -53,63 +66,46 @@ const Products = () => {
           filterSearch={filter.search}
           onSearch={handleSearch}
         />
-        {isOwner && (
-          <Link href="/dashboard/products/create" prefetch>
-            <Button>
-              <Plus />
-              Tạo sản phẩm
-            </Button>
-          </Link>
-        )}
+        <Link href="/dashboard/receipts/create" prefetch>
+          <Button>
+            <Plus />
+            Tạo phiếu nhập
+          </Button>
+        </Link>
       </div>
       {(data?.data || []).length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>STT</TableHead>
-              <TableHead>Tên</TableHead>
-              <TableHead>Ảnh</TableHead>
-              <TableHead>Giá (VNĐ/Kg)</TableHead>
-              <TableHead>Danh mục</TableHead>
-              <TableHead>Nhà cung cấp</TableHead>
-              {isAdmin && <TableHead>Cửa hàng</TableHead>}
+              <TableHead>Mã phiếu</TableHead>
+              <TableHead>Ngày tạo</TableHead>
+              <TableHead>Sản phẩm đã nhập</TableHead>
+              <TableHead>Trạng thái</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.data?.map((product, index) => (
-              <TableRow key={product.id}>
+            {data?.data?.map((item, index) => (
+              <TableRow key={item.id}>
                 <TableCell>{createSttNumber(index, filter.page)}</TableCell>
-                <TableCell>{product.name}</TableCell>
+                <TableCell>{generateReceiptCode(item)}</TableCell>
                 <TableCell>
-                  <Image
-                    src={product.imageUrls?.[0] ?? defaultPic}
-                    alt={product.name ?? ""}
-                    width={50}
-                    height={50}
-                  />
+                  {format(item.createdAt ?? new Date(), "yyyy-MM-dd")}
                 </TableCell>
-
-                <TableCell>{toCurrency(product.price as number)}</TableCell>
+                <TableCell>{renderReceiptItems(item.receiptItems)}</TableCell>
                 <TableCell>
                   <Badge
-                    variant={product.category?.name ? "default" : "outline"}
                     className="px-1 py-0.5"
+                    variant={
+                      item?.status === "FAILED" ? "destructive" : "default"
+                    }
                   >
-                    {product.category?.name || "Không tồn tại"}
+                    {item.status === "FAILED" ? "Thất bại" : "Thành công"}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={product.supplier?.name ? "default" : "outline"}
-                    className="px-1 py-0.5"
-                  >
-                    {product.supplier?.name || "Không tồn tại"}
-                  </Badge>
-                </TableCell>
-                {isAdmin && <TableCell>{product.shopName}</TableCell>}
                 <TableCell className="text-right">
-                  <Link href={`/dashboard/products/${product.id}`} prefetch>
+                  <Link href={`/dashboard/receipts/${item.id}`} prefetch>
                     <Button variant="outline" className="w-6 h-6" size="icon">
                       <ArrowUpRight />
                     </Button>
@@ -132,4 +128,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Receipts;

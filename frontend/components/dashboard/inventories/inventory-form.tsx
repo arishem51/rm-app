@@ -21,7 +21,6 @@ import { InventoryUpdateDTO, InventoryResponseDTO, ZoneDTO } from "@/types/Api";
 import { useUpdateInventory } from "@/hooks/mutations/inventory";
 import { ComboboxProducts } from "../combobox/product";
 import { useRouter } from "next/navigation";
-import { useMe } from "@/hooks/mutations/user";
 import {
   Select,
   SelectContent,
@@ -57,7 +56,6 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
     useUpdateInventory();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { data: currentUserQuery } = useMe();
 
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
@@ -139,7 +137,6 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
                   <ComboboxProducts
                     onSelect={field.onChange}
                     formValue={field.value?.toString()}
-                    shopId={currentUserQuery!.shopId!}
                   />
                 </FormControl>
                 <FormMessage />
