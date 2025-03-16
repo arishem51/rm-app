@@ -15,22 +15,20 @@ import { ArrowUpRight, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
 import HeaderListSearch from "../header-list-search";
-import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { createSttNumber } from "@/lib/utils";
+import { createSttNumber, toCurrency } from "@/lib/utils";
 import ListPagination from "../pagination";
-import { checkRole, generateReceiptCode } from "@/lib/helpers";
+import { generateReceiptCode } from "@/lib/helpers";
 import { format } from "date-fns";
+import { ReceiptItemResponseDTO } from "@/types/Api";
 
 const Receipts = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.receipts.getReceipts(filter)
   );
-  const { data: currentUser } = useMe();
 
-  const { isOwner } = checkRole(currentUser);
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
   };
@@ -45,6 +43,22 @@ const Receipts = () => {
     });
   };
 
+  const renderReceiptItems = (items?: ReceiptItemResponseDTO[]) => {
+    return (
+      <div className="flex flex-col">
+        {items?.slice(0, 2).map((item) => (
+          <div key={item.id} className="flex items-center">
+            <div className="text-sm w-[158px] overflow-hidden text-ellipsis whitespace-nowrap">
+              {item.productName} - {toCurrency(item.productPrice ?? 0)} -{" "}
+              {item.quantity} bao
+            </div>
+          </div>
+        ))}
+        {(items?.length ?? 0) > 2 && <div>...</div>}
+      </div>
+    );
+  };
+
   return (
     <Fragment>
       <div className="flex justify-between">
@@ -52,14 +66,12 @@ const Receipts = () => {
           filterSearch={filter.search}
           onSearch={handleSearch}
         />
-        {isOwner && (
-          <Link href="/dashboard/receipts/create" prefetch>
-            <Button>
-              <Plus />
-              Tạo phiếu nhập
-            </Button>
-          </Link>
-        )}
+        <Link href="/dashboard/receipts/create" prefetch>
+          <Button>
+            <Plus />
+            Tạo phiếu nhập
+          </Button>
+        </Link>
       </div>
       {(data?.data || []).length > 0 ? (
         <Table>
@@ -68,7 +80,7 @@ const Receipts = () => {
               <TableHead>STT</TableHead>
               <TableHead>Mã phiếu</TableHead>
               <TableHead>Ngày tạo</TableHead>
-              <TableHead>Số lượng sản phẩm đã nhập</TableHead>
+              <TableHead>Sản phẩm đã nhập</TableHead>
               <TableHead>Trạng thái</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -81,7 +93,7 @@ const Receipts = () => {
                 <TableCell>
                   {format(item.createdAt ?? new Date(), "yyyy-MM-dd")}
                 </TableCell>
-                <TableCell>{item.receiptItems?.length}</TableCell>
+                <TableCell>{renderReceiptItems(item.receiptItems)}</TableCell>
                 <TableCell>
                   <Badge
                     className="px-1 py-0.5"

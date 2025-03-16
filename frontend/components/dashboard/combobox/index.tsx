@@ -9,14 +9,28 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import VirtualizedCommand from "@/components/dashboard/combobox/virtualized-combobox";
+import { cn } from "@/lib/utils";
+
+export type ComboboxOption = {
+  value: string;
+  label: string;
+};
 
 type Props = {
   onSelect: (value: string) => void;
   formValue?: string;
-  options: { value: string; label: string }[];
+  options: ComboboxOption[];
+  renderLabel?: (option: ComboboxOption) => React.ReactNode;
+  popoverClassname?: string;
 };
 
-export function Combobox({ onSelect, formValue, options }: Props) {
+export function Combobox({
+  onSelect,
+  formValue,
+  options,
+  renderLabel,
+  popoverClassname,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(formValue);
   const [buttonHover, setButtonHover] = useState(false);
@@ -54,7 +68,7 @@ export function Combobox({ onSelect, formValue, options }: Props) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0">
+      <PopoverContent className={cn("p-0", popoverClassname)}>
         <VirtualizedCommand
           height="auto"
           options={options}
@@ -65,6 +79,7 @@ export function Combobox({ onSelect, formValue, options }: Props) {
             setOpen(false);
             onSelect(currentValue);
           }}
+          renderLabel={renderLabel}
         />
       </PopoverContent>
     </Popover>
