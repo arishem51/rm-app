@@ -156,8 +156,6 @@ export interface ProductRequestDTO {
   supplierId?: number;
   /** @format int64 */
   shopId: number;
-  /** @min 0 */
-  price?: number;
   imageUrls?: string[];
 }
 
@@ -295,7 +293,6 @@ export interface Product {
   category?: Category;
   supplier?: Partner;
   shop?: Shop;
-  price?: number;
   description?: string;
   imageUrls?: string[];
   /** @format date-time */
@@ -365,12 +362,16 @@ export interface InventoryResponseDTO {
   /** @format int64 */
   zoneId?: number;
   zoneName?: string;
+  /** @format int64 */
+  warehouseId?: number;
   productName?: string;
   createdBy?: UserDTO;
   createdAt?: string;
   updatedAt?: string;
   price?: string;
   warehouseName?: string;
+  /** @format int32 */
+  quantity?: number;
 }
 
 export interface UpdateCategoryDTO {
@@ -423,8 +424,13 @@ export interface ReceiptCreateDTO {
 export interface ReceiptRequestItemDTO {
   /** @format int64 */
   productId?: number;
-  /** @format int32 */
+  /**
+   * @format int32
+   * @min 1
+   */
   quantity?: number;
+  /** @min 0 */
+  price?: number;
   /** @format int64 */
   zoneId?: number;
 }
@@ -618,6 +624,8 @@ export interface WarehouseDTO {
   status: string;
   /** @format date-time */
   createdAt?: string;
+  /** @format int32 */
+  numberOfZone?: number;
 }
 
 export interface BaseResponseWarehouseDTO {
@@ -954,16 +962,16 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -972,9 +980,9 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
+  paged?: boolean;
   /** @format int32 */
   pageSize?: number;
   unpaged?: boolean;
@@ -982,8 +990,8 @@ export interface PageableObject {
 
 export interface SortObject {
   empty?: boolean;
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
 }
 
 export interface BaseResponseListInventory {
@@ -1003,6 +1011,7 @@ export interface Inventory {
   id?: number;
   product?: Product;
   zone?: Zone;
+  productPrice?: number;
   createdBy?: User;
   /** @format date-time */
   createdAt?: string;

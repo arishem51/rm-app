@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   TableHeader,
   TableRow,
@@ -11,12 +10,12 @@ import {
 } from "@/components/ui/table";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import { Edit } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
 import HeaderListSearch from "../header-list-search";
 import Link from "next/link";
 import ListPagination from "../pagination";
+import { toCurrency } from "@/lib/utils";
 
 const Inventories = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -52,9 +51,10 @@ const Inventories = () => {
             <TableRow>
               <TableHead>ID</TableHead>
               <TableHead>Sản phẩm</TableHead>
+              <TableHead>Giá</TableHead>
+              <TableHead>Số lượng</TableHead>
               <TableHead>Tên kho</TableHead>
               <TableHead>Khu vực trong kho</TableHead>
-              <TableHead>Số lượng</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -70,9 +70,10 @@ const Inventories = () => {
                     {item.productName}
                   </Link>
                 </TableCell>
+                <TableCell>{toCurrency(+(item.price || 0))}</TableCell>
+                <TableCell>{item.quantity}</TableCell>
                 <TableCell>{item.warehouseName}</TableCell>
                 <TableCell>{item.zoneName}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
               </TableRow>
             ))}
           </TableBody>

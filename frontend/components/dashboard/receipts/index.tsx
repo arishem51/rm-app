@@ -91,7 +91,7 @@ const Receipts = () => {
                 <TableCell>{createSttNumber(index, filter.page)}</TableCell>
                 <TableCell>{generateReceiptCode(item)}</TableCell>
                 <TableCell>
-                  {format(item.createdAt ?? new Date(), "yyyy-MM-dd")}
+                  {format(item.createdAt ?? new Date(), "yyyy-MM-dd hh:mm")}
                 </TableCell>
                 <TableCell>{renderReceiptItems(item.receiptItems)}</TableCell>
                 <TableCell>

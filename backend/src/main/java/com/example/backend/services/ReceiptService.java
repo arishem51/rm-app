@@ -32,7 +32,6 @@ public class ReceiptService {
     private final ProductRepository productRepository;
 
     @Transactional
-    // FIXME: Khong them dc 2 product cung luc vao zone khac nhau
     public Receipt create(ReceiptCreateDTO dto, User currentUser) {
         if (currentUser.getShop() == null) {
             throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
@@ -85,8 +84,9 @@ public class ReceiptService {
             }
         } catch (Exception e) {
             receipt.setStatus(ReceiptStatus.FAILED);
-            System.out.println(e + " message: " + e.getMessage());
+            receipt.setShop(currentUser.getShop());
             receiptRepository.save(receipt);
+            System.out.println(e + " message: " + e.getMessage());
             throw new IllegalArgumentException("Lỗi khi tạo phiếu nhập: " + e.getMessage());
         }
         receipt.setStatus(ReceiptStatus.SUCCESS);
