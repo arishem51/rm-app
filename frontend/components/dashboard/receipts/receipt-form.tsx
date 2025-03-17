@@ -48,7 +48,8 @@ import { useRouter } from "next/navigation";
 import EmptyState from "../empty-state";
 import { format } from "date-fns";
 import InputCurrency from "@/components/input-currency";
-import { cn } from "@/lib/utils";
+import { cn, toCurrency } from "@/lib/utils";
+import { uniqBy } from "lodash";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -88,6 +89,18 @@ const ReceiptForm = ({ receipt }: Props) => {
   const { data: zoneQuery = {} } = useAllZonesByShop();
   const { data: zones = [] } = zoneQuery;
 
+  const {
+    fields: itemFields,
+    append,
+    remove,
+  } = useFieldArray({
+    control: form.control,
+    name: "items",
+  });
+  const { mutate, isPending } = useCreateReceipt();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
   const groupZoneByWarehouseId = zones.reduce(
     (acc, zone) => {
       if (!acc[zone.warehouseId!]) {
@@ -107,20 +120,16 @@ const ReceiptForm = ({ receipt }: Props) => {
     >
   );
 
-  const {
-    fields: itemFields,
-    append,
-    remove,
-  } = useFieldArray({
-    control: form.control,
-    name: "items",
-  });
-  const { mutate, isPending } = useCreateReceipt();
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  new Set();
 
   const isCreateReceipt = !receipt;
-  const { reset } = form;
+  const { reset, watch } = form;
+  const receiptItems = watch("items");
+  const selectedZones = uniqBy(receiptItems, "zoneId").map(
+    (item) => item.zoneId
+  );
+  const filterZoneBySelect = (zone: ZoneDTO, currentSelectZoneId: number) =>
+    currentSelectZoneId === zone.id || !selectedZones.includes(zone.id!);
 
   useEffect(() => {
     if (receipt) {
@@ -128,10 +137,8 @@ const ReceiptForm = ({ receipt }: Props) => {
         receiptCode: generateReceiptCode(receipt),
         createdBy: receipt.createdBy?.name,
         items: receipt.receiptItems?.map((item) => ({
-          productId: item.productId,
-          productPrice: item.productPrice,
-          quantity: item.quantity,
-          zoneId: item.zoneId,
+          ...item,
+          price: item.productPrice,
         })),
       });
     }
@@ -157,6 +164,14 @@ const ReceiptForm = ({ receipt }: Props) => {
       },
     });
   });
+
+  const renderZone = (zoneId: number) => {
+    const zone = zones.find((zone) => zone.id === zoneId);
+    if (!zone) {
+      return "";
+    }
+    return `${zone.name}/${zone.warehouseName}`;
+  };
 
   const className = `
         appearance-none
@@ -220,18 +235,25 @@ const ReceiptForm = ({ receipt }: Props) => {
                   type="button"
                   onClick={() => {
                     const product = products[0];
-                    if (product) {
+                    const zonesSet = new Set(zones.map((zone) => zone.id!));
+                    const selectedZonesSet = new Set(selectedZones);
+                    const different = zonesSet.difference(selectedZonesSet);
+                    const zoneId = different.values().next().value;
+                    if (product && zoneId) {
                       append({
                         productId: product.id!,
                         quantity: 1,
-                        zoneId: zones[0].id!,
+                        zoneId,
                         price: 0,
                       });
                     } else {
                       toast({
-                        title: "Bạn chưa có sản phẩm nào",
-                        description:
-                          "Vui lòng thêm sản phẩm trước khi tạo phiếu nhập.",
+                        title: !product
+                          ? "Bạn chưa có sản phẩm nào"
+                          : "Bạn chưa có khu vực hoặc khu vực đã được chọn hết",
+                        description: !product
+                          ? "Vui lòng thêm sản phẩm trước khi tạo phiếu nhập."
+                          : "Vui lòng thêm khu vực.",
                       });
                     }
                   }}
@@ -286,12 +308,24 @@ const ReceiptForm = ({ receipt }: Props) => {
                         />
                       </TableCell>
                       <TableCell className="align-top">
-                        <InputCurrency
-                          name={`items.${index}.price`}
-                          className={className}
-                          readOnly={!isCreateReceipt}
-                          placeholder="Ví dụ: 100000"
-                        />
+                        {isCreateReceipt ? (
+                          <InputCurrency
+                            name={`items.${index}.price`}
+                            className={className}
+                            readOnly={!isCreateReceipt}
+                            placeholder="Ví dụ: 10000"
+                          />
+                        ) : (
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.price`}
+                            render={({ field }) => (
+                              <FormControl>
+                                <span>{toCurrency(field.value)}</span>
+                              </FormControl>
+                            )}
+                          />
+                        )}
                       </TableCell>
                       <TableCell className="align-top">
                         <FormField
@@ -324,7 +358,9 @@ const ReceiptForm = ({ receipt }: Props) => {
                             <FormControl>
                               {isCreateReceipt ? (
                                 <Select
-                                  onValueChange={field.onChange}
+                                  onValueChange={(value) => {
+                                    field.onChange(parseInt(value));
+                                  }}
                                   value={field.value?.toString()}
                                 >
                                   <SelectTrigger>
@@ -338,18 +374,25 @@ const ReceiptForm = ({ receipt }: Props) => {
                                             <SelectLabel>
                                               Tên Kho: {value.warehouseName}
                                             </SelectLabel>
-                                            {value.zones.map((zone) => {
-                                              const id = zone.id!.toString();
-                                              return (
-                                                <SelectItem
-                                                  key={id}
-                                                  value={id.toString()}
-                                                  className="ml-2"
-                                                >
-                                                  {zone.name}
-                                                </SelectItem>
-                                              );
-                                            })}
+                                            {value.zones
+                                              .filter((zone) =>
+                                                filterZoneBySelect(
+                                                  zone,
+                                                  field.value
+                                                )
+                                              )
+                                              .map((zone) => {
+                                                const id = zone.id!.toString();
+                                                return (
+                                                  <SelectItem
+                                                    key={id}
+                                                    value={id.toString()}
+                                                    className="ml-2"
+                                                  >
+                                                    {zone.name}
+                                                  </SelectItem>
+                                                );
+                                              })}
                                           </SelectGroup>
                                         );
                                       }
@@ -357,13 +400,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                                   </SelectContent>
                                 </Select>
                               ) : (
-                                <span>
-                                  {
-                                    zones.find(
-                                      (item) => item.id === field.value
-                                    )?.name
-                                  }
-                                </span>
+                                <span>{renderZone(field.value)}</span>
                               )}
                             </FormControl>
                           )}
