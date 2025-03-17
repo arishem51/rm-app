@@ -1,9 +1,7 @@
 package com.example.backend.dto.product;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,7 +23,5 @@ public class ProductRequestDTO {
     @NotNull(message = "Shop ID is required!")
     private Long shopId;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
-    private BigDecimal price;
     private List<String> imageUrls;
 }

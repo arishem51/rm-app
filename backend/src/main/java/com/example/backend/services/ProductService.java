@@ -42,7 +42,6 @@ public class ProductService {
                 .category(category)
                 .supplier(supplier)
                 .shop(shop)
-                .price(dto.getPrice())
                 .description(dto.getDescription())
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
                 .build();
@@ -92,8 +91,6 @@ public class ProductService {
 
         if (dto.getName() != null)
             product.setName(dto.getName());
-        if (dto.getPrice() != null)
-            product.setPrice(dto.getPrice());
         if (dto.getDescription() != null)
             product.setDescription(dto.getDescription());
         if (dto.getImageUrls() != null) {

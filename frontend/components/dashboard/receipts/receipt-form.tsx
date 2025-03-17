@@ -28,7 +28,6 @@ import {
 } from "@/components/ui/table";
 import { generateReceiptCode } from "@/lib/helpers";
 import { ReceiptResponseDTO, ZoneDTO } from "@/types/Api";
-import { toCurrency } from "@/lib/utils";
 import { ComboboxProducts } from "../combobox/product";
 import { useAllZonesByShop } from "@/services/hooks/warehouses";
 import {
@@ -48,6 +47,8 @@ import { ApiQuery } from "@/services/query";
 import { useRouter } from "next/navigation";
 import EmptyState from "../empty-state";
 import { format } from "date-fns";
+import InputCurrency from "@/components/input-currency";
+import { cn } from "@/lib/utils";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -56,9 +57,11 @@ const schema = z.object({
     .array(
       z.object({
         productId: z.coerce.number(),
-        productPrice: z.coerce.number().min(0),
-        quantity: z.coerce.number().min(1),
+        quantity: z.coerce.number().min(1, { message: "Không hợp lệ" }),
         zoneId: z.coerce.number(),
+        price: z.coerce
+          .number()
+          .min(1000, { message: "Giá phải lớn hơn 1000vnđ" }),
       })
     )
     .min(1, "Vui lòng thêm ít nhất một sản phẩm."),
@@ -155,6 +158,13 @@ const ReceiptForm = ({ receipt }: Props) => {
     });
   });
 
+  const className = `
+        appearance-none
+        [moz-appearance:textfield]
+        [&::-webkit-inner-spin-button]:appearance-none
+        [&::-webkit-outer-spin-button]:appearance-none
+    `;
+
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="mb-12">
@@ -209,12 +219,21 @@ const ReceiptForm = ({ receipt }: Props) => {
                   className="mt-3"
                   type="button"
                   onClick={() => {
-                    append({
-                      productId: products[0].id!,
-                      productPrice: products[0].price!,
-                      quantity: 1,
-                      zoneId: zones[0].id!,
-                    });
+                    const product = products[0];
+                    if (product) {
+                      append({
+                        productId: product.id!,
+                        quantity: 1,
+                        zoneId: zones[0].id!,
+                        price: 0,
+                      });
+                    } else {
+                      toast({
+                        title: "Bạn chưa có sản phẩm nào",
+                        description:
+                          "Vui lòng thêm sản phẩm trước khi tạo phiếu nhập.",
+                      });
+                    }
                   }}
                 >
                   <Plus className="h-4 w-4" />
@@ -242,7 +261,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                       <TableCell>
                         <span>{index + 1}</span>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top">
                         <FormField
                           control={form.control}
                           name={`items.${index}.productId`}
@@ -250,15 +269,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                             <FormControl>
                               {isCreateReceipt ? (
                                 <ComboboxProducts
-                                  onSelect={(value) => {
-                                    field.onChange(value);
-                                    form.setValue(
-                                      `items.${index}.productPrice`,
-                                      products.find(
-                                        (item) => item.id?.toString() === value
-                                      )?.price ?? 0
-                                    );
-                                  }}
+                                  onSelect={field.onChange}
                                   formValue={field.value?.toString()}
                                 />
                               ) : (
@@ -274,33 +285,38 @@ const ReceiptForm = ({ receipt }: Props) => {
                           )}
                         />
                       </TableCell>
-                      <TableCell>
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.productPrice`}
-                          render={({ field }) => (
-                            <FormControl>
-                              <span>{toCurrency(field.value)}</span>
-                            </FormControl>
-                          )}
+                      <TableCell className="align-top">
+                        <InputCurrency
+                          name={`items.${index}.price`}
+                          className={className}
+                          readOnly={!isCreateReceipt}
+                          placeholder="Ví dụ: 100000"
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top">
                         <FormField
                           control={form.control}
                           name={`items.${index}.quantity`}
                           render={({ field }) => (
-                            <FormControl>
-                              {isCreateReceipt ? (
-                                <Input {...field} />
-                              ) : (
-                                <span>{field.value}</span>
-                              )}
-                            </FormControl>
+                            <>
+                              <FormControl>
+                                {isCreateReceipt ? (
+                                  <Input
+                                    {...field}
+                                    className={cn("w-[86px]", className)}
+                                    type="number"
+                                    placeholder="Ví dụ: 10"
+                                  />
+                                ) : (
+                                  <span>{field.value}</span>
+                                )}
+                              </FormControl>
+                              <FormMessage className="whitespace-nowrap" />
+                            </>
                           )}
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top">
                         <FormField
                           control={form.control}
                           name={`items.${index}.zoneId`}
@@ -354,7 +370,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                         />
                       </TableCell>
                       {isCreateReceipt && (
-                        <TableCell className="text-right">
+                        <TableCell className="align-top text-right">
                           <Button
                             variant="destructive"
                             size="icon"
