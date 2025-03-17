@@ -120,8 +120,6 @@ const ReceiptForm = ({ receipt }: Props) => {
     >
   );
 
-  new Set();
-
   const isCreateReceipt = !receipt;
   const { reset, watch } = form;
   const receiptItems = watch("items");
