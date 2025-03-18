@@ -1,6 +1,8 @@
 import CreateShopView from "@/components/dashboard/create-shop-view";
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
-import OwnerPartnersView from "@/components/dashboard/partner/owner-partners-view";
+import AdminPartnersView from "@/components/dashboard/partner/admin-partners-view";
+// import AdminUsersView from "@/components/dashboard/users/admin-users-view";
+// import OwnerUsersView from "@/components/dashboard/users/owner-users-view";
 import { checkRole } from "@/lib/helpers";
 import { getMe } from "@/server/actions";
 import { ApiQuery } from "@/services/query";
@@ -9,7 +11,7 @@ import { redirect } from "next/navigation";
 const PartnersPage = async () => {
   const query = await getMe();
   const user = query?.data?.data;
-  const { isOwner, isStaff } = checkRole(user);
+  const { isAdmin, isOwner, isStaff } = checkRole(user);
 
   if (isStaff) {
     redirect("/dashboard");
@@ -20,8 +22,11 @@ const PartnersPage = async () => {
   }
 
   const getQuery = () => {
+    if (isAdmin) {
+      return ApiQuery.users.getUsers({ page: 0, search: "" });
+    }
     if (isOwner) {
-      return ApiQuery.partners.getPartners({ page: 0, search: "" });
+      return ApiQuery.shops.getShopDetails(user?.shopId);
     }
     return null;
   };
@@ -29,11 +34,11 @@ const PartnersPage = async () => {
   return (
     <HydrationPrefetchQuery query={getQuery()} awaitQuery>
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Partners Management</h1>
-        <p className="text-sm text-muted-foreground my-1">
-          Manage your partners and their information here.
+        <h1 className="text-3xl font-bold mt-2">Partners management</h1>
+        <p className="text-sm  text-muted-foreground my-1">
+          Manage partners and their information here.
         </p>
-        {isOwner && <OwnerPartnersView />}
+        <AdminPartnersView />
       </div>
     </HydrationPrefetchQuery>
   );
