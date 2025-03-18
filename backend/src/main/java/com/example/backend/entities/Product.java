@@ -1,6 +1,5 @@
 package com.example.backend.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,9 +41,6 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
-
-    @Column(name = "price")
-    private BigDecimal price;
 
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
@@ -90,7 +86,6 @@ public class Product {
                 + ", name='" + name + '\''
                 + ", category='" + (category != null ? category.getName() : "null") + '\''
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
-                + ", price='" + price + '\''
                 + "} ";
     }
 }

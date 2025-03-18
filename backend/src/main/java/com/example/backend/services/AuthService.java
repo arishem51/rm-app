@@ -44,13 +44,18 @@ public class AuthService {
         }
     }
 
+    private boolean verifyReCaptchaToken(String reCaptchaToken) {
+        boolean success = true;
+        if (captchaEnabled.equals("true")) {
+            success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+        }
+        return success;
+    }
+
     public BaseResponse<SignInResponse> signIn(SignInRequest request) {
         try {
             String reCaptchaToken = request.getReCaptchaToken();
-            boolean success = true;
-            if (captchaEnabled.equals("true")) {
-                success = reCaptchaTokenService.verifyToken(reCaptchaToken);
-            }
+            boolean success = verifyReCaptchaToken(reCaptchaToken);
             if (success) {
                 Authentication authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -77,7 +82,7 @@ public class AuthService {
     public void forgotPassword(ForgotPasswordRequest request) {
         try {
             String reCaptchaToken = request.getReCaptchaToken();
-            boolean success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+            boolean success = verifyReCaptchaToken(reCaptchaToken);
             if (success) {
                 String email = request.getEmail();
                 userService.findByEmail(email);

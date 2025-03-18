@@ -96,6 +96,7 @@ const Facilities = () => {
               <TableHead>ID</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Địa chỉ</TableHead>
+              <TableHead>Số lượng khu vực trong kho</TableHead>
               <TableHead>Thời điểm tạo</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -106,8 +107,9 @@ const Facilities = () => {
                 <TableCell>{warehouse.id}</TableCell>
                 <TableCell>{warehouse.name}</TableCell>
                 <TableCell>{warehouse.address}</TableCell>
+                <TableCell>{warehouse.numberOfZone} khu</TableCell>
                 <TableCell>
-                  {format(warehouse.createdAt!, "yyyy-MM-dd")}
+                  {format(warehouse.createdAt!, "yyyy-MM-dd hh:mm")}
                 </TableCell>
                 <TableCell className="text-right">
                   <Link

@@ -56,7 +56,7 @@ public class OrderService {
                     return OrderItem.builder()
                             .product(product)
                             .quantity(itemDTO.getQuantity())
-                            .price(product.getPrice()) // Sử dụng giá từ product
+                            .price(inventory.getProductPrice())
                             .build();
                 }).toList())
                 .build();
