@@ -6,13 +6,14 @@ import com.example.backend.dto.PaginateResponse;
 import com.example.backend.dto.product.ProductRequestDTO;
 import com.example.backend.dto.product.ResponseProductDTO;
 import com.example.backend.entities.Product;
+import com.example.backend.entities.ProductCreateRequest;
 import com.example.backend.entities.User;
 import com.example.backend.services.ProductService;
 import com.example.backend.utils.UserRoleUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import java.util.List;
+
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -77,20 +80,43 @@ public class ProductController {
 
     @Operation(summary = "Create a product", description = "Create a new product")
     @PostMapping("")
-    public ResponseEntity<BaseResponse<ResponseProductDTO>> createProduct(
+    public ResponseEntity<BaseResponse<String>> createProduct(
             @RequestBody ProductRequestDTO productDTO,
             @CurrentUser User user) {
         try {
-            if (UserRoleUtils.isStaff(user)) {
-                throw new IllegalArgumentException("You are not authorized to create a product!");
-            }
-            Product createdProduct = productService.createProduct(productDTO, user);
-            return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(createdProduct),
-                    "Product created successfully!"));
+            productService.createProduct(productDTO, user);
+            return ResponseEntity.ok(BaseResponse.success("Request sent to Owner for approval!", "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
+    }
 
+    @Operation(summary = "Get all pending product requests", description = "Fetch a list of all pending product requests.")
+    @GetMapping("/requests")
+    public ResponseEntity<BaseResponse<List<ProductCreateRequest>>> getProductRequests(@CurrentUser User owner) {
+        try {
+            List<ProductCreateRequest> requests = productService.getPendingRequests(owner);
+            return ResponseEntity.ok(new BaseResponse<>(requests, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Approve or reject a product request", description = "Approve or reject a product request.")
+    @PutMapping("/requests/{id}/approve")
+    public ResponseEntity<BaseResponse<String>> approveProductRequest(
+            @PathVariable Long id,
+            @RequestParam boolean approve,
+            @CurrentUser User owner) {
+        try {
+            Product product = productService.approveProductRequest(id, approve, owner);
+            return ResponseEntity.ok(new BaseResponse<>(
+                approve ? "Product approved and created successfully!" : "Product request rejected.",
+                "Success!"
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @Operation(summary = "Update a product", description = "Update an existing product by ID.")

@@ -3,9 +3,12 @@ package com.example.backend.services;
 import com.example.backend.dto.product.ProductRequestDTO;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.Product;
+import com.example.backend.entities.ProductCreateRequest;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
+import com.example.backend.enums.RequestStatus;
+import com.example.backend.repositories.ProductCreateRequestRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductCreateRequestRepository productCreateRequestRepository;
     private final PartnerService partnerService;
     private final CategoryService categoryService;
 
@@ -31,7 +35,21 @@ public class ProductService {
         }
     }
 
-    public Product createProduct(ProductRequestDTO dto, User user) {
+    public void createProduct(ProductRequestDTO dto, User user) {
+        if (UserRoleUtils.isStaff(user)) {
+            ProductCreateRequest request = ProductCreateRequest.builder()
+                    .shop(user.getShop())
+                    .requestedBy(user)
+                    .productName(dto.getName())
+                    .description(dto.getDescription())
+                    .categoryId(dto.getCategoryId())
+                    .supplierId(dto.getSupplierId())
+                    .status(RequestStatus.PENDING)
+                    .build();
+            productCreateRequestRepository.save(request);
+            throw new IllegalArgumentException("Request sent to Owner for approval.");
+        }
+
         validateUserCanManageProduct(user);
         Shop shop = user.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
@@ -46,7 +64,46 @@ public class ProductService {
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
                 .build();
 
-        return productRepository.save(product);
+        productRepository.save(product);
+    }
+
+    public Product approveProductRequest(Long requestId, boolean isApproved, User owner) {
+        if (!UserRoleUtils.isOwner(owner)) {
+            throw new IllegalArgumentException("Only the shop owner can approve product requests!");
+        }
+
+        ProductCreateRequest request = productCreateRequestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Product request not found!"));
+
+        if (!request.getShop().getId().equals(owner.getShop().getId())) {
+            throw new IllegalArgumentException("You can only approve requests from your own shop!");
+        }
+
+        if (!isApproved) {
+            request.setStatus(RequestStatus.REJECTED);
+            productCreateRequestRepository.save(request);
+            return null;
+        }
+
+        Product product = Product.builder()
+                .name(request.getProductName())
+                .description(request.getDescription())
+                .category(categoryService.findById(request.getCategoryId()).orElse(null))
+                .supplier(partnerService.findById(request.getSupplierId()).orElse(null))
+                .shop(request.getShop())
+                .build();
+
+        productRepository.save(product);
+        request.setStatus(RequestStatus.APPROVED);
+        productCreateRequestRepository.save(request);
+        return product;
+    }
+
+    public List<ProductCreateRequest> getPendingRequests(User owner) {
+        if (!UserRoleUtils.isOwner(owner)) {
+            throw new IllegalArgumentException("Only shop owners can view product requests.");
+        }
+        return productCreateRequestRepository.findByShopIdAndStatus(owner.getShop().getId(), RequestStatus.PENDING);
     }
 
     public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
