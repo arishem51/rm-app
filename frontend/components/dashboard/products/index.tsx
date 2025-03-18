@@ -74,7 +74,7 @@ const Products = () => {
               <TableHead>Wholesale Price (VND)</TableHead>
               <TableHead>Unit</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Partner</TableHead>
+              <TableHead>Supplier</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>

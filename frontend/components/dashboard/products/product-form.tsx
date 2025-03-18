@@ -250,7 +250,7 @@ const ProductForm = ({ onClose, product }: Props) => {
               <FormItem
                 className={cn("w-full", isOwner ? "" : "pointer-events-none")}
               >
-                <FormLabel>Partner</FormLabel>
+                <FormLabel>Supplier</FormLabel>
                 <br />
                 <FormControl>
                   <ComboboxPartners
