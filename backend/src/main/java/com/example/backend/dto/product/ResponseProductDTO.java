@@ -33,7 +33,6 @@ public class ResponseProductDTO {
                 .supplier(product.getSupplier())
                 .shopId(product.getShop().getId())
                 .shopName(product.getShop().getName())
-                .price(product.getPrice())
                 .imageUrls(product.getImageUrls())
                 .build();
     }

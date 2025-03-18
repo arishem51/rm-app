@@ -23,7 +23,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { ComboboxCategories } from "../combobox/category";
 import { Plus, XIcon } from "lucide-react";
 import { ComboboxSuppliers } from "../combobox/supplier";
-import InputCurrency from "@/components/input-currency";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
@@ -31,9 +30,12 @@ import { cn } from "@/lib/utils";
 const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   description: z.string().optional(),
+<<<<<<< HEAD
   price: z.coerce
     .number({ message: "Giá không hợp lệ" })
     .min(0, { message: "Giá phải lớn hơn 0" }),
+=======
+>>>>>>> eb9dd80d805fce50655c33f4b66dcc881fbcbcdd
   imageUrls: z
     .array(z.object({ url: z.string().url({ message: "URL phải hợp lệ" }) }))
     .default([]),
@@ -143,13 +145,6 @@ const ProductForm = ({ onClose, product }: Props) => {
     }
   });
 
-  const className = `
-        appearance-none
-        [moz-appearance:textfield]
-        [&::-webkit-inner-spin-button]:appearance-none
-        [&::-webkit-outer-spin-button]:appearance-none
-    `;
-
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="mb-12">
@@ -185,27 +180,6 @@ const ProductForm = ({ onClose, product }: Props) => {
               </FormItem>
             )}
           />
-          <div className="flex justify-between gap-2">
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Giá (VNĐ/Kg)</FormLabel>
-                  <FormControl>
-                    <InputCurrency
-                      className={className}
-                      readOnly={!isOwner}
-                      placeholder="Ví dụ: 100000"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
           <div className="flex justify-between gap-2">
             <div className="flex-1">
               <FormField

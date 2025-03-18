@@ -1,10 +1,9 @@
 package com.example.backend.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,11 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,9 +36,12 @@ public class Inventory {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "zone_id", nullable = false)
     private Zone zone;
+
+    @Column(name = "product_price")
+    private BigDecimal productPrice;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by", nullable = false)
@@ -68,7 +68,4 @@ public class Inventory {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-    @Version
-    private Long version;
 }

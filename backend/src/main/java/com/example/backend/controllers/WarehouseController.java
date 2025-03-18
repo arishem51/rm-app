@@ -13,8 +13,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -37,7 +37,13 @@ public class WarehouseController {
             @CurrentUser User user) {
         try {
             Page<Warehouse> warehouses = warehouseService.findShops(page, pageSize, search, user);
-            PaginateResponse<WarehouseDTO> response = new PaginateResponse<>(warehouses.map(WarehouseDTO::fromEntity));
+            Map<Long, Integer> warehouseZoneCountMap = warehouseService.getWarehouseZoneCount();
+
+            PaginateResponse<WarehouseDTO> response = new PaginateResponse<>(warehouses.map(warehouse -> {
+                int zoneCount = warehouseZoneCountMap.getOrDefault(warehouse.getId(), 0);
+                return WarehouseDTO.fromEntity(warehouse, zoneCount);
+            }));
+
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
@@ -51,7 +57,12 @@ public class WarehouseController {
             @CurrentUser User user) {
         try {
             List<Warehouse> warehouses = warehouseService.findAllWarehousesFromShop(shopId, user);
-            List<WarehouseDTO> response = warehouses.stream().map(WarehouseDTO::fromEntity)
+            Map<Long, Integer> warehouseZoneCountMap = warehouseService.getWarehouseZoneCount();
+
+            List<WarehouseDTO> response = warehouses.stream().map(warehouse -> {
+                int zoneCount = warehouseZoneCountMap.getOrDefault(warehouse.getId(), 0);
+                return WarehouseDTO.fromEntity(warehouse, zoneCount);
+            })
                     .collect(Collectors.toList());
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
@@ -66,7 +77,8 @@ public class WarehouseController {
             @CurrentUser User user) {
         try {
             Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(id, user);
-            WarehouseDTO response = WarehouseDTO.fromEntity(warehouse);
+            int zoneCount = warehouseService.countZoneInWarehouse(id);
+            WarehouseDTO response = WarehouseDTO.fromEntity(warehouse, zoneCount);
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));

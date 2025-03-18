@@ -1,9 +1,7 @@
 package com.example.backend.dto.warehouse;
 
 import java.time.LocalDateTime;
-
 import com.example.backend.entities.Warehouse;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +24,9 @@ public class WarehouseDTO {
     @NotNull
     private String status;
     private LocalDateTime createdAt;
+    private Integer numberOfZone;
 
-    public static WarehouseDTO fromEntity(Warehouse warehouse) {
+    public static WarehouseDTO fromEntity(Warehouse warehouse, int zoneCount) {
         return WarehouseDTO.builder()
                 .id(warehouse.getId())
                 .name(warehouse.getName())
@@ -37,6 +36,7 @@ public class WarehouseDTO {
                 .shopName(warehouse.getShop().getName())
                 .createdAt(warehouse.getCreatedAt())
                 .status(warehouse.getStatus().toString())
+                .numberOfZone(zoneCount)
                 .build();
     }
 }

@@ -18,7 +18,7 @@ import HeaderListSearch from "../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { createSttNumber, toCurrency } from "@/lib/utils";
+import { createSttNumber } from "@/lib/utils";
 import ListPagination from "../pagination";
 import Image from "next/image";
 import defaultPic from "../../../public/images/default-product.png";
@@ -69,7 +69,6 @@ const Products = () => {
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Ảnh</TableHead>
-              <TableHead>Giá (VNĐ/Kg)</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead>Nhà cung cấp</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
@@ -89,8 +88,6 @@ const Products = () => {
                     height={50}
                   />
                 </TableCell>
-
-                <TableCell>{toCurrency(product.price as number)}</TableCell>
                 <TableCell>
                   <Badge
                     variant={product.category?.name ? "default" : "outline"}

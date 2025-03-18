@@ -19,6 +19,7 @@ public class InventoryResponseDTO {
     private Long productId;
     private Long zoneId;
     private String zoneName;
+    private Long warehouseId;
     private String productName;
     private UserDTO createdBy;
     private String createdAt;
@@ -30,15 +31,16 @@ public class InventoryResponseDTO {
     public static InventoryResponseDTO fromEntity(Inventory inventory) {
         return InventoryResponseDTO.builder()
                 .id(inventory.getId())
+                .price(inventory.getProductPrice().toString())
                 .productId(inventory.getProduct().getId())
                 .zoneId(inventory.getZone().getId())
                 .zoneName(inventory.getZone().getName())
                 .productName(inventory.getProduct().getName())
+                .warehouseId(inventory.getZone().getWarehouse().getId())
                 .warehouseName(inventory.getZone().getWarehouse().getName())
                 .createdBy(UserDTO.fromEntity(inventory.getCreatedBy()))
                 .createdAt(inventory.getCreatedAt().toString())
                 .updatedAt(inventory.getUpdatedAt() != null ? inventory.getUpdatedAt().toString() : null)
-                .price(inventory.getProduct().getPrice().toString())
                 .quantity(inventory.getQuantity())
                 .build();
     }

@@ -43,6 +43,22 @@ const Receipts = () => {
     });
   };
 
+  const renderReceiptItems = (items?: ReceiptItemResponseDTO[]) => {
+    return (
+      <div className="flex flex-col">
+        {items?.slice(0, 2).map((item) => (
+          <div key={item.id} className="flex items-center">
+            <div className="text-sm w-48 overflow-hidden text-ellipsis whitespace-nowrap">
+              {item.productName} - {toCurrency(item.productPrice ?? 0)} -{" "}
+              {item.quantity} bao
+            </div>
+          </div>
+        ))}
+        {(items?.length ?? 0) > 2 && <div>...</div>}
+      </div>
+    );
+  };
+
   return (
     <Fragment>
       <div className="flex justify-between">
@@ -75,7 +91,7 @@ const Receipts = () => {
                 <TableCell>{createSttNumber(index, filter.page)}</TableCell>
                 <TableCell>{generateReceiptCode(item)}</TableCell>
                 <TableCell>
-                  {format(item.createdAt ?? new Date(), "yyyy-MM-dd")}
+                  {format(item.createdAt ?? new Date(), "yyyy-MM-dd hh:mm")}
                 </TableCell>
                 <TableCell>{renderReceiptItems(item.receiptItems)}</TableCell>
                 <TableCell>

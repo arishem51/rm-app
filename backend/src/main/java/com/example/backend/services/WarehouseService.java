@@ -7,10 +7,13 @@ import com.example.backend.entities.User;
 import com.example.backend.entities.Warehouse;
 import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.WarehouseRepository;
+import com.example.backend.repositories.ZoneRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
+    private final ZoneRepository zoneRepository;
 
     private void validateUserCanManageWarehouse(User user) {
         if (!UserRoleUtils.isOwner(user)) {
@@ -28,6 +32,23 @@ public class WarehouseService {
         if (user.getShop() == null) {
             throw new IllegalArgumentException("You must have a shop to manage warehouses!");
         }
+    }
+
+    public int countZoneInWarehouse(Long warehouseId) {
+        return zoneRepository.countByWarehouse_Id(warehouseId);
+    }
+
+    public Map<Long, Integer> getWarehouseZoneCount() {
+        List<Object[]> zoneCounts = zoneRepository.countZonesByWarehouse();
+        Map<Long, Integer> warehouseZoneCountMap = new HashMap<>();
+
+        for (Object[] result : zoneCounts) {
+            Long warehouseId = (Long) result[0];
+            Long count = (Long) result[1];
+            warehouseZoneCountMap.put(warehouseId, count.intValue());
+        }
+
+        return warehouseZoneCountMap;
     }
 
     public Warehouse createWarehouse(Long shopId, WarehouseCreateDTO dto, User user) {
