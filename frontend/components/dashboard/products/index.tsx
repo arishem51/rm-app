@@ -108,10 +108,10 @@ const Products = () => {
                 </TableCell>
                 <TableCell>
                   <Badge
-                    variant={product.partner?.name ? "default" : "outline"}
+                    variant={product.supplier?.name ? "default" : "outline"}
                     className="px-1 py-0.5"
                   >
-                    {product.partner?.name || "Không tồn tại"}
+                    {product.supplier?.name || "Không tồn tại"}
                   </Badge>
                 </TableCell>
                 {isAdmin && <TableCell>{product.shopName}</TableCell>}

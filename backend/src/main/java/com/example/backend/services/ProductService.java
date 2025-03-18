@@ -42,7 +42,7 @@ public class ProductService {
         Product product = Product.builder()
                 .name(dto.getName())
                 .category(category)
-                .partner(partner)
+                .supplier(partner)
                 .shop(shop)
                 .unit(UnitType.valueOf(dto.getUnit().toUpperCase()))
                 .salePrice(dto.getSalePrice())
@@ -96,7 +96,7 @@ public class ProductService {
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
         Partner supplier = Optional.ofNullable(dto.getPartnerId()).flatMap(partnerService::findById).orElse(null);
         product.setCategory(category);
-        product.setPartner(supplier);
+        product.setSupplier(supplier);
 
         if (dto.getName() != null)
             product.setName(dto.getName());

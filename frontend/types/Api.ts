@@ -1,4 +1,4 @@
-/* eslint-disable */
+ /* eslint-disable */
 /* tslint:disable */
 /*
  * ---------------------------------------------------------------
@@ -173,7 +173,7 @@ export interface ResponseProductDTO {
   name?: string;
   description?: string;
   category?: Category;
-  partner?: Partner;
+  supplier?: Partner;
   /** @format int64 */
   shopId?: number;
   shopName?: string;

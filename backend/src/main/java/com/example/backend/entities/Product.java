@@ -36,7 +36,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "partner_id")
-    private Partner partner;
+    private Partner supplier;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
@@ -59,6 +59,11 @@ public class Product {
     @CollectionTable(name = "product_image_urls", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     private List<String> imageUrls;
+
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -89,7 +94,7 @@ public class Product {
         return "Product{id=" + id
                 + ", name='" + name + '\''
                 + ", category='" + (category != null ? category.getName() : "null") + '\''
-                + ", supplier='" + (partner != null ? partner.getName() : "null") + '\''
+                + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
                 + ", unit='" + unit + '\''
                 + ", salePrice='" + salePrice + '\''
                 + "} ";
