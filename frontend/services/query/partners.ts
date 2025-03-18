@@ -5,5 +5,4 @@ export const partners = {
   getPartners: createQuery(apiClient.getPartners, {
     placeholderData: keepPreviousData,
   }),
-  getAllPartners: createQuery(apiClient.getAllPartners, {}),
 };

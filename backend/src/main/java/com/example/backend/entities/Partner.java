@@ -35,4 +35,8 @@ public class Partner {
 
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
+
+    // Add ownerId field
+    @Column(nullable = false)
+    private Long ownerId;
 }
