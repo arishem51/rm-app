@@ -39,13 +39,6 @@ export function ComboboxProducts({ onSelect, formValue }: Props) {
               />
             </div>
             <span className="mx-1">-</span>
-<<<<<<< HEAD
-            <span className="text-xs">{product?.name}</span>
-            <span className="mx-1">-</span>
-            <span className="text-xs w-32 overflow-hidden text-ellipsis whitespace-nowrap">
-              {product?.supplier?.name}
-            </span>
-=======
             <span className="text-xs whitespace-nowrap">{product?.name}</span>
             {product?.supplier?.name ? (
               <>
@@ -57,7 +50,6 @@ export function ComboboxProducts({ onSelect, formValue }: Props) {
             ) : (
               ""
             )}
->>>>>>> eb9dd80d805fce50655c33f4b66dcc881fbcbcdd
           </div>
         );
       }}

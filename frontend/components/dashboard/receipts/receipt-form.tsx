@@ -47,12 +47,6 @@ import { ApiQuery } from "@/services/query";
 import { useRouter } from "next/navigation";
 import EmptyState from "../empty-state";
 import { format } from "date-fns";
-<<<<<<< HEAD
-=======
-import InputCurrency from "@/components/input-currency";
-import { cn, toCurrency } from "@/lib/utils";
-import { uniqBy } from "lodash";
->>>>>>> eb9dd80d805fce50655c33f4b66dcc881fbcbcdd
 
 const schema = z.object({
   receiptCode: z.string().optional(),
