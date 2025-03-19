@@ -19,10 +19,27 @@ export const useCreatePartner = () =>
       }
     }
   })
+
 export const useUpdatePartner = () =>
     useMutation({
         mutationFn: async ({ id, ...rest }: PartnerUpdateDTO & { id: number }) => {
-            const response = await apiClient.updatePartner(id, rest);
-            return response;
+            try {
+                const response = await apiClient.updatePartner(id, rest);
+                return response;
+            } catch (error) {
+                throw createHttpResponseError(error);
+            }
+        }
+    })
+
+export const useGetPartnerById = () =>
+    useMutation({
+        mutationFn: async (id: number) => {
+            try {
+                const response = await apiClient.getPartnerById(id);
+                return response;
+            } catch (error) {
+                throw createHttpResponseError(error);
+            }
         }
     })

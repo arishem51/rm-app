@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FC, ReactNode } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import {
   FormControl,
@@ -14,34 +16,36 @@ import {
   Form,
 } from "./ui/form";
 import { cn } from "@/lib/utils";
+import { PartnerCreateDTO } from "@/types/Api";
 
-type FormDataPartnerType = {
-  name: string;
-  contactName: string;
-  phone: string;
-  email: string;
-  taxCode: string;
-  address: string;
-  website: string;
-  description: string;
-};
+const partnerFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  contactName: z.string().min(1, "Contact name is required"),
+  phone: z.string().regex(/^(\+?\d{1,3})?\d{10}$/, "Invalid phone number format"),
+  email: z.string().email("Invalid email format"),
+  address: z.string().min(1, "Address is required"),
+  website: z.string().optional(),
+  description: z.string().optional(),
+});
+
+type FormDataPartnerType = z.infer<typeof partnerFormSchema>;
 
 type Props = {
   children?: ReactNode;
   type?: "sign-in" | "sign-up";
   className?: string;
   btnText?: string;
-  onSubmit: (data: FormDataPartnerType) => void;
+  onSubmit: (data: PartnerCreateDTO) => void;
 };
 
-const PartnerForm: FC<Props> = ({ children, className, onSubmit }) => {
+const PartnerForm: FC<Props> = ({ children, className, onSubmit, btnText = "Create Partner" }) => {
   const form = useForm<FormDataPartnerType>({
+    resolver: zodResolver(partnerFormSchema),
     defaultValues: {
       name: "",
       contactName: "",
       phone: "",
       email: "",
-      taxCode: "",
       address: "",
       website: "",
       description: "",
@@ -49,8 +53,7 @@ const PartnerForm: FC<Props> = ({ children, className, onSubmit }) => {
   });
 
   const handleSubmit = form.handleSubmit(async (formData) => {
-    const { ...rest } = formData;
-    onSubmit(rest);
+    onSubmit(formData);
   });
 
   return (
@@ -151,22 +154,8 @@ const PartnerForm: FC<Props> = ({ children, className, onSubmit }) => {
           )}
         />
 
-        {/* <FormField
-          control={form.control}
-          name="taxCode"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tax code</FormLabel>
-              <FormControl>
-                <Input placeholder="Tax code" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-
         <Button type="submit" className="w-full">
-          Create Partner
+          {btnText}
         </Button>
         {children}
       </form>

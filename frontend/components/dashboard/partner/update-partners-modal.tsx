@@ -20,11 +20,25 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { useUpdatePartner } from "@/hooks/mutations/partner";
+
+const partnerUpdateSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  contactName: z.string().min(1, "Contact name is required"),
+  phone: z.string().regex(/^(\+?\d{1,3})?\d{10}$/, "Invalid phone number format"),
+  email: z.string().email("Invalid email format"),
+  address: z.string().min(1, "Address is required"),
+  website: z.string().optional(),
+  description: z.string().optional(),
+});
+
+type PartnerFormType = z.infer<typeof partnerUpdateSchema>;
 
 type Props = {
   children?: ReactNode;
@@ -33,7 +47,8 @@ type Props = {
 
 const PartnersUpdateModal = ({ children, partner }: Props) => {
   const [open, setOpen] = useState(false);
-  const form = useForm<PartnerUpdateDTO>({
+  const form = useForm<PartnerFormType>({
+    resolver: zodResolver(partnerUpdateSchema),
     defaultValues: {
       name: "",
       phone: "",
@@ -42,7 +57,6 @@ const PartnersUpdateModal = ({ children, partner }: Props) => {
       address: "",
       website: "",
       description: "",
-      // taxCode: "", ???
     },
   });
   const { mutate: updatePartner, isPending } = useUpdatePartner();
@@ -60,18 +74,17 @@ const PartnersUpdateModal = ({ children, partner }: Props) => {
         address: partner.address || "",
         website: partner.website || "",
         description: partner.description || "",
-        // taxCode: partner.taxCode || "",
       });
     }
   }, [reset, partner, open]);
 
-  const handleSubmit = form.handleSubmit(() => {
+  const handleSubmit = form.handleSubmit((data) => {
     if (partner?.id) {
       updatePartner(
-          {
-              id: partner.id,
-              ...form.getValues()
-          },
+        {
+          id: partner.id,
+          ...data
+        },
         {
           onSuccess: () => {
             toast({
@@ -207,20 +220,6 @@ const PartnersUpdateModal = ({ children, partner }: Props) => {
                   </FormItem>
                 )}
               />
-
-              {/*<FormField
-                control={form.control}
-                name="taxCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tax code</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Tax code" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />*/}
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isPending}>

@@ -15,27 +15,30 @@ import EmptyState from "../empty-state";
 import { UserPen } from "lucide-react";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { PartnerUpdateDTO } from "@/types/Api";
+import { Partner } from "@/types/Api";
 import HeaderListSearch from "../header-list-search";
 import CreatePartnersModal from "./create-partners-modal";
 import PartnersUpdateModal from "./update-partners-modal";
-// import UserPagination from "../users/pagination";
 import UserPagination from "../../dashboard/pagination";
 
 const AdminPartnersView = () => {
   const createFilterValue = useCallback(
     (page: number, search: string) => ({
       page,
+      pageSize: 10,
       search,
     }),
     []
   );
-  const [updatedPartner, setUpdatedPartner] = useState<PartnerUpdateDTO>();
+  const [updatedPartner, setUpdatedPartner] = useState<Partner>();
   const [filter, setFilter] = useState(createFilterValue(0, ""));
 
-  const { data: { data } = {} } = useAppQuery(
+  const { data } = useAppQuery(
     ApiQuery.partners.getPartners(filter)
   );
+
+  const pageData = data?.data;
+  const partners = pageData?.data || [];
 
   const handleNavigatePage = (page: number) => {
     setFilter((prev) => createFilterValue(prev.page + page, prev.search));
@@ -44,7 +47,7 @@ const AdminPartnersView = () => {
     const isRight = page > 0;
     setFilter(
       createFilterValue(
-        isRight ? (data?.totalPages ?? 0) - 1 : 0,
+        isRight ? (pageData?.totalPages ?? 0) - 1 : 0,
         filter.search
       )
     );
@@ -63,7 +66,7 @@ const AdminPartnersView = () => {
         />
       </CreatePartnersModal>
       <PartnersUpdateModal partner={updatedPartner}>
-        {(data?.data?.length || 0) > 0 ? (
+        {(partners.length || 0) > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
@@ -72,14 +75,13 @@ const AdminPartnersView = () => {
                 <TableHead>Phone</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Address</TableHead>
-                {/*<TableHead>Tax code</TableHead>*/}
                 <TableHead>Description</TableHead>
                 <TableHead>Website</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.data?.map((partner) => {
+              {partners.map((partner) => {
                 return (
                   <TableRow key={partner.id}>
                     <TableCell>{partner.name}</TableCell>
@@ -87,7 +89,6 @@ const AdminPartnersView = () => {
                     <TableCell>{partner.phone}</TableCell>
                     <TableCell>{partner.email}</TableCell>
                     <TableCell>{partner.address}</TableCell>
-                    {/*<TableCell>{partner.taxId}</TableCell>*/}
                     <TableCell>{partner.description}</TableCell>
                     <TableCell>{partner.website}</TableCell>
                     <TableCell className="flex justify-end w-full">
@@ -114,7 +115,7 @@ const AdminPartnersView = () => {
         )}
         <UserPagination
           isLeftButtonDisabled={filter.page === 0}
-          isRightButtonDisabled={filter.page >= (data?.totalPages ?? 0) - 1}
+          isRightButtonDisabled={filter.page >= (pageData?.totalPages ?? 0) - 1}
           handleNavigateFullPage={handleNavigateFullPage}
           handleNavigatePage={handleNavigatePage}
         />

@@ -21,7 +21,7 @@ type Props = {
 };
 
 const CreatePartnersModal = ({ children}: Props) => {
-  const { mutate } = useCreatePartner();
+  const { mutate, isPending } = useCreatePartner();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -32,11 +32,8 @@ const CreatePartnersModal = ({ children}: Props) => {
         <DialogContent className="sm:max-w-[425px]">
           <PartnerForm
             onSubmit={(formData) => {
-              console.log("Check formData: ", formData);
               mutate(
-                  {
-                    ...formData,
-                  },
+                formData,
                 {
                   onError: (error) => {
                     toast({
@@ -48,7 +45,7 @@ const CreatePartnersModal = ({ children}: Props) => {
                   onSuccess: () => {
                     toast({
                       title: ToastTitle.success,
-                      description: "Create partner success!",
+                      description: "Partner created successfully!",
                     });
                     queryClient.invalidateQueries({
                       queryKey: ApiQuery.partners.getPartners().queryKey,
@@ -58,14 +55,13 @@ const CreatePartnersModal = ({ children}: Props) => {
                 }
               );
             }}
-            type="sign-up"
             btnText="Create Partner"
           />
         </DialogContent>
         {children}
         <DialogTrigger asChild>
-          <Button>
-            <Plus />
+          <Button disabled={isPending}>
+            <Plus className="mr-1" />
             <span>Create Partner</span>
           </Button>
         </DialogTrigger>
