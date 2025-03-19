@@ -1,103 +1,145 @@
-import { UserDTO } from "@/types/Api";
-
 export const UserRole = {
   ADMIN: "ADMIN",
   OWNER: "OWNER",
   STAFF: "STAFF",
 } as const;
 
+const AllRoles = Object.values(UserRole);
+
 export const AppRoutes = {
   auth: {
     signIn: {
       url: "/auth/signin",
-      role: "ALL",
+      accessRoles: AllRoles,
     },
     signUp: {
       url: "/auth/signup",
-      role: "ALL",
+      accessRoles: AllRoles,
     },
     forgotPassword: {
       url: "/auth/forgot-password",
-      role: "ALL",
+      accessRoles: AllRoles,
     },
     resetPassword: {
       url: "/auth/reset-password",
-      role: "ALL",
+      accessRoles: AllRoles,
     },
   },
   home: {
     url: "/",
-    role: "ALL",
+    accessRoles: AllRoles,
   },
   dashboard: {
     home: {
       url: "/dashboard",
-      role: "ALL",
+      accessRoles: AllRoles,
     },
     users: {
       url: "/dashboard/users",
-      role: "ALL",
+      accessRoles: AllRoles,
+    },
+    receipts: {
+      index: {
+        url: "/dashboard/receipts",
+        accessRoles: [UserRole.OWNER, UserRole.STAFF],
+      },
+      create: {
+        url: "/dashboard/receipts/create",
+        accessRoles: [UserRole.OWNER, UserRole.STAFF],
+      },
+      detail: {
+        url: "/dashboard/receipts/[id]",
+        accessRoles: [UserRole.OWNER, UserRole.STAFF],
+      },
+    },
+    orders: {
+      index: {
+        url: "/dashboard/orders",
+        accessRoles: [UserRole.OWNER, UserRole.STAFF],
+      },
+      create: {
+        url: "/dashboard/orders/create",
+        accessRoles: [UserRole.OWNER, UserRole.STAFF],
+      },
+    },
+    invoices: {
+      index: {
+        url: "/dashboard/invoice",
+        accessRoles: AllRoles,
+      },
+      detail: {
+        url: "/dashboard/invoice/[id]",
+        accessRoles: AllRoles,
+      },
     },
     shops: {
       url: "/dashboard/shops",
-      role: UserRole.ADMIN,
+      accessRoles: [UserRole.ADMIN],
     },
     categories: {
       url: "/dashboard/categories",
-      role: UserRole.ADMIN,
+      accessRoles: [UserRole.ADMIN],
     },
     products: {
       index: {
         url: "/dashboard/products",
-        role: "ALL",
+        accessRoles: [UserRole.OWNER],
       },
       detail: {
         url: "/dashboard/products/[id]",
-        role: UserRole.OWNER,
+        accessRoles: [UserRole.OWNER],
       },
       create: {
         url: "/dashboard/products/create",
-        role: UserRole.OWNER,
+        accessRoles: [UserRole.OWNER],
       },
     },
     warehouses: {
       facilities: {
-        url: "/dashboard/warehouses/facilities",
-        role: UserRole.OWNER,
+        index: {
+          url: "/dashboard/warehouses/facilities",
+          accessRoles: [UserRole.OWNER],
+        },
+        detail: {
+          url: "/dashboard/warehouses/facilities/[id]",
+          accessRoles: [UserRole.OWNER],
+        },
       },
       inventories: {
         index: {
           url: "/dashboard/warehouses/inventories",
-          role: "ALL",
+          accessRoles: [UserRole.OWNER],
         },
         detail: {
           url: "/dashboard/warehouses/inventories/[id]",
-          role: UserRole.OWNER,
+          accessRoles: [UserRole.OWNER],
         },
         create: {
           url: "/dashboard/warehouses/inventories/create",
-          role: UserRole.OWNER,
+          accessRoles: [UserRole.OWNER],
         },
       },
     },
     partners: {
       url: "/dashboard/partners",
-      role: UserRole.OWNER,
+      accessRoles: [UserRole.ADMIN, UserRole.OWNER],
     },
     setting: {
       profile: {
         url: "/dashboard/setting/profile",
-        role: "ALL",
+        accessRoles: AllRoles,
       },
       shop: {
         url: "/dashboard/setting/shop",
-        role: "ALL",
+        accessRoles: AllRoles,
       },
     },
   },
 } as const;
 
-export const UserStatus: Record<UserDTO["status"], UserDTO["status"]> = {
+type ActionStatusType = "ACTIVE" | "INACTIVE";
+
+export const ActionStatus: Record<ActionStatusType, ActionStatusType> = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
 };

@@ -13,8 +13,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 public class WarehouseController {
     private final WarehouseService warehouseService;
 
-    // Lấy tất cả kho của cửa hàng
     @Operation(summary = "Get paginate warehouses of a shop", description = "Get paginate warehouses of a shop")
     @GetMapping("")
     public ResponseEntity<BaseResponse<PaginateResponse<WarehouseDTO>>> getWarehouses(
@@ -38,7 +37,13 @@ public class WarehouseController {
             @CurrentUser User user) {
         try {
             Page<Warehouse> warehouses = warehouseService.findShops(page, pageSize, search, user);
-            PaginateResponse<WarehouseDTO> response = new PaginateResponse<>(warehouses.map(WarehouseDTO::fromEntity));
+            Map<Long, Integer> warehouseZoneCountMap = warehouseService.getWarehouseZoneCount();
+
+            PaginateResponse<WarehouseDTO> response = new PaginateResponse<>(warehouses.map(warehouse -> {
+                int zoneCount = warehouseZoneCountMap.getOrDefault(warehouse.getId(), 0);
+                return WarehouseDTO.fromEntity(warehouse, zoneCount);
+            }));
+
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
@@ -52,7 +57,12 @@ public class WarehouseController {
             @CurrentUser User user) {
         try {
             List<Warehouse> warehouses = warehouseService.findAllWarehousesFromShop(shopId, user);
-            List<WarehouseDTO> response = warehouses.stream().map(WarehouseDTO::fromEntity)
+            Map<Long, Integer> warehouseZoneCountMap = warehouseService.getWarehouseZoneCount();
+
+            List<WarehouseDTO> response = warehouses.stream().map(warehouse -> {
+                int zoneCount = warehouseZoneCountMap.getOrDefault(warehouse.getId(), 0);
+                return WarehouseDTO.fromEntity(warehouse, zoneCount);
+            })
                     .collect(Collectors.toList());
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
@@ -60,7 +70,21 @@ public class WarehouseController {
         }
     }
 
-    // Tạo kho mới cho cửa hàng
+    @Operation(summary = "Get details warehouse of a shop", description = "Get details warehouse of a shop")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<WarehouseDTO>> getWarehouseDetail(
+            @PathVariable Long id,
+            @CurrentUser User user) {
+        try {
+            Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(id, user);
+            int zoneCount = warehouseService.countZoneInWarehouse(id);
+            WarehouseDTO response = WarehouseDTO.fromEntity(warehouse, zoneCount);
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
     @Operation(summary = "Create a new warehouse for a shop", description = "Create a new warehouse under the specified shop")
     @PostMapping("/{shopId}")
     public ResponseEntity<BaseResponse<Warehouse>> createWarehouse(
@@ -75,7 +99,6 @@ public class WarehouseController {
         }
     }
 
-    // Cập nhật kho theo ID
     @Operation(summary = "Update a warehouse by ID", description = "Update the details of an existing warehouse by ID")
     @PutMapping("/{warehouseId}")
     public ResponseEntity<BaseResponse<Warehouse>> updateWarehouse(

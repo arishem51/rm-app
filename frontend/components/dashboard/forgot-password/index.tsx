@@ -50,8 +50,6 @@ const ForgotPasswordView = () => {
   const router = useRouter();
   const recaptchaToken = form.watch("reCaptchaToken");
 
-  console.log({ recaptchaToken });
-
   const handleSubmit = form.handleSubmit((data: FormData) => {
     forgotPassword(data);
     toast({
@@ -72,7 +70,7 @@ const ForgotPasswordView = () => {
             variant="outline"
             asChild
           >
-            <Link href="/auth/sign-in">
+            <Link href="/auth/sign-in" prefetch>
               <Home />
             </Link>
           </Button>

@@ -49,11 +49,15 @@ public class AuthController {
     @Operation(summary = "Sign in a user", description = "Perform authentication on a user to sign in!.")
     @PostMapping("/sign-in")
     public ResponseEntity<BaseResponse<SignInResponse>> signIn(@Valid @RequestBody SignInRequest request) {
-        BaseResponse<SignInResponse> response = authService.signIn(request);
-        if (response.getData() == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        try {
+            BaseResponse<SignInResponse> response = authService.signIn(request);
+            if (response.getData() == null) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+            return ResponseEntity.ok().body(new BaseResponse<>(response.getData(), "Đăng nhập thành công!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
-        return ResponseEntity.ok(authService.signIn(request));
     }
 
     @Operation(summary = "Forgot password", description = "Validate email and send a code to reset password.")

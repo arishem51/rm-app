@@ -5,7 +5,6 @@ import java.util.List;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.Product;
-import com.example.backend.enums.UnitType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,9 +21,7 @@ public class ResponseProductDTO {
 
     private Long shopId;
     private String shopName;
-    private BigDecimal salePrice;
-    private BigDecimal wholesalePrice;
-    private UnitType unit;
+    private BigDecimal price;
     private List<String> imageUrls;
 
     public static ResponseProductDTO fromEntity(Product product) {
@@ -36,9 +33,6 @@ public class ResponseProductDTO {
                 .supplier(product.getSupplier())
                 .shopId(product.getShop().getId())
                 .shopName(product.getShop().getName())
-                .salePrice(product.getSalePrice())
-                .wholesalePrice(product.getWholesalePrice())
-                .unit(product.getUnit())
                 .imageUrls(product.getImageUrls())
                 .build();
     }

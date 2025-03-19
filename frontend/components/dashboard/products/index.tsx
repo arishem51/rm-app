@@ -18,8 +18,7 @@ import HeaderListSearch from "../header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { toCurrency } from "@/lib/utils";
-import { startCase } from "lodash";
+import { createSttNumber } from "@/lib/utils";
 import ListPagination from "../pagination";
 import Image from "next/image";
 import defaultPic from "../../../public/images/default-product.png";
@@ -55,7 +54,7 @@ const Products = () => {
           onSearch={handleSearch}
         />
         {isOwner && (
-          <Link href="/dashboard/products/create">
+          <Link href="/dashboard/products/create" prefetch>
             <Button>
               <Plus />
               Tạo sản phẩm
@@ -70,11 +69,8 @@ const Products = () => {
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Ảnh</TableHead>
-              <TableHead>Sale Price (VND)</TableHead>
-              <TableHead>Wholesale Price (VND)</TableHead>
-              <TableHead>Unit</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Supplier</TableHead>
+              <TableHead>Danh mục</TableHead>
+              <TableHead>Nhà cung cấp</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -82,7 +78,7 @@ const Products = () => {
           <TableBody>
             {data?.data?.map((product, index) => (
               <TableRow key={product.id}>
-                <TableCell>{index + 1}</TableCell>
+                <TableCell>{createSttNumber(index, filter.page)}</TableCell>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>
                   <Image
@@ -92,12 +88,6 @@ const Products = () => {
                     height={50}
                   />
                 </TableCell>
-
-                <TableCell>{toCurrency(product.salePrice as number)}</TableCell>
-                <TableCell>
-                  {toCurrency(product.wholesalePrice as number)}
-                </TableCell>
-                <TableCell>{startCase(product.unit?.toLowerCase())}</TableCell>
                 <TableCell>
                   <Badge
                     variant={product.category?.name ? "default" : "outline"}
@@ -116,7 +106,7 @@ const Products = () => {
                 </TableCell>
                 {isAdmin && <TableCell>{product.shopName}</TableCell>}
                 <TableCell className="text-right">
-                  <Link href={`/dashboard/products/${product.id}`}>
+                  <Link href={`/dashboard/products/${product.id}`} prefetch>
                     <Button variant="outline" className="w-6 h-6" size="icon">
                       <ArrowUpRight />
                     </Button>

@@ -7,7 +7,10 @@ const InventoriesPage = () => {
   return (
     <ProtectedShop fallback={{ redirectPath: "/dashboard" }}>
       <HydrationPrefetchQuery
-        query={ApiQuery.inventories.getInventories({ page: 0, search: "" })}
+        queries={[
+          ApiQuery.inventories.getInventories({ page: 0, search: "" }),
+          ApiQuery.zones.getAllByShop(),
+        ]}
         awaitQuery
       >
         <div className="px-4">

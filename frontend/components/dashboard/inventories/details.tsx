@@ -4,7 +4,7 @@ import useAppQuery from "@/hooks/use-app-query";
 
 import { ApiQuery } from "@/services/query";
 import { Separator } from "@/components/ui/separator";
-import DetailsPageAlert from "@/components/view/details-page-alert";
+import DetailsPageAlert from "@/components/view/alert/alert-error-details";
 import useToastErrorDetailsPage from "@/hooks/use-toast-error-details-page";
 import InventoryForm from "./inventory-form";
 

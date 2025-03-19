@@ -1,12 +1,11 @@
 package com.example.backend.services;
 
-import com.example.backend.dto.product.RequestProductDTO;
+import com.example.backend.dto.product.ProductRequestDTO;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
-import com.example.backend.enums.UnitType;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +31,8 @@ public class ProductService {
         }
     }
 
-    public Product createProduct(RequestProductDTO dto, User user) {
+    public Product createProduct(ProductRequestDTO dto, User user) {
         validateUserCanManageProduct(user);
-
         Shop shop = user.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
         Partner partner = Optional.ofNullable(dto.getPartnerId()).flatMap(partnerService::findById).orElse(null);
@@ -44,9 +42,6 @@ public class ProductService {
                 .category(category)
                 .supplier(partner)
                 .shop(shop)
-                .unit(UnitType.valueOf(dto.getUnit().toUpperCase()))
-                .salePrice(dto.getSalePrice())
-                .wholesalePrice(dto.getWholesalePrice())
                 .description(dto.getDescription())
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
                 .build();
@@ -55,7 +50,6 @@ public class ProductService {
     }
 
     public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
-
         if (UserRoleUtils.isAdmin(currentUser)) {
             return search.isEmpty()
                     ? productRepository.findAll(PageRequest.of(page, pageSize))
@@ -73,26 +67,23 @@ public class ProductService {
                         PageRequest.of(page, pageSize));
     }
 
-    public List<Product> findAllProductsFromShop(Long shopId, User currentUser) {
-        if (currentUser.getShop() == null || !currentUser.getShop().getId().equals(shopId)) {
+    public List<Product> findAllProductsFromShop(User currentUser) {
+        if (currentUser.getShop() == null) {
             throw new IllegalArgumentException("You do not have permission to view products from this shop.");
         }
-        return productRepository.findAllByShopId(shopId);
+        return productRepository.findAllByShopId(currentUser.getShop().getId());
     }
 
-    public Product updateProduct(Long id, RequestProductDTO dto, User user) {
+    public Product updateProduct(Long id, ProductRequestDTO dto, User user) {
         validateUserCanManageProduct(user);
         Optional<Product> optionalProduct = productRepository.findById(id);
-
         if (optionalProduct.isEmpty()) {
             throw new IllegalArgumentException("Product not found!");
         }
-
         Product product = optionalProduct.get();
         if (product.getShop().getId() != user.getShop().getId()) {
-            throw new IllegalArgumentException("You can only update products from your own shop!");
+            throw new IllegalArgumentException("You can only update product from your own shop!");
         }
-
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
         Partner supplier = Optional.ofNullable(dto.getPartnerId()).flatMap(partnerService::findById).orElse(null);
         product.setCategory(category);
@@ -100,20 +91,12 @@ public class ProductService {
 
         if (dto.getName() != null)
             product.setName(dto.getName());
-
-        if (dto.getUnit() != null)
-            product.setUnit(UnitType.valueOf(dto.getUnit().toUpperCase()));
-        if (dto.getSalePrice() != null)
-            product.setSalePrice(dto.getSalePrice());
-        if (dto.getWholesalePrice() != null)
-            product.setWholesalePrice(dto.getWholesalePrice());
         if (dto.getDescription() != null)
             product.setDescription(dto.getDescription());
         if (dto.getImageUrls() != null) {
             product.getImageUrls().clear();
             product.getImageUrls().addAll(dto.getImageUrls());
         }
-
         return productRepository.save(product);
     }
 

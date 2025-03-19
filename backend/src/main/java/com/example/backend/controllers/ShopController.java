@@ -1,7 +1,6 @@
 package com.example.backend.controllers;
 
 import com.example.backend.config.CurrentUser;
-import com.example.backend.dto.CreateShopDTO;
 import com.example.backend.entities.User;
 import com.example.backend.dto.UpdateShopDTO;
 import org.springframework.data.domain.Page;
@@ -26,7 +25,7 @@ public class ShopController {
     private final ShopService shopService;
 
     @Operation(summary = "Get all shops", description = "Fetch a list of all registered shops.")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<PaginateResponse<ShopDTO>>> getShops(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
@@ -37,18 +36,6 @@ public class ShopController {
             Page<Shop> shops = shopService.findShops(page, pageSize, search, user);
             PaginateResponse<ShopDTO> response = new PaginateResponse<>(shops.map(ShopDTO::fromEntity));
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
-        }
-    }
-
-    @Operation(summary = "Create a shop", description = "Create a shop by owner or admin.")
-    @PostMapping()
-    public ResponseEntity<BaseResponse<ShopDTO>> createShop(@RequestBody CreateShopDTO shopDTO,
-            @CurrentUser User user) {
-        try {
-            Shop createdShop = shopService.createShop(shopDTO, user);
-            return ResponseEntity.ok().body(BaseResponse.success(ShopDTO.fromEntity(createdShop), "Create success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

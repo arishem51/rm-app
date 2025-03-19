@@ -12,6 +12,6 @@ import lombok.Setter;
 
 public class InventoryUpdateDTO {
     private Long productId;
-    private Long warehouseId;
+    private Long zoneId;
     private Integer quantity;
 }

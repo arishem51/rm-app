@@ -3,7 +3,7 @@ package com.example.backend.services;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -32,6 +32,9 @@ public class AuthService {
     private final EmailService emailService;
     private final ReCaptchaToken reCaptchaTokenService;
 
+    @Value("${spring.captcha.enabled}")
+    private String captchaEnabled;
+
     public BaseResponse<UserDTO> signUp(SignUpRequest request) {
         try {
             User user = userService.signUpUser(request);
@@ -41,19 +44,34 @@ public class AuthService {
         }
     }
 
+    private boolean verifyReCaptchaToken(String reCaptchaToken) {
+        boolean success = true;
+        if (captchaEnabled.equals("true")) {
+            success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+        }
+        return success;
+    }
+
     public BaseResponse<SignInResponse> signIn(SignInRequest request) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            String reCaptchaToken = request.getReCaptchaToken();
+            boolean success = verifyReCaptchaToken(reCaptchaToken);
+            if (success) {
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String username = userDetails.getUsername();
-            String token = jwtService.createToken(username);
-            User user = userService.findByUsername(username);
-            return new BaseResponse<>(new SignInResponse(token, UserDTO.fromEntity(user)),
-                    "Sign In successfully!");
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                String username = userDetails.getUsername();
+                String token = jwtService.createToken(username);
+                User user = userService.findByUsername(username);
+                return new BaseResponse<>(new SignInResponse(token, UserDTO.fromEntity(user)),
+                        "Sign In successfully!");
+            } else {
+                throw new IllegalArgumentException("ReCaptcha verification failed!");
+            }
+
         } catch (BadCredentialsException e) {
             return new BaseResponse<>(null, "Invalid username or password!");
         } catch (DisabledException e) {
@@ -64,7 +82,7 @@ public class AuthService {
     public void forgotPassword(ForgotPasswordRequest request) {
         try {
             String reCaptchaToken = request.getReCaptchaToken();
-            boolean success = reCaptchaTokenService.verifyToken(reCaptchaToken);
+            boolean success = verifyReCaptchaToken(reCaptchaToken);
             if (success) {
                 String email = request.getEmail();
                 userService.findByEmail(email);

@@ -5,7 +5,7 @@ import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import ProductForm from "./product-form";
 import { Separator } from "@/components/ui/separator";
-import DetailsPageAlert from "@/components/view/details-page-alert";
+import DetailsPageAlert from "@/components/view/alert/alert-error-details";
 import useToastErrorDetailsPage from "@/hooks/use-toast-error-details-page";
 
 type Props = {

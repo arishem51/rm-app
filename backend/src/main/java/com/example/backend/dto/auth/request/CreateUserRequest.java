@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class CreateUserRequest extends SignInRequest {
+public class CreateUserRequest extends AuthRequest {
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^[0-9]{10,12}$", message = "Phone number must be 10-12 digits long")
     private String phoneNumber;

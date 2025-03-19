@@ -1,11 +1,11 @@
 import { createHttpResponseError } from "@/lib/helpers";
 import { apiClient } from "@/lib/utils";
-import { RequestProductDTO } from "@/types/Api";
+import { ProductRequestDTO } from "@/types/Api";
 import { useMutation } from "@tanstack/react-query";
 
 export const useCreateProduct = () => {
   return useMutation({
-    mutationFn: async (props: RequestProductDTO) => {
+    mutationFn: async (props: ProductRequestDTO) => {
       try {
         const response = await apiClient.createProduct(props);
         return response;
@@ -18,7 +18,7 @@ export const useCreateProduct = () => {
 
 export const useUpdateProduct = () => {
   return useMutation({
-    mutationFn: async ({ id, ...rest }: RequestProductDTO & { id: number }) => {
+    mutationFn: async ({ id, ...rest }: ProductRequestDTO & { id: number }) => {
       try {
         const response = await apiClient.updateProduct(id, rest);
         return response;

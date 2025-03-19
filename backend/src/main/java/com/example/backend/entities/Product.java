@@ -1,18 +1,18 @@
 package com.example.backend.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.example.backend.enums.ActionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.example.backend.enums.UnitType;
 
 @Getter
 @Setter
@@ -42,16 +42,6 @@ public class Product {
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UnitType unit;
-
-    @Column(name = "sale_price")
-    private BigDecimal salePrice;
-
-    @Column(name = "wholesale_price")
-    private BigDecimal wholesalePrice;
-
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
 
@@ -79,6 +69,12 @@ public class Product {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deletedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    @Schema(required = true)
+    @Builder.Default
+    private ActionStatus status = ActionStatus.ACTIVE;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -95,8 +91,6 @@ public class Product {
                 + ", name='" + name + '\''
                 + ", category='" + (category != null ? category.getName() : "null") + '\''
                 + ", supplier='" + (supplier != null ? supplier.getName() : "null") + '\''
-                + ", unit='" + unit + '\''
-                + ", salePrice='" + salePrice + '\''
                 + "} ";
     }
 }

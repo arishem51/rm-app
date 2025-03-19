@@ -17,21 +17,12 @@ import { toast } from "@/hooks/use-toast";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/mutations/product";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { RequestProductDTO, ResponseProductDTO } from "@/types/Api";
+import { ProductRequestDTO, ResponseProductDTO } from "@/types/Api";
 import { ToastTitle, UserRole } from "@/lib/constants";
 import { Textarea } from "@/components/ui/textarea";
 import { ComboboxCategories } from "../combobox/category";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Plus, XIcon } from "lucide-react";
-import { ComboboxPartners } from "../combobox/partner";
-import InputCurrency from "@/components/input-currency";
+import { ComboboxSuppliers } from "../combobox/supplier";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
@@ -39,19 +30,8 @@ import { cn } from "@/lib/utils";
 const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   description: z.string().optional(),
-  salePrice: z.coerce
-    .number()
-    .min(0, { message: "Sale price must be positive" })
-    .optional(),
-  wholesalePrice: z.coerce
-    .number()
-    .min(0, { message: "Wholesale price must be positive" })
-    .optional(),
-  unit: z.enum(["KG", "BAG"]).optional(),
   imageUrls: z
-    .array(
-      z.object({ url: z.string().url({ message: "Must be a valid URL" }) })
-    )
+    .array(z.object({ url: z.string().url({ message: "URL phải hợp lệ" }) }))
     .default([]),
   categoryId: z.string().nullable().optional(),
   partnerId: z.string().nullable().optional(),
@@ -67,7 +47,6 @@ type Props = {
 
 const ProductForm = ({ onClose, product }: Props) => {
   const { data: currentUser } = useMe();
-
   const form = useForm<ProductFormDTO>({
     resolver: zodResolver(schema),
     defaultValues: product
@@ -80,9 +59,6 @@ const ProductForm = ({ onClose, product }: Props) => {
       : {
           name: "",
           description: "",
-          salePrice: 0,
-          wholesalePrice: 0,
-          unit: "KG",
           imageUrls: [],
           shopId: 1,
         },
@@ -95,8 +71,8 @@ const ProductForm = ({ onClose, product }: Props) => {
     control: form.control,
     name: "imageUrls",
   });
-
   const queryClient = useQueryClient();
+
   const { mutate: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
   const router = useRouter();
@@ -146,7 +122,7 @@ const ProductForm = ({ onClose, product }: Props) => {
         partnerId: data.partnerId ? Number(data.partnerId) : undefined,
       };
 
-      const mutateData: RequestProductDTO = {
+      const mutateData: ProductRequestDTO = {
         ...payload,
         imageUrls: payload.imageUrls.map((image) => image.url),
         shopId: currentUser?.shopId,
@@ -161,13 +137,6 @@ const ProductForm = ({ onClose, product }: Props) => {
       }
     }
   });
-
-  const className = `
-        appearance-none
-        [moz-appearance:textfield]
-        [&::-webkit-inner-spin-button]:appearance-none
-        [&::-webkit-outer-spin-button]:appearance-none
-    `;
 
   return (
     <Form {...form}>
@@ -191,71 +160,13 @@ const ProductForm = ({ onClose, product }: Props) => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Mô tả</FormLabel>
                 <FormControl>
                   <Textarea
                     readOnly={!isOwner}
                     rows={3}
-                    placeholder="Description"
+                    placeholder="Mô tả sản phẩm"
                     {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex justify-between gap-2">
-            <FormField
-              control={form.control}
-              name="salePrice"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Sale Price (VND)</FormLabel>
-                  <FormControl>
-                    <InputCurrency
-                      className={className}
-                      readOnly={!isOwner}
-                      placeholder="Sale Price"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="wholesalePrice"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Wholesale Price (VND)</FormLabel>
-                  <FormControl>
-                    <InputCurrency
-                      className={className}
-                      placeholder="Wholesale Price"
-                      readOnly={!isOwner}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="partnerId"
-            render={({ field }) => (
-              <FormItem
-                className={cn("w-full", isOwner ? "" : "pointer-events-none")}
-              >
-                <FormLabel>Supplier</FormLabel>
-                <br />
-                <FormControl>
-                  <ComboboxPartners
-                    onSelect={field.onChange}
-                    formValue={field.value?.toString()}
                   />
                 </FormControl>
                 <FormMessage />
@@ -266,7 +177,7 @@ const ProductForm = ({ onClose, product }: Props) => {
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="categoryId"
+                name="supplierId"
                 render={({ field }) => (
                   <FormItem
                     className={cn(
@@ -274,10 +185,10 @@ const ProductForm = ({ onClose, product }: Props) => {
                       isOwner ? "" : "pointer-events-none"
                     )}
                   >
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Nhà cung cấp</FormLabel>
                     <br />
                     <FormControl>
-                      <ComboboxCategories
+                      <ComboboxSuppliers
                         onSelect={field.onChange}
                         formValue={field.value?.toString()}
                       />
@@ -290,30 +201,21 @@ const ProductForm = ({ onClose, product }: Props) => {
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="unit"
+                name="categoryId"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unit</FormLabel>
+                  <FormItem
+                    className={cn(
+                      "w-full",
+                      isOwner ? "" : "pointer-events-none"
+                    )}
+                  >
+                    <FormLabel>Danh mục</FormLabel>
+                    <br />
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger
-                          className={cn(
-                            "w-full",
-                            isOwner ? "" : "pointer-events-none"
-                          )}
-                        >
-                          <SelectValue placeholder="Select a unit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="KG">Kg</SelectItem>
-                            <SelectItem value="BAG">Bag</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                      <ComboboxCategories
+                        onSelect={field.onChange}
+                        formValue={field.value?.toString()}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

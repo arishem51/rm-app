@@ -13,6 +13,7 @@ import {
   Users,
   Warehouse,
 } from "lucide-react";
+import { BadgeCent } from "lucide-react";
 import Link from "next/link";
 import {
   Collapsible,
@@ -33,7 +34,7 @@ import {
 import { AppRoutes } from "@/lib/constants";
 import { checkRole } from "@/lib/helpers";
 import { useMe } from "@/hooks/mutations/user";
-
+import { ShoppingBasket } from "lucide-react";
 type Item = {
   title: string;
   url?: string;
@@ -46,7 +47,7 @@ type SidebarGroupType = "application" | "shop" | "setting";
 const Content = () => {
   const query = useMe();
   const { data: user } = query ?? {};
-  const { isAdmin, isOwner } = checkRole(user);
+  const { isAdmin, isOwner, isStaff } = checkRole(user);
 
   const itemGroups: Record<
     SidebarGroupType,
@@ -118,7 +119,7 @@ const Content = () => {
   if (user?.shopId && isOwner) {
     itemGroups.shop.items.push(
       {
-        title: "Tài khoản",
+        title: "Nhân viên",
         url: AppRoutes.dashboard.users.url,
         icon: Users,
       },
@@ -128,12 +129,31 @@ const Content = () => {
         icon: Box,
       },
       {
-        title: "Quản lý kho",
+        title: "Nhập/Xuất",
+        icon: ShoppingBasket,
+        children: [
+          {
+            title: "Phiếu nhập",
+            url: AppRoutes.dashboard.receipts.index.url,
+          },
+          {
+            title: "Đơn hàng",
+            url: AppRoutes.dashboard.orders.index.url,
+          },
+        ],
+      },
+      {
+        title: "Hóa đơn",
+        url: AppRoutes.dashboard.invoices.index.url,
+        icon: BadgeCent,
+      },
+      {
+        title: "Kho hàng",
         icon: Warehouse,
         children: [
           {
             title: "Kho",
-            url: AppRoutes.dashboard.warehouses.facilities.url,
+            url: AppRoutes.dashboard.warehouses.facilities.index.url,
           },
           {
             title: "Hàng hóa",
@@ -151,6 +171,23 @@ const Content = () => {
       title: "Cửa hàng",
       url: AppRoutes.dashboard.setting.shop.url,
       icon: ShoppingBag,
+    });
+  }
+
+  if (user?.shopId && isStaff) {
+    itemGroups.shop.items.push({
+      title: "Đơn hàng",
+      icon: ShoppingBasket,
+      children: [
+        {
+          title: "Phiếu nhập",
+          url: AppRoutes.dashboard.receipts.index.url,
+        },
+        {
+          title: "Đơn hàng",
+          url: AppRoutes.dashboard.orders.index.url,
+        },
+      ],
     });
   }
 
@@ -175,7 +212,7 @@ const Content = () => {
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
-                          <Link href={item.url}>
+                          <Link href={item.url} prefetch>
                             {item.icon && <item.icon />}
                             <span>{item.title}</span>
                           </Link>
@@ -201,7 +238,7 @@ const Content = () => {
                                 <SidebarMenuSub key={child.title}>
                                   <SidebarMenuSubItem>
                                     <SidebarMenuButton asChild>
-                                      <Link href={child.url as string}>
+                                      <Link href={child.url as string} prefetch>
                                         <span>{child.title}</span>
                                       </Link>
                                     </SidebarMenuButton>

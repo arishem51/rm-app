@@ -69,7 +69,7 @@ const AuthView: FC<Props> = ({
             variant="outline"
             asChild
           >
-            <Link href={type === "sign-up" ? "/auth/sign-in" : "/"}>
+            <Link prefetch href={type === "sign-up" ? "/auth/sign-in" : "/"}>
               <Home />
             </Link>
           </Button>
@@ -79,7 +79,7 @@ const AuthView: FC<Props> = ({
       <CardContent>
         <AuthForm
           enableReCaptcha={enableReCaptcha}
-          onSubmit={(formData) => {
+          onSubmit={(formData, config) => {
             if (type === "sign-up") {
               signUp(formData, {
                 onError: (e) => {
@@ -88,49 +88,64 @@ const AuthView: FC<Props> = ({
                     description: e.message || ToastTitle.somethingWentWrong,
                     variant: "destructive",
                   });
+                  config?.onError?.();
                 },
                 onSuccess: () => {
                   toast({
                     title: ToastTitle.success,
-                    description: "Sign up success!",
+                    description: "Đăng ký thành công!",
                   });
+                  config?.onSuccess?.();
                   setTimeout(() => {
                     router.replace("/auth/sign-in");
                   }, 400);
                 },
               });
             } else {
-              signIn(formData, {
-                onError: (e) => {
-                  toast({
-                    title: ToastTitle.error,
-                    description: e.message,
-                    variant: "destructive",
-                  });
-                },
-                async onSuccess({ data }) {
-                  if (data.data) {
-                    toast({
-                      title: ToastTitle.success,
-                      description: "Sign in success!",
-                    });
-
-                    if (data.data.token) {
-                      setTokenAfterSignIn(data.data.token);
-                      setAtom({
-                        showToastErrorSignIn: false,
-                        token: data.data.token,
+              if (formData.reCaptchaToken) {
+                signIn(
+                  {
+                    ...formData,
+                    reCaptchaToken: formData.reCaptchaToken,
+                  },
+                  {
+                    onError: (e) => {
+                      toast({
+                        title: ToastTitle.error,
+                        description: e.message,
+                        variant: "destructive",
                       });
-                      await queryClient.invalidateQueries(
-                        ApiQuery.users.getMe()
-                      );
-                      setTimeout(() => {
-                        router.replace("/dashboard");
-                      }, 50);
-                    }
+                      config?.onError?.();
+                    },
+                    async onSuccess({ data }) {
+                      if (data.data) {
+                        toast({
+                          title: ToastTitle.success,
+                          description: "Đăng nhập thành công!",
+                        });
+                        if (data.data.token) {
+                          setTokenAfterSignIn(data.data.token);
+                          setAtom({
+                            showToastErrorSignIn: false,
+                            token: data.data.token,
+                          });
+                          await queryClient.invalidateQueries(
+                            ApiQuery.users.getMe()
+                          );
+                          setTimeout(() => {
+                            router.replace("/dashboard");
+                          }, 50);
+                        }
+                        config?.onSuccess?.();
+                      }
+                    },
                   }
-                },
-              });
+                );
+              } else {
+                console.debug("reCaptchaToken is required");
+                console.error("reCaptchaToken is required");
+                console.log("reCaptchaToken is required");
+              }
             }
           }}
           type={type}

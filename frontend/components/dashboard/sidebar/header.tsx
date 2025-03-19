@@ -39,7 +39,7 @@ const Header = () => {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <SquareArrowOutUpRight />
-                <Link href={AppRoutes.home.url} className="w-full">
+                <Link href={AppRoutes.home.url} className="w-full" prefetch>
                   Trang giới thiệu
                 </Link>
               </DropdownMenuItem>

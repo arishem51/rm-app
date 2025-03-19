@@ -1,62 +1,22 @@
 "use client";
 
+import useAppQuery from "@/hooks/use-app-query";
+import { toCurrency } from "@/lib/utils";
+import { ApiQuery } from "@/services/query";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-const data = [
-  {
-    name: "Tháng 1",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 2",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 3",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 4",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 5",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 6",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 7",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 8",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 9",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 10",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 11",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Tháng 12",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-];
-
 export function RevenueChart() {
+  const { data = {} } = useAppQuery(ApiQuery.statistics.getRevenueByMonth());
+  const { data: revenueByMonth } = data;
+
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
+      <BarChart
+        data={revenueByMonth?.map((item) => ({
+          name: item.month,
+          total: item.totalRevenue,
+        }))}
+      >
         <XAxis
           dataKey="name"
           stroke="#888888"
@@ -69,7 +29,12 @@ export function RevenueChart() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => toCurrency(value)}
+          tick={({ x, y, payload }) => (
+            <text x={x} y={y} textAnchor="middle" fill="#888888" fontSize={12}>
+              <tspan x={x}>{toCurrency(payload.value)}</tspan>
+            </text>
+          )}
         />
         <Bar
           dataKey="total"

@@ -25,7 +25,7 @@ const Providers = ({ children, query }: ProviderProps) => {
     <Fragment>
       <Toaster />
       <Provider>
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider attribute="class" defaultTheme="light">
           <QueryProvider>
             <HydrationBoundary state={dehydrate(queryClient)}>
               <BProgressProvider>

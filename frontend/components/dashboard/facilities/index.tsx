@@ -15,7 +15,7 @@ import HeaderListSearch from "../header-list-search";
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
 import { Button } from "@/components/ui/button";
-import { Edit, Plus } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import { WarehouseDTO } from "@/types/Api";
 import {
   Dialog,
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import FacilityForm from "./facility-form";
 import { format } from "date-fns";
+import Link from "next/link";
 
 const Facilities = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -95,6 +96,7 @@ const Facilities = () => {
               <TableHead>ID</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Địa chỉ</TableHead>
+              <TableHead>Số lượng khu vực trong kho</TableHead>
               <TableHead>Thời điểm tạo</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -105,20 +107,19 @@ const Facilities = () => {
                 <TableCell>{warehouse.id}</TableCell>
                 <TableCell>{warehouse.name}</TableCell>
                 <TableCell>{warehouse.address}</TableCell>
+                <TableCell>{warehouse.numberOfZone} khu</TableCell>
                 <TableCell>
-                  {format(warehouse.createdAt!, "yyyy-MM-dd")}
+                  {format(warehouse.createdAt!, "yyyy-MM-dd hh:mm")}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button
-                    size="icon"
-                    onClick={() => {
-                      setUpdateWarehouse(warehouse);
-                    }}
-                    variant="outline"
-                    className="w-6 h-6"
+                  <Link
+                    prefetch
+                    href={`/dashboard/warehouses/facilities/${warehouse.id}`}
                   >
-                    <Edit />
-                  </Button>
+                    <Button size="icon" variant="outline" className="w-6 h-6">
+                      <ArrowUpRight />
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

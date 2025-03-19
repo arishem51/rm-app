@@ -7,23 +7,24 @@ import com.example.backend.entities.User;
 import com.example.backend.entities.Warehouse;
 import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.WarehouseRepository;
+import com.example.backend.repositories.ZoneRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 @RequiredArgsConstructor
 public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
+    private final ZoneRepository zoneRepository;
 
-    // Kiểm tra quyền của người dùng để quản lý kho
     private void validateUserCanManageWarehouse(User user) {
         if (!UserRoleUtils.isOwner(user)) {
             throw new IllegalArgumentException("You are not authorized to manage warehouses!");
@@ -31,6 +32,23 @@ public class WarehouseService {
         if (user.getShop() == null) {
             throw new IllegalArgumentException("You must have a shop to manage warehouses!");
         }
+    }
+
+    public int countZoneInWarehouse(Long warehouseId) {
+        return zoneRepository.countByWarehouse_Id(warehouseId);
+    }
+
+    public Map<Long, Integer> getWarehouseZoneCount() {
+        List<Object[]> zoneCounts = zoneRepository.countZonesByWarehouse();
+        Map<Long, Integer> warehouseZoneCountMap = new HashMap<>();
+
+        for (Object[] result : zoneCounts) {
+            Long warehouseId = (Long) result[0];
+            Long count = (Long) result[1];
+            warehouseZoneCountMap.put(warehouseId, count.intValue());
+        }
+
+        return warehouseZoneCountMap;
     }
 
     public Warehouse createWarehouse(Long shopId, WarehouseCreateDTO dto, User user) {
@@ -51,35 +69,32 @@ public class WarehouseService {
 
     public Warehouse createWarehouseByShop(Shop shop) {
         Warehouse warehouse = new Warehouse();
-        warehouse.setName("Warehouse - " + shop.getName()); // Tên kho có thể dựa trên tên shop
+        warehouse.setName("Kho - " + shop.getName());
         warehouse.setShop(shop);
         warehouse.setAddress(shop.getAddress());
         return warehouseRepository.save(warehouse);
     }
 
-    // Cập nhật kho theo warehouseId và shopId
     public Warehouse updateWarehouse(Long warehouseId, WarehouseUpdateDTO dto, User user) {
         validateUserCanManageWarehouse(user);
-
         Warehouse warehouse = warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new IllegalArgumentException("Warehouse not found"));
 
         Shop shop = user.getShop();
-
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage warehouses!");
         }
-
         if (!warehouse.getShop().getId().equals(shop.getId())) {
             throw new IllegalArgumentException("You can only update warehouses from your own shop!");
         }
-
         if (dto.getName() != null) {
             warehouse.setName(dto.getName());
         }
-
         if (dto.getName() != null) {
             warehouse.setAddress(dto.getAddress());
+        }
+        if (dto.getDescription() != null) {
+            warehouse.setDescription(dto.getDescription());
         }
         warehouse.setStatus(ActionStatus.valueOf(dto.getStatus()));
 
@@ -119,6 +134,15 @@ public class WarehouseService {
             throw new IllegalArgumentException("You do not have permission to view warehouses from this shop.");
         }
         return warehouseRepository.findAllByShopId(shopId);
+    }
+
+    public Warehouse findWarehouseByIdAndShopId(Long warehouseId, User currentUser) {
+        if (currentUser.getShop() == null) {
+            throw new IllegalArgumentException("You must have a shop to manage warehouses!");
+        }
+        return warehouseRepository.findByIdAndShopId(warehouseId,
+                currentUser.getShop().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Warehouse not found with ID: " + warehouseId));
     }
 
 }

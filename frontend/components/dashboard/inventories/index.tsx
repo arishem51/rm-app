@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   TableHeader,
   TableRow,
@@ -11,22 +10,18 @@ import {
 } from "@/components/ui/table";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import { Edit, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
 import HeaderListSearch from "../header-list-search";
 import Link from "next/link";
 import ListPagination from "../pagination";
-import { checkRole } from "@/lib/helpers";
-import { useMe } from "@/hooks/mutations/user";
+import { toCurrency } from "@/lib/utils";
 
 const Inventories = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.inventories.getInventories(filter)
   );
-  const { data: currentUser } = useMe();
-  const { isOwner } = checkRole(currentUser);
 
   const handleSearch = (search: string) => {
     setFilter({ page: 0, search });
@@ -49,14 +44,6 @@ const Inventories = () => {
           filterSearch={filter.search}
           onSearch={handleSearch}
         />
-        {isOwner && (
-          <Link href="/dashboard/warehouses/inventories/create">
-            <Button>
-              <Plus />
-              Tạo Hàng hóa
-            </Button>
-          </Link>
-        )}
       </div>
       {(data?.data || []).length > 0 ? (
         <Table>
@@ -64,9 +51,10 @@ const Inventories = () => {
             <TableRow>
               <TableHead>ID</TableHead>
               <TableHead>Sản phẩm</TableHead>
-              <TableHead>Kho</TableHead>
+              <TableHead>Giá</TableHead>
               <TableHead>Số lượng</TableHead>
-              <TableHead className="text-right">Hành động</TableHead>
+              <TableHead>Tên kho</TableHead>
+              <TableHead>Khu vực trong kho</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -75,21 +63,17 @@ const Inventories = () => {
                 <TableCell>{item.id}</TableCell>
                 <TableCell>
                   <Link
+                    prefetch
                     href={`/dashboard/products/${item.productId}`}
                     className="hover:underline"
                   >
                     {item.productName}
                   </Link>
                 </TableCell>
-                <TableCell>{item.warehouseName}</TableCell>
+                <TableCell>{toCurrency(+(item.price || 0))}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
-                <TableCell className="text-right">
-                  <Link href={`/dashboard/warehouses/inventories/${item.id}`}>
-                    <Button variant="outline" className="w-6 h-6" size="icon">
-                      <Edit />
-                    </Button>
-                  </Link>
-                </TableCell>
+                <TableCell>{item.warehouseName}</TableCell>
+                <TableCell>{item.zoneName}</TableCell>
               </TableRow>
             ))}
           </TableBody>
