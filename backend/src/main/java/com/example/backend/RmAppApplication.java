@@ -11,11 +11,3 @@ public class RmAppApplication {
 	}
 
 }
-/*
-SPRING_DATASOURCE_URL=jdbc:sqlserver://localhost:1433;trustServerCertificate=true;databaseName=rm;
-SPRING_DATASOURCE_USERNAME=sa;
-SPRING_DATASOURCE_PASSWORD=sa;
-SPRING_DATASOURCE_MAIL_USERNAME=rmapp.offical@gmail.com;
-SPRING_DATASOURCE_MAIL_PASSWORD=necp tqet mdro nxog;
-SPRING_DATASOURCE_RECAPTCHA_SECRET_KEY=6LcM5-sqAAAAAKXHfW408M9MfyT8JPuiovgPCYGc;
-* */
