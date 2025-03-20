@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,15 +84,15 @@ public class OrderService {
         orderRepository.save(order);
 
         // FIXME: should have business rule for payment;
-
-        // PaymentHistory payment = PaymentHistory.builder()
-        // .order(order)
-        // .isDebt(orderDTO.isDebt())
-        // .discount(discount)
-        // .shippingFee(orderDTO.isShipping() ? shippingFee : BigDecimal.ZERO)
-        // .totalAmount(order.getTotalAmount().add(shippingFee.subtract(discount)))
-        // .build();
-        // paymentHistoryRepository.save(payment);
+        PaymentHistory payment = PaymentHistory.builder()
+                .order(order)
+                .isDebt(false)
+                .discount(
+                        BigDecimal.ZERO)
+                .shippingFee(BigDecimal.ZERO)
+                .totalAmount(orderDTO.getAmount())
+                .build();
+        paymentHistoryRepository.save(payment);
         return order;
     }
 
