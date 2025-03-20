@@ -210,6 +210,18 @@ export interface ResponseProductDTO {
   imageUrls?: string[];
 }
 
+export interface BaseResponseString {
+  data?: string;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
 export interface PartnerUpdateDTO {
   name?: string;
   contactName?: string;
@@ -805,6 +817,31 @@ export interface PaginateResponseResponseProductDTO {
   data?: ResponseProductDTO[];
 }
 
+export interface BaseResponseListRequestResponse {
+  data?: RequestResponse[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface RequestResponse {
+  /** @format int64 */
+  id?: number;
+  createBy?: string;
+  productName?: string;
+  /** @format date-time */
+  createdAt?: string;
+  categoryName?: string;
+  supplierName?: string;
+  description?: string;
+  status?: string;
+}
+
 export interface BaseResponseListResponseProductDTO {
   data?: ResponseProductDTO[];
   message?: string;
@@ -962,8 +999,6 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  first?: boolean;
-  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   /** @format int32 */
@@ -972,6 +1007,8 @@ export interface PageOrder {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -980,18 +1017,18 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  /** @format int32 */
-  pageNumber?: number;
+  unpaged?: boolean;
   paged?: boolean;
   /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
   pageSize?: number;
-  unpaged?: boolean;
 }
 
 export interface SortObject {
   empty?: boolean;
-  sorted?: boolean;
   unsorted?: boolean;
+  sorted?: boolean;
 }
 
 export interface BaseResponseListInventory {
@@ -1439,6 +1476,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Approve or reject a product request.
+     *
+     * @tags Product Management
+     * @name ApproveProductRequest
+     * @summary Approve or reject a product request
+     * @request PUT:/api/products/requests/{id}/approve
+     * @secure
+     */
+    approveProductRequest: (
+      id: number,
+      query: {
+        approve: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponseString, any>({
+        path: `/api/products/requests/${id}/approve`,
+        method: "PUT",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * No description
      *
      * @tags Partner Management
@@ -1785,7 +1846,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     createProduct: (data: ProductRequestDTO, params: RequestParams = {}) =>
-      this.request<BaseResponseResponseProductDTO, any>({
+      this.request<BaseResponseString, any>({
         path: `/api/products`,
         method: "POST",
         body: data,
@@ -2164,6 +2225,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getReceipt: (id: number, params: RequestParams = {}) =>
       this.request<BaseResponseReceiptResponseDTO, any>({
         path: `/api/receipts/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch a list of all pending product requests.
+     *
+     * @tags Product Management
+     * @name GetProductRequests
+     * @summary Get all pending product requests
+     * @request GET:/api/products/requests
+     * @secure
+     */
+    getProductRequests: (params: RequestParams = {}) =>
+      this.request<BaseResponseListRequestResponse, any>({
+        path: `/api/products/requests`,
         method: "GET",
         secure: true,
         ...params,
