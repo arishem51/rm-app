@@ -10,6 +10,8 @@ import { payment } from "./payment";
 import { zones } from "./zones";
 import { statistics } from "./statistics";
 import { receipts } from "./receipts";
+import { debts } from "./debts";
+
 
 const ApiQuery = {
   users,
@@ -24,6 +26,7 @@ const ApiQuery = {
   zones,
   statistics,
   receipts,
+  debts,
 };
 
 export { ApiQuery };

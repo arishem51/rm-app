@@ -17,6 +17,7 @@ public class PartnerRepsponseDTO {
     private String phone;
     private String email;
     private String address;
+    private boolean canHaveDept;
     private String website;
     private String description;
     private long shopId;
@@ -32,6 +33,7 @@ public class PartnerRepsponseDTO {
                 .phone(partner.getPhone())
                 .email(partner.getEmail())
                 .address(partner.getAddress())
+                .canHaveDept(partner.isCanHaveDebt())
                 .website(partner.getWebsite())
                 .description(partner.getDescription())
                 .shopId(partner.getShop().getId())

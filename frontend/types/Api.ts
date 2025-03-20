@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 /* tslint:disable */
 /*
  * ---------------------------------------------------------------
@@ -153,7 +153,7 @@ export interface ProductRequestDTO {
   /** @format int64 */
   categoryId?: number;
   /** @format int64 */
-  partnerId?: number;
+  supplierId?: number;
   /** @format int64 */
   shopId: number;
   imageUrls?: string[];
@@ -194,6 +194,12 @@ export interface Partner {
   address?: string;
   website?: string;
   description?: string;
+  canHaveDebt?: boolean;
+  shop?: Shop;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
 }
 
 export interface ResponseProductDTO {
@@ -210,6 +216,35 @@ export interface ResponseProductDTO {
   imageUrls?: string[];
 }
 
+export interface Shop {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  address?: string;
+  createBy?: User;
+  /** @uniqueItems true */
+  users?: User[];
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+}
+
+export interface User {
+  /** @format int64 */
+  id: number;
+  username: string;
+  email?: string;
+  name: string;
+  phoneNumber: string;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+  role: "OWNER" | "STAFF" | "ADMIN";
+  status: "ACTIVE" | "INACTIVE";
+}
+
 export interface PartnerUpdateDTO {
   name?: string;
   contactName?: string;
@@ -218,6 +253,7 @@ export interface PartnerUpdateDTO {
   address?: string;
   website?: string;
   description?: string;
+  canHaveDebt?: boolean;
 }
 
 export interface BaseResponsePartner {
@@ -304,35 +340,6 @@ export interface Product {
   status: "ACTIVE" | "INACTIVE";
 }
 
-export interface Shop {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  address?: string;
-  createBy?: User;
-  /** @uniqueItems true */
-  users?: User[];
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-}
-
-export interface User {
-  /** @format int64 */
-  id: number;
-  username: string;
-  email?: string;
-  name: string;
-  phoneNumber: string;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  role: "OWNER" | "STAFF" | "ADMIN";
-  status: "ACTIVE" | "INACTIVE";
-}
-
 export interface InventoryUpdateDTO {
   /** @format int64 */
   productId?: number;
@@ -372,6 +379,55 @@ export interface InventoryResponseDTO {
   warehouseName?: string;
   /** @format int32 */
   quantity?: number;
+}
+
+export interface UpdateDebtNoteDTO {
+  /** @format int64 */
+  partnerId?: number;
+  /** @format double */
+  amount?: number;
+  /** @format date */
+  dueDate?: string;
+  status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
+  description?: string;
+  attachments?: string[];
+  notes?: string;
+}
+
+export interface DebtNote {
+  /** @format int64 */
+  id?: number;
+  partner?: Partner;
+  /** @format double */
+  amount?: number;
+  /** @format double */
+  paidAmount?: number;
+  /** @format date */
+  dueDate?: string;
+  /** @format date-time */
+  createdAt?: string;
+  status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
+  source?: string;
+  order?: Order;
+  description?: string;
+  attachments?: string[];
+  notes?: string;
+  payments?: DebtPayment[];
+}
+
+export interface DebtPayment {
+  /** @format int64 */
+  id?: number;
+  debtNote?: DebtNote;
+  /** @format double */
+  amount?: number;
+  /** @format date */
+  paymentDate?: string;
+  paymentMethod?: string;
+  receiptNumber?: string;
+  notes?: string;
+  /** @format date-time */
+  createdAt?: string;
 }
 
 export interface UpdateCategoryDTO {
@@ -485,6 +541,7 @@ export interface PartnerCreateDTO {
   address: string;
   website?: string;
   description?: string;
+  canHaveDebt?: boolean;
 }
 
 export interface CreateOrderDTO {
@@ -494,6 +551,31 @@ export interface CreateOrderDTO {
   orderItems?: OrderItemDTO[];
   shipping?: boolean;
   debt?: boolean;
+}
+
+export interface CreateDebtNoteDTO {
+  /** @format int64 */
+  partnerId?: number;
+  /** @format double */
+  amount?: number;
+  /** @format date */
+  dueDate?: string;
+  source?: string;
+  /** @format int64 */
+  orderId?: number;
+  description?: string;
+  attachments?: string[];
+  notes?: string;
+}
+
+export interface CreateDebtPaymentDTO {
+  /** @format double */
+  amount?: number;
+  /** @format date */
+  paymentDate?: string;
+  paymentMethod?: string;
+  receiptNumber?: string;
+  notes?: string;
 }
 
 export interface CreateCategoryDTO {
@@ -870,8 +952,8 @@ export interface PaymentHistoryResponseDTO {
   debt?: boolean;
 }
 
-export interface BaseResponsePaginateResponsePartner {
-  data?: PaginateResponsePartner;
+export interface BaseResponsePaginateResponsePartnerRepsponseDTO {
+  data?: PaginateResponsePartnerRepsponseDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -882,7 +964,7 @@ export interface BaseResponsePaginateResponsePartner {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponsePartner {
+export interface PaginateResponsePartnerRepsponseDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -891,7 +973,25 @@ export interface PaginateResponsePartner {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: Partner[];
+  data?: PartnerRepsponseDTO[];
+}
+
+export interface PartnerRepsponseDTO {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  contactName?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  canHaveDept?: boolean;
+  website?: string;
+  description?: string;
+  /** @format int64 */
+  shopId?: number;
+  shopName?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface BaseResponseListPartner {
@@ -958,20 +1058,20 @@ export interface BaseResponsePageOrder {
 }
 
 export interface PageOrder {
-  /** @format int64 */
-  totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  numberOfElements?: number;
+  /** @format int64 */
+  totalElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -980,11 +1080,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  /** @format int32 */
-  pageNumber?: number;
   paged?: boolean;
   /** @format int32 */
   pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
   unpaged?: boolean;
 }
 
@@ -1054,6 +1154,15 @@ export interface PaginateResponseInventoryResponseDTO {
   /** @format int32 */
   totalPages?: number;
   data?: InventoryResponseDTO[];
+}
+
+export interface DebtStatisticsDTO {
+  /** @format double */
+  totalOutstanding?: number;
+  /** @format double */
+  overdueAmount?: number;
+  /** @format double */
+  upcomingPayments?: number;
 }
 
 export interface BaseResponseListCategory {
@@ -1562,6 +1671,56 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags debt-controller
+     * @name GetDebtNoteById
+     * @request GET:/api/debts/{id}
+     * @secure
+     */
+    getDebtNoteById: (id: number, params: RequestParams = {}) =>
+      this.request<DebtNote, any>({
+        path: `/api/debts/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags debt-controller
+     * @name UpdateDebtNote
+     * @request PUT:/api/debts/{id}
+     * @secure
+     */
+    updateDebtNote: (id: number, data: UpdateDebtNoteDTO, params: RequestParams = {}) =>
+      this.request<DebtNote, any>({
+        path: `/api/debts/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags debt-controller
+     * @name DeleteDebtNote
+     * @request DELETE:/api/debts/{id}
+     * @secure
+     */
+    deleteDebtNote: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/debts/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Update an existing category by ID.
      *
      * @tags Category Management
@@ -1819,7 +1978,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponsePartner, any>({
+      this.request<BaseResponsePaginateResponsePartnerRepsponseDTO, any>({
         path: `/api/partners`,
         method: "GET",
         query: query,
@@ -1857,6 +2016,86 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     createOrder: (data: CreateOrderDTO, params: RequestParams = {}) =>
       this.request<BaseResponseOrder, any>({
         path: `/api/orders`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags debt-controller
+     * @name GetDebtNotes
+     * @request GET:/api/debts
+     * @secure
+     */
+    getDebtNotes: (
+      query?: {
+        status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
+        /** @format int64 */
+        partnerId?: number;
+        /** @format date */
+        fromDate?: string;
+        /** @format date */
+        toDate?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<DebtNote[], any>({
+        path: `/api/debts`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags debt-controller
+     * @name CreateDebtNote
+     * @request POST:/api/debts
+     * @secure
+     */
+    createDebtNote: (data: CreateDebtNoteDTO, params: RequestParams = {}) =>
+      this.request<DebtNote, any>({
+        path: `/api/debts`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags debt-controller
+     * @name GetDebtPayments
+     * @request GET:/api/debts/{id}/payments
+     * @secure
+     */
+    getDebtPayments: (id: number, params: RequestParams = {}) =>
+      this.request<DebtPayment[], any>({
+        path: `/api/debts/${id}/payments`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags debt-controller
+     * @name CreateDebtPayment
+     * @request POST:/api/debts/{id}/payments
+     * @secure
+     */
+    createDebtPayment: (id: number, data: CreateDebtPaymentDTO, params: RequestParams = {}) =>
+      this.request<DebtPayment, any>({
+        path: `/api/debts/${id}/payments`,
         method: "POST",
         body: data,
         secure: true,
@@ -2331,6 +2570,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/inventories/`,
         method: "GET",
         query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags debt-controller
+     * @name GetDebtStatistics
+     * @request GET:/api/debts/statistics
+     * @secure
+     */
+    getDebtStatistics: (params: RequestParams = {}) =>
+      this.request<DebtStatisticsDTO, any>({
+        path: `/api/debts/statistics`,
+        method: "GET",
         secure: true,
         ...params,
       }),
