@@ -14,7 +14,6 @@ import com.example.backend.dto.partner.PartnerCreateDTO;
 import com.example.backend.dto.partner.PartnerUpdateDTO;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
-import com.example.backend.enums.Role;
 import com.example.backend.repositories.PartnerRepository;
 import com.example.backend.repositories.ShopRepository;
 import com.example.backend.utils.UserRoleUtils;
@@ -29,16 +28,18 @@ public class PartnerService {
     public Page<PartnerRepsponseDTO> findPartners(int page, int pageSize, String search, User currentUser) {
         Pageable pageable = PageRequest.of(page, pageSize);
         if (UserRoleUtils.isAdmin(currentUser)) {
-            return search.isEmpty() 
-                ? partnerRepository.findAll(pageable).map(PartnerRepsponseDTO::fromEntity)
-                : partnerRepository.findByNameContainingIgnoreCase(search, pageable).map(PartnerRepsponseDTO::fromEntity);
+            return search.isEmpty()
+                    ? partnerRepository.findAll(pageable).map(PartnerRepsponseDTO::fromEntity)
+                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable)
+                            .map(PartnerRepsponseDTO::fromEntity);
         } else {
-            return search.isEmpty() 
-                ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable).map(PartnerRepsponseDTO::fromEntity)
-                : partnerRepository.findByShopIdAndNameContainingIgnoreCase(
-                    currentUser.getShop().getId(), 
-                    search, 
-                    pageable).map(PartnerRepsponseDTO::fromEntity);
+            return search.isEmpty()
+                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable)
+                            .map(PartnerRepsponseDTO::fromEntity)
+                    : partnerRepository.findByShopIdAndNameContainingIgnoreCase(
+                            currentUser.getShop().getId(),
+                            search,
+                            pageable).map(PartnerRepsponseDTO::fromEntity);
         }
     }
 
@@ -54,22 +55,22 @@ public class PartnerService {
 
     public Partner getPartnerById(Long id, User currentUser) {
         Partner partner = partnerRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Partner not found"));
-            
+                .orElseThrow(() -> new IllegalArgumentException("Partner not found"));
+
         if (!UserRoleUtils.isAdmin(currentUser)) {
-            if (!UserRoleUtils.isOwner(currentUser) || 
-                currentUser.getShop() == null || 
-                !partner.getShop().getId().equals(currentUser.getShop().getId())) {
+            if (!UserRoleUtils.isOwner(currentUser) ||
+                    currentUser.getShop() == null ||
+                    !partner.getShop().getId().equals(currentUser.getShop().getId())) {
                 throw new IllegalArgumentException("Unauthorized access");
             }
         }
-        
+
         return partner;
     }
 
     public Partner create(PartnerCreateDTO partnerDto, User currentUser) {
         var shop = shopRepository.findById(currentUser.getId())
-            .orElseThrow(() -> new IllegalArgumentException("Shop not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Shop not found"));
 
         Partner partner = Partner.builder()
                 .name(partnerDto.getName())
@@ -93,11 +94,11 @@ public class PartnerService {
             throw new IllegalArgumentException("You are not authorized to perform this action");
         }
         Partner partner = partnerRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Partner not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Partner not found"));
 
         // If owner, can only update their shop's partners
-        if (UserRoleUtils.isOwner(currentUser) && 
-            !partner.getShop().getId().equals(currentUser.getShop().getId())) {
+        if (UserRoleUtils.isOwner(currentUser) &&
+                !partner.getShop().getId().equals(currentUser.getShop().getId())) {
             throw new IllegalArgumentException("You can only update partners from your own shop");
         }
         partner.setName(partnerDto.getName());
@@ -107,26 +108,26 @@ public class PartnerService {
         partner.setAddress(partnerDto.getAddress());
         partner.setWebsite(partnerDto.getWebsite());
         partner.setDescription(partnerDto.getDescription());
-        
+
         return partnerRepository.save(partner);
     }
 
     public void delete(Long id, User currentUser) {
         Partner partner = partnerRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Partner not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Partner not found"));
 
         if (!UserRoleUtils.isAdmin(currentUser)) {
-            if (!UserRoleUtils.isOwner(currentUser) || 
-                currentUser.getShop() == null || 
-                !partner.getShop().getId().equals(currentUser.getShop().getId())) {
+            if (!UserRoleUtils.isOwner(currentUser) ||
+                    currentUser.getShop() == null ||
+                    !partner.getShop().getId().equals(currentUser.getShop().getId())) {
                 throw new IllegalArgumentException("You can only delete partners from your own shop");
             }
         }
-        
+
         partnerRepository.deleteById(id);
     }
 
-     public Optional<Partner> findById(Long id) {
-         return partnerRepository.findById(id);
-     }
+    public Optional<Partner> findById(Long id) {
+        return partnerRepository.findById(id);
+    }
 }

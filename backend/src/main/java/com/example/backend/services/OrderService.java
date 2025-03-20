@@ -1,6 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.order.CreateOrderDTO;
+import com.example.backend.dto.partner.PartnerCreateDTO;
 import com.example.backend.entities.*;
 import com.example.backend.repositories.*;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final PartnerRepository partnerRepository;
+    private final PartnerService partnerService;
     private final PaymentHistoryRepository paymentHistoryRepository;
     private final InventoryRepository inventoryRepository;
 
@@ -34,12 +35,19 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(CreateOrderDTO orderDTO, User user) {
+        Partner partner = orderDTO.getPartnerId() != null ? partnerService.findById(orderDTO.getPartnerId())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng!"))
+                : partnerService.create(
+                        PartnerCreateDTO.builder().contactName(
+                                orderDTO.getPartnerName())
+                                .phone(orderDTO.getPartnerPhone())
+                                .build(),
+                        user);
         // FIXME: should have business rule for sell amount;
         Order order = Order.builder()
                 .createdBy(user)
-                .partner(partnerRepository.findById(orderDTO.getPartnerId())
-                        // FIXME: should have business rule for partner;
-                        .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng!")))
+                .partner(
+                        partner)
                 .shop(user.getShop())
                 .totalAmount(orderDTO.getTotalAmount())
                 .sellAmount(orderDTO.getSellAmount())
@@ -69,6 +77,8 @@ public class OrderService {
         }).toList();
         order.setOrderItems(orderItems);
         orderRepository.save(order);
+
+        // FIXME: should have business rule for payment;
 
         // PaymentHistory payment = PaymentHistory.builder()
         // .order(order)

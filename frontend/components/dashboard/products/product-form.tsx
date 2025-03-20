@@ -22,7 +22,7 @@ import { ToastTitle, UserRole } from "@/lib/constants";
 import { Textarea } from "@/components/ui/textarea";
 import { ComboboxCategories } from "../combobox/category";
 import { Plus, XIcon } from "lucide-react";
-import { ComboboxSuppliers } from "../combobox/supplier";
+import { ComboboxPartners } from "../combobox/partner";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
@@ -53,7 +53,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       ? {
           ...product,
           categoryId: product.category?.id?.toString(),
-          partnerId: product.partner?.id?.toString(),
+          partnerId: product.supplier?.id?.toString(),
           imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
         }
       : {
@@ -86,7 +86,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       reset({
         ...product,
         categoryId: product.category?.id?.toString(),
-        partnerId: product.partner?.id?.toString(),
+        partnerId: product.supplier?.id?.toString(),
         imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
       });
     }
@@ -177,7 +177,7 @@ const ProductForm = ({ onClose, product }: Props) => {
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="supplierId"
+                name="partnerId"
                 render={({ field }) => (
                   <FormItem
                     className={cn(
@@ -188,7 +188,7 @@ const ProductForm = ({ onClose, product }: Props) => {
                     <FormLabel>Nhà cung cấp</FormLabel>
                     <br />
                     <FormControl>
-                      <ComboboxSuppliers
+                      <ComboboxPartners
                         onSelect={field.onChange}
                         formValue={field.value?.toString()}
                       />
