@@ -15,7 +15,6 @@ import Link from "next/link";
 
 const Navbar = () => {
   const pathname = usePathname();
-
   const segments = pathname.split("/").slice(1);
 
   return (

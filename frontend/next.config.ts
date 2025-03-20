@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  transpilePackages: ["lucide-react"],
 };
 
 export default nextConfig;
