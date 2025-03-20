@@ -24,8 +24,6 @@ const PartnersPage = async () => {
       return ApiQuery.users.getUsers({ page: 0, search: "" });
     }
     if (isOwner) {
-      console.log("Owner", user);
-      
       return ApiQuery.partners.getPartners({ page: 0, search: "" });
     }
     return null;
