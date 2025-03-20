@@ -60,7 +60,7 @@ const OrderForm = ({ onClose, order }: Props) => {
   const queryClient = useQueryClient();
 
   const schema = z.object({
-    partnerId: z.string().nullable().optional(),
+    partnerId: z.number().nullable().optional(),
     partnerName: z.string().min(1, "Tên khách hàng là bắt buộc"),
     partnerPhone: z
       .string()
@@ -449,8 +449,10 @@ const OrderForm = ({ onClose, order }: Props) => {
                       if (partner) {
                         form.setValue("partnerName", partner.name!);
                         form.setValue("partnerPhone", partner.phone!);
+                        form.setValue("partnerId", partner.id!);
                         setIsSelectPartner(true);
                       } else {
+                        form.setValue("partnerId", undefined);
                         setIsSelectPartner(false);
                       }
                     }}

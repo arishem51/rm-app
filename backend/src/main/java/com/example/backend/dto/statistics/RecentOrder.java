@@ -20,7 +20,7 @@ public class RecentOrder {
         return RecentOrder.builder()
                 .userName(order.getCreatedBy().getName())
                 .totalAmount(
-                        Optional.ofNullable(order.getTotalAmount())
+                        Optional.ofNullable(order.getAmount())
                                 .map(amount -> BigDecimal.valueOf(amount.intValue()))
                                 .orElse(BigDecimal.ZERO))
                 .build();
