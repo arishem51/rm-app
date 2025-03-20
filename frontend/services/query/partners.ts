@@ -6,4 +6,5 @@ export const partners = {
     placeholderData: keepPreviousData,
   }),
   getAllPartners: createQuery(apiClient.getAllPartners, {}),
+  getPartnerById: createQuery(apiClient.getPartnerById, {}),
 };

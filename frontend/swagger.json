@@ -1097,6 +1097,44 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": ["Partner Management"],
+        "summary": "Update a partner",
+        "description": "Update an existing partner using the provided ID",
+        "operationId": "updatePartner",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PartnerUpdateDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Partner updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BaseResponsePartner" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Partner not found"
+          }
+        }
       }
     },
     "/api/orders": {

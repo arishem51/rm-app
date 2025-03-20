@@ -1,4 +1,4 @@
-/* eslint-disable */
+ /* eslint-disable */
 /* tslint:disable */
 /*
  * ---------------------------------------------------------------
@@ -153,7 +153,7 @@ export interface ProductRequestDTO {
   /** @format int64 */
   categoryId?: number;
   /** @format int64 */
-  supplierId?: number;
+  partnerId?: number;
   /** @format int64 */
   shopId: number;
   imageUrls?: string[];

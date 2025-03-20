@@ -9,14 +9,14 @@ type Props = {
   formValue?: string;
 };
 
-export function ComboboxSuppliers({ onSelect, formValue }: Props) {
-  const { data: { data: suppliers = [] } = {} } = useAppQuery(
+export function ComboboxPartners({ onSelect, formValue }: Props) {
+  const { data: { data: partners = [] } = {} } = useAppQuery(
     ApiQuery.partners.getAllPartners()
   );
 
   const options =
-    suppliers.length > 0
-      ? suppliers.map((item) => ({
+    partners.length > 0
+      ? partners.map((item) => ({
           label: item.name ?? "",
           value: item.id?.toString() ?? "",
         }))
