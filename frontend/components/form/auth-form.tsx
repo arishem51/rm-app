@@ -250,16 +250,18 @@ const AuthForm: FC<Props> = ({
           )}
         </div>
         {enableReCaptcha && (
-          <ReCAPTCHA
-            sitekey="6LcM5-sqAAAAAGFDvyWQMFKDD4I8M69WxyUqtpPe"
-            ref={reCaptchaRef}
-            onChange={(token) => {
-              if (token) {
-                setRecaptchaToken(token);
-                form.setValue("reCaptchaToken", token);
-              }
-            }}
-          />
+          <div data-testid="recatpcha">
+            <ReCAPTCHA
+              sitekey="6LcM5-sqAAAAAGFDvyWQMFKDD4I8M69WxyUqtpPe"
+              ref={reCaptchaRef}
+              onChange={(token) => {
+                if (token) {
+                  setRecaptchaToken(token);
+                  form.setValue("reCaptchaToken", token);
+                }
+              }}
+            />
+          </div>
         )}
         <Button
           type="submit"
