@@ -1,4 +1,5 @@
 package com.example.backend.dto.order;
+
 import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.inventory.InventoryResponseDTO;
 import com.example.backend.entities.*;
@@ -32,18 +33,20 @@ public class OrderResponseDTO {
     private BigDecimal totalAmount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
     public static OrderResponseDTO fromEntity(Order order) {
         return OrderResponseDTO.builder()
                 .id(order.getId())
                 .partnerName(order.getPartner().getName())
                 .partnerPhone(order.getPartner().getPhone())
-                .userName(order.getUser().getName())
+                .userName(order.getCreatedBy().getUsername())
                 .shopId(order.getShop() != null ? order.getShop().getId() : null)
                 .totalAmount(order.getTotalAmount())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
                 .build();
     }
+
     public static List<OrderResponseDTO> fromEntity(List<Order> orders) {
         return orders.stream()
                 .map(OrderResponseDTO::fromEntity)

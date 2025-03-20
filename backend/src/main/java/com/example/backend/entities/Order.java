@@ -31,7 +31,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = true)
@@ -39,6 +39,9 @@ public class Order {
 
     @Column(nullable = false)
     private BigDecimal totalAmount;
+
+    @Column(nullable = false)
+    private BigDecimal sellAmount;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;

@@ -3,7 +3,6 @@ package com.example.backend.services;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,12 +55,21 @@ public class ReceiptService {
                 Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(item.getZoneId(), currentUser.getShop().getId())
                         .orElseThrow(() -> new IllegalArgumentException(
                                 "Khu vực trong kho không tồn tại"));
-                Optional<Inventory> opInventory = inventoryRepository.findByZone_IdAndProduct_Id(zone.getId(),
+                List<Inventory> inventories = inventoryRepository.findByZone_IdAndProduct_Id(zone.getId(),
                         item.getProductId());
 
                 Inventory inventory = null;
-                if (opInventory.isPresent() && item.getPrice().compareTo(opInventory.get().getProductPrice()) == 0) {
-                    inventory = opInventory.get();
+
+                if (!inventories.isEmpty()) {
+                    for (Inventory inv : inventories) {
+                        if (inv.getProductPrice().compareTo(item.getPrice()) == 0) {
+                            inventory = inv;
+                            break;
+                        }
+                    }
+                }
+
+                if (inventory != null) {
                     if (inventory.getProduct().getId() != item.getProductId()) {
                         throw new IllegalArgumentException("Sản phẩm không tồn tại trong kho");
                     }

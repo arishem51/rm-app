@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "payment_histories")
+@Table(name = "invoices")
 public class PaymentHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

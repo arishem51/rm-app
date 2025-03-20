@@ -11,9 +11,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CreateOrderDTO {
-    private long partnerId;
+    private Long partnerId;
+    private String partnerName;
     private BigDecimal totalAmount;
+    private BigDecimal sellAmount;
     private List<OrderItemDTO> orderItems;
-    private boolean isDebt;
-    private boolean shipping;
 }
