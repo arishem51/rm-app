@@ -5,6 +5,5 @@ export const orders = {
   getOrders: createQuery(apiClient.getOrders, {
     placeholderData: keepPreviousData,
   }),
-  getAllOrders: createQuery(apiClient.getAllOrders, {}),
-  deleteOrder: createQuery(apiClient.deleteOrder),
+  getAllOrders: createQuery(apiClient.getAllOrders),
 };

@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 /* tslint:disable */
 /*
  * ---------------------------------------------------------------
@@ -153,7 +153,7 @@ export interface ProductRequestDTO {
   /** @format int64 */
   categoryId?: number;
   /** @format int64 */
-  partnerId?: number;
+  supplierId?: number;
   /** @format int64 */
   shopId: number;
   imageUrls?: string[];
@@ -194,6 +194,11 @@ export interface Partner {
   address?: string;
   website?: string;
   description?: string;
+  shop?: Shop;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
 }
 
 export interface ResponseProductDTO {
@@ -208,100 +213,6 @@ export interface ResponseProductDTO {
   shopName?: string;
   price?: number;
   imageUrls?: string[];
-}
-
-export interface PartnerUpdateDTO {
-  name?: string;
-  contactName?: string;
-  phone?: string;
-  email?: string;
-  address?: string;
-  website?: string;
-  description?: string;
-}
-
-export interface BaseResponsePartner {
-  data?: Partner;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface OrderItemDTO {
-  /** @format int64 */
-  inventoryId?: number;
-  /** @format int64 */
-  productId?: number;
-  /** @format int32 */
-  quantity?: number;
-  price?: number;
-}
-
-export interface UpdateOrderDTO {
-  /** @format int64 */
-  partnerId?: number;
-  totalAmount?: number;
-  orderItems?: OrderItemDTO[];
-}
-
-export interface BaseResponseOrder {
-  data?: Order;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface Order {
-  /** @format int64 */
-  id?: number;
-  partner?: Partner;
-  user?: User;
-  shop?: Shop;
-  totalAmount?: number;
-  orderItems?: OrderItem[];
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-}
-
-export interface OrderItem {
-  /** @format int64 */
-  id?: number;
-  order?: Order;
-  product?: Product;
-  /** @format int32 */
-  quantity?: number;
-  price?: number;
-  subtotal?: number;
-}
-
-export interface Product {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  category?: Category;
-  supplier?: Partner;
-  shop?: Shop;
-  description?: string;
-  imageUrls?: string[];
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  /** @format date-time */
-  deletedAt?: string;
-  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface Shop {
@@ -331,6 +242,28 @@ export interface User {
   updatedAt?: string;
   role: "OWNER" | "STAFF" | "ADMIN";
   status: "ACTIVE" | "INACTIVE";
+}
+
+export interface PartnerUpdateDTO {
+  name?: string;
+  contactName?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  website?: string;
+  description?: string;
+}
+
+export interface BaseResponsePartner {
+  data?: Partner;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface InventoryUpdateDTO {
@@ -481,8 +414,8 @@ export interface PartnerCreateDTO {
   contactName: string;
   /** @pattern ^(\+?\d{1,3})?\d{10}$ */
   phone: string;
-  email: string;
-  address: string;
+  email?: string;
+  address?: string;
   website?: string;
   description?: string;
 }
@@ -490,10 +423,51 @@ export interface PartnerCreateDTO {
 export interface CreateOrderDTO {
   /** @format int64 */
   partnerId?: number;
-  totalAmount?: number;
+  partnerName: string;
+  /** @pattern ^[0-9]{10,12}$ */
+  partnerPhone?: string;
+  amount?: number;
   orderItems?: OrderItemDTO[];
-  shipping?: boolean;
-  debt?: boolean;
+}
+
+export interface OrderItemDTO {
+  /** @format int64 */
+  inventoryId?: number;
+  /** @format int64 */
+  zoneId?: number;
+  /** @format int64 */
+  productId?: number;
+  productPrice?: number;
+  productName?: string;
+  /** @format int32 */
+  quantity?: number;
+}
+
+export interface BaseResponseOrderResponseDTO {
+  data?: OrderResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface OrderResponseDTO {
+  /** @format int64 */
+  id?: number;
+  partnerName?: string;
+  partnerPhone?: string;
+  userName?: string;
+  /** @format int64 */
+  shopId?: number;
+  totalAmount?: number;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
 }
 
 export interface CreateCategoryDTO {
@@ -870,8 +844,8 @@ export interface PaymentHistoryResponseDTO {
   debt?: boolean;
 }
 
-export interface BaseResponsePaginateResponsePartner {
-  data?: PaginateResponsePartner;
+export interface BaseResponsePaginateResponsePartnerRepsponseDTO {
+  data?: PaginateResponsePartnerRepsponseDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -882,7 +856,7 @@ export interface BaseResponsePaginateResponsePartner {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponsePartner {
+export interface PaginateResponsePartnerRepsponseDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -891,7 +865,24 @@ export interface PaginateResponsePartner {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: Partner[];
+  data?: PartnerRepsponseDTO[];
+}
+
+export interface PartnerRepsponseDTO {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  contactName?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  website?: string;
+  description?: string;
+  /** @format int64 */
+  shopId?: number;
+  shopName?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface BaseResponseListPartner {
@@ -904,33 +895,6 @@ export interface BaseResponseListPartner {
     | "ACCESS_DENIED"
     | "BAD_REQUEST"
     | "INTERNAL_SERVER_ERROR";
-}
-
-export interface BaseResponseOrderResponseDTO {
-  data?: OrderResponseDTO;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface OrderResponseDTO {
-  /** @format int64 */
-  id?: number;
-  partnerName?: string;
-  partnerPhone?: string;
-  userName?: string;
-  /** @format int64 */
-  shopId?: number;
-  totalAmount?: number;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
 }
 
 export interface BaseResponseListOrderResponseDTO {
@@ -957,6 +921,35 @@ export interface BaseResponsePageOrder {
     | "INTERNAL_SERVER_ERROR";
 }
 
+export interface Order {
+  /** @format int64 */
+  id?: number;
+  partner?: Partner;
+  createdBy?: User;
+  shop?: Shop;
+  amount?: number;
+  orderItems?: OrderItem[];
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+}
+
+export interface OrderItem {
+  /** @format int64 */
+  id?: number;
+  order?: Order;
+  /** @format int64 */
+  productId?: number;
+  productName?: string;
+  productPrice?: number;
+  /** @format int64 */
+  zoneId?: number;
+  zoneName?: string;
+  /** @format int32 */
+  quantity?: number;
+}
+
 export interface PageOrder {
   /** @format int64 */
   totalElements?: number;
@@ -965,13 +958,13 @@ export interface PageOrder {
   first?: boolean;
   last?: boolean;
   /** @format int32 */
-  numberOfElements?: number;
-  /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  /** @format int32 */
+  numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -980,9 +973,9 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
+  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
-  paged?: boolean;
   /** @format int32 */
   pageSize?: number;
   unpaged?: boolean;
@@ -992,44 +985,6 @@ export interface SortObject {
   empty?: boolean;
   sorted?: boolean;
   unsorted?: boolean;
-}
-
-export interface BaseResponseListInventory {
-  data?: Inventory[];
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface Inventory {
-  /** @format int64 */
-  id?: number;
-  product?: Product;
-  zone?: Zone;
-  productPrice?: number;
-  createdBy?: User;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  /** @format int32 */
-  quantity?: number;
-}
-
-export interface Zone {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface BaseResponsePaginateResponseInventoryResponseDTO {
@@ -1054,6 +1009,18 @@ export interface PaginateResponseInventoryResponseDTO {
   /** @format int32 */
   totalPages?: number;
   data?: InventoryResponseDTO[];
+}
+
+export interface BaseResponseListInventoryResponseDTO {
+  data?: InventoryResponseDTO[];
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface BaseResponseListCategory {
@@ -1473,59 +1440,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch an order by ID.
-     *
-     * @tags Order Management
-     * @name GetOrderById
-     * @summary Get order by ID
-     * @request GET:/api/orders/{id}
-     * @secure
-     */
-    getOrderById: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseOrderResponseDTO, any>({
-        path: `/api/orders/${id}`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Update an existing order by ID.
-     *
-     * @tags Order Management
-     * @name UpdateOrder
-     * @summary Update an order
-     * @request PUT:/api/orders/{id}
-     * @secure
-     */
-    updateOrder: (id: number, data: UpdateOrderDTO, params: RequestParams = {}) =>
-      this.request<BaseResponseOrder, any>({
-        path: `/api/orders/${id}`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Delete an existing order by ID.
-     *
-     * @tags Order Management
-     * @name DeleteOrder
-     * @summary Delete an order
-     * @request DELETE:/api/orders/{id}
-     * @secure
-     */
-    deleteOrder: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseVoid, any>({
-        path: `/api/orders/${id}`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
-
-    /**
      * @description Update a inventory by its ID.
      *
      * @tags Inventories Management
@@ -1819,7 +1733,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponsePartner, any>({
+      this.request<BaseResponsePaginateResponsePartnerRepsponseDTO, any>({
         path: `/api/partners`,
         method: "GET",
         query: query,
@@ -1855,7 +1769,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     createOrder: (data: CreateOrderDTO, params: RequestParams = {}) =>
-      this.request<BaseResponseOrder, any>({
+      this.request<BaseResponseOrderResponseDTO, any>({
         path: `/api/orders`,
         method: "POST",
         body: data,
@@ -2236,6 +2150,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Fetch an order by ID.
+     *
+     * @tags Order Management
+     * @name GetOrderById
+     * @summary Get order by ID
+     * @request GET:/api/orders/{id}
+     * @secure
+     */
+    getOrderById: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponseOrderResponseDTO, any>({
+        path: `/api/orders/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Fetch all orders.
      *
      * @tags Order Management
@@ -2285,29 +2216,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of all registered inventories.
-     *
-     * @tags Inventories Management
-     * @name GetAllInventory
-     * @summary Get all inventories
-     * @request GET:/api/inventories/all
-     * @secure
-     */
-    getAllInventory: (params: RequestParams = {}) =>
-      this.request<BaseResponseListInventory, any>({
-        path: `/api/inventories/all`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
      * @description Fetch a list of the registered inventories.
      *
      * @tags Inventories Management
      * @name GetInventory
      * @summary Get the inventories
-     * @request GET:/api/inventories/
+     * @request GET:/api/inventories
      * @secure
      */
     getInventory: (
@@ -2328,9 +2242,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
-        path: `/api/inventories/`,
+        path: `/api/inventories`,
         method: "GET",
         query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Fetch a list of all registered inventories.
+     *
+     * @tags Inventories Management
+     * @name GetAllInventory
+     * @summary Get all inventories
+     * @request GET:/api/inventories/all
+     * @secure
+     */
+    getAllInventory: (params: RequestParams = {}) =>
+      this.request<BaseResponseListInventoryResponseDTO, any>({
+        path: `/api/inventories/all`,
+        method: "GET",
         secure: true,
         ...params,
       }),

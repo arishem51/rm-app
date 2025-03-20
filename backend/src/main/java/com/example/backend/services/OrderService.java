@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,22 +37,23 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(CreateOrderDTO orderDTO, User user) {
+        List<Inventory> inventories = new ArrayList<>();
         Partner partner = orderDTO.getPartnerId() != null ? partnerService.findById(orderDTO.getPartnerId())
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng!"))
                 : partnerService.create(
-                        PartnerCreateDTO.builder().contactName(
-                                orderDTO.getPartnerName())
+                        PartnerCreateDTO.builder().name(orderDTO
+                                .getPartnerName()).contactName(
+                                        orderDTO.getPartnerName())
                                 .phone(orderDTO.getPartnerPhone())
                                 .build(),
                         user);
-        // FIXME: should have business rule for sell amount;
+        // FIXME: should have business rule for amount;
         Order order = Order.builder()
                 .createdBy(user)
                 .partner(
                         partner)
                 .shop(user.getShop())
-                .totalAmount(orderDTO.getTotalAmount())
-                .sellAmount(orderDTO.getSellAmount())
+                .amount(orderDTO.getAmount())
                 .build();
 
         List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
@@ -63,6 +66,8 @@ public class OrderService {
             if (inventory.getQuantity() < itemDTO.getQuantity()) {
                 throw new IllegalArgumentException("Số lượng sản phẩm không đủ!");
             }
+            inventory.setQuantity(inventory.getQuantity() - itemDTO.getQuantity());
+            inventories.add(inventory);
             Zone zone = inventory.getZone();
             Product product = inventory.getProduct();
             return OrderItem.builder()

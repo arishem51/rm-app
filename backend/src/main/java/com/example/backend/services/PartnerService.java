@@ -69,7 +69,7 @@ public class PartnerService {
     }
 
     public Partner create(PartnerCreateDTO partnerDto, User currentUser) {
-        var shop = shopRepository.findById(currentUser.getId())
+        var shop = shopRepository.findById(currentUser.getShop().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Shop not found"));
 
         Partner partner = Partner.builder()

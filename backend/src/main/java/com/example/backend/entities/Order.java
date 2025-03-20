@@ -38,10 +38,7 @@ public class Order {
     private Shop shop;
 
     @Column(nullable = false)
-    private BigDecimal totalAmount;
-
-    @Column(nullable = false)
-    private BigDecimal sellAmount;
+    private BigDecimal amount;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;

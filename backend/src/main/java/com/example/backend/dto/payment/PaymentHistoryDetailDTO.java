@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,11 +28,11 @@ public class PaymentHistoryDetailDTO {
     private LocalDateTime createdAt;
 
     public static PaymentHistoryDetailDTO fromEntity(PaymentHistory paymentHistory) {
-        return  PaymentHistoryDetailDTO.builder()
+        return PaymentHistoryDetailDTO.builder()
                 .id(paymentHistory.getId())
                 .partnerName(paymentHistory.getOrder().getPartner().getName())
                 .partnerPhone(paymentHistory.getOrder().getPartner().getPhone())
-                .orderAmount(paymentHistory.getOrder().getTotalAmount())
+                .orderAmount(paymentHistory.getOrder().getAmount())
                 .discount(paymentHistory.getDiscount())
                 .shippingFee(paymentHistory.getShippingFee())
                 .totalAmount(paymentHistory.getTotalAmount())
@@ -42,6 +43,7 @@ public class PaymentHistoryDetailDTO {
                         .collect(Collectors.toList()))
                 .build();
     }
+
     public static List<PaymentHistoryDetailDTO> fromEntity(List<PaymentHistory> orders) {
         return orders.stream()
                 .map(PaymentHistoryDetailDTO::fromEntity)

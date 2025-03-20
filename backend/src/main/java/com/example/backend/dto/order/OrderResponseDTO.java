@@ -1,19 +1,11 @@
 package com.example.backend.dto.order;
 
-import com.example.backend.dto.UserDTO;
-import com.example.backend.dto.inventory.InventoryResponseDTO;
 import com.example.backend.entities.*;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,7 +33,6 @@ public class OrderResponseDTO {
                 .partnerPhone(order.getPartner().getPhone())
                 .userName(order.getCreatedBy().getUsername())
                 .shopId(order.getShop() != null ? order.getShop().getId() : null)
-                .totalAmount(order.getTotalAmount())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
                 .build();

@@ -18,7 +18,6 @@ public class CreateOrderDTO {
     private String partnerName;
     @Pattern(regexp = "^[0-9]{10,12}$", message = "Phone number must be 10-12 digits long")
     private String partnerPhone;
-    private BigDecimal totalAmount;
-    private BigDecimal sellAmount;
+    private BigDecimal amount;
     private List<OrderItemDTO> orderItems;
 }

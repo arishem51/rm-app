@@ -16,7 +16,7 @@ import HeaderListSearch from "../header-list-search";
 
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
-import { Order, OrderResponseDTO } from "@/types/Api";
+import { OrderResponseDTO } from "@/types/Api";
 import Link from "next/link";
 
 const Orders = () => {
@@ -65,7 +65,7 @@ const Orders = () => {
         <Link href="/dashboard/orders/create" prefetch>
           <Button>
             <Plus />
-            Tạo Hàng hóa
+            Tạo đơn hàng
           </Button>
         </Link>
       </div>
