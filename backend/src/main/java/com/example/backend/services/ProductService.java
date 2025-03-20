@@ -35,7 +35,7 @@ public class ProductService {
         validateUserCanManageProduct(user);
         Shop shop = user.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
-        Partner partner = Optional.ofNullable(dto.getPartnerId()).flatMap(partnerService::findById).orElse(null);
+        Partner partner = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
 
         Product product = Product.builder()
                 .name(dto.getName())
@@ -85,7 +85,7 @@ public class ProductService {
             throw new IllegalArgumentException("You can only update product from your own shop!");
         }
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
-        Partner supplier = Optional.ofNullable(dto.getPartnerId()).flatMap(partnerService::findById).orElse(null);
+        Partner supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
         product.setCategory(category);
         product.setSupplier(supplier);
 
