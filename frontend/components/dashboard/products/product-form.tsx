@@ -34,7 +34,7 @@ const schema = z.object({
     .array(z.object({ url: z.string().url({ message: "URL phải hợp lệ" }) }))
     .default([]),
   categoryId: z.string().nullable().optional(),
-  supplierId: z.string().nullable().optional(),
+  partnerId: z.string().nullable().optional(),
   shopId: z.coerce.number(),
 });
 
@@ -53,7 +53,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       ? {
           ...product,
           categoryId: product.category?.id?.toString(),
-          supplierId: product.supplier?.id?.toString(),
+          partnerId: product.partner?.id?.toString(),
           imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
         }
       : {
@@ -86,7 +86,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       reset({
         ...product,
         categoryId: product.category?.id?.toString(),
-        supplierId: product.supplier?.id?.toString(),
+        partnerId: product.partner?.id?.toString(),
         imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
       });
     }
@@ -119,7 +119,7 @@ const ProductForm = ({ onClose, product }: Props) => {
       const payload = {
         ...data,
         categoryId: data.categoryId ? Number(data.categoryId) : undefined,
-        supplierId: data.supplierId ? Number(data.supplierId) : undefined,
+        partnerId: data.partnerId ? Number(data.partnerId) : undefined,
       };
 
       const mutateData: ProductRequestDTO = {

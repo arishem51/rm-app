@@ -841,6 +841,44 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": ["Partner Management"],
+        "summary": "Update a partner",
+        "description": "Update an existing partner using the provided ID",
+        "operationId": "updatePartner",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PartnerUpdateDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Partner updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BaseResponsePartner" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Partner not found"
+          }
+        }
       }
     },
     "/api/orders": {
@@ -1722,7 +1760,7 @@
           "name": { "type": "string" },
           "description": { "type": "string" },
           "categoryId": { "type": "integer", "format": "int64" },
-          "supplierId": { "type": "integer", "format": "int64" },
+          "partnerId": { "type": "integer", "format": "int64" },
           "shopId": { "type": "integer", "format": "int64" },
           "imageUrls": { "type": "array", "items": { "type": "string" } }
         },
@@ -1779,7 +1817,7 @@
           "name": { "type": "string" },
           "description": { "type": "string" },
           "category": { "$ref": "#/components/schemas/Category" },
-          "supplier": { "$ref": "#/components/schemas/Partner" },
+          "partner": { "$ref": "#/components/schemas/Partner" },
           "shopId": { "type": "integer", "format": "int64" },
           "shopName": { "type": "string" },
           "price": { "type": "number" },
