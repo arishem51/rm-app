@@ -35,12 +35,12 @@ public class ProductService {
         validateUserCanManageProduct(user);
         Shop shop = user.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
-        Partner supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
+        Partner partner = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
 
         Product product = Product.builder()
                 .name(dto.getName())
                 .category(category)
-                .supplier(supplier)
+                .supplier(partner)
                 .shop(shop)
                 .description(dto.getDescription())
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())

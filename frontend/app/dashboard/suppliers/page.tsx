@@ -1,6 +1,8 @@
 import CreateShopView from "@/components/dashboard/create-shop-view";
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
 import AdminPartnersView from "@/components/dashboard/partner/admin-partners-view";
+// import AdminUsersView from "@/components/dashboard/users/admin-users-view";
+// import OwnerUsersView from "@/components/dashboard/users/owner-users-view";
 import { checkRole } from "@/lib/helpers";
 import { getMe } from "@/server/actions";
 import { ApiQuery } from "@/services/query";
@@ -24,9 +26,7 @@ const PartnersPage = async () => {
       return ApiQuery.users.getUsers({ page: 0, search: "" });
     }
     if (isOwner) {
-      console.log("Owner", user);
-      
-      return ApiQuery.partners.getPartners({ page: 0, search: "" });
+      return ApiQuery.shops.getShopDetails(user?.shopId);
     }
     return null;
   };
