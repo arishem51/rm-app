@@ -26,9 +26,9 @@ export default function AddDebtDialog({
 }: AddDebtDialogProps) {
   const [formData, setFormData] = useState<Partial<CreateDebtNoteDTO>>({});
 
-  const partnersQuery = ApiQuery.partners.getAllPartners();
+  const partnersQuery = ApiQuery.partners.getPartners();
   const { data: partnersResponse } = useQuery(partnersQuery);
-  const partners = Array.isArray(partnersResponse?.data) ? partnersResponse?.data : [];
+  const partners = Array.isArray(partnersResponse?.data?.data) ? partnersResponse?.data?.data : [];
 
   const createDebtNote = useCreateDebtNote();
 
@@ -103,7 +103,9 @@ export default function AddDebtDialog({
                 <SelectValue placeholder="Chọn đối tác" />
               </SelectTrigger>
               <SelectContent>
-                {partners.map((partner) => (
+                {partners
+                .filter(partner => partner.canHaveDept === true)
+                .map((partner) => (
                   <SelectItem key={partner.id} value={partner.id?.toString() || ""}>
                     {partner.name} - {partner.phone}
                   </SelectItem>

@@ -74,7 +74,7 @@ export default function DebtList({
   const [fromDate, setFromDate] = useState<string | undefined>(undefined);
   const [toDate, setToDate] = useState<string | undefined>(undefined);
 
-  const partnersQuery = ApiQuery.partners.getAllPartners();
+  const partnersQuery = ApiQuery.partners.getPartners();
   const { data: partnersResponse } = useQuery(partnersQuery);
   const partners = Array.isArray(partnersResponse?.data) ? partnersResponse?.data : [];
 

@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 /* tslint:disable */
 /*
  * ---------------------------------------------------------------
@@ -153,7 +153,7 @@ export interface ProductRequestDTO {
   /** @format int64 */
   categoryId?: number;
   /** @format int64 */
-  partnerId?: number;
+  supplierId?: number;
   /** @format int64 */
   shopId: number;
   imageUrls?: string[];
@@ -194,6 +194,12 @@ export interface Partner {
   address?: string;
   website?: string;
   description?: string;
+  canHaveDebt?: boolean;
+  shop?: Shop;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
 }
 
 export interface ResponseProductDTO {
@@ -210,6 +216,35 @@ export interface ResponseProductDTO {
   imageUrls?: string[];
 }
 
+export interface Shop {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  address?: string;
+  createBy?: User;
+  /** @uniqueItems true */
+  users?: User[];
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+}
+
+export interface User {
+  /** @format int64 */
+  id: number;
+  username: string;
+  email?: string;
+  name: string;
+  phoneNumber: string;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+  role: "OWNER" | "STAFF" | "ADMIN";
+  status: "ACTIVE" | "INACTIVE";
+}
+
 export interface PartnerUpdateDTO {
   name?: string;
   contactName?: string;
@@ -218,6 +253,7 @@ export interface PartnerUpdateDTO {
   address?: string;
   website?: string;
   description?: string;
+  canHaveDebt?: boolean;
 }
 
 export interface BaseResponsePartner {
@@ -301,35 +337,6 @@ export interface Product {
   updatedAt?: string;
   /** @format date-time */
   deletedAt?: string;
-  status: "ACTIVE" | "INACTIVE";
-}
-
-export interface Shop {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  address?: string;
-  createBy?: User;
-  /** @uniqueItems true */
-  users?: User[];
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-}
-
-export interface User {
-  /** @format int64 */
-  id: number;
-  username: string;
-  email?: string;
-  name: string;
-  phoneNumber: string;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  role: "OWNER" | "STAFF" | "ADMIN";
   status: "ACTIVE" | "INACTIVE";
 }
 
@@ -534,6 +541,7 @@ export interface PartnerCreateDTO {
   address: string;
   website?: string;
   description?: string;
+  canHaveDebt?: boolean;
 }
 
 export interface CreateOrderDTO {
@@ -944,8 +952,8 @@ export interface PaymentHistoryResponseDTO {
   debt?: boolean;
 }
 
-export interface BaseResponsePaginateResponsePartner {
-  data?: PaginateResponsePartner;
+export interface BaseResponsePaginateResponsePartnerRepsponseDTO {
+  data?: PaginateResponsePartnerRepsponseDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -956,7 +964,7 @@ export interface BaseResponsePaginateResponsePartner {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponsePartner {
+export interface PaginateResponsePartnerRepsponseDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -965,7 +973,25 @@ export interface PaginateResponsePartner {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: Partner[];
+  data?: PartnerRepsponseDTO[];
+}
+
+export interface PartnerRepsponseDTO {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  contactName?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  canHaveDept?: boolean;
+  website?: string;
+  description?: string;
+  /** @format int64 */
+  shopId?: number;
+  shopName?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface BaseResponseListPartner {
@@ -1032,10 +1058,10 @@ export interface BaseResponsePageOrder {
 }
 
 export interface PageOrder {
-  /** @format int64 */
-  totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  /** @format int64 */
+  totalElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
@@ -1056,9 +1082,9 @@ export interface PageableObject {
   sort?: SortObject;
   paged?: boolean;
   /** @format int32 */
-  pageNumber?: number;
-  /** @format int32 */
   pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
   unpaged?: boolean;
 }
 
@@ -1952,7 +1978,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponsePartner, any>({
+      this.request<BaseResponsePaginateResponsePartnerRepsponseDTO, any>({
         path: `/api/partners`,
         method: "GET",
         query: query,
