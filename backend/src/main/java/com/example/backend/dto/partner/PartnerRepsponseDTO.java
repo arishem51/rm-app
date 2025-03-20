@@ -37,7 +37,7 @@ public class PartnerRepsponseDTO {
                 .shopId(partner.getShop().getId())
                 .shopName(partner.getShop().getName())
                 .createdAt(partner.getCreatedAt().toString())
-                .updatedAt(partner.getUpdatedAt().toString())
+                .updatedAt(partner.getUpdatedAt() != null ? partner.getUpdatedAt().toString() : null)
                 .build();
     }
 }

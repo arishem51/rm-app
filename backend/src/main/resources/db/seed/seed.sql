@@ -152,18 +152,19 @@ where id = (select  id from users where username = 'danganh')
 
 
 
-   INSERT INTO partners (name, contact_name, phone, email, address, website, description, shop_id)
+   INSERT INTO partners (name, contact_name, phone, email, address, website, description, shop_id, created_at)
 VALUES 
 (N'Công Ty TNHH An Phát', N'Nguyễn Văn An', N'0901234567', N'an.nguyen@anphat.vn', N'123 Đường Lê Lợi, Quận 1, TP.HCM', N'http://www.anphat.vn', N'Nhà cung cấp thiết bị văn phòng.',
-    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')), GETDATE()),
 (N'Công Ty CP Bình Minh', N'Trần Thị Bình', N'0912345678', N'binh.tran@binhminh.vn', N'456 Đường Trần Hưng Đạo, Hà Nội', N'http://www.binhminh.vn', N'Chuyên phân phối linh kiện điện tử.',
-    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')), GETDATE()),
 (N'Công Ty TNHH Cường Thịnh', N'Lê Văn Cường', N'0923456789', N'cuong.le@cuongthinh.vn', N'789 Đường Phạm Văn Đồng, Hải Phòng', N'http://www.cuongthinh.vn', N'Nhà cung cấp vật liệu xây dựng.',
-    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')), GETDATE()),
 (N'Công Ty CP Duy Tân', N'Phạm Thị Duyên', N'0934567890', N'duyen.pham@duytan.vn', N'321 Đường Hai Bà Trưng, Đà Nẵng', N'http://www.duytan.vn', N'Chuyên cung cấp giải pháp CNTT.',
-    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')), GETDATE()),
 (N'Công Ty TNHH Ecoline', N'Vũ Minh E', N'0945678901', N'minh.vu@ecoline.vn', N'654 Đường Nguyễn Trãi, Quận 5, TP.HCM', N'http://www.ecoline.vn', N'Nhà cung cấp sản phẩm xanh và bền vững.',
-    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')), GETDATE()),
 (N'Công Ty CP Vina Trade', N'Trần Vina', N'0990011223', N'vina.tran@vinatrade.vn', N'203 Đường Phan Đình Phùng, TP.HCM', N'http://www.vinatrade.vn', N'Chuyên cung cấp giải pháp thương mại.',
-    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')));
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')), GETDATE());
+
 
