@@ -1,6 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.product.ProductRequestDTO;
+import com.example.backend.dto.request.RequestResponse;
 import com.example.backend.entities.Category;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.ProductCreateRequest;
@@ -8,6 +9,8 @@ import com.example.backend.entities.Shop;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
 import com.example.backend.enums.RequestStatus;
+import com.example.backend.repositories.CategoryRepository;
+import com.example.backend.repositories.PartnerRepository;
 import com.example.backend.repositories.ProductCreateRequestRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.utils.UserRoleUtils;
@@ -25,7 +28,8 @@ public class ProductService {
     private final ProductCreateRequestRepository productCreateRequestRepository;
     private final PartnerService partnerService;
     private final CategoryService categoryService;
-
+    private final CategoryRepository categoryRepository;
+    private  final PartnerRepository partnerRepository;
     private void validateUserCanManageProduct(User user) {
         if (!UserRoleUtils.isOwner(user)) {
             throw new IllegalArgumentException("You are not authorized to manage products!");
@@ -99,12 +103,14 @@ public class ProductService {
         return product;
     }
 
-    public List<ProductCreateRequest> getPendingRequests(User owner) {
-        if (!UserRoleUtils.isOwner(owner)) {
-            throw new IllegalArgumentException("Only shop owners can view product requests.");
-        }
-        return productCreateRequestRepository.findByShopIdAndStatus(owner.getShop().getId(), RequestStatus.PENDING);
+    public List<RequestResponse> getPendingRequests(User owner) {
+        List<ProductCreateRequest>list = productCreateRequestRepository.findByShopIdOrderByCreatedAtDesc(owner.getShop().getId());
+        return list.stream().map(request -> {
+            new RequestResponse();
+            return RequestResponse.fromEntity(request, categoryRepository, partnerRepository);
+        }).toList();
     }
+
 
     public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
         if (UserRoleUtils.isAdmin(currentUser)) {

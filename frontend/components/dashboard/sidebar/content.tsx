@@ -12,6 +12,7 @@ import {
   User2,
   Users,
   Warehouse,
+  MessageSquarePlus
 } from "lucide-react";
 import { BadgeCent } from "lucide-react";
 import Link from "next/link";
@@ -35,6 +36,8 @@ import { AppRoutes } from "@/lib/constants";
 import { checkRole } from "@/lib/helpers";
 import { useMe } from "@/hooks/mutations/user";
 import { ShoppingBasket } from "lucide-react";
+import useAppQuery from "@/hooks/use-app-query";
+import { ApiQuery } from "@/services/query";
 type Item = {
   title: string;
   url?: string;
@@ -48,7 +51,8 @@ const Content = () => {
   const query = useMe();
   const { data: user } = query ?? {};
   const { isAdmin, isOwner, isStaff } = checkRole(user);
-
+  const { data: requests } = useAppQuery(ApiQuery.requests.getAllRequests());
+  const pendingRequests = requests?.data.length || 0; 
   const itemGroups: Record<
     SidebarGroupType,
     {
@@ -126,6 +130,11 @@ const Content = () => {
         icon: Box,
       },
       {
+        title: "Yêu cầu",
+        url: AppRoutes.dashboard.requests.index.url,
+        icon: MessageSquarePlus ,
+      },
+      {
         title: "Nhập/Xuất",
         icon: ShoppingBasket,
         children: [
@@ -163,7 +172,8 @@ const Content = () => {
       title: "Cửa hàng",
       url: AppRoutes.dashboard.setting.shop.url,
       icon: ShoppingBag,
-    });
+    }
+  );
   }
 
   if (user?.shopId && isStaff) {
@@ -180,7 +190,18 @@ const Content = () => {
           url: AppRoutes.dashboard.orders.index.url,
         },
       ],
-    });
+    },
+    {
+      title: "Sản phẩm",
+      url: AppRoutes.dashboard.products.index.url,
+      icon: Box,
+    },
+    {
+      title: "Yêu cầu",
+      url: AppRoutes.dashboard.requests.index.url,
+      icon: MessageSquarePlus ,
+    },
+  );
   }
 
   const groups = Object.keys(itemGroups).map(

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ProductCreateRequestRepository extends JpaRepository<ProductCreateRequest, Long> {
     List<ProductCreateRequest> findByShopIdAndStatus(Long shopId, RequestStatus status);
+
+    List<ProductCreateRequest> findByShopIdOrderByCreatedAtDesc(Long id);
 }

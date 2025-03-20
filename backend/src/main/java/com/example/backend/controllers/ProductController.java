@@ -5,6 +5,7 @@ import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
 import com.example.backend.dto.product.ProductRequestDTO;
 import com.example.backend.dto.product.ResponseProductDTO;
+import com.example.backend.dto.request.RequestResponse;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.ProductCreateRequest;
 import com.example.backend.entities.User;
@@ -93,9 +94,9 @@ public class ProductController {
 
     @Operation(summary = "Get all pending product requests", description = "Fetch a list of all pending product requests.")
     @GetMapping("/requests")
-    public ResponseEntity<BaseResponse<List<ProductCreateRequest>>> getProductRequests(@CurrentUser User owner) {
+    public ResponseEntity<BaseResponse<List<RequestResponse>>> getProductRequests(@CurrentUser User owner) {
         try {
-            List<ProductCreateRequest> requests = productService.getPendingRequests(owner);
+            List<RequestResponse> requests = productService.getPendingRequests(owner);
             return ResponseEntity.ok(new BaseResponse<>(requests, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));

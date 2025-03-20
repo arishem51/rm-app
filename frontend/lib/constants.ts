@@ -1,3 +1,5 @@
+import { User } from "lucide-react";
+
 export const UserRole = {
   ADMIN: "ADMIN",
   OWNER: "OWNER",
@@ -30,6 +32,13 @@ export const AppRoutes = {
     accessRoles: AllRoles,
   },
   dashboard: {
+    requests: {
+      index:{
+        url: "/dashboard/requests",
+        accessRoles: [UserRole.OWNER,UserRole.STAFF],
+      }
+      
+    },
     home: {
       url: "/dashboard",
       accessRoles: AllRoles,
@@ -83,15 +92,15 @@ export const AppRoutes = {
     products: {
       index: {
         url: "/dashboard/products",
-        accessRoles: [UserRole.OWNER],
+        accessRoles: [UserRole.OWNER,UserRole.STAFF],
       },
       detail: {
         url: "/dashboard/products/[id]",
-        accessRoles: [UserRole.OWNER],
+        accessRoles: [UserRole.OWNER,UserRole.STAFF],
       },
       create: {
         url: "/dashboard/products/create",
-        accessRoles: [UserRole.OWNER],
+        accessRoles: [UserRole.OWNER,UserRole.STAFF],
       },
     },
     warehouses: {

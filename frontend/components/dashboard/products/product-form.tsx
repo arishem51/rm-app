@@ -150,7 +150,7 @@ const ProductForm = ({ onClose, product }: Props) => {
               <FormItem>
                 <FormLabel>Tên</FormLabel>
                 <FormControl>
-                  <Input placeholder="Tên" readOnly={!isOwner} {...field} />
+                  <Input placeholder="Tên" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -164,7 +164,6 @@ const ProductForm = ({ onClose, product }: Props) => {
                 <FormLabel>Mô tả</FormLabel>
                 <FormControl>
                   <Textarea
-                    readOnly={!isOwner}
                     rows={3}
                     placeholder="Mô tả sản phẩm"
                     {...field}
@@ -183,7 +182,6 @@ const ProductForm = ({ onClose, product }: Props) => {
                   <FormItem
                     className={cn(
                       "w-full",
-                      isOwner ? "" : "pointer-events-none"
                     )}
                   >
                     <FormLabel>Nhà cung cấp</FormLabel>
@@ -207,7 +205,6 @@ const ProductForm = ({ onClose, product }: Props) => {
                   <FormItem
                     className={cn(
                       "w-full",
-                      isOwner ? "" : "pointer-events-none"
                     )}
                   >
                     <FormLabel>Danh mục</FormLabel>
@@ -237,7 +234,6 @@ const ProductForm = ({ onClose, product }: Props) => {
                       <FormItem className="w-full">
                         <FormControl>
                           <Input
-                            readOnly={!isOwner}
                             placeholder="Vui lòng nhập URL ảnh"
                             {...field}
                           />
@@ -249,7 +245,6 @@ const ProductForm = ({ onClose, product }: Props) => {
                   <Button
                     variant="destructive"
                     size="icon"
-                    disabled={!isOwner}
                     onClick={() => remove(index)}
                   >
                     <XIcon />
@@ -266,7 +261,7 @@ const ProductForm = ({ onClose, product }: Props) => {
             <FormMessage />
           </FormItem>
         </div>
-        {isOwner && (
+        {true && (
           <DialogFooter>
             <Button type="submit" disabled={isPending} className="mt-2">
               Lưu thay đổi

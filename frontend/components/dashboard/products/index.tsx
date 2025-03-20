@@ -53,7 +53,7 @@ const Products = () => {
           filterSearch={filter.search}
           onSearch={handleSearch}
         />
-        {isOwner && (
+        {true && (
           <Link href="/dashboard/products/create" prefetch>
             <Button>
               <Plus />
