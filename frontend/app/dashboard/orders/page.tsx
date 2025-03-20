@@ -5,7 +5,7 @@ import { ApiQuery } from "@/services/query";
 const OrdersPage = async () => {
   return (
     <HydrationPrefetchQuery
-      query={ApiQuery.orders.getAllOrders()}
+      query={ApiQuery.orders.getOrders({ page: 0 })}
       awaitQuery
     >
       <div className="px-4">

@@ -34,7 +34,7 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @Operation(summary = "Get the inventories", description = "Fetch a list of the registered inventories.")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<PaginateResponse<InventoryResponseDTO>>> getInventory(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
@@ -53,11 +53,12 @@ public class InventoryController {
 
     @Operation(summary = "Get all inventories", description = "Fetch a list of all registered inventories.")
     @GetMapping("/all")
-    public ResponseEntity<BaseResponse<List<Inventory>>> getAllInventory(
+    public ResponseEntity<BaseResponse<List<InventoryResponseDTO>>> getAllInventory(
             @CurrentUser User user) {
         try {
             List<Inventory> items = inventoryService.findAllInventoriesByShop(user);
-            return ResponseEntity.ok(new BaseResponse<>(items, "Success!"));
+            return ResponseEntity
+                    .ok(new BaseResponse<>(items.stream().map(InventoryResponseDTO::fromEntity).toList(), "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

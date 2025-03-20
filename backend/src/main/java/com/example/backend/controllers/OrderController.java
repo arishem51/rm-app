@@ -11,7 +11,6 @@ import com.example.backend.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,18 +43,10 @@ public class OrderController {
 
     @Operation(summary = "Create an order", description = "Create a new order.")
     @PostMapping()
-    public ResponseEntity<BaseResponse<Order>> createOrder(@RequestBody CreateOrderDTO orderDTO,@CurrentUser User currentUser) {
-        Order createdOrder = orderService.createOrder(orderDTO,currentUser);
-        return ResponseEntity.ok(new BaseResponse<>(createdOrder, "Success!"));
-    }
-
-    @Operation(summary = "Update an order", description = "Update an existing order by ID.")
-    @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<Order>> updateOrder(
-            @PathVariable Long id,
-            @RequestBody UpdateOrderDTO requestDTO,@CurrentUser User currentUser) {
-        Order updatedOrder = orderService.updateOrder(id, requestDTO,currentUser);
-        return ResponseEntity.ok(BaseResponse.success(updatedOrder, "Order updated successfully!"));
+    public ResponseEntity<BaseResponse<OrderResponseDTO>> createOrder(@RequestBody CreateOrderDTO orderDTO,
+            @CurrentUser User currentUser) {
+        Order createdOrder = orderService.createOrder(orderDTO, currentUser);
+        return ResponseEntity.ok(new BaseResponse<>(OrderResponseDTO.fromEntity(createdOrder), "Success!"));
     }
 
     @Operation(summary = "Get order by ID", description = "Fetch an order by ID.")
@@ -65,11 +56,4 @@ public class OrderController {
         return ResponseEntity.ok(new BaseResponse<>(OrderResponseDTO.fromEntity(order), "Success!"));
     }
 
-    @Operation(summary = "Delete an order", description = "Delete an existing order by ID.")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<Void>> deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-        return ResponseEntity.ok(BaseResponse.success(null, "Order deleted successfully!"));
-    }
 }
-

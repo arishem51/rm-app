@@ -1,21 +1,23 @@
 "use client";
 
+import { useAllInventories } from "@/services/hooks/inventories";
 import { Combobox } from "./index";
-import { useAllProducts } from "@/services/hooks/products";
 import Image from "next/image";
+import { useAllProducts } from "@/services/hooks/products";
 
 type Props = {
   onSelect: (value: string) => void;
   formValue?: string;
 };
 
-export function ComboboxProducts({ onSelect, formValue }: Props) {
+export function ComboboxInventories({ onSelect, formValue }: Props) {
+  const { data: { data: items = [] } = {} } = useAllInventories();
   const { data: { data: products = [] } = {} } = useAllProducts();
 
   const options =
-    products.length > 0
-      ? products.map((item) => ({
-          label: item.name ?? "",
+    items.length > 0
+      ? items.map((item) => ({
+          label: item.productName ?? "",
           value: item.id?.toString() ?? "",
         }))
       : [];

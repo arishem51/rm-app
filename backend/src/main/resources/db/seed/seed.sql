@@ -133,26 +133,37 @@ VALUES
      GETDATE(),
      GETDATE());
 
+     INSERT INTO users ( created_at, email, name, password, phone_number, role, status, updated_at, username, shop_id)
+VALUES 
+('2025-03-20 16:29:39.641397', 'danganh123@gmail.com', 'Dương Đăng Anh', 
+ '$2a$10$1xvaX9NoCkqoTiVoBW.gh.JkfKPtG6VUhmwJG6s8VVazJpibszjTK', 
+ '09123123183', 'OWNER', 'ACTIVE', '2025-03-20 16:29:39.693146', 'danganh', null);
 
-     INSERT INTO partners (name, contact_name, phone, email, address, website, description) VALUES
-(N'Công Ty TNHH An Phát', N'Nguyễn Văn An', N'0901234567', N'an.nguyen@anphat.vn', N'123 Đường Lê Lợi, Quận 1, TP.HCM', N'http://www.anphat.vn', N'Nhà cung cấp thiết bị văn phòng.'),
-(N'Công Ty CP Bình Minh', N'Trần Thị Bình', N'0912345678', N'binh.tran@binhminh.vn', N'456 Đường Trần Hưng Đạo, Hà Nội', N'http://www.binhminh.vn', N'Chuyên phân phối linh kiện điện tử.'),
-(N'Công Ty TNHH Cường Thịnh', N'Lê Văn Cường', N'0923456789', N'cuong.le@cuongthinh.vn', N'789 Đường Phạm Văn Đồng, Hải Phòng', N'http://www.cuongthinh.vn', N'Nhà cung cấp vật liệu xây dựng.'),
-(N'Công Ty CP Duy Tân', N'Phạm Thị Duyên', N'0934567890', N'duyen.pham@duytan.vn', N'321 Đường Hai Bà Trưng, Đà Nẵng', N'http://www.duytan.vn', N'Chuyên cung cấp giải pháp CNTT.'),
-(N'Công Ty TNHH Ecoline', N'Vũ Minh E', N'0945678901', N'minh.vu@ecoline.vn', N'654 Đường Nguyễn Trãi, Quận 5, TP.HCM', N'http://www.ecoline.vn', N'Nhà cung cấp sản phẩm xanh và bền vững.'),
-(N'Công Ty CP FPT Supply', N'Hoàng Văn F', N'0956789012', N'hoang.hoang@fptsupply.vn', N'987 Đường Cách Mạng, Hà Nội', N'http://www.fptsupply.vn', N'Chuyên cung cấp giải pháp công nghệ.'),
-(N'Công Ty TNHH Gia Phát', N'Phạm Văn Gia', N'0967890123', N'gia.pham@gia-phat.vn', N'159 Đường Lý Thái Tổ, Quận 3, TP.HCM', N'http://www.gia-phat.vn', N'Nhà cung cấp vật tư kỹ thuật.'),
-(N'Công Ty CP Hòa Bình', N'Đặng Thị Hòa', N'0978901234', N'hoa.dang@hoabinh.vn', N'753 Đường Nguyễn Huệ, TP.HCM', N'http://www.hoabinh.vn', N'Chuyên cung cấp sản phẩm gia dụng.'),
-(N'Công Ty TNHH Indochina', N'Phạm Văn Ind', N'0989012345', N'ind.pham@indochina.vn', N'852 Đường Lê Duẩn, Hà Nội', N'http://www.indochina.vn', N'Nhà cung cấp đồ gia dụng cao cấp.'),
-(N'Công Ty CP Nhật Minh', N'Trần Văn Nhật', N'0990123456', N'nhat.tran@nhatminh.vn', N'963 Đường Nguyễn Văn Cừ, TP.HCM', N'http://www.nhatminh.vn', N'Chuyên nhập khẩu nguyên liệu thực phẩm.'),
-(N'Công Ty TNHH Phúc Lộc', N'Lê Thị Phúc', N'0901122334', N'phuc.le@phucloc.vn', N'147 Đường Phan Chu Trinh, Hà Nội', N'http://www.phucloc.vn', N'Nhà cung cấp hàng gia dụng.'),
-(N'Công Ty CP Quang Huy', N'Nguyễn Quang Huy', N'0912233445', N'huy.nguyen@quanghuy.vn', N'258 Đường Hùng Vương, Hải Phòng', N'http://www.quanghuy.vn', N'Chuyên cung cấp thiết bị điện tử.'),
-(N'Công Ty TNHH Sáng Tạo', N'Trần Sáng Tạo', N'0923344556', N'sang.tran@sangtao.vn', N'369 Đường Lê Lợi, Đà Nẵng', N'http://www.sangtao.vn', N'Nhà cung cấp giải pháp sáng tạo cho doanh nghiệp.'),
-(N'Công Ty CP Tân Phát', N'Phạm Tân Phát', N'0934455667', N'tan.pham@tanphat.vn', N'471 Đường Cách Mạng Tháng 8, TP.HCM', N'http://www.tanphat.vn', N'Chuyên cung cấp hàng tiêu dùng.'),
-(N'Công Ty TNHH Uông Bí', N'Vũ Thị Uông', N'0945566778', N'uong.vu@uongbi.vn', N'582 Đường Võ Văn Kiệt, Nha Trang', N'http://www.uongbi.vn', N'Nhà cung cấp sản phẩm thủ công mỹ nghệ.'),
-(N'Công Ty CP Vĩnh Hưng', N'Đinh Vĩnh Hưng', N'0956677889', N'vinh.dinh@vinhhung.vn', N'693 Đường Lý Tự Trọng, Hà Nội', N'http://www.vinhhung.vn', N'Chuyên cung cấp hàng may mặc.'),
-(N'Công Ty TNHH Xanh Eco', N'Ngô Thị Xanh', N'0967788990', N'xanh.ngo@xanheco.vn', N'804 Đường Nguyễn Du, TP.HCM', N'http://www.xanheco.vn', N'Nhà cung cấp sản phẩm thân thiện với môi trường.'),
-(N'Công Ty CP Yên Nhiên', N'Lê Yên Nhiên', N'0978899001', N'yen.le@yennhien.vn', N'915 Đường Trần Phú, Hà Nội', N'http://www.yennhien.vn', N'Chuyên cung cấp hàng tiêu dùng đa dạng.'),
-(N'Công Ty TNHH ZingTech', N'Hoàng Zing', N'0989900112', N'zing.hoang@zingtech.vn', N'102 Đường Hai Bà Trưng, Đà Nẵng', N'http://www.zingtech.vn', N'Nhà cung cấp thiết bị công nghệ cao.'),
-(N'Công Ty CP Vina Trade', N'Trần Vina', N'0990011223', N'vina.tran@vinatrade.vn', N'203 Đường Phan Đình Phùng, TP.HCM', N'http://www.vinatrade.vn', N'Chuyên cung cấp giải pháp thương mại.');
+ INSERT INTO shops (address, created_at,  name, updated_at, create_by)
+VALUES 
+('Việt Nam',  '2025-03-20 16:29:39.678121','Cửa hàng của Dương Đăng Anh', '2025-03-20 16:29:39.678121', 
+	(select  id from users where username = 'danganh')
+);
+
+update users set shop_id = (select id from shops where create_by = ((select  id from users where username = 'danganh')) )
+where id = (select  id from users where username = 'danganh')
+
+
+
+
+
+   INSERT INTO partners (name, contact_name, phone, email, address, website, description, shop_id)
+VALUES 
+(N'Công Ty TNHH An Phát', N'Nguyễn Văn An', N'0901234567', N'an.nguyen@anphat.vn', N'123 Đường Lê Lợi, Quận 1, TP.HCM', N'http://www.anphat.vn', N'Nhà cung cấp thiết bị văn phòng.',
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+(N'Công Ty CP Bình Minh', N'Trần Thị Bình', N'0912345678', N'binh.tran@binhminh.vn', N'456 Đường Trần Hưng Đạo, Hà Nội', N'http://www.binhminh.vn', N'Chuyên phân phối linh kiện điện tử.',
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+(N'Công Ty TNHH Cường Thịnh', N'Lê Văn Cường', N'0923456789', N'cuong.le@cuongthinh.vn', N'789 Đường Phạm Văn Đồng, Hải Phòng', N'http://www.cuongthinh.vn', N'Nhà cung cấp vật liệu xây dựng.',
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+(N'Công Ty CP Duy Tân', N'Phạm Thị Duyên', N'0934567890', N'duyen.pham@duytan.vn', N'321 Đường Hai Bà Trưng, Đà Nẵng', N'http://www.duytan.vn', N'Chuyên cung cấp giải pháp CNTT.',
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+(N'Công Ty TNHH Ecoline', N'Vũ Minh E', N'0945678901', N'minh.vu@ecoline.vn', N'654 Đường Nguyễn Trãi, Quận 5, TP.HCM', N'http://www.ecoline.vn', N'Nhà cung cấp sản phẩm xanh và bền vững.',
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh'))),
+(N'Công Ty CP Vina Trade', N'Trần Vina', N'0990011223', N'vina.tran@vinatrade.vn', N'203 Đường Phan Đình Phùng, TP.HCM', N'http://www.vinatrade.vn', N'Chuyên cung cấp giải pháp thương mại.',
+    (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')));
 

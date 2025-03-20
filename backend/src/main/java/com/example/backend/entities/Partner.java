@@ -1,6 +1,5 @@
 package com.example.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -29,7 +28,7 @@ public class Partner {
     @Column()
     private String email;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String address;
 
     @Column()
@@ -38,7 +37,7 @@ public class Partner {
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 

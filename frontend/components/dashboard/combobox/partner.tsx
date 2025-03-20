@@ -1,8 +1,7 @@
 "use client";
 
-import useAppQuery from "@/hooks/use-app-query";
-import { ApiQuery } from "@/services/query";
 import { Combobox } from "./index";
+import { useAllPartners } from "@/services/hooks/partners";
 
 type Props = {
   onSelect: (value: string) => void;
@@ -10,9 +9,7 @@ type Props = {
 };
 
 export function ComboboxPartners({ onSelect, formValue }: Props) {
-  const { data: { data: partners = [] } = {} } = useAppQuery(
-    ApiQuery.partners.getAllPartners()
-  );
+  const { data: { data: partners = [] } = {} } = useAllPartners();
 
   const options =
     partners.length > 0

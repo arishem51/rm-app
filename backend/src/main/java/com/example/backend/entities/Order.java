@@ -31,14 +31,14 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = true)
     private Shop shop;
 
     @Column(nullable = false)
-    private BigDecimal totalAmount;
+    private BigDecimal amount;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
