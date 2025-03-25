@@ -16,7 +16,7 @@ import { UserPen } from "lucide-react";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Partner } from "@/types/Api";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 import CreatePartnersModal from "./create-partners-modal";
 import PartnersUpdateModal from "./update-partners-modal";
 import UserPagination from "../../dashboard/pagination";
@@ -33,9 +33,7 @@ const AdminPartnersView = () => {
   const [updatedPartner, setUpdatedPartner] = useState<Partner>();
   const [filter, setFilter] = useState(createFilterValue(0, ""));
 
-  const { data } = useAppQuery(
-    ApiQuery.partners.getPartners(filter)
-  );
+  const { data } = useAppQuery(ApiQuery.partners.getPartners(filter));
 
   const pageData = data?.data;
   const partners = pageData?.data || [];
@@ -59,7 +57,7 @@ const AdminPartnersView = () => {
 
   return (
     <Fragment>
-      <CreatePartnersModal >
+      <CreatePartnersModal>
         <HeaderListSearch
           filterSearch={filter.search}
           onSearch={handleSearch}

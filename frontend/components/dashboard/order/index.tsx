@@ -12,7 +12,7 @@ import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { Plus } from "lucide-react";
 import { Fragment, useState, useMemo } from "react";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";

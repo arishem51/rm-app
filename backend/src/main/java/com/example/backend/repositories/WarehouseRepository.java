@@ -12,9 +12,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
-    Page<Warehouse> findByNameContainingIgnoreCase(String search, PageRequest pageRequest);
+    Page<Warehouse> findByNameContainingIgnoreCaseOrAddressContainingIgnoreCase(String search, String address,
+            PageRequest pageRequest);
 
-    Page<Warehouse> findByNameContainingIgnoreCaseAndShopId(String search, Long shopId, PageRequest pageRequest);
+    Page<Warehouse> findByNameContainingIgnoreCaseAndAddressContainingIgnoreCaseAndShopId(String search,
+            String address, Long shopId,
+            PageRequest pageRequest);
 
     Page<Warehouse> findAllByShopId(Long shopId, PageRequest pageRequest);
 

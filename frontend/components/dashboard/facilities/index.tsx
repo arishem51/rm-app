@@ -11,7 +11,6 @@ import {
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { Fragment, useState } from "react";
-import HeaderListSearch from "../header-list-search";
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
 import { Button } from "@/components/ui/button";
@@ -27,17 +26,29 @@ import {
 import FacilityForm from "./facility-form";
 import { format } from "date-fns";
 import Link from "next/link";
+import MultiHeaderListSearch from "../search/multi-theader-list-search";
+
+type FilterSearchType = {
+  search: string;
+  address: string;
+};
 
 const Facilities = () => {
-  const [filter, setFilter] = useState({ page: 0, search: "" });
+  const [filter, setFilter] = useState<{ page: number } & FilterSearchType>({
+    page: 0,
+    search: "",
+    address: "",
+  });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.warehouses.getWarehouses(filter)
   );
-  const handleSearch = (search: string) => {
-    setFilter({ page: 0, search });
-  };
+
   const handleNavigatePage = (page: number) => {
-    setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
+    setFilter((prev) => ({
+      page: prev.page + page,
+      search: prev.search,
+      address: prev.address,
+    }));
   };
   const [updateWarehouse, setUpdateWarehouse] = useState<WarehouseDTO>();
 
@@ -46,15 +57,45 @@ const Facilities = () => {
     setFilter({
       page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
       search: filter.search,
+      address: filter.address,
     });
+  };
+
+  const factoryItems = (props: {
+    placeholder?: string;
+    name: keyof FilterSearchType;
+  }) => {
+    return {
+      filterSearch: filter[props.name],
+      placeholder: props.placeholder,
+      name: props.name,
+    };
   };
 
   return (
     <Fragment>
       <div className="flex items-center justify-between">
-        <HeaderListSearch
-          filterSearch={filter.search}
-          onSearch={handleSearch}
+        <MultiHeaderListSearch
+          items={[
+            factoryItems({ placeholder: "Nhập tên kho", name: "search" }),
+            factoryItems({
+              placeholder: "Nhập địa chỉ kho",
+              name: "address",
+            }),
+          ]}
+          onSearchClick={(items) => {
+            const searchItems: Record<keyof FilterSearchType, string> =
+              items.reduce(
+                (acc, cur) => {
+                  return {
+                    ...acc,
+                    [cur.name]: cur.search,
+                  };
+                },
+                {} as Record<keyof FilterSearchType, string>
+              );
+            setFilter({ page: 0, ...searchItems });
+          }}
         />
         <Button
           onClick={() => {

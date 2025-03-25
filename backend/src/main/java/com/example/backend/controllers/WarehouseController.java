@@ -34,9 +34,10 @@ public class WarehouseController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String address,
             @CurrentUser User user) {
         try {
-            Page<Warehouse> warehouses = warehouseService.findShops(page, pageSize, search, user);
+            Page<Warehouse> warehouses = warehouseService.findShops(page, pageSize, search, user, address);
             Map<Long, Integer> warehouseZoneCountMap = warehouseService.getWarehouseZoneCount();
 
             PaginateResponse<WarehouseDTO> response = new PaginateResponse<>(warehouses.map(warehouse -> {

@@ -102,14 +102,17 @@ public class WarehouseService {
     }
 
     // Lấy kho theo shopId
-    public Page<Warehouse> findShops(int page, int pageSize, String search, User user) {
+    public Page<Warehouse> findShops(int page, int pageSize, String search, User user, String address) {
         if (UserRoleUtils.isStaff(user)) {
             throw new IllegalArgumentException("You are not authorized to perform this action.");
         }
+        boolean isSearchEmpty = search.isEmpty() && address.isEmpty();
         if (UserRoleUtils.isAdmin(user)) {
-            return search.isEmpty()
+            return isSearchEmpty
                     ? warehouseRepository.findAll(PageRequest.of(page, pageSize))
-                    : warehouseRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
+                    : warehouseRepository.findByNameContainingIgnoreCaseOrAddressContainingIgnoreCase(search,
+                            address,
+                            PageRequest.of(page, pageSize));
         }
 
         Shop shop = user.getShop();
@@ -117,9 +120,12 @@ public class WarehouseService {
             throw new IllegalArgumentException("You must have a shop to manage warehouses!");
         }
 
-        return search.isEmpty()
+        return isSearchEmpty
                 ? warehouseRepository.findAllByShopId(shop.getId(), PageRequest.of(page, pageSize))
-                : warehouseRepository.findByNameContainingIgnoreCaseAndShopId(search, shop.getId(),
+                : warehouseRepository.findByNameContainingIgnoreCaseAndAddressContainingIgnoreCaseAndShopId(
+                        search,
+                        address,
+                        shop.getId(),
                         PageRequest.of(page, pageSize));
     }
 
