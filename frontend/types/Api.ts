@@ -1912,6 +1912,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         pageSize?: number;
         /** @default "" */
         search?: string;
+        /** @default "" */
+        address?: string;
+        /** @default "" */
+        zone?: string;
       },
       params: RequestParams = {},
     ) =>

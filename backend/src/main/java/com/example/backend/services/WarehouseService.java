@@ -62,6 +62,7 @@ public class WarehouseService {
                 .name(dto.getName())
                 .address(dto.getAddress())
                 .shop(shop)
+                .description(dto.getDescription())
                 .status(ActionStatus.ACTIVE)
                 .build();
         return warehouseRepository.save(warehouse);
@@ -101,7 +102,6 @@ public class WarehouseService {
         return warehouseRepository.save(warehouse);
     }
 
-    // Lấy kho theo shopId
     public Page<Warehouse> findShops(int page, int pageSize, String search, User user, String address) {
         if (UserRoleUtils.isStaff(user)) {
             throw new IllegalArgumentException("You are not authorized to perform this action.");

@@ -5,7 +5,11 @@ import { ApiQuery } from "@/services/query";
 const WarehousesPage = () => {
   return (
     <HydrationPrefetchQuery
-      query={ApiQuery.warehouses.getWarehouses({ page: 0, search: "" })}
+      query={ApiQuery.warehouses.getWarehouses({
+        page: 0,
+        search: "",
+        address: "",
+      })}
       awaitQuery
     >
       <div className="px-4">

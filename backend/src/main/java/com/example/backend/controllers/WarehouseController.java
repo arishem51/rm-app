@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,15 +37,41 @@ public class WarehouseController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "") String address,
+            @RequestParam(defaultValue = "") String zone,
             @CurrentUser User user) {
         try {
             Page<Warehouse> warehouses = warehouseService.findShops(page, pageSize, search, user, address);
             Map<Long, Integer> warehouseZoneCountMap = warehouseService.getWarehouseZoneCount();
-
-            PaginateResponse<WarehouseDTO> response = new PaginateResponse<>(warehouses.map(warehouse -> {
+            Page<WarehouseDTO> list = warehouses.map(warehouse -> {
                 int zoneCount = warehouseZoneCountMap.getOrDefault(warehouse.getId(), 0);
                 return WarehouseDTO.fromEntity(warehouse, zoneCount);
-            }));
+            });
+
+            Integer zoneFilter = null;
+            if (!zone.isEmpty()) {
+                try {
+                    zoneFilter = Integer.parseInt(zone);
+                    if (zoneFilter < 0) {
+                        zoneFilter = null;
+                    }
+                } catch (NumberFormatException e) {
+                    zoneFilter = null;
+                }
+            }
+            final Integer finalZoneFilter = zoneFilter;
+            List<WarehouseDTO> filteredList;
+            if (zoneFilter != null) {
+                filteredList = list.getContent().stream()
+                        .filter(warehouseDTO -> warehouseDTO.getNumberOfZone() == finalZoneFilter)
+                        .collect(Collectors.toList());
+            } else {
+                filteredList = list.getContent();
+            }
+
+            Page<WarehouseDTO> lFilter = new PageImpl<>(filteredList, PageRequest.of(page, pageSize),
+                    list.getTotalElements());
+
+            PaginateResponse<WarehouseDTO> response = new PaginateResponse<>(lFilter);
 
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {

@@ -971,6 +971,18 @@
             "in": "query",
             "required": false,
             "schema": { "type": "string", "default": "" }
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          },
+          {
+            "name": "zone",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {

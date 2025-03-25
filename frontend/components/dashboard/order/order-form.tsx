@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ToastTitle } from "@/lib/constants";
+import { appearanceNone, ToastTitle } from "@/lib/constants";
 import { useCreateOrder } from "@/hooks/mutations/order";
 import { toast } from "@/hooks/use-toast";
 import { CreateOrderDTO, OrderResponseDTO } from "@/types/Api";
@@ -162,13 +162,6 @@ const OrderForm = ({ onClose, order }: Props) => {
     });
   });
 
-  const className = `
-        appearance-none
-        [moz-appearance:textfield]
-        [&::-webkit-inner-spin-button]:appearance-none
-        [&::-webkit-outer-spin-button]:appearance-none
-    `;
-
   const isCreateOrder = true;
 
   return (
@@ -306,7 +299,7 @@ const OrderForm = ({ onClose, order }: Props) => {
                                               }
                                               className={cn(
                                                 "w-[68px]",
-                                                className
+                                                appearanceNone
                                               )}
                                               type="number"
                                               placeholder="Ví dụ: 10"
@@ -426,7 +419,7 @@ const OrderForm = ({ onClose, order }: Props) => {
                   </Tooltip>
                   <InputCurrency
                     name="amount"
-                    className={className}
+                    className={appearanceNone}
                     placeholder="Ví dụ: 10"
                   />
                 </div>
