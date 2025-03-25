@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   TableHeader,
@@ -10,16 +10,14 @@ import {
 } from "@/components/ui/table";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import {  Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Fragment, useState, useMemo } from "react";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
 import { PaymentHistoryResponseDTO } from "@/types/Api";
 import { useRouter } from "next/navigation";
-
-
 
 const Payment = () => {
   const [filter, setFilter] = useState({ page: 0, search: "", createdAt: "" });
@@ -28,8 +26,8 @@ const Payment = () => {
   const router = useRouter();
   const filteredData = useMemo(() => {
     if (!data) return [];
-    return data?.data.filter((payment:PaymentHistoryResponseDTO) =>
-        payment?.partnerName.toLowerCase().includes(filter.search.toLowerCase())
+    return data?.data.filter((payment: PaymentHistoryResponseDTO) =>
+      payment?.partnerName.toLowerCase().includes(filter.search.toLowerCase())
     );
   }, [data, filter.search]);
 
@@ -59,9 +57,11 @@ const Payment = () => {
     <Fragment>
       <div className="flex justify-between">
         <div className="flex w-full items-center">
-          <HeaderListSearch filterSearch={filter.search} onSearch={handleSearch} />
+          <HeaderListSearch
+            filterSearch={filter.search}
+            onSearch={handleSearch}
+          />
         </div>
-        
       </div>
       {paginatedData.length > 0 ? (
         <Table>
@@ -90,11 +90,13 @@ const Payment = () => {
                 <TableCell>{order.shippingFee?.toLocaleString()} VND</TableCell>
                 <TableCell>{order.totalAmount?.toLocaleString()} VND</TableCell>
                 <TableCell>{order.createdAt}</TableCell>
-                <TableCell>{order.debt ? "Phiếu nợ":"Hoàn thành"}</TableCell>
+                <TableCell>{order.debt ? "Phiếu nợ" : "Hoàn thành"}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end space-x-2">
                     <Button
-                      onClick={() => router.push(`/dashboard/invoice/${order.id}`)}
+                      onClick={() =>
+                        router.push(`/dashboard/invoice/${order.id}`)
+                      }
                       size="sm"
                       variant="secondary"
                     >

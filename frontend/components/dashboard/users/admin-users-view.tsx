@@ -21,7 +21,7 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { UserDTO } from "@/types/Api";
 import CreateUserModal from "./create-user-modal";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import ListPagination from "../pagination";
 

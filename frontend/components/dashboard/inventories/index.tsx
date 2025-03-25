@@ -12,7 +12,7 @@ import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 import Link from "next/link";
 import ListPagination from "../pagination";
 import { toCurrency } from "@/lib/utils";

@@ -13,7 +13,7 @@ import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { Edit, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 import { Category } from "@/types/Api";
 import {
   Dialog,

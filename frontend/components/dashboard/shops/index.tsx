@@ -13,7 +13,7 @@ import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { Edit } from "lucide-react";
 import { Fragment, useState } from "react";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 import { ShopDTO } from "@/types/Api";
 import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
