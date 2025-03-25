@@ -34,14 +34,23 @@ const bankOptions = [
   { value: "acb", label: "ACB" },
   { value: "vpbank", label: "VPBank" },
   { value: "sacombank", label: "Sacombank" },
+  { value: "hdbank", label: "HDBank" },
+  { value: "ocb", label: "OCB" },
+  { value: "shb", label: "SHB" },
+  { value: "eximbank", label: "Eximbank" },
+  { value: "scb", label: "SCB" },
+  { value: "seabank", label: "SeABank" },
+  { value: "bacabank", label: "Bac A Bank" },
+  { value: "pvcombank", label: "PVcomBank" },
+  { value: "vietabank", label: "VietABank" },
 ];
 
 const schemaFields = {
   name: z.string().min(1, "Tên cửa hàng không được để trống"),
   address: z.string().min(1, "Địa chỉ không được để trống"),
-  bankAccount: z.string().optional(),
-  bankName: z.string().optional(),
-  postalCode: z.string().optional(),
+  bankAccount: z.string().min(1, "Số tài khoản không được để trống"),
+  bankName: z.string().min(1, "Tên ngân hàng không được để trống"),
+  postalCode: z.string().min(1, "Mã bưu điện không được để trống"),
   socialMedia: z.string().optional(),
   website: z.string().optional(),
 };
