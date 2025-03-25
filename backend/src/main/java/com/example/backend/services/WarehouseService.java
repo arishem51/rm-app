@@ -25,7 +25,7 @@ public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
     private final ZoneRepository zoneRepository;
 
-    private void validateUserCanManageWarehouse(User user) {
+    public void validateUserCanManageWarehouse(User user) {
         if (!UserRoleUtils.isOwner(user)) {
             throw new IllegalArgumentException("You are not authorized to manage warehouses!");
         }
