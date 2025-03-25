@@ -14,7 +14,7 @@ import { ApiQuery } from "@/services/query";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";

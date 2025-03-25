@@ -22,7 +22,7 @@ public class ProductService {
     private final PartnerService partnerService;
     private final CategoryService categoryService;
 
-    private void validateUserCanManageProduct(User user) {
+    public void validateUserCanManageProduct(User user) {
         if (!UserRoleUtils.isOwner(user)) {
             throw new IllegalArgumentException("You are not authorized to manage products!");
         }

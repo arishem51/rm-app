@@ -11,7 +11,6 @@ import {
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { Fragment, useState } from "react";
-import HeaderListSearch from "../header-list-search";
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
 import { Button } from "@/components/ui/button";
@@ -27,44 +26,62 @@ import {
 import FacilityForm from "./facility-form";
 import { format } from "date-fns";
 import Link from "next/link";
+import FacilityHeader from "./facility-header";
+
+export type FacilityFilterSearchType = {
+  search: string;
+  address: string;
+  zone?: string;
+  startDate?: string;
+  endDate?: string;
+};
 
 const Facilities = () => {
-  const [filter, setFilter] = useState({ page: 0, search: "" });
+  const [filter, setFilter] = useState<
+    { page: number } & FacilityFilterSearchType
+  >({
+    page: 0,
+    search: "",
+    address: "",
+  });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.warehouses.getWarehouses(filter)
   );
-  const handleSearch = (search: string) => {
-    setFilter({ page: 0, search });
-  };
+
   const handleNavigatePage = (page: number) => {
-    setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
+    setFilter(({ page: prevPage, ...rest }) => ({
+      page: prevPage + page,
+      ...rest,
+    }));
   };
   const [updateWarehouse, setUpdateWarehouse] = useState<WarehouseDTO>();
 
   const handleNavigateFullPage = (page: number) => {
     const isRight = page > 0;
+    const { page: _, ...rest } = filter;
+    void _;
     setFilter({
       page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
-      search: filter.search,
+      ...rest,
     });
   };
 
   return (
     <Fragment>
-      <div className="flex items-center justify-between">
-        <HeaderListSearch
-          filterSearch={filter.search}
-          onSearch={handleSearch}
-        />
+      <FacilityHeader
+        filter={filter}
+        onFilter={(items) => setFilter({ page: 0, ...items })}
+      >
         <Button
           onClick={() => {
             setUpdateWarehouse({} as WarehouseDTO);
           }}
+          className="self-end"
         >
           <Plus />
           Tạo kho
         </Button>
-      </div>
+      </FacilityHeader>
       <Dialog
         open={!!updateWarehouse}
         onOpenChange={(isOpen) => {

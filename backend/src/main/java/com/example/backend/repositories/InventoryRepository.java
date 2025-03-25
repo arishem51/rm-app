@@ -13,7 +13,10 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     Optional<Inventory> findById(Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<Inventory> findByZone_IdAndProduct_Id(Long zoneId, Long productId);
+    Optional<Inventory> findByIdAndZoneId(Long id, Long zoneId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    List<Inventory> findByZone_IdAndProduct_Id(Long zoneId, Long productId);
 
     Page<Inventory> findByZone_Warehouse_Shop_Id(Long shopId, Pageable pageable);
 

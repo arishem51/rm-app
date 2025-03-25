@@ -7,9 +7,14 @@ import { useState } from "react";
 type Props = {
   onSearch: (search: string) => void;
   filterSearch?: string;
+  placeholder?: string;
 };
 
-const HeaderListSearch = ({ onSearch, filterSearch }: Props) => {
+const HeaderListSearch = ({
+  onSearch,
+  filterSearch,
+  placeholder = "Tìm kiếm",
+}: Props) => {
   const [search, setSearch] = useState("");
   const resetSearch = () => {
     setSearch("");
@@ -19,18 +24,20 @@ const HeaderListSearch = ({ onSearch, filterSearch }: Props) => {
   return (
     <div className="flex items-center gap-2 w-1/2">
       <div className="my-2 relative">
-        <Input
-          placeholder="Tìm kiếm"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-          onBlur={() => {
-            if (filterSearch && !search) {
-              setSearch(filterSearch);
-            }
-          }}
-        />
+        <div className="flex gap-1">
+          <Input
+            placeholder={placeholder}
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            onBlur={() => {
+              if (filterSearch && !search) {
+                setSearch(filterSearch);
+              }
+            }}
+          />
+        </div>
         <Button
           size="icon"
           className={cn(

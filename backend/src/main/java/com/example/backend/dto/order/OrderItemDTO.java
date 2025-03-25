@@ -1,8 +1,6 @@
 package com.example.backend.dto.order;
 
 import java.math.BigDecimal;
-import java.util.List;
-
 import com.example.backend.entities.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,14 +13,17 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OrderItemDTO {
     private Long inventoryId;
+    private Long zoneId;
     private Long productId;
+    private BigDecimal productPrice;
+    private String productName;
     private Integer quantity;
-    private BigDecimal price;
 
     public static OrderItemDTO fromEntity(OrderItem item) {
         return OrderItemDTO.builder()
-                .productId(item.getProduct().getId())
-                .price(item.getPrice())
+                .productId(item.getProductId())
+                .productPrice(item.getProductPrice())
+                .productName(item.getProductName())
                 .quantity(item.getQuantity())
                 .build();
     }

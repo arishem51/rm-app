@@ -1,10 +1,5 @@
 package com.example.backend.dto.payment;
 
-import com.example.backend.dto.UserDTO;
-import com.example.backend.dto.inventory.InventoryResponseDTO;
-import com.example.backend.dto.order.OrderResponseDTO;
-import com.example.backend.entities.Inventory;
-import com.example.backend.entities.Order;
 import com.example.backend.entities.PaymentHistory;
 import lombok.*;
 
@@ -28,12 +23,13 @@ public class PaymentHistoryResponseDTO {
     private BigDecimal totalAmount;
     private LocalDateTime createdAt;
     private boolean isDebt;
+
     public static PaymentHistoryResponseDTO fromEntity(PaymentHistory paymentHistory) {
-        return  PaymentHistoryResponseDTO.builder()
+        return PaymentHistoryResponseDTO.builder()
                 .id(paymentHistory.getId())
                 .partnerName(paymentHistory.getOrder().getPartner().getName())
                 .partnerPhone(paymentHistory.getOrder().getPartner().getPhone())
-                .orderAmount(paymentHistory.getOrder().getTotalAmount())
+                .orderAmount(paymentHistory.getOrder().getAmount())
                 .discount(paymentHistory.getDiscount())
                 .shippingFee(paymentHistory.getShippingFee())
                 .totalAmount(paymentHistory.getTotalAmount())
@@ -41,6 +37,7 @@ public class PaymentHistoryResponseDTO {
                 .createdAt(paymentHistory.getOrder().getCreatedAt())
                 .build();
     }
+
     public static List<PaymentHistoryResponseDTO> fromEntity(List<PaymentHistory> orders) {
         return orders.stream()
                 .map(PaymentHistoryResponseDTO::fromEntity)

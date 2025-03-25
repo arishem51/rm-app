@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { UserDTO } from "@/types/Api";
 import CreateUserModal from "../create-user-modal";
 import DeleteUserView from "./delete-user-view";
-import HeaderListSearch from "../../header-list-search";
+import HeaderListSearch from "../../search/header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 
 const ProtectedUserOwnerView = () => {

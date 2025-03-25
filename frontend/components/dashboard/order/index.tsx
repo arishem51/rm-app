@@ -12,11 +12,11 @@ import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
 import { Plus } from "lucide-react";
 import { Fragment, useState, useMemo } from "react";
-import HeaderListSearch from "../header-list-search";
+import HeaderListSearch from "../search/header-list-search";
 
 import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
-import { Order, OrderResponseDTO } from "@/types/Api";
+import { OrderResponseDTO } from "@/types/Api";
 import Link from "next/link";
 
 const Orders = () => {
@@ -65,7 +65,7 @@ const Orders = () => {
         <Link href="/dashboard/orders/create" prefetch>
           <Button>
             <Plus />
-            Tạo Hàng hóa
+            Tạo đơn hàng
           </Button>
         </Link>
       </div>

@@ -1,6 +1,5 @@
 package com.example.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -29,7 +28,7 @@ public class Partner {
     @Column()
     private String email;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String address;
 
     @Column()

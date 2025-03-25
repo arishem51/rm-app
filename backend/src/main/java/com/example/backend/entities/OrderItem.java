@@ -13,7 +13,6 @@ import lombok.*;
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,23 +21,21 @@ public class OrderItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
+
+    @Column(name = "product_name", columnDefinition = "NVARCHAR(255)")
+    private String productName;
+
+    @Column(name = "product_price")
+    private BigDecimal productPrice;
+
+    @Column(name = "zone_id", nullable = false)
+    private Long zoneId;
+    @Column(name = "zone_name", columnDefinition = "NVARCHAR(255)", nullable = false)
+    private String zoneName;
 
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false)
-    private BigDecimal price;
-
-    @Column(name = "subtotal", nullable = false)
-    private BigDecimal subtotal;
-
-    @PrePersist
-    public void calculateSubtotal() {
-        if (price != null && quantity != null) {
-            subtotal = price.multiply(BigDecimal.valueOf(quantity));
-        }
-    }
 }

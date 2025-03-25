@@ -163,3 +163,10 @@ export const ToastTitle = {
   error: "Thất bại",
   somethingWentWrong: "Đã có lỗi xảy ra",
 } as const;
+
+export const appearanceNone = `
+        appearance-none
+        [moz-appearance:textfield]
+        [&::-webkit-inner-spin-button]:appearance-none
+        [&::-webkit-outer-spin-button]:appearance-none
+`;
