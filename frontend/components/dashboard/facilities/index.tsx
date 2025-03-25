@@ -32,6 +32,8 @@ export type FacilityFilterSearchType = {
   search: string;
   address: string;
   zone?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 const Facilities = () => {

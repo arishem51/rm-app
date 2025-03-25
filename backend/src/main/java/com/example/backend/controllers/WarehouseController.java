@@ -38,9 +38,12 @@ public class WarehouseController {
             @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "") String address,
             @RequestParam(defaultValue = "") String zone,
+            @RequestParam(defaultValue = "") String startDate,
+            @RequestParam(defaultValue = "") String endDate,
             @CurrentUser User user) {
         try {
-            Page<Warehouse> warehouses = warehouseService.findShops(page, pageSize, search, user, address);
+            Page<Warehouse> warehouses = warehouseService.findShops(page, pageSize, search, user, address, startDate,
+                    endDate);
             Map<Long, Integer> warehouseZoneCountMap = warehouseService.getWarehouseZoneCount();
             Page<WarehouseDTO> list = warehouses.map(warehouse -> {
                 int zoneCount = warehouseZoneCountMap.getOrDefault(warehouse.getId(), 0);

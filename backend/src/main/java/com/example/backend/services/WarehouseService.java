@@ -11,6 +11,9 @@ import com.example.backend.repositories.ZoneRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,11 +105,48 @@ public class WarehouseService {
         return warehouseRepository.save(warehouse);
     }
 
-    public Page<Warehouse> findShops(int page, int pageSize, String search, User user, String address) {
+    public Page<Warehouse> findShops(int page, int pageSize, String search, User user, String address, String startDate,
+            String endDate) {
         if (UserRoleUtils.isStaff(user)) {
-            throw new IllegalArgumentException("You are not authorized to perform this action.");
+            throw new IllegalArgumentException("Bạn không có quyền truy cập trang này!");
         }
         boolean isSearchEmpty = search.isEmpty() && address.isEmpty();
+        LocalDateTime startLocalDate = null;
+        LocalDateTime endLocalDate = null;
+
+        if (!startDate.isEmpty()) {
+            try {
+                startLocalDate = LocalDate.parse(startDate).atStartOfDay();
+                if (startLocalDate.isAfter(LocalDateTime.now())) {
+                    throw new IllegalArgumentException("Ngày bắt đầu không thể ở tương lai");
+                }
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Định dạng ngày không hợp lệ");
+            }
+        }
+
+        if (!endDate.isEmpty()) {
+            try {
+                endLocalDate = LocalDate.parse(endDate).atStartOfDay();
+                if (endLocalDate.isAfter(LocalDateTime.now())) {
+                    throw new IllegalArgumentException("Ngày kết thúc không thể ở tương lai");
+                }
+                if (startLocalDate != null && endLocalDate.isBefore(startLocalDate)) {
+                    throw new IllegalArgumentException("Ngày kết thúc phải sau ngày bắt đầu");
+                }
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Định dạng ngày không hợp lệ");
+            }
+        }
+
+        if (startLocalDate != null && endLocalDate == null) {
+            endLocalDate = LocalDateTime.now();
+        }
+
+        if (endLocalDate != null && startLocalDate == null) {
+            startLocalDate = LocalDateTime.MIN;
+        }
+
         if (UserRoleUtils.isAdmin(user)) {
             return isSearchEmpty
                     ? warehouseRepository.findAll(PageRequest.of(page, pageSize))
@@ -120,13 +160,24 @@ public class WarehouseService {
             throw new IllegalArgumentException("You must have a shop to manage warehouses!");
         }
 
+        if (startLocalDate == null && endLocalDate == null) {
+            return isSearchEmpty
+                    ? warehouseRepository.findAllByShopId(shop.getId(), PageRequest.of(page, pageSize))
+                    : warehouseRepository.findByNameContainingIgnoreCaseAndAddressContainingIgnoreCaseAndShopId(
+                            search, address, shop.getId(), PageRequest.of(page, pageSize));
+        }
+
         return isSearchEmpty
-                ? warehouseRepository.findAllByShopId(shop.getId(), PageRequest.of(page, pageSize))
-                : warehouseRepository.findByNameContainingIgnoreCaseAndAddressContainingIgnoreCaseAndShopId(
-                        search,
-                        address,
-                        shop.getId(),
-                        PageRequest.of(page, pageSize));
+                ? warehouseRepository.findByShopIdAndCreatedAtBetween(shop.getId(), startLocalDate, endLocalDate,
+                        PageRequest.of(page, pageSize))
+                : warehouseRepository
+                        .findByNameContainingIgnoreCaseAndAddressContainingIgnoreCaseAndShopIdAndCreatedAtBetween(
+                                search,
+                                address,
+                                shop.getId(),
+                                startLocalDate,
+                                endLocalDate,
+                                PageRequest.of(page, pageSize));
     }
 
     // Lấy kho theo warehouseId và shopId
