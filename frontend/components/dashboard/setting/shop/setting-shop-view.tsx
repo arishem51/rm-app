@@ -14,7 +14,7 @@ const SettingShopView = ({ user }: Props) => {
   const { data: shopDetails } = data ?? {};
 
   return (
-    <div className="w-1/2">
+    <div className="w-full">
       <ShopForm shop={shopDetails} />
     </div>
   );
