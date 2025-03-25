@@ -21,10 +21,38 @@ import { useEffect } from "react";
 import { UserRole } from "@/lib/constants";
 import { useMe } from "@/hooks/mutations/user";
 import { useRouter } from "next/navigation";
+import Select from "react-select";
+
+// Danh sách ngân hàng Việt Nam
+const bankOptions = [
+  { value: "vietcombank", label: "Vietcombank" },
+  { value: "vietinbank", label: "Vietinbank" },
+  { value: "techcombank", label: "Techcombank" },
+  { value: "bidv", label: "BIDV" },
+  { value: "mbbank", label: "MB Bank" },
+  { value: "agribank", label: "Agribank" },
+  { value: "acb", label: "ACB" },
+  { value: "vpbank", label: "VPBank" },
+  { value: "sacombank", label: "Sacombank" },
+  { value: "hdbank", label: "HDBank" },
+  { value: "ocb", label: "OCB" },
+  { value: "shb", label: "SHB" },
+  { value: "eximbank", label: "Eximbank" },
+  { value: "scb", label: "SCB" },
+  { value: "seabank", label: "SeABank" },
+  { value: "bacabank", label: "Bac A Bank" },
+  { value: "pvcombank", label: "PVcomBank" },
+  { value: "vietabank", label: "VietABank" },
+];
 
 const schemaFields = {
-  name: z.string().nonempty({ message: "Tên là bắt buộc" }),
-  address: z.string().nonempty({ message: "Địa chỉ là bắt buộc" }),
+  name: z.string().min(1, "Tên cửa hàng không được để trống"),
+  address: z.string().min(1, "Địa chỉ không được để trống"),
+  bankAccount: z.string().min(1, "Số tài khoản không được để trống"),
+  bankName: z.string().min(1, "Tên ngân hàng không được để trống"),
+  postalCode: z.string().min(1, "Mã bưu điện không được để trống"),
+  socialMedia: z.string().optional(),
+  website: z.string().optional(),
 };
 
 type Props = {
@@ -34,9 +62,18 @@ type Props = {
 
 const ShopForm = ({ onClose, shop }: Props) => {
   const form = useForm<UpdateShopDTO>({
-    defaultValues: shop ?? { name: "", address: "" },
+    defaultValues: shop ?? {
+      name: "",
+      address: "",
+      bankAccount: "",
+      bankName: "",
+      postalCode: "",
+      socialMedia: "",
+      website: "",
+    },
     resolver: zodResolver(z.object(schemaFields)),
   });
+
   const { mutate: updateShop, isPending: isUpdating } = useUpdateShop();
   const isPending = isUpdating;
   const queryClient = useQueryClient();
@@ -45,7 +82,15 @@ const ShopForm = ({ onClose, shop }: Props) => {
 
   useEffect(() => {
     if (shop) {
-      form.reset(shop);
+      form.reset({
+        name: shop.name || "",
+        address: shop.address || "",
+        bankAccount: shop.bankAccount || "",
+        bankName: shop.bankName || "",
+        postalCode: shop.postalCode || "",
+        socialMedia: shop.socialMedia || "",
+        website: shop.website || "",
+      });
     }
   }, [form, shop]);
 
@@ -83,7 +128,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-2 mb-4">
+        <div className="flex flex-col gap-4">
           <FormField
             control={form.control}
             name="name"
@@ -105,6 +150,77 @@ const ShopForm = ({ onClose, shop }: Props) => {
                 <FormLabel>Địa chỉ</FormLabel>
                 <FormControl>
                   <Input placeholder="Ví dụ: Hà Đông, Hà Nội" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="bankAccount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Số tài khoản</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: 1234567890" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="bankName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tên ngân hàng</FormLabel>
+                <FormControl>
+                  <Select
+                    options={bankOptions}
+                    placeholder="Chọn ngân hàng"
+                    value={bankOptions.find(option => option.value === field.value)}
+                    onChange={(option) => field.onChange(option?.value)}
+                    isClearable
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="postalCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mã bưu điện</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: 100000" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="socialMedia"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mạng xã hội</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: facebook.com/shop" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="website"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Website</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: www.shop.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

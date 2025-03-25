@@ -12,6 +12,7 @@ import lombok.Setter;
 @Builder
 public class ZoneRequestDTO {
     private String name;
+    private String description;
     @NotNull(message = "Warehouse ID is required")
     private Long warehouseId;
 }

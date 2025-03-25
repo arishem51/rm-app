@@ -19,6 +19,11 @@ public class ShopDTO {
     @NotNull
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String bankAccount;
+    private String bankName;
+    private String postalCode;
+    private String socialMedia;
+    private String website;
 
     public static ShopDTO fromEntity(Shop shop) {
         if (shop == null) {
@@ -35,6 +40,11 @@ public class ShopDTO {
                 .createdBy(shop.getCreateBy() != null
                         ? UserDTO.fromEntity(shop.getCreateBy())
                         : null) // Tránh lỗi null
+                .bankAccount(shop.getBankAccount())
+                .bankName(shop.getBankName())
+                .postalCode(shop.getPostalCode())
+                .socialMedia(shop.getSocialMedia())
+                .website(shop.getWebsite())
                 .build();
     }
 }

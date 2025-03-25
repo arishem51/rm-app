@@ -36,7 +36,7 @@ public class ZoneService {
     public Zone create(ZoneRequestDTO dto, User currentUser) {
         Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(dto.getWarehouseId(),
                 currentUser);
-        Zone zone = Zone.builder().name(dto.getName()).warehouse(warehouse).build();
+        Zone zone = Zone.builder().name(dto.getName()).description(dto.getDescription()).warehouse(warehouse).build();
         return zoneRepository.save(zone);
     }
 
@@ -51,7 +51,9 @@ public class ZoneService {
         if (dto.getName() != null) {
             zone.setName(dto.getName());
         }
-        // zone.setWarehouse(warehouse);
+        if (dto.getDescription() != null) {
+            zone.setDescription(dto.getDescription());
+        }
         return zoneRepository.save(zone);
     }
 }

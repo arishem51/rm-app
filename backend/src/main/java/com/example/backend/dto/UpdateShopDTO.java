@@ -8,4 +8,9 @@ import lombok.Setter;
 public class UpdateShopDTO {
     private String name;
     private String address;
+    private String bankAccount;
+    private String bankName;
+    private String postalCode;
+    private String socialMedia;
+    private String website;
 }

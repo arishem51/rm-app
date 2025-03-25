@@ -983,6 +983,18 @@
             "in": "query",
             "required": false,
             "schema": { "type": "string", "default": "" }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
           }
         ],
         "responses": {
@@ -1500,6 +1512,7 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
+          "description": { "type": "string" },
           "warehouseId": { "type": "integer", "format": "int64" }
         },
         "required": ["warehouseId"]
@@ -1527,6 +1540,7 @@
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "name": { "type": "string" },
+          "description": { "type": "string" },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" },
           "warehouseId": { "type": "integer", "format": "int64" },
@@ -2712,9 +2726,9 @@
         "properties": {
           "offset": { "type": "integer", "format": "int64" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
-          "paged": { "type": "boolean" },
-          "pageNumber": { "type": "integer", "format": "int32" },
           "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "paged": { "type": "boolean" },
           "unpaged": { "type": "boolean" }
         }
       },

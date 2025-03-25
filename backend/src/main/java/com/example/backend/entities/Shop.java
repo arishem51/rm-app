@@ -57,6 +57,20 @@ public class Shop {
     @Column(name = "created_at", nullable = false, updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+    @Column(name = "bank_account")
+    private String bankAccount;
+
+    @Column(name = "bank_name")
+    private String bankName;
+
+    @Column(name = "postal_code")
+    private String postalCode;
+
+    @Column(name = "social_media")
+    private String socialMedia;
+
+    @Column(name = "website")
+    private String website;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
