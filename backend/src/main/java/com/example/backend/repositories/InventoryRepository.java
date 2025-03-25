@@ -7,16 +7,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import com.example.backend.entities.Inventory;
+
 import jakarta.persistence.LockModeType;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     Optional<Inventory> findById(Long id);
 
+    Page<Inventory> findByProduct_ShopId(Long shopId, Pageable pageable);
+
+    Page<Inventory> findByProduct_ShopIdAndProduct_NameContainingIgnoreCase(Long shopId, String name,
+            Pageable pageable);
+
+    Optional<Inventory> findByProductId(Long id);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Inventory> findByIdAndZoneId(Long id, Long zoneId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<Inventory> findByZone_IdAndProduct_Id(Long zoneId, Long productId);
+    Optional<Inventory> findByZone_IdAndProduct_Id(Long zoneId, Long productId);
 
     Page<Inventory> findByZone_Warehouse_Shop_Id(Long shopId, Pageable pageable);
 

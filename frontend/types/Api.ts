@@ -142,27 +142,39 @@ export interface BaseResponseShopDTO {
 }
 
 export interface ShopDTO {
-  id: number;
-  name: string;
-  address: string;
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  address?: string;
+  users?: UserDTO[];
   createdBy?: UserDTO;
+  /** @format date-time */
   createdAt: string;
+  /** @format date-time */
   updatedAt?: string;
   bankAccount?: string;
   bankName?: string;
   postalCode?: string;
   socialMedia?: string;
   website?: string;
-  users?: UserDTO[];
 }
 
 export interface ProductRequestDTO {
   name: string;
   description?: string;
+  /** @min 0 */
+  price?: number;
+  /**
+   * @format int32
+   * @min 0
+   */
+  quantity?: number;
   /** @format int64 */
   categoryId?: number;
   /** @format int64 */
   supplierId?: number;
+  /** @format int64 */
+  zoneId?: number;
   /** @format int64 */
   shopId: number;
   imageUrls?: string[];
@@ -234,6 +246,11 @@ export interface Shop {
   users?: User[];
   /** @format date-time */
   createdAt?: string;
+  bankAccount?: string;
+  bankName?: string;
+  postalCode?: string;
+  socialMedia?: string;
+  website?: string;
   /** @format date-time */
   updatedAt?: string;
 }
@@ -300,20 +317,36 @@ export interface InventoryResponseDTO {
   /** @format int64 */
   id?: number;
   /** @format int64 */
-  productId?: number;
-  /** @format int64 */
   zoneId?: number;
   zoneName?: string;
   /** @format int64 */
   warehouseId?: number;
-  productName?: string;
+  product?: Product;
   createdBy?: UserDTO;
   createdAt?: string;
   updatedAt?: string;
-  price?: string;
   warehouseName?: string;
   /** @format int32 */
   quantity?: number;
+}
+
+export interface Product {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  category?: Category;
+  supplier?: Partner;
+  shop?: Shop;
+  price?: number;
+  description?: string;
+  imageUrls?: string[];
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+  /** @format date-time */
+  deletedAt?: string;
+  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface UpdateCategoryDTO {
@@ -371,8 +404,6 @@ export interface ReceiptRequestItemDTO {
    * @min 1
    */
   quantity?: number;
-  /** @min 0 */
-  price?: number;
   /** @format int64 */
   zoneId?: number;
 }
@@ -764,8 +795,8 @@ export interface PaginateResponseReceiptResponseDTO {
   data?: ReceiptResponseDTO[];
 }
 
-export interface BaseResponsePaginateResponseResponseProductDTO {
-  data?: PaginateResponseResponseProductDTO;
+export interface BaseResponsePaginateResponseInventoryResponseDTO {
+  data?: PaginateResponseInventoryResponseDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -776,7 +807,7 @@ export interface BaseResponsePaginateResponseResponseProductDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponseResponseProductDTO {
+export interface PaginateResponseInventoryResponseDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -785,7 +816,7 @@ export interface PaginateResponseResponseProductDTO {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: ResponseProductDTO[];
+  data?: InventoryResponseDTO[];
 }
 
 export interface BaseResponseListResponseProductDTO {
@@ -983,9 +1014,9 @@ export interface PageableObject {
   offset?: number;
   sort?: SortObject;
   /** @format int32 */
-  pageSize?: number;
-  /** @format int32 */
   pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
   paged?: boolean;
   unpaged?: boolean;
 }
@@ -994,30 +1025,6 @@ export interface SortObject {
   empty?: boolean;
   sorted?: boolean;
   unsorted?: boolean;
-}
-
-export interface BaseResponsePaginateResponseInventoryResponseDTO {
-  data?: PaginateResponseInventoryResponseDTO;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface PaginateResponseInventoryResponseDTO {
-  /** @format int32 */
-  pageSize?: number;
-  /** @format int32 */
-  pageNumber?: number;
-  /** @format int32 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-  data?: InventoryResponseDTO[];
 }
 
 export interface BaseResponseListInventoryResponseDTO {
@@ -1690,7 +1697,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponseResponseProductDTO, any>({
+      this.request<BaseResponsePaginateResponseInventoryResponseDTO, any>({
         path: `/api/products`,
         method: "GET",
         query: query,

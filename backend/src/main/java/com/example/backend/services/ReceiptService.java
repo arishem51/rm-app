@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.backend.dto.receipt.ReceiptCreateDTO;
 import com.example.backend.dto.receipt.ReceiptRequestItemDTO;
 import com.example.backend.entities.Inventory;
+import com.example.backend.entities.Product;
 import com.example.backend.entities.Receipt;
 import com.example.backend.entities.ReceiptItem;
 import com.example.backend.entities.User;
@@ -55,37 +56,24 @@ public class ReceiptService {
                 Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(item.getZoneId(), currentUser.getShop().getId())
                         .orElseThrow(() -> new IllegalArgumentException(
                                 "Khu vực trong kho không tồn tại"));
-                List<Inventory> inventories = inventoryRepository.findByZone_IdAndProduct_Id(zone.getId(),
-                        item.getProductId());
-
-                Inventory inventory = null;
-
-                if (!inventories.isEmpty()) {
-                    for (Inventory inv : inventories) {
-                        if (inv.getProductPrice().compareTo(item.getPrice()) == 0) {
-                            inventory = inv;
-                            break;
-                        }
-                    }
-                }
+                Inventory inventory = inventoryRepository.findByZone_IdAndProduct_Id(zone.getId(),
+                        item.getProductId()).orElse((Inventory) null);
 
                 if (inventory != null) {
-                    if (inventory.getProduct().getId() != item.getProductId()) {
-                        throw new IllegalArgumentException("Sản phẩm không tồn tại trong kho");
-                    }
                     Integer quantity = inventory.getQuantity() + item.getQuantity();
                     inventory.setQuantity(quantity);
                 } else {
+                    Product product = productRepository.findById(item.getProductId())
+                            .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại"));
                     inventory = Inventory.builder().zone(zone)
-                            .product(productRepository.findById(item.getProductId())
-                                    .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại")))
+                            .product(
+                                    product)
                             .quantity(item.getQuantity())
-                            .productPrice(item.getPrice())
                             .createdBy(currentUser)
                             .build();
                 }
                 ReceiptItem receiptItem = ReceiptItem.builder().receipt(receipt).productId(item.getProductId())
-                        .productName(inventory.getProduct().getName()).productPrice(item.getPrice())
+                        .productName(inventory.getProduct().getName())
                         .quantity(item.getQuantity()).zoneId(item.getZoneId()).zoneName(zone.getName()).build();
                 inventoriesToSave.add(inventory);
                 receiptItems.add(receiptItem);

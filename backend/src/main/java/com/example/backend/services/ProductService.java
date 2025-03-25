@@ -2,11 +2,15 @@ package com.example.backend.services;
 
 import com.example.backend.dto.product.ProductRequestDTO;
 import com.example.backend.entities.Category;
+import com.example.backend.entities.Inventory;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
+import com.example.backend.entities.Zone;
+import com.example.backend.repositories.InventoryRepository;
 import com.example.backend.repositories.ProductRepository;
+import com.example.backend.repositories.ZoneRepository;
 import com.example.backend.utils.UserRoleUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +25,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final PartnerService partnerService;
     private final CategoryService categoryService;
+    private final InventoryRepository inventoryRepository;
+    private final ZoneRepository zoneRepository;
 
     public void validateUserCanManageProduct(User user) {
         if (!UserRoleUtils.isOwner(user)) {
@@ -31,39 +37,48 @@ public class ProductService {
         }
     }
 
-    public Product createProduct(ProductRequestDTO dto, User user) {
-        validateUserCanManageProduct(user);
-        Shop shop = user.getShop();
+    public Product createProduct(ProductRequestDTO dto, User currentUser) {
+        validateUserCanManageProduct(currentUser);
+        Shop shop = currentUser.getShop();
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
         Partner partner = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
+
+        Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(dto.getZoneId(), currentUser.getShop().getId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Khu vực trong kho không tồn tại"));
 
         Product product = Product.builder()
                 .name(dto.getName())
                 .category(category)
                 .supplier(partner)
+                .price(dto.getPrice())
                 .shop(shop)
                 .description(dto.getDescription())
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
                 .build();
 
-        return productRepository.save(product);
+        productRepository.save(product);
+        Inventory inventory = Inventory.builder()
+                .product(product)
+                .quantity(dto.getQuantity())
+                .zone(zone)
+                .createdBy(currentUser)
+                .build();
+        inventoryRepository.save(inventory);
+        return inventory.getProduct();
     }
 
-    public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
-        if (UserRoleUtils.isAdmin(currentUser)) {
-            return search.isEmpty()
-                    ? productRepository.findAll(PageRequest.of(page, pageSize))
-                    : productRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
-        }
+    public Page<Inventory> findProducts(int page, int pageSize, String search, User currentUser) {
 
         Shop shop = currentUser.getShop();
-
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage products!");
         }
         return search.isEmpty()
-                ? productRepository.findByShopId(currentUser.getShop().getId(), PageRequest.of(page, pageSize))
-                : productRepository.findByShopIdAndNameContainingIgnoreCase(currentUser.getShop().getId(), search,
+                ? inventoryRepository.findByProduct_ShopId(currentUser.getShop().getId(),
+                        PageRequest.of(page, pageSize))
+                : inventoryRepository.findByProduct_ShopIdAndProduct_NameContainingIgnoreCase(
+                        currentUser.getShop().getId(), search,
                         PageRequest.of(page, pageSize));
     }
 
