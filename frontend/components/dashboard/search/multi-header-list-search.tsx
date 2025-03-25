@@ -1,10 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Search, XIcon } from "lucide-react";
 import { useState } from "react";
 
-type Item = { filterSearch?: string; placeholder?: string; name: string };
+type Item = {
+  filterSearch?: string;
+  name: string;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement> & { label?: string };
+};
 
 type InputSearchProps = {
   setSearch: (search: string) => void;
@@ -14,56 +19,61 @@ type InputSearchProps = {
 type Props = {
   items: Item[];
   onSearchClick: (items: { search: string; name: string }[]) => void;
+  children?: React.ReactNode;
 };
 
 const InputSearch = ({
   setSearch,
   search,
-  placeholder,
   filterSearch,
+  inputProps,
 }: InputSearchProps) => {
   const resetSearch = () => {
     setSearch("");
   };
 
   return (
-    <div className="my-2 relative">
-      <div className="flex gap-1">
-        <Input
-          placeholder={placeholder}
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-          onBlur={() => {
-            if (filterSearch && !search) {
-              setSearch(filterSearch);
-            }
-          }}
-        />
+    <div className="mt-2">
+      <Label>{inputProps?.label}</Label>
+      <div className="relative">
+        <div className="flex gap-1">
+          <Input
+            {...inputProps}
+            placeholder={inputProps?.placeholder}
+            value={!!search ? search : ""}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            onBlur={() => {
+              if (filterSearch && !search) {
+                setSearch(filterSearch);
+              }
+            }}
+          />
+        </div>
+        <Button
+          size="icon"
+          className={cn(
+            "rounded-full h-4 w-4 absolute right-2 top-[50%] transform -translate-y-1/2",
+            search ? "block" : "hidden"
+          )}
+          variant="secondary"
+          onClick={resetSearch}
+        >
+          <XIcon />
+        </Button>
       </div>
-      <Button
-        size="icon"
-        className={cn(
-          "rounded-full h-4 w-4 absolute right-2 top-[50%] transform -translate-y-1/2",
-          search ? "block" : "hidden"
-        )}
-        variant="secondary"
-        onClick={resetSearch}
-      >
-        <XIcon />
-      </Button>
     </div>
   );
 };
 
-const MultiHeaderListSearch = ({ items, onSearchClick }: Props) => {
+const MultiHeaderListSearch = ({ items, onSearchClick, children }: Props) => {
   const [searchOptions, setSearchOptions] = useState<{
     [name: string]: string;
   }>(items.reduce((acc, item) => ({ ...acc, [item.name]: "" }), {}));
 
   return (
-    <div className="flex items-center gap-2 w-1/2">
+    <div className="flex items-center gap-2 w-2/3 my-2">
       {items.map((item, index) => {
         const setSearch = (search: string) => {
           setSearchOptions((prev) => ({ ...prev, [item.name]: search }));
@@ -77,9 +87,10 @@ const MultiHeaderListSearch = ({ items, onSearchClick }: Props) => {
           />
         );
       })}
+      {children}
       <Button
         size="icon"
-        className="flex-shrink-0"
+        className="flex-shrink-0 self-end"
         onClick={() => {
           onSearchClick(
             Object.entries(searchOptions).map(([name, search]) => ({

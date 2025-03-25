@@ -47,6 +47,21 @@ public class ShopService {
         if (shopDTO.getAddress() != null) {
             shop.setAddress(shopDTO.getAddress());
         }
+        if (shopDTO.getBankAccount() != null) {
+            shop.setBankAccount(shopDTO.getBankAccount());
+        }
+        if (shopDTO.getBankName() != null) {
+            shop.setBankName(shopDTO.getBankName());
+        }
+        if (shopDTO.getPostalCode() != null) {
+            shop.setPostalCode(shopDTO.getPostalCode());
+        }
+        if (shopDTO.getSocialMedia() != null) {
+            shop.setSocialMedia(shopDTO.getSocialMedia());
+        }
+        if (shopDTO.getWebsite() != null) {
+            shop.setWebsite(shopDTO.getWebsite());
+        }
         return shopRepository.save(shop);
     }
 

@@ -41,7 +41,7 @@ import {
 } from "@/components/ui/select";
 import { useAllProducts } from "@/services/hooks/products";
 import { useCreateReceipt } from "@/hooks/mutations/receipt";
-import { ToastTitle } from "@/lib/constants";
+import { appearanceNone, ToastTitle } from "@/lib/constants";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { useRouter } from "next/navigation";
@@ -170,13 +170,6 @@ const ReceiptForm = ({ receipt }: Props) => {
     }
     return `${zone.name}/${zone.warehouseName}`;
   };
-
-  const className = `
-        appearance-none
-        [moz-appearance:textfield]
-        [&::-webkit-inner-spin-button]:appearance-none
-        [&::-webkit-outer-spin-button]:appearance-none
-    `;
 
   return (
     <Form {...form}>
@@ -309,7 +302,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                         {isCreateReceipt ? (
                           <InputCurrency
                             name={`items.${index}.price`}
-                            className={className}
+                            className={appearanceNone}
                             readOnly={!isCreateReceipt}
                             placeholder="Ví dụ: 10000"
                           />
@@ -335,7 +328,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                                 {isCreateReceipt ? (
                                   <Input
                                     {...field}
-                                    className={cn("w-[86px]", className)}
+                                    className={cn("w-[86px]", appearanceNone)}
                                     type="number"
                                     placeholder="Ví dụ: 10"
                                   />

@@ -19,6 +19,7 @@ import lombok.Setter;
 public class ZoneDTO {
     private Long id;
     private String name;
+    private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long warehouseId;
@@ -30,6 +31,7 @@ public class ZoneDTO {
         return ZoneDTO.builder()
                 .id(zone.getId())
                 .name(zone.getName())
+                .description(zone.getDescription())
                 .createdAt(zone.getCreatedAt())
                 .updatedAt(zone.getUpdatedAt())
                 .warehouseId(zone.getWarehouse().getId())

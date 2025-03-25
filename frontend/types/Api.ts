@@ -11,6 +11,7 @@
 
 export interface ZoneRequestDTO {
   name?: string;
+  description?: string;
   /** @format int64 */
   warehouseId: number;
 }
@@ -31,6 +32,7 @@ export interface ZoneDTO {
   /** @format int64 */
   id?: number;
   name?: string;
+  description?: string;
   /** @format date-time */
   createdAt?: string;
   /** @format date-time */
@@ -120,6 +122,11 @@ export interface UserDTO {
 export interface UpdateShopDTO {
   name?: string;
   address?: string;
+  bankAccount?: string;
+  bankName?: string;
+  postalCode?: string;
+  socialMedia?: string;
+  website?: string;
 }
 
 export interface BaseResponseShopDTO {
@@ -135,16 +142,18 @@ export interface BaseResponseShopDTO {
 }
 
 export interface ShopDTO {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  address?: string;
-  users?: UserDTO[];
+  id: number;
+  name: string;
+  address: string;
   createdBy?: UserDTO;
-  /** @format date-time */
   createdAt: string;
-  /** @format date-time */
   updatedAt?: string;
+  bankAccount?: string;
+  bankName?: string;
+  postalCode?: string;
+  socialMedia?: string;
+  website?: string;
+  users?: UserDTO[];
 }
 
 export interface ProductRequestDTO {
@@ -973,11 +982,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
-  /** @format int32 */
-  pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  paged?: boolean;
   unpaged?: boolean;
 }
 
@@ -1912,6 +1921,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         pageSize?: number;
         /** @default "" */
         search?: string;
+        /** @default "" */
+        address?: string;
+        /** @default "" */
+        zone?: string;
+        /** @default "" */
+        startDate?: string;
+        /** @default "" */
+        endDate?: string;
       },
       params: RequestParams = {},
     ) =>

@@ -26,15 +26,20 @@ import {
 import FacilityForm from "./facility-form";
 import { format } from "date-fns";
 import Link from "next/link";
-import MultiHeaderListSearch from "../search/multi-theader-list-search";
+import FacilityHeader from "./facility-header";
 
-type FilterSearchType = {
+export type FacilityFilterSearchType = {
   search: string;
   address: string;
+  zone?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 const Facilities = () => {
-  const [filter, setFilter] = useState<{ page: number } & FilterSearchType>({
+  const [filter, setFilter] = useState<
+    { page: number } & FacilityFilterSearchType
+  >({
     page: 0,
     search: "",
     address: "",
@@ -44,68 +49,39 @@ const Facilities = () => {
   );
 
   const handleNavigatePage = (page: number) => {
-    setFilter((prev) => ({
-      page: prev.page + page,
-      search: prev.search,
-      address: prev.address,
+    setFilter(({ page: prevPage, ...rest }) => ({
+      page: prevPage + page,
+      ...rest,
     }));
   };
   const [updateWarehouse, setUpdateWarehouse] = useState<WarehouseDTO>();
 
   const handleNavigateFullPage = (page: number) => {
     const isRight = page > 0;
+    const { page: _, ...rest } = filter;
+    void _;
     setFilter({
       page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
-      search: filter.search,
-      address: filter.address,
+      ...rest,
     });
-  };
-
-  const factoryItems = (props: {
-    placeholder?: string;
-    name: keyof FilterSearchType;
-  }) => {
-    return {
-      filterSearch: filter[props.name],
-      placeholder: props.placeholder,
-      name: props.name,
-    };
   };
 
   return (
     <Fragment>
-      <div className="flex items-center justify-between">
-        <MultiHeaderListSearch
-          items={[
-            factoryItems({ placeholder: "Nhập tên kho", name: "search" }),
-            factoryItems({
-              placeholder: "Nhập địa chỉ kho",
-              name: "address",
-            }),
-          ]}
-          onSearchClick={(items) => {
-            const searchItems: Record<keyof FilterSearchType, string> =
-              items.reduce(
-                (acc, cur) => {
-                  return {
-                    ...acc,
-                    [cur.name]: cur.search,
-                  };
-                },
-                {} as Record<keyof FilterSearchType, string>
-              );
-            setFilter({ page: 0, ...searchItems });
-          }}
-        />
+      <FacilityHeader
+        filter={filter}
+        onFilter={(items) => setFilter({ page: 0, ...items })}
+      >
         <Button
           onClick={() => {
             setUpdateWarehouse({} as WarehouseDTO);
           }}
+          className="self-end"
         >
           <Plus />
           Tạo kho
         </Button>
-      </div>
+      </FacilityHeader>
       <Dialog
         open={!!updateWarehouse}
         onOpenChange={(isOpen) => {

@@ -19,6 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { ToastTitle } from "@/lib/constants";
+import { Textarea } from "@/components/ui/textarea";
 
 type Props = {
   onClose?: () => void;
@@ -29,6 +30,7 @@ type Props = {
 const schemaFields = {
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
   warehouseId: z.coerce.number().min(1, { message: "Kho là bắt buộc" }),
+  description: z.string().optional(),
 };
 
 const ZoneForm = ({ zone, onClose, warehouse }: Props) => {
@@ -37,6 +39,7 @@ const ZoneForm = ({ zone, onClose, warehouse }: Props) => {
     defaultValues: {
       name: zone?.name || "",
       warehouseId: warehouseId,
+      description: zone?.description || "",
     },
     resolver: zodResolver(z.object(schemaFields)),
   });
@@ -113,6 +116,25 @@ const ZoneForm = ({ zone, onClose, warehouse }: Props) => {
                 <FormLabel>Tên</FormLabel>
                 <FormControl>
                   <Input placeholder="Ví dụ: Bên trái kho" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả</FormLabel>
+                <FormControl>
+                  <Textarea
+                    rows={3}
+                    placeholder="Ví dụ: Khu chứa gạo nếp"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
