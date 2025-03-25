@@ -1395,7 +1395,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     getProduct: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseResponseProductDTO, any>({
+      this.request<BaseResponseInventoryResponseDTO, any>({
         path: `/api/products/${id}`,
         method: "GET",
         secure: true,

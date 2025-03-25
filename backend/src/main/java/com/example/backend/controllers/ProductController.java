@@ -67,11 +67,11 @@ public class ProductController {
 
     @Operation(summary = "Get a product", description = "Fetch a product by ID.")
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<ResponseProductDTO>> getProduct(@PathVariable Long id,
+    public ResponseEntity<BaseResponse<InventoryResponseDTO>> getProduct(@PathVariable Long id,
             @CurrentUser User currentUser) {
         try {
-            Product product = productService.findProductById(id, currentUser);
-            return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(product), "Success!"));
+            Inventory item = productService.findProductById(id, currentUser);
+            return ResponseEntity.ok(BaseResponse.success(InventoryResponseDTO.fromEntity(item), "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

@@ -47,6 +47,13 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Khu vực trong kho không tồn tại"));
 
+        Inventory inventory = inventoryRepository.findByZone_Id(zone.getId())
+                .orElse(null);
+        if (inventory != null) {
+            throw new IllegalArgumentException(
+                    "Sản phẩm đã tồn tại trong khu vực này! Vui lòng chọn khu vực khác hoặc tạo khu vực mới.");
+        }
+
         Product product = Product.builder()
                 .name(dto.getName())
                 .category(category)
@@ -58,7 +65,7 @@ public class ProductService {
                 .build();
 
         productRepository.save(product);
-        Inventory inventory = Inventory.builder()
+        inventory = Inventory.builder()
                 .product(product)
                 .quantity(dto.getQuantity())
                 .zone(zone)
@@ -115,20 +122,20 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product findProductById(Long id, User currentUser) {
-        Product product = productRepository.findById(id)
+    public Inventory findProductById(Long id, User currentUser) {
+        Inventory inventory = inventoryRepository.findByProductId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
         if (UserRoleUtils.isAdmin(currentUser)) {
-            return product;
+            return inventory;
         }
         Shop shop = currentUser.getShop();
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage products!");
         }
 
-        if (product.getShop().getId() != shop.getId()) {
+        if (inventory.getProduct().getShop().getId() != shop.getId()) {
             throw new IllegalArgumentException("You can only view products from your own shop!");
         }
-        return product;
+        return inventory;
     }
 }

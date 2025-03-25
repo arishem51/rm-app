@@ -11,26 +11,28 @@ import com.example.backend.entities.Inventory;
 import jakarta.persistence.LockModeType;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
-    Optional<Inventory> findById(Long id);
+        Optional<Inventory> findById(Long id);
 
-    Page<Inventory> findByProduct_ShopId(Long shopId, Pageable pageable);
+        Page<Inventory> findByProduct_ShopId(Long shopId, Pageable pageable);
 
-    Page<Inventory> findByProduct_ShopIdAndProduct_NameContainingIgnoreCase(Long shopId, String name,
-            Pageable pageable);
+        Optional<Inventory> findByZone_Id(Long zoneId);
 
-    Optional<Inventory> findByProductId(Long id);
+        Page<Inventory> findByProduct_ShopIdAndProduct_NameContainingIgnoreCase(Long shopId, String name,
+                        Pageable pageable);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<Inventory> findByIdAndZoneId(Long id, Long zoneId);
+        Optional<Inventory> findByProductId(Long id);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<Inventory> findByZone_IdAndProduct_Id(Long zoneId, Long productId);
+        @Lock(LockModeType.PESSIMISTIC_WRITE)
+        Optional<Inventory> findByIdAndZoneId(Long id, Long zoneId);
 
-    Page<Inventory> findByZone_Warehouse_Shop_Id(Long shopId, Pageable pageable);
+        @Lock(LockModeType.PESSIMISTIC_WRITE)
+        Optional<Inventory> findByZone_IdAndProduct_Id(Long zoneId, Long productId);
 
-    List<Inventory> findByZone_Warehouse_Shop_Id(Long shopId);
+        Page<Inventory> findByZone_Warehouse_Shop_Id(Long shopId, Pageable pageable);
 
-    Page<Inventory> findByZone_Warehouse_Shop_IdAndProduct_NameContainingIgnoreCase(Long shopId,
-            String name,
-            Pageable pageable);
+        List<Inventory> findByZone_Warehouse_Shop_Id(Long shopId);
+
+        Page<Inventory> findByZone_Warehouse_Shop_IdAndProduct_NameContainingIgnoreCase(Long shopId,
+                        String name,
+                        Pageable pageable);
 }

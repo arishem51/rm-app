@@ -229,7 +229,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/BaseResponseResponseProductDTO"
+                  "$ref": "#/components/schemas/BaseResponseInventoryResponseDTO"
                 }
               }
             }

@@ -36,7 +36,7 @@ public class Inventory {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     @JoinColumn(name = "zone_id", nullable = false)
     private Zone zone;
 
