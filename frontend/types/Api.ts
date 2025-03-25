@@ -122,6 +122,11 @@ export interface UserDTO {
 export interface UpdateShopDTO {
   name?: string;
   address?: string;
+  bankAccount?: string;
+  bankName?: string;
+  postalCode?: string;
+  socialMedia?: string;
+  website?: string;
 }
 
 export interface BaseResponseShopDTO {
@@ -137,16 +142,18 @@ export interface BaseResponseShopDTO {
 }
 
 export interface ShopDTO {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  address?: string;
-  users?: UserDTO[];
+  id: number;
+  name: string;
+  address: string;
   createdBy?: UserDTO;
-  /** @format date-time */
   createdAt: string;
-  /** @format date-time */
   updatedAt?: string;
+  bankAccount?: string;
+  bankName?: string;
+  postalCode?: string;
+  socialMedia?: string;
+  website?: string;
+  users?: UserDTO[];
 }
 
 export interface ProductRequestDTO {

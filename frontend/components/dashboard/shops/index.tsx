@@ -51,7 +51,7 @@ const Shops = () => {
           }
         }}
       >
-        <DialogTitle className="hidden">Create Modal</DialogTitle>
+        <DialogTitle className="hidden">Update Shop</DialogTitle>
         <DialogContent>
           <ShopForm
             onClose={() => {
