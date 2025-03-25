@@ -11,6 +11,7 @@
 
 export interface ZoneRequestDTO {
   name?: string;
+  description?: string;
   /** @format int64 */
   warehouseId: number;
 }
@@ -31,6 +32,7 @@ export interface ZoneDTO {
   /** @format int64 */
   id?: number;
   name?: string;
+  description?: string;
   /** @format date-time */
   createdAt?: string;
   /** @format date-time */
@@ -973,11 +975,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
-  /** @format int32 */
-  pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  paged?: boolean;
   unpaged?: boolean;
 }
 
@@ -1916,6 +1918,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         address?: string;
         /** @default "" */
         zone?: string;
+        /** @default "" */
+        startDate?: string;
+        /** @default "" */
+        endDate?: string;
       },
       params: RequestParams = {},
     ) =>

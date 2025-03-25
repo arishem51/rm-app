@@ -230,10 +230,15 @@ const FacilityForm = ({
               </FormItem>
             )}
           />
+          <DialogFooter className="mt-2">
+            <Button type="submit" disabled={isPending}>
+              Lưu thông tin kho hàng
+            </Button>
+          </DialogFooter>
           {detailsForm && (
             <>
               <div className="mt-8 mb-2 flex items-center justify-between">
-                <FormLabel>Khu vực trong kho</FormLabel>
+                <FormLabel className="text-lg">Khu vực trong kho</FormLabel>
                 <Button
                   onClick={() => {
                     setZone({} as ZoneDTO);
@@ -249,6 +254,7 @@ const FacilityForm = ({
                     <TableRow>
                       <TableHead>STT</TableHead>
                       <TableHead>Tên</TableHead>
+                      <TableHead>Mô tả</TableHead>
                       <TableHead className="text-right">Hành động</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -257,6 +263,7 @@ const FacilityForm = ({
                       <TableRow key={zone.id}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{zone.name}</TableCell>
+                        <TableCell>{zone.description}</TableCell>
                         <TableCell className="text-right">
                           <Button
                             onClick={() => {
@@ -279,11 +286,6 @@ const FacilityForm = ({
               )}
             </>
           )}
-          <DialogFooter className="mt-2">
-            <Button type="submit" disabled={isPending}>
-              Lưu
-            </Button>
-          </DialogFooter>
         </div>
       </form>
     </Form>
