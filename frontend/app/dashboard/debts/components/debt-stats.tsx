@@ -5,10 +5,18 @@ import { ApiQuery } from "@/services/query";
 import { toCurrency } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
+import { DebtStatistics } from "@/types/debt";
+import { mapDebtStatistics } from "@/lib/mappers/debt";
 
 export default function DebtStats() {
   const debtStatsQuery = ApiQuery.debts.getDebtStatistics();
-  const { data: stats, isLoading } = useQuery(debtStatsQuery);
+  const { data: response, isLoading } = useQuery(debtStatsQuery);
+  const defaultStats: DebtStatistics = {
+    totalOutstanding: 0,
+    overdueAmount: 0,
+    upcomingPayments: 0
+  };
+  const stats = response?.data ? mapDebtStatistics(response.data) : defaultStats;
 
   return (
     <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
@@ -35,7 +43,7 @@ export default function DebtStats() {
             <Skeleton className="h-8 w-36" />
           ) : (
             <div className="text-2xl font-bold">
-              {toCurrency(stats?.totalOutstanding || 0)}
+              {toCurrency(stats.totalOutstanding)}
             </div>
           )}
         </CardContent>
@@ -67,7 +75,7 @@ export default function DebtStats() {
             <Skeleton className="h-8 w-36" />
           ) : (
             <div className="text-2xl font-bold text-red-500">
-              {toCurrency(stats?.overdueAmount || 0)}
+              {toCurrency(stats.overdueAmount)}
             </div>
           )}
         </CardContent>
@@ -97,11 +105,11 @@ export default function DebtStats() {
             <Skeleton className="h-8 w-36" />
           ) : (
             <div className="text-2xl font-bold">
-              {toCurrency(stats?.upcomingPayments || 0)}
+              {toCurrency(stats.upcomingPayments)}
             </div>
           )}
         </CardContent>
       </Card>
     </div>
   );
-} 
+}

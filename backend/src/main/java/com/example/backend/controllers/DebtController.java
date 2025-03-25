@@ -1,9 +1,7 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dto.debt.CreateDebtNoteDTO;
-import com.example.backend.dto.debt.CreateDebtPaymentDTO;
-import com.example.backend.dto.debt.DebtStatisticsDTO;
-import com.example.backend.dto.debt.UpdateDebtNoteDTO;
+import com.example.backend.dto.BaseResponse;
+import com.example.backend.dto.debt.*;
 import com.example.backend.entities.DebtNote;
 import com.example.backend.entities.DebtPayment;
 import com.example.backend.enums.DebtStatus;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/debts")
@@ -24,57 +23,93 @@ public class DebtController {
     @Autowired
     private DebtService debtService;
 
+    @Autowired
+    private DebtMapper debtMapper;
+
     @GetMapping
-    public ResponseEntity<List<DebtNote>> getDebtNotes(
+    public ResponseEntity<BaseResponse<List<DebtNoteResponseDTO>>> getDebtNotes(
             @RequestParam(required = false) DebtStatus status,
             @RequestParam(required = false) Long partnerId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
-        
-        List<DebtNote> debtNotes = debtService.getDebtNotes(status, partnerId, fromDate, toDate);
-        return ResponseEntity.ok(debtNotes);
+
+        try {
+            List<DebtNote> debtNotes = debtService.getDebtNotes(status, partnerId, fromDate, toDate);
+            List<DebtNoteResponseDTO> dtoList = debtNotes.stream()
+                    .map(debtMapper::toDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(new BaseResponse<>(dtoList, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @PostMapping
-    public ResponseEntity<DebtNote> createDebtNote(@RequestBody CreateDebtNoteDTO dto) {
-        DebtNote debtNote = debtService.createDebtNote(dto);
-        return new ResponseEntity<>(debtNote, HttpStatus.CREATED);
+    public ResponseEntity<BaseResponse<DebtNoteResponseDTO>> createDebtNote(@RequestBody CreateDebtNoteDTO dto) {
+        try {
+            DebtNote debtNote = debtService.createDebtNote(dto);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new BaseResponse<>(debtMapper.toDTO(debtNote), "Debt note created successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DebtNote> getDebtNoteById(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<DebtNoteResponseDTO>> getDebtNoteById(@PathVariable Long id) {
         return debtService.getDebtNoteById(id)
-                .map(ResponseEntity::ok)
+                .map(debtNote -> ResponseEntity.ok(new BaseResponse<>(debtMapper.toDTO(debtNote), "Success!")))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DebtNote> updateDebtNote(@PathVariable Long id, @RequestBody UpdateDebtNoteDTO dto) {
-        DebtNote updatedDebtNote = debtService.updateDebtNote(id, dto);
-        return ResponseEntity.ok(updatedDebtNote);
+    public ResponseEntity<BaseResponse<DebtNoteResponseDTO>> updateDebtNote(
+            @PathVariable Long id,
+            @RequestBody UpdateDebtNoteDTO dto) {
+        try {
+            DebtNote updatedDebtNote = debtService.updateDebtNote(id, dto);
+            return ResponseEntity.ok(new BaseResponse<>(debtMapper.toDTO(updatedDebtNote), "Debt note updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDebtNote(@PathVariable Long id) {
-        debtService.deleteDebtNote(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<BaseResponse<Void>> deleteDebtNote(@PathVariable Long id) {
+        try {
+            debtService.deleteDebtNote(id);
+            return ResponseEntity.ok(new BaseResponse<>(null, "Debt note deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}/payments")
-    public ResponseEntity<List<DebtPayment>> getDebtPayments(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<List<DebtPaymentResponseDTO>>> getDebtPayments(@PathVariable Long id) {
         List<DebtPayment> payments = debtService.getDebtPayments(id);
-        return ResponseEntity.ok(payments);
+        List<DebtPaymentResponseDTO> dtoList = payments.stream()
+                .map(debtMapper::toPaymentDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(new BaseResponse<>(dtoList, "Success!"));
     }
 
     @PostMapping("/{id}/payments")
-    public ResponseEntity<DebtPayment> createDebtPayment(@PathVariable Long id, @RequestBody CreateDebtPaymentDTO dto) {
-        DebtPayment payment = debtService.createDebtPayment(id, dto);
-        return new ResponseEntity<>(payment, HttpStatus.CREATED);
+    public ResponseEntity<BaseResponse<DebtPaymentResponseDTO>> createDebtPayment(
+            @PathVariable Long id,
+            @RequestBody CreateDebtPaymentDTO dto) {
+        try {
+            DebtPayment payment = debtService.createDebtPayment(id, dto);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new BaseResponse<>(debtMapper.toPaymentDTO(payment), "Payment created successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
     }
 
     @GetMapping("/statistics")
-    public ResponseEntity<DebtStatisticsDTO> getDebtStatistics() {
+    public ResponseEntity<BaseResponse<DebtStatisticsDTO>> getDebtStatistics() {
         DebtStatisticsDTO statistics = debtService.getDebtStatistics();
-        return ResponseEntity.ok(statistics);
+        return ResponseEntity.ok(new BaseResponse<>(statistics, "Success!"));
     }
-} 
+}

@@ -8,10 +8,12 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import AddDebtDialog from "./components/add-debt-dialog";
 import { useQuery } from "@tanstack/react-query";
+import { DebtNote, DebtStatus } from "@/types/debt";
+import { mapDebtNotes } from "@/lib/mappers/debt";
 
 export default function DebtsPage() {
   const [openAddDebt, setOpenAddDebt] = useState(false);
-  const [status, setStatus] = useState<"PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE" | undefined>(undefined);
+  const [status, setStatus] = useState<DebtStatus | undefined>(undefined);
   const [partnerId, setPartnerId] = useState<number | undefined>(undefined);
   const [fromDate, setFromDate] = useState<string | undefined>(undefined);
   const [toDate, setToDate] = useState<string | undefined>(undefined);
@@ -23,11 +25,11 @@ export default function DebtsPage() {
     toDate
   });
   
-  const { data: debtsResponse, isLoading, refetch } = useQuery(debtQuery);
-  const debts = Array.isArray(debtsResponse) ? debtsResponse : [];
+  const { data: response, isLoading, refetch } = useQuery(debtQuery);
+  const debts: DebtNote[] = response?.data ? mapDebtNotes(response.data) : [];
 
   const handleFilterChange = (
-    newStatus?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE",
+    newStatus?: DebtStatus,
     newPartnerId?: number,
     newFromDate?: string,
     newToDate?: string
@@ -71,4 +73,4 @@ export default function DebtsPage() {
       />
     </div>
   );
-} 
+}

@@ -17,21 +17,21 @@ public class DebtPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
     @JoinColumn(name = "debt_note_id")
     @JsonBackReference
     private DebtNote debtNote;
-    
+
     private Double amount;
     private LocalDate paymentDate;
     private String paymentMethod;
     private String receiptNumber;
     private String notes;
     private LocalDateTime createdAt;
-    
+
     @PrePersist
-    public void prePersist() {
+    protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
-} 
+}

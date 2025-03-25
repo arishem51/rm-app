@@ -19,4 +19,4 @@ public class UpdateDebtNoteDTO {
     private String description;
     private List<String> attachments;
     private String notes;
-} 
+}

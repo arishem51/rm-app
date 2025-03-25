@@ -4,7 +4,9 @@ import {
   CreateDebtNoteDTO,
   CreateDebtPaymentDTO,
   UpdateDebtNoteDTO,
-} from "@/types/Api";
+  DebtNote,
+  DebtPayment
+} from "@/types/debt";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateDebtNote = () => {
@@ -14,7 +16,7 @@ export const useCreateDebtNote = () => {
     mutationFn: async (data: CreateDebtNoteDTO) => {
       try {
         const response = await apiClient.createDebtNote(data);
-        return response;
+        return response.data as DebtNote;
       } catch (error) {
         throw createHttpResponseError(error);
       }
@@ -32,7 +34,7 @@ export const useUpdateDebtNote = () => {
     mutationFn: async ({ id, ...data }: UpdateDebtNoteDTO & { id: number }) => {
       try {
         const response = await apiClient.updateDebtNote(id, data);
-        return response;
+        return response.data as DebtNote;
       } catch (error) {
         throw createHttpResponseError(error);
       }
@@ -68,7 +70,7 @@ export const useCreateDebtPayment = () => {
     mutationFn: async ({ debtId, ...data }: CreateDebtPaymentDTO & { debtId: number }) => {
       try {
         const response = await apiClient.createDebtPayment(debtId, data);
-        return response;
+        return response.data as DebtPayment;
       } catch (error) {
         throw createHttpResponseError(error);
       }
@@ -79,4 +81,4 @@ export const useCreateDebtPayment = () => {
       queryClient.invalidateQueries({ queryKey: ["debts"] });
     },
   });
-}; 
+};

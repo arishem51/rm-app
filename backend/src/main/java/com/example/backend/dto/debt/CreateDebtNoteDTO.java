@@ -14,9 +14,9 @@ public class CreateDebtNoteDTO {
     private Long partnerId;
     private Double amount;
     private LocalDate dueDate;
-    private String source; // ORDER or MANUAL
+    private String source;
     private Long orderId;
     private String description;
     private List<String> attachments;
     private String notes;
-} 
+}

@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DebtNote, Partner } from "@/types/Api";
+
 import { toCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { 
@@ -18,7 +18,6 @@ import {
   Search, 
   Trash, 
   CreditCard,
-  Calendar,
   X 
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -46,12 +45,13 @@ import { vi } from "date-fns/locale";
 import DebtPaymentDialog from "./debt-payment-dialog";
 import DeleteDebtDialog from "./delete-debt-dialog";
 import EditDebtDialog from "./edit-debt-dialog";
+import { DebtNote, DebtStatus } from "@/types/debt";
 
 type DebtListProps = {
   debts: DebtNote[];
   isLoading: boolean;
   onFilterChange: (
-    status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE",
+    status?: DebtStatus,
     partnerId?: number,
     fromDate?: string,
     toDate?: string
@@ -70,7 +70,7 @@ export default function DebtList({
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [searchPartner, setSearchPartner] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
+  const [selectedStatus, setSelectedStatus] = useState<DebtStatus | undefined>(undefined);
   const [fromDate, setFromDate] = useState<string | undefined>(undefined);
   const [toDate, setToDate] = useState<string | undefined>(undefined);
 
@@ -78,7 +78,7 @@ export default function DebtList({
   const { data: partnersResponse } = useQuery(partnersQuery);
   const partners = Array.isArray(partnersResponse?.data) ? partnersResponse?.data : [];
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: DebtStatus) => {
     switch (status) {
       case "PENDING":
         return "bg-yellow-500";
@@ -93,7 +93,7 @@ export default function DebtList({
     }
   };
 
-  const getStatusText = (status: string) => {
+  const getStatusText = (status: DebtStatus) => {
     switch (status) {
       case "PENDING":
         return "Đang chờ";
@@ -109,9 +109,10 @@ export default function DebtList({
   };
 
   const handleStatusChange = (value: string) => {
-    setSelectedStatus(value === "all" ? undefined : value as any);
+    const status = value === "all" ? undefined : value as DebtStatus;
+    setSelectedStatus(status);
     onFilterChange(
-      value === "all" ? undefined : value as any,
+      status,
       findPartnerId(searchPartner),
       fromDate,
       toDate
@@ -120,7 +121,7 @@ export default function DebtList({
 
   const handlePartnerSearch = () => {
     onFilterChange(
-      selectedStatus as any,
+      selectedStatus,
       findPartnerId(searchPartner),
       fromDate,
       toDate
@@ -131,7 +132,7 @@ export default function DebtList({
     setFromDate(startDate);
     setToDate(endDate);
     onFilterChange(
-      selectedStatus as any,
+      selectedStatus,
       findPartnerId(searchPartner),
       startDate,
       endDate
@@ -268,8 +269,8 @@ export default function DebtList({
                 <TableRow key={debt.id}>
                   <TableCell>#{debt.id}</TableCell>
                   <TableCell>
-                    <div className="font-medium">{debt.partner?.name}</div>
-                    <div className="text-sm text-muted-foreground">{debt.partner?.phone}</div>
+                    <div className="font-medium">{debt.partnerName}</div>
+                    <div className="text-sm text-muted-foreground">{debt.partnerPhone}</div>
                   </TableCell>
                   <TableCell>{toCurrency(debt.amount || 0)}</TableCell>
                   <TableCell>{toCurrency(debt.paidAmount || 0)}</TableCell>
@@ -277,8 +278,8 @@ export default function DebtList({
                     {debt.dueDate ? format(new Date(debt.dueDate), 'dd/MM/yyyy', { locale: vi }) : 'N/A'}
                   </TableCell>
                   <TableCell>
-                    <Badge className={getStatusColor(debt.status || 'PENDING')}>
-                      {getStatusText(debt.status || 'PENDING')}
+                    <Badge className={getStatusColor(debt.status)}>
+                      {getStatusText(debt.status)}
                     </Badge>
                   </TableCell>
                   <TableCell className="max-w-xs truncate">
@@ -338,7 +339,7 @@ export default function DebtList({
           <DeleteDebtDialog
             open={openDelete}
             onOpenChange={setOpenDelete}
-            debtId={selectedDebt.id || 0}
+            debtId={selectedDebt.id}
             onDeleted={onDebtUpdated}
           />
           
@@ -352,4 +353,4 @@ export default function DebtList({
       )}
     </div>
   );
-} 
+}

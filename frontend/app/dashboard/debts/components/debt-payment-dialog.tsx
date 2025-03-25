@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreateDebtPaymentDTO, DebtNote } from "@/types/Api";
+import { DebtNote, CreateDebtPaymentDTO } from "@/types/debt";
 import { useCreateDebtPayment } from "@/hooks/mutations/debt";
 import { toast } from "@/hooks/use-toast";
 import { toCurrency } from "@/lib/utils";
@@ -26,9 +26,12 @@ export default function DebtPaymentDialog({
   onPaymentAdded
 }: DebtPaymentDialogProps) {
   const today = new Date().toISOString().split('T')[0];
-  const [formData, setFormData] = useState<Partial<CreateDebtPaymentDTO>>({
+  const [formData, setFormData] = useState<CreateDebtPaymentDTO>({
+    amount: 0,
     paymentDate: today,
-    paymentMethod: "CASH"
+    paymentMethod: "CASH",
+    receiptNumber: "",
+    notes: ""
   });
 
   const createDebtPayment = useCreateDebtPayment();
@@ -40,7 +43,7 @@ export default function DebtPaymentDialog({
     }));
   };
 
-  const remainingAmount = (debt.amount || 0) - (debt.paidAmount || 0);
+  const remainingAmount = debt.amount - debt.paidAmount;
 
   const handleSubmit = async () => {
     if (!formData.amount || formData.amount <= 0) {
@@ -81,16 +84,19 @@ export default function DebtPaymentDialog({
 
     try {
       await createDebtPayment.mutateAsync({
-        debtId: debt.id!,
-        ...formData as CreateDebtPaymentDTO
+        debtId: debt.id,
+        ...formData
       });
       toast({
         title: "Thành công",
         description: "Đã thêm thanh toán mới",
       });
       setFormData({
+        amount: 0,
         paymentDate: today,
-        paymentMethod: "CASH"
+        paymentMethod: "CASH",
+        receiptNumber: "",
+        notes: ""
       });
       onPaymentAdded();
       onOpenChange(false);
@@ -113,9 +119,9 @@ export default function DebtPaymentDialog({
         <div className="grid gap-4 py-4">
           <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md">
             <div>
-              <p className="text-sm font-medium">Đối tác: {debt.partner?.name}</p>
-              <p className="text-sm text-muted-foreground">Tổng nợ: {toCurrency(debt.amount || 0)}</p>
-              <p className="text-sm text-muted-foreground">Đã thanh toán: {toCurrency(debt.paidAmount || 0)}</p>
+              <p className="text-sm font-medium">Đối tác: {debt.partnerName}</p>
+              <p className="text-sm text-muted-foreground">Tổng nợ: {toCurrency(debt.amount)}</p>
+              <p className="text-sm text-muted-foreground">Đã thanh toán: {toCurrency(debt.paidAmount)}</p>
             </div>
             <div className="text-right">
               <p className="text-sm font-medium">Còn lại</p>
@@ -139,7 +145,7 @@ export default function DebtPaymentDialog({
             <Input
               id="paymentDate"
               type="date"
-              value={formData.paymentDate || ""}
+              value={formData.paymentDate}
               onChange={(e) => handleChange("paymentDate", e.target.value)}
             />
           </div>
@@ -167,7 +173,7 @@ export default function DebtPaymentDialog({
             <Input
               id="receiptNumber"
               placeholder="Số biên lai"
-              value={formData.receiptNumber || ""}
+              value={formData.receiptNumber}
               onChange={(e) => handleChange("receiptNumber", e.target.value)}
             />
           </div>
@@ -177,7 +183,7 @@ export default function DebtPaymentDialog({
             <Textarea
               id="notes"
               placeholder="Ghi chú về thanh toán"
-              value={formData.notes || ""}
+              value={formData.notes}
               onChange={(e) => handleChange("notes", e.target.value)}
             />
           </div>
@@ -197,4 +203,4 @@ export default function DebtPaymentDialog({
       </DialogContent>
     </Dialog>
   );
-} 
+}

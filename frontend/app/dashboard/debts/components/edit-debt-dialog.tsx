@@ -10,7 +10,7 @@ import { ApiQuery } from "@/services/query";
 import { useQuery } from "@tanstack/react-query";
 import { useUpdateDebtNote } from "@/hooks/mutations/debt";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DebtNote, UpdateDebtNoteDTO } from "@/types/Api";
+import { DebtNote, UpdateDebtNoteDTO, DebtStatus } from "@/types/debt";
 import { toast } from "@/hooks/use-toast";
 
 interface EditDebtDialogProps {
@@ -26,19 +26,26 @@ export default function EditDebtDialog({
   debt,
   onUpdated
 }: EditDebtDialogProps) {
-  const [formData, setFormData] = useState<UpdateDebtNoteDTO>({});
+  const [formData, setFormData] = useState<UpdateDebtNoteDTO>({
+    partnerId: debt.partnerId,
+    amount: debt.amount,
+    dueDate: debt.dueDate,
+    status: debt.status,
+    description: debt.description,
+    attachments: debt.attachments,
+    notes: debt.notes
+  });
 
   useEffect(() => {
-    if (debt) {
-      setFormData({
-        partnerId: debt.partner?.id,
-        amount: debt.amount,
-        dueDate: debt.dueDate,
-        status: debt.status,
-        description: debt.description,
-        notes: debt.notes
-      });
-    }
+    setFormData({
+      partnerId: debt.partnerId,
+      amount: debt.amount,
+      dueDate: debt.dueDate,
+      status: debt.status,
+      description: debt.description,
+      attachments: debt.attachments,
+      notes: debt.notes
+    });
   }, [debt]);
 
   const partnersQuery = ApiQuery.partners.getPartners();
@@ -84,7 +91,7 @@ export default function EditDebtDialog({
 
     try {
       await updateDebtNote.mutateAsync({
-        id: debt.id!,
+        id: debt.id,
         ...formData
       });
       toast({
@@ -134,7 +141,7 @@ export default function EditDebtDialog({
             <Input
               id="amount"
               type="number"
-              value={formData.amount || ""}
+              value={formData.amount}
               onChange={(e) => handleChange("amount", parseFloat(e.target.value))}
             />
           </div>
@@ -144,7 +151,7 @@ export default function EditDebtDialog({
             <Input
               id="dueDate"
               type="date"
-              value={formData.dueDate || ""}
+              value={formData.dueDate}
               onChange={(e) => handleChange("dueDate", e.target.value)}
             />
           </div>
@@ -153,7 +160,7 @@ export default function EditDebtDialog({
             <Label htmlFor="status">Trạng thái</Label>
             <Select
               value={formData.status}
-              onValueChange={(value) => handleChange("status", value)}
+              onValueChange={(value) => handleChange("status", value as DebtStatus)}
             >
               <SelectTrigger id="status">
                 <SelectValue placeholder="Chọn trạng thái" />
@@ -172,7 +179,7 @@ export default function EditDebtDialog({
             <Textarea
               id="description"
               placeholder="Mô tả về khoản nợ"
-              value={formData.description || ""}
+              value={formData.description}
               onChange={(e) => handleChange("description", e.target.value)}
             />
           </div>
@@ -182,7 +189,7 @@ export default function EditDebtDialog({
             <Textarea
               id="notes"
               placeholder="Ghi chú bổ sung"
-              value={formData.notes || ""}
+              value={formData.notes}
               onChange={(e) => handleChange("notes", e.target.value)}
             />
           </div>
@@ -202,4 +209,4 @@ export default function EditDebtDialog({
       </DialogContent>
     </Dialog>
   );
-} 
+}

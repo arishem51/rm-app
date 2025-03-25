@@ -10,8 +10,8 @@ import { ApiQuery } from "@/services/query";
 import { useQuery } from "@tanstack/react-query";
 import { useCreateDebtNote } from "@/hooks/mutations/debt";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreateDebtNoteDTO } from "@/types/Api";
 import { toast } from "@/hooks/use-toast";
+import { CreateDebtNoteDTO } from "@/types/debt";
 
 interface AddDebtDialogProps {
   open: boolean;
