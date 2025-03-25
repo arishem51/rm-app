@@ -295,7 +295,7 @@ const ShopForm = ({ onClose, shop }: Props) => {
               htmlFor="shopImage"
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
             >
-              Tải lên hình ảnh
+              Tải lên hình ảnh cửa hàng
             </label>
             <input
               id="shopImage"
