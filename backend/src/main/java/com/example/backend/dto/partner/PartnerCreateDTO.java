@@ -26,4 +26,5 @@ public class PartnerCreateDTO {
     private String address;
     private String website;
     private String description;
+    private boolean canHaveDebt;
 }

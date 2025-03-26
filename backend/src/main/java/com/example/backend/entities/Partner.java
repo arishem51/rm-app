@@ -37,7 +37,10 @@ public class Partner {
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
 
-    @ManyToOne()
+    @Column(name = "can_have_debt", nullable = false)
+    private boolean canHaveDebt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
