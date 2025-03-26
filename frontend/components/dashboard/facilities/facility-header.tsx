@@ -73,7 +73,6 @@ const FacilityHeader = ({ filter, onFilter, children }: Props) => {
               },
               {} as Record<keyof FacilityFilterSearchType, string>
             );
-          console.log(date);
           onFilter({
             ...searchItems,
             startDate: date?.from ? format(date.from, "yyyy-MM-dd") : "",

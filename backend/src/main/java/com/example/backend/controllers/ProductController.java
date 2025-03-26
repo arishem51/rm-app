@@ -40,9 +40,16 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String price,
+            @RequestParam(defaultValue = "") String quantity,
+            @RequestParam(defaultValue = "") String warehouseId,
+            @RequestParam(defaultValue = "") String zoneId,
+            @RequestParam(defaultValue = "") String categoryId,
+            @RequestParam(defaultValue = "") String supplierId,
             @CurrentUser User user) {
         try {
-            Page<Inventory> products = productService.findProducts(page, pageSize, search, user);
+            Page<Inventory> products = productService.findProducts(page, pageSize, search, user, price, quantity,
+                    warehouseId, zoneId, categoryId, supplierId);
             PaginateResponse<InventoryResponseDTO> response = new PaginateResponse<>(
                     products.map(InventoryResponseDTO::fromEntity));
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -75,18 +76,31 @@ public class ProductService {
         return inventory.getProduct();
     }
 
-    public Page<Inventory> findProducts(int page, int pageSize, String search, User currentUser) {
-
+    public Page<Inventory> findProducts(int page, int pageSize, String search, User currentUser, String price,
+            String quantity, String warehouseId, String zoneId, String categoryID, String supplierID) {
         Shop shop = currentUser.getShop();
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage products!");
         }
-        return search.isEmpty()
-                ? inventoryRepository.findByProduct_ShopId(currentUser.getShop().getId(),
-                        PageRequest.of(page, pageSize))
-                : inventoryRepository.findByProduct_ShopIdAndProduct_NameContainingIgnoreCase(
-                        currentUser.getShop().getId(), search,
-                        PageRequest.of(page, pageSize));
+
+        PageRequest pageable = PageRequest.of(page, pageSize);
+
+        // Chuyển giá trị nếu có
+        BigDecimal parsedPrice = price.isEmpty() ? null : new BigDecimal(price);
+        Integer parsedQuantity = quantity.isEmpty() ? null : Integer.valueOf(quantity);
+        Long parsedWarehouseId = warehouseId.isEmpty() ? null : Long.valueOf(warehouseId);
+        Long parsedZoneId = zoneId.isEmpty() ? null : Long.valueOf(zoneId);
+        Long parsedCategoryId = categoryID.isEmpty() ? null : Long.valueOf(categoryID);
+        Long parsedSupplierId = supplierID.isEmpty() ? null : Long.valueOf(supplierID);
+
+        if (search.isEmpty() && parsedPrice == null && parsedQuantity == null && parsedWarehouseId == null
+                && parsedZoneId == null && parsedCategoryId == null && parsedSupplierId == null) {
+            return inventoryRepository.findByProduct_ShopId(shop.getId(), pageable);
+        }
+
+        return inventoryRepository.findByProduct_ShopIdAndFilterConditions(
+                shop.getId(), search, parsedPrice, parsedQuantity, parsedWarehouseId, parsedZoneId, parsedCategoryId,
+                parsedSupplierId, pageable);
     }
 
     public List<Product> findAllProductsFromShop(User currentUser) {

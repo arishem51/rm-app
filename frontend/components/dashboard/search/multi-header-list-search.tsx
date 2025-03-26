@@ -20,6 +20,7 @@ type Props = {
   items: Item[];
   onSearchClick: (items: { search: string; name: string }[]) => void;
   children?: React.ReactNode;
+  className?: string;
 };
 
 const InputSearch = ({
@@ -67,13 +68,18 @@ const InputSearch = ({
   );
 };
 
-const MultiHeaderListSearch = ({ items, onSearchClick, children }: Props) => {
+const MultiHeaderListSearch = ({
+  items,
+  onSearchClick,
+  children,
+  className,
+}: Props) => {
   const [searchOptions, setSearchOptions] = useState<{
     [name: string]: string;
   }>(items.reduce((acc, item) => ({ ...acc, [item.name]: "" }), {}));
 
   return (
-    <div className="flex items-center gap-2 w-2/3 my-2">
+    <div className={cn("flex items-center gap-2 w-2/3 my-2", className)}>
       {items.map((item, index) => {
         const setSearch = (search: string) => {
           setSearchOptions((prev) => ({ ...prev, [item.name]: search }));
