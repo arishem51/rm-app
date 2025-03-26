@@ -30,16 +30,14 @@ public class PartnerService {
         if (UserRoleUtils.isAdmin(currentUser)) {
             return search.isEmpty()
                     ? partnerRepository.findAll(pageable).map(PartnerRepsponseDTO::fromEntity)
-                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable)
-                            .map(PartnerRepsponseDTO::fromEntity);
+                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable).map(PartnerRepsponseDTO::fromEntity);
         } else {
             return search.isEmpty()
-                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable)
-                            .map(PartnerRepsponseDTO::fromEntity)
+                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable).map(PartnerRepsponseDTO::fromEntity)
                     : partnerRepository.findByShopIdAndNameContainingIgnoreCase(
-                            currentUser.getShop().getId(),
-                            search,
-                            pageable).map(PartnerRepsponseDTO::fromEntity);
+                    currentUser.getShop().getId(),
+                    search,
+                    pageable).map(PartnerRepsponseDTO::fromEntity);
         }
     }
 
@@ -69,7 +67,7 @@ public class PartnerService {
     }
 
     public Partner create(PartnerCreateDTO partnerDto, User currentUser) {
-        var shop = shopRepository.findById(currentUser.getShop().getId())
+        var shop = shopRepository.findById(currentUser.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Shop not found"));
 
         Partner partner = Partner.builder()
@@ -80,6 +78,7 @@ public class PartnerService {
                 .address(partnerDto.getAddress())
                 .website(partnerDto.getWebsite())
                 .description(partnerDto.getDescription())
+                .canHaveDebt(partnerDto.isCanHaveDebt())
                 .shop(shop)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -108,6 +107,7 @@ public class PartnerService {
         partner.setAddress(partnerDto.getAddress());
         partner.setWebsite(partnerDto.getWebsite());
         partner.setDescription(partnerDto.getDescription());
+        partner.setCanHaveDebt(partnerDto.isCanHaveDebt());
 
         return partnerRepository.save(partner);
     }

@@ -94,6 +94,20 @@ export const AppRoutes = {
         accessRoles: [UserRole.OWNER],
       },
     },
+    debts: {
+      index: {
+        url: "/dashboard/debts",
+        accessRoles: [UserRole.OWNER],
+      },
+      detail: {
+        url: "/dashboard/debts/[id]",
+        accessRoles: [UserRole.OWNER],
+      },
+      create: {
+        url: "/dashboard/debts/create",
+        accessRoles: [UserRole.OWNER],
+      },
+    },
     warehouses: {
       facilities: {
         index: {
