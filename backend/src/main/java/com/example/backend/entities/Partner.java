@@ -40,7 +40,7 @@ public class Partner {
     @Column(name = "can_have_debt", nullable = false)
     private boolean canHaveDebt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
