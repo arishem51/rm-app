@@ -252,7 +252,7 @@ const AuthForm: FC<Props> = ({
         {enableReCaptcha && (
           <div data-testid="recatpcha">
             <ReCAPTCHA
-              sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+              sitekey="6LcM5-sqAAAAAGFDvyWQMFKDD4I8M69WxyUqtpPe"
               ref={reCaptchaRef}
               onChange={(token) => {
                 if (token) {
