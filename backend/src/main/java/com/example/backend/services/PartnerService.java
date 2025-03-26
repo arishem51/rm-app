@@ -30,14 +30,16 @@ public class PartnerService {
         if (UserRoleUtils.isAdmin(currentUser)) {
             return search.isEmpty()
                     ? partnerRepository.findAll(pageable).map(PartnerRepsponseDTO::fromEntity)
-                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable).map(PartnerRepsponseDTO::fromEntity);
+                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable)
+                            .map(PartnerRepsponseDTO::fromEntity);
         } else {
             return search.isEmpty()
-                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable).map(PartnerRepsponseDTO::fromEntity)
+                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable)
+                            .map(PartnerRepsponseDTO::fromEntity)
                     : partnerRepository.findByShopIdAndNameContainingIgnoreCase(
-                    currentUser.getShop().getId(),
-                    search,
-                    pageable).map(PartnerRepsponseDTO::fromEntity);
+                            currentUser.getShop().getId(),
+                            search,
+                            pageable).map(PartnerRepsponseDTO::fromEntity);
         }
     }
 
@@ -45,9 +47,9 @@ public class PartnerService {
         if (UserRoleUtils.isAdmin(currentUser)) {
             return partnerRepository.findAll();
         }
-        if (!UserRoleUtils.isOwner(currentUser) || currentUser.getShop() == null) {
-            throw new IllegalArgumentException("Unauthorized access");
-        }
+        // if (!UserRoleUtils.isOwner(currentUser) || currentUser.getShop() == null) {
+        // throw new IllegalArgumentException("Unauthorized access");
+        // }
         return partnerRepository.findByShopId(currentUser.getShop().getId());
     }
 
