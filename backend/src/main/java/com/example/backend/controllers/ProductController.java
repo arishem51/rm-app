@@ -3,8 +3,10 @@ package com.example.backend.controllers;
 import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
+import com.example.backend.dto.inventory.InventoryResponseDTO;
 import com.example.backend.dto.product.ProductRequestDTO;
 import com.example.backend.dto.product.ResponseProductDTO;
+import com.example.backend.entities.Inventory;
 import com.example.backend.entities.Product;
 import com.example.backend.entities.User;
 import com.example.backend.services.ProductService;
@@ -34,15 +36,15 @@ public class ProductController {
 
     @Operation(summary = "Get page products", description = "Fetch a list of page registered products.")
     @GetMapping("")
-    public ResponseEntity<BaseResponse<PaginateResponse<ResponseProductDTO>>> getProducts(
+    public ResponseEntity<BaseResponse<PaginateResponse<InventoryResponseDTO>>> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "") String search,
             @CurrentUser User user) {
         try {
-            Page<Product> products = productService.findProducts(page, pageSize, search, user);
-            PaginateResponse<ResponseProductDTO> response = new PaginateResponse<>(
-                    products.map(ResponseProductDTO::fromEntity));
+            Page<Inventory> products = productService.findProducts(page, pageSize, search, user);
+            PaginateResponse<InventoryResponseDTO> response = new PaginateResponse<>(
+                    products.map(InventoryResponseDTO::fromEntity));
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
@@ -65,11 +67,11 @@ public class ProductController {
 
     @Operation(summary = "Get a product", description = "Fetch a product by ID.")
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<ResponseProductDTO>> getProduct(@PathVariable Long id,
+    public ResponseEntity<BaseResponse<InventoryResponseDTO>> getProduct(@PathVariable Long id,
             @CurrentUser User currentUser) {
         try {
-            Product product = productService.findProductById(id, currentUser);
-            return ResponseEntity.ok(BaseResponse.success(ResponseProductDTO.fromEntity(product), "Success!"));
+            Inventory item = productService.findProductById(id, currentUser);
+            return ResponseEntity.ok(BaseResponse.success(InventoryResponseDTO.fromEntity(item), "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }

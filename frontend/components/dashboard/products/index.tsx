@@ -18,7 +18,7 @@ import HeaderListSearch from "../search/header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { createSttNumber } from "@/lib/utils";
+import { createSttNumber, toCurrency } from "@/lib/utils";
 import ListPagination from "../pagination";
 import Image from "next/image";
 import defaultPic from "../../../public/images/default-product.png";
@@ -69,6 +69,10 @@ const Products = () => {
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Ảnh</TableHead>
+              <TableHead>Giá</TableHead>
+              <TableHead>Số lượng</TableHead>
+              <TableHead>Tên kho</TableHead>
+              <TableHead>Khu vực trong kho</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead>Nhà cung cấp</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
@@ -76,44 +80,50 @@ const Products = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.data?.map((product, index) => (
-              <TableRow key={product.id}>
-                <TableCell>{createSttNumber(index, filter.page)}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>
-                  <Image
-                    src={product.imageUrls?.[0] ?? defaultPic}
-                    alt={product.name ?? ""}
-                    width={50}
-                    height={50}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={product.category?.name ? "default" : "outline"}
-                    className="px-1 py-0.5"
-                  >
-                    {product.category?.name || "Không tồn tại"}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={product.supplier?.name ? "default" : "outline"}
-                    className="px-1 py-0.5"
-                  >
-                    {product.supplier?.name || "Không tồn tại"}
-                  </Badge>
-                </TableCell>
-                {isAdmin && <TableCell>{product.shopName}</TableCell>}
-                <TableCell className="text-right">
-                  <Link href={`/dashboard/products/${product.id}`} prefetch>
-                    <Button variant="outline" className="w-6 h-6" size="icon">
-                      <ArrowUpRight />
-                    </Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
+            {data?.data?.map(
+              ({ product, quantity, zoneName, warehouseName }, index) => (
+                <TableRow key={product?.id}>
+                  <TableCell>{createSttNumber(index, filter.page)}</TableCell>
+                  <TableCell>{product?.name}</TableCell>
+                  <TableCell>
+                    <Image
+                      src={product?.imageUrls?.[0] ?? defaultPic}
+                      alt={product?.name ?? ""}
+                      width={50}
+                      height={50}
+                    />
+                  </TableCell>
+                  <TableCell>{toCurrency(product?.price ?? 0)}</TableCell>
+                  <TableCell>{quantity}</TableCell>
+                  <TableCell>{warehouseName}</TableCell>
+                  <TableCell>{zoneName}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={product?.category?.name ? "default" : "outline"}
+                      className="px-1 py-0.5"
+                    >
+                      {product?.category?.name || "Không tồn tại"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={product?.supplier?.name ? "default" : "outline"}
+                      className="px-1 py-0.5"
+                    >
+                      {product?.supplier?.name || "Không tồn tại"}
+                    </Badge>
+                  </TableCell>
+                  {isAdmin && <TableCell>{product?.shop?.name}</TableCell>}
+                  <TableCell className="text-right">
+                    <Link href={`/dashboard/products/${product?.id}`} prefetch>
+                      <Button variant="outline" className="w-6 h-6" size="icon">
+                        <ArrowUpRight />
+                      </Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              )
+            )}
           </TableBody>
         </Table>
       ) : (

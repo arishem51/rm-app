@@ -108,11 +108,11 @@ const Content = () => {
       //   ssssssssssssssssssssssssssssssssssssssssssssssssss
       {
         title: "Đối tác",
-        url: '/dashboard/suppliers',
+        url: "/dashboard/suppliers",
         // url: AppRoutes.dashboard.products.index.url,
         icon: Briefcase,
       }
-        //   ssssssssssssssssssssssssssssssssssssssssssssssssss
+      //   ssssssssssssssssssssssssssssssssssssssssssssssssss
     );
   }
 
@@ -150,16 +150,17 @@ const Content = () => {
       {
         title: "Kho hàng",
         icon: Warehouse,
-        children: [
-          {
-            title: "Kho",
-            url: AppRoutes.dashboard.warehouses.facilities.index.url,
-          },
-          {
-            title: "Hàng hóa",
-            url: AppRoutes.dashboard.warehouses.inventories.index.url,
-          },
-        ],
+        url: AppRoutes.dashboard.warehouses.facilities.index.url,
+        // children: [
+        //   {
+        //     title: "Kho",
+        //     url: AppRoutes.dashboard.warehouses.facilities.index.url,
+        //   },
+        //   {
+        //     title: "Hàng hóa",
+        //     url: AppRoutes.dashboard.warehouses.inventories.index.url,
+        //   },
+        // ],
       },
       {
         title: "Đối tác",

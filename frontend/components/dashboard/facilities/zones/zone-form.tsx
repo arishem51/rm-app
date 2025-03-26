@@ -141,6 +141,20 @@ const ZoneForm = ({ zone, onClose, warehouse }: Props) => {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="warehouseId"
+            render={() => (
+              <FormItem>
+                <FormControl>
+                  <FormControl>
+                    <Input readOnly value={warehouse.name} type="hidden" />
+                  </FormControl>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
           <DialogFooter className="mt-2">
             <Button type="submit" disabled={isPending}>
               Lưu

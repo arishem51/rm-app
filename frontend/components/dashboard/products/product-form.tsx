@@ -17,8 +17,8 @@ import { toast } from "@/hooks/use-toast";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/mutations/product";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
-import { ProductRequestDTO, ResponseProductDTO } from "@/types/Api";
-import { ToastTitle, UserRole } from "@/lib/constants";
+import { InventoryResponseDTO, ProductRequestDTO, ZoneDTO } from "@/types/Api";
+import { appearanceNone, ToastTitle, UserRole } from "@/lib/constants";
 import { Textarea } from "@/components/ui/textarea";
 import { ComboboxCategories } from "../combobox/category";
 import { Plus, XIcon } from "lucide-react";
@@ -26,6 +26,17 @@ import { ComboboxPartners } from "../combobox/partner";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
+import InputCurrency from "@/components/input-currency";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useAllZonesByShop } from "@/services/hooks/warehouses";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
@@ -36,31 +47,40 @@ const schema = z.object({
   categoryId: z.string().nullable().optional(),
   partnerId: z.string().nullable().optional(),
   shopId: z.coerce.number(),
+  quantity: z.coerce.number({ message: "Số không hợp lệ" }),
+  warehouseId: z.coerce.number({ message: "Kho là bắt buộc" }),
+  zoneId: z.coerce.number({ message: "Kho là bắt buộc" }),
+  price: z.coerce.number({ message: "Giá không hợp lệ" }),
 });
 
 type ProductFormDTO = z.infer<typeof schema>;
 
 type Props = {
   onClose?: () => void;
-  product?: ResponseProductDTO;
+  product?: InventoryResponseDTO;
 };
 
-const ProductForm = ({ onClose, product }: Props) => {
+const ProductForm = ({ onClose, product: inventory }: Props) => {
+  const { product } = inventory ?? {};
   const { data: currentUser } = useMe();
   const form = useForm<ProductFormDTO>({
     resolver: zodResolver(schema),
     defaultValues: product
       ? {
           ...product,
+          quantity: inventory?.quantity,
           categoryId: product.category?.id?.toString(),
           partnerId: product.supplier?.id?.toString(),
           imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
+          warehouseId: inventory?.warehouseId,
+          zoneId: inventory?.zoneId,
         }
       : {
           name: "",
           description: "",
           imageUrls: [],
           shopId: 1,
+          quantity: 0,
         },
   });
   const {
@@ -72,6 +92,7 @@ const ProductForm = ({ onClose, product }: Props) => {
     name: "imageUrls",
   });
   const queryClient = useQueryClient();
+  console.log(form.formState.errors);
 
   const { mutate: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct();
@@ -91,6 +112,9 @@ const ProductForm = ({ onClose, product }: Props) => {
       });
     }
   }, [product, reset]);
+
+  const { data = {} } = useAllZonesByShop();
+  const { data: zones = [] } = data;
 
   const factoryMutateConfig = (type: "create" | "update") => {
     return {
@@ -113,6 +137,25 @@ const ProductForm = ({ onClose, product }: Props) => {
       },
     };
   };
+
+  const groupZoneByWarehouseId = zones.reduce(
+    (acc, zone) => {
+      if (!acc[zone.warehouseId!]) {
+        acc[zone.warehouseId!] = {
+          warehouseId: zone.warehouseId!,
+          warehouseName: zone.warehouseName,
+          zones: [zone],
+        };
+      } else {
+        acc[zone.warehouseId!].zones.push(zone);
+      }
+      return acc;
+    },
+    {} as Record<
+      number,
+      { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
+    >
+  );
 
   const onSubmit = form.handleSubmit((data) => {
     if (currentUser?.shopId) {
@@ -173,7 +216,89 @@ const ProductForm = ({ onClose, product }: Props) => {
               </FormItem>
             )}
           />
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <InputCurrency
+                label="Giá"
+                name="price"
+                placeholder="Ví dụ: 15000"
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Số lượng</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Số lượng"
+                      className={appearanceNone}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="flex justify-between gap-2">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="zoneId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kho</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={(zoneId) => {
+                          field.onChange(zoneId);
+                          const warehouseId = zones.find(
+                            (item) => item.id === Number(zoneId)
+                          )?.warehouseId;
+                          if (warehouseId) {
+                            form.setValue("warehouseId", warehouseId);
+                          }
+                        }}
+                        value={field.value?.toString()}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Chọn kho - khu trong kho" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(groupZoneByWarehouseId).map(
+                            ([key, value]) => {
+                              return (
+                                <SelectGroup key={key}>
+                                  <SelectLabel>
+                                    Tên Kho: {value.warehouseName}
+                                  </SelectLabel>
+                                  {value.zones.map((zone) => {
+                                    const id = zone.id!.toString();
+                                    return (
+                                      <SelectItem
+                                        key={id}
+                                        value={id}
+                                        className="ml-2"
+                                      >
+                                        {zone.name}
+                                      </SelectItem>
+                                    );
+                                  })}
+                                </SelectGroup>
+                              );
+                            }
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <div className="flex-1">
               <FormField
                 control={form.control}

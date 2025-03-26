@@ -21,15 +21,7 @@ import { InventoryUpdateDTO, InventoryResponseDTO, ZoneDTO } from "@/types/Api";
 import { useUpdateInventory } from "@/hooks/mutations/inventory";
 import { ComboboxProducts } from "../combobox/product";
 import { useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { useAllZonesByShop } from "@/services/hooks/warehouses";
 
 type Props = {
@@ -88,25 +80,6 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
     }
   }, [form, inventory]);
 
-  const groupZoneByWarehouseId = zones.reduce(
-    (acc, zone) => {
-      if (!acc[zone.warehouseId!]) {
-        acc[zone.warehouseId!] = {
-          warehouseId: zone.warehouseId!,
-          warehouseName: zone.warehouseName,
-          zones: [zone],
-        };
-      } else {
-        acc[zone.warehouseId!].zones.push(zone);
-      }
-      return acc;
-    },
-    {} as Record<
-      number,
-      { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
-    >
-  );
-
   const handleSubmit = form.handleSubmit((data: InventoryUpdateDTO) => {
     if (inventory?.id) {
       updateInventory(
@@ -143,51 +116,7 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="zoneId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Kho</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value?.toString()}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn kho - khu trong kho" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(groupZoneByWarehouseId).map(
-                        ([key, value]) => {
-                          return (
-                            <SelectGroup key={key}>
-                              <SelectLabel>
-                                Tên Kho: {value.warehouseName}
-                              </SelectLabel>
-                              {value.zones.map((zone) => {
-                                const id = zone.id!.toString();
-                                return (
-                                  <SelectItem
-                                    key={id}
-                                    value={id}
-                                    className="ml-2"
-                                  >
-                                    {zone.name}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectGroup>
-                          );
-                        }
-                      )}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
           <FormField
             control={form.control}
             name="quantity"
