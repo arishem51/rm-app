@@ -81,7 +81,7 @@ const OrderForm = ({ onClose, order }: Props) => {
             (data) => {
               const { productId, quantity } = data;
               const maximumQuantity = allInventories.find(
-                (item) => item.productId === productId
+                (item) => item.product?.id === productId
               )?.quantity;
               if (maximumQuantity && quantity > maximumQuantity) {
                 return false;
@@ -188,9 +188,9 @@ const OrderForm = ({ onClose, order }: Props) => {
                   append({
                     inventoryId: inventoryId,
                     quantity: 1,
-                    productId: inventory!.productId!,
-                    productName: inventory!.productName!,
-                    productPrice: +inventory!.price!,
+                    productId: inventory!.product!.id!,
+                    productName: inventory!.product!.name!,
+                    productPrice: +inventory!.product!.price!,
                     zoneId: inventory!.zoneId!,
                   });
                 } else {
@@ -255,8 +255,9 @@ const OrderForm = ({ onClose, order }: Props) => {
                                           {
                                             allInventories.find(
                                               (item) =>
-                                                item.productId === +field.value
-                                            )?.productName
+                                                item.product?.id ===
+                                                +field.value
+                                            )?.product?.name
                                           }
                                         </span>
                                       )}
@@ -268,7 +269,7 @@ const OrderForm = ({ onClose, order }: Props) => {
                                 {isCreateOrder ? (
                                   <div className="flex items-center gap-2 flex-nowrap whitespace-nowrap">
                                     {toCurrency(
-                                      +(currentInventory?.price ?? 0)
+                                      +(currentInventory?.product?.price ?? 0)
                                     )}
                                   </div>
                                 ) : (

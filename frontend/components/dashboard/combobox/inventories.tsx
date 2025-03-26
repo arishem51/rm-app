@@ -17,7 +17,7 @@ export function ComboboxInventories({ onSelect, formValue }: Props) {
   const options =
     items.length > 0
       ? items.map((item) => ({
-          label: item.productName ?? "",
+          label: item.product?.name ?? "",
           value: item.id?.toString() ?? "",
         }))
       : [];
