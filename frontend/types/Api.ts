@@ -1102,14 +1102,14 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
@@ -1120,11 +1120,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
-  /** @format int32 */
-  pageSize?: number;
   /** @format int32 */
   pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
+  paged?: boolean;
   unpaged?: boolean;
 }
 
@@ -1905,9 +1905,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** @default "" */
         zoneId?: string;
         /** @default "" */
-        categoryID?: string;
+        categoryId?: string;
         /** @default "" */
-        supplierID?: string;
+        supplierId?: string;
       },
       params: RequestParams = {},
     ) =>

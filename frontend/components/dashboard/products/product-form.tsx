@@ -63,6 +63,7 @@ type Props = {
 const ProductForm = ({ onClose, product: inventory }: Props) => {
   const { product } = inventory ?? {};
   const { data: currentUser } = useMe();
+
   const form = useForm<ProductFormDTO>({
     resolver: zodResolver(schema),
     defaultValues: product
@@ -73,13 +74,14 @@ const ProductForm = ({ onClose, product: inventory }: Props) => {
           partnerId: product.supplier?.id?.toString(),
           imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
           warehouseId: inventory?.warehouseId,
+          shopId: product.shop!.id!,
           zoneId: inventory?.zoneId,
         }
       : {
           name: "",
           description: "",
           imageUrls: [],
-          shopId: 1,
+          shopId: currentUser!.shopId!,
           quantity: 0,
         },
   });
@@ -109,9 +111,11 @@ const ProductForm = ({ onClose, product: inventory }: Props) => {
         categoryId: product.category?.id?.toString(),
         partnerId: product.supplier?.id?.toString(),
         imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
+        warehouseId: inventory?.warehouseId,
+        shopId: product.shop!.id!,
       });
     }
-  }, [product, reset]);
+  }, [inventory?.warehouseId, product, reset]);
 
   const { data = {} } = useAllZonesByShop();
   const { data: zones = [] } = data;
@@ -184,6 +188,28 @@ const ProductForm = ({ onClose, product: inventory }: Props) => {
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="mb-12">
+        <FormField
+          control={form.control}
+          name="shopId"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input type="hidden" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="warehouseId"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input type="hidden" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <div className="flex flex-col gap-3 mb-4">
           <FormField
             control={form.control}

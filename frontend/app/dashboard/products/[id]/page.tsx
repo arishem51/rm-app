@@ -20,6 +20,7 @@ export default async function Page({
         ApiQuery.products.getProduct(id),
         ApiQuery.partners.getAllPartners(),
         ApiQuery.categories.getAllCategories(),
+        ApiQuery.zones.getAllByShop(),
       ]}
       awaitQuery
     >

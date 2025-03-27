@@ -62,9 +62,9 @@ const ProductHeader = ({ filter, onFilter, children }: Props) => {
   );
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between my-2">
       <MultiHeaderListSearch
-        className="w-5/6"
+        className="w-5/6 my-0"
         items={[
           factoryItems({
             inputProps: {
@@ -99,7 +99,6 @@ const ProductHeader = ({ filter, onFilter, children }: Props) => {
               },
               {} as Record<keyof FilterSearchType, string>
             );
-          console.log(innerFilter);
           onFilter({
             ...searchItems,
             ...innerFilter,
