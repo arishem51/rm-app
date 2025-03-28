@@ -136,7 +136,7 @@ export const AppRoutes = {
     },
     partners: {
       url: "/dashboard/partners",
-      accessRoles: [UserRole.ADMIN, UserRole.OWNER],
+      accessRoles: [UserRole.ADMIN, UserRole.OWNER,UserRole.STAFF],
     },
     setting: {
       profile: {

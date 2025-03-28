@@ -13,11 +13,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateUserRequest {
+    @Size(min = 2, max = 16, message = "Password must be at least 2 to 16 characters long")
     private String name;
-    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Size(min = 6, max = 12, message = "Password must be at least 6 to 12 characters long")
     private String password;
 
-    @Pattern(regexp = "^\\d{10,12}$", message = "Phone number must be 10-12 digits long")
+    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits long")
     private String phoneNumber;
 
     @ValidEnum(enumClass = Role.class, message = "Invalid user role!")
