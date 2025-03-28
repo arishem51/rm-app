@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useMe, useUpdateUser } from "@/hooks/mutations/user";
-import { UserRole, ActionStatus } from "@/lib/constants";
+import {UserRole, ActionStatus, ToastTitle} from "@/lib/constants";
 import { UserDTO } from "@/types/Api";
 import { isEmpty } from "lodash";
 import { useForm } from "react-hook-form";
@@ -94,7 +94,15 @@ const ProfileForm = () => {
               queryKey: ApiQuery.users.getMe().queryKey,
             });
           },
-        }
+            onError: (e) => {
+                toast({
+                    title: ToastTitle.error,
+                    description: e.message,
+                    variant: "destructive",
+                });
+            }
+        },
+
       );
     }
   });
