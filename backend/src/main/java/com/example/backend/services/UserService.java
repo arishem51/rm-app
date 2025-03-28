@@ -128,7 +128,6 @@ public class UserService {
         String phoneNumber = request.getPhoneNumber();
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
-            System.out.println("exits " +existingUser.get().getId() + " - " + id);
             if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
                 throw new IllegalArgumentException("Phone number is already taken!");
             }

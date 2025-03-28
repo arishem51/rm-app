@@ -57,6 +57,7 @@ public class UserController {
             User user = userService.updateUser(id, request, currentUser);
             return ResponseEntity.ok().body(BaseResponse.success(UserDTO.fromEntity(user), "Update user success!"));
         } catch (Exception e) {
+            System.out.println("message: " + e.getMessage());
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
         }
     }
