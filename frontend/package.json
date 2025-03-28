@@ -10,7 +10,8 @@
     "openapi": "npx swagger-typescript-api -p ./swagger.json -o ./types -n Api.ts",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "react-select": "^5.10.1",
@@ -51,7 +52,8 @@
     "recharts": "^2.15.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "react-select": "^5.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -64,6 +66,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-google-recaptcha": "^2.1.9",
+    "cypress": "^14.2.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.4",
     "jest": "^29.7.0",
