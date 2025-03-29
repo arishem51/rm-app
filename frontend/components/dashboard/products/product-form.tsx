@@ -115,6 +115,7 @@ const ProductForm = ({ onClose, product }: Props) => {
         toast({
           title: ToastTitle.error,
           description: error.message,
+          variant: "destructive",
         });
       },
     };

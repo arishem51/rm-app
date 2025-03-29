@@ -311,20 +311,36 @@ export interface InventoryResponseDTO {
   /** @format int64 */
   id?: number;
   /** @format int64 */
-  productId?: number;
-  /** @format int64 */
   zoneId?: number;
   zoneName?: string;
   /** @format int64 */
   warehouseId?: number;
-  productName?: string;
   createdBy?: UserDTO;
   createdAt?: string;
   updatedAt?: string;
-  price?: string;
   warehouseName?: string;
   /** @format int32 */
   quantity?: number;
+  product?: Product;
+}
+
+export interface Product {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  category?: Category;
+  supplier?: Partner;
+  shop?: Shop;
+  description?: string;
+  price?: number;
+  imageUrls?: string[];
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+  /** @format date-time */
+  deletedAt?: string;
+  status: "ACTIVE" | "INACTIVE";
 }
 
 export interface UpdateDebtNoteDTO {
@@ -1080,17 +1096,17 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  numberOfElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  /** @format int32 */
+  numberOfElements?: number;
   pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -1099,9 +1115,9 @@ export interface PageableObject {
   offset?: number;
   sort?: SortObject;
   /** @format int32 */
-  pageSize?: number;
-  /** @format int32 */
   pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
   paged?: boolean;
   unpaged?: boolean;
 }

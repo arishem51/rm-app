@@ -35,7 +35,6 @@ public class ReceiptService {
         if (currentUser.getShop() == null) {
             throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
         }
-
         Receipt receipt = Receipt.builder().createdBy(currentUser).build();
         List<ReceiptItem> receiptItems = new ArrayList<>();
         List<Inventory> inventoriesToSave = new ArrayList<>();

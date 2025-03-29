@@ -8,7 +8,7 @@ const Page = () => {
       query={ApiQuery.products.getProducts({ page: 0, search: "" })}
       awaitQuery
     >
-      <div className="px-4">
+      <div className="px-4 pb-8">
         <h1 className="text-3xl font-bold mt-2">Quản lý sản phẩm</h1>
         <p className="text-sm text-neutral-400 my-1">
           Quản lý sản phẩm và thay đổi thông tin sản phẩm ở đây

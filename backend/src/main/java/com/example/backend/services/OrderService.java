@@ -56,6 +56,7 @@ public class OrderService {
                                 .build();
 
                 List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
+                        // FIXME: 2 items dto same inventoryId
                         Inventory inventory = inventoryRepository
                                         .findByIdAndZoneId(itemDTO.getInventoryId(), itemDTO.getZoneId())
                                         .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm!"));
