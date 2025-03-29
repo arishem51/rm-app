@@ -19,7 +19,7 @@ import { useCreateOrder } from "@/hooks/mutations/order";
 import { useCreateDebtNote } from "@/hooks/mutations/debt";
 import { toast } from "@/hooks/use-toast";
 import { CreateOrderDTO, OrderResponseDTO } from "@/types/Api";
-import { CreateDebtNoteDTO } from "@/types/Debt";
+import { CreateDebtNoteDTO } from "@/types/Api";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import EmptyState from "../empty-state";
