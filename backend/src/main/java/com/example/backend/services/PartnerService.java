@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.backend.dto.partner.PartnerRepsponseDTO;
+import com.example.backend.dto.partner.PartnerResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,19 +25,19 @@ public class PartnerService {
     private final PartnerRepository partnerRepository;
     private final ShopRepository shopRepository;
 
-    public Page<PartnerRepsponseDTO> findPartners(int page, int pageSize, String search, User currentUser) {
+    public Page<PartnerResponseDTO> findPartners(int page, int pageSize, String search, User currentUser) {
         Pageable pageable = PageRequest.of(page, pageSize);
         if (UserRoleUtils.isAdmin(currentUser)) {
             return search.isEmpty()
-                    ? partnerRepository.findAll(pageable).map(PartnerRepsponseDTO::fromEntity)
-                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable).map(PartnerRepsponseDTO::fromEntity);
+                    ? partnerRepository.findAll(pageable).map(PartnerResponseDTO::fromEntity)
+                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable).map(PartnerResponseDTO::fromEntity);
         } else {
             return search.isEmpty()
-                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable).map(PartnerRepsponseDTO::fromEntity)
+                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable).map(PartnerResponseDTO::fromEntity)
                     : partnerRepository.findByShopIdAndNameContainingIgnoreCase(
                     currentUser.getShop().getId(),
                     search,
-                    pageable).map(PartnerRepsponseDTO::fromEntity);
+                    pageable).map(PartnerResponseDTO::fromEntity);
         }
     }
 
@@ -64,6 +64,12 @@ public class PartnerService {
         }
 
         return partner;
+    }
+
+    public PartnerResponseDTO getPartnerById(Long id) {
+        Partner partner = partnerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Partner not found"));
+        return PartnerResponseDTO.fromEntity(partner);
     }
 
     public Partner create(PartnerCreateDTO partnerDto, User currentUser) {

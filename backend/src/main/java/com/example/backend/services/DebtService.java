@@ -1,206 +1,95 @@
 package com.example.backend.services;
 
-import com.example.backend.dto.debt.CreateDebtNoteDTO;
-import com.example.backend.dto.debt.CreateDebtPaymentDTO;
-import com.example.backend.dto.debt.DebtStatisticsDTO;
-import com.example.backend.dto.debt.UpdateDebtNoteDTO;
+import com.example.backend.dto.debt.*;
 import com.example.backend.entities.DebtNote;
-import com.example.backend.entities.DebtPayment;
-import com.example.backend.entities.Order;
-import com.example.backend.entities.Partner;
-import com.example.backend.enums.DebtStatus;
-import com.example.backend.repositories.DebtNoteRepository;
-import com.example.backend.repositories.DebtPaymentRepository;
-import com.example.backend.repositories.OrderRepository;
-import com.example.backend.repositories.PartnerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.backend.repositories.*;
+import com.example.backend.utils.UserUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DebtService {
 
-    @Autowired
-    private DebtNoteRepository debtNoteRepository;
-    
-    @Autowired
-    private DebtPaymentRepository debtPaymentRepository;
-    
-    @Autowired
-    private PartnerRepository partnerRepository;
-    
-    @Autowired
-    private OrderRepository orderRepository;
+    private final DebtNoteRepository debtNoteRepository;
+    private final DebtRepositoryCustom debtRepositoryCustom;
 
-    public List<DebtNote> getAllDebtNotes() {
-        return debtNoteRepository.findAll();
-    }
-    
-    public List<DebtNote> getDebtNotes(DebtStatus status, Long partnerId, LocalDate fromDate, LocalDate toDate) {
-        Partner partner = null;
-        if (partnerId != null) {
-            Optional<Partner> partnerOpt = partnerRepository.findById(partnerId);
-            if (partnerOpt.isPresent()) {
-                partner = partnerOpt.get();
-            }
+
+    public List<DebtNoteWithPartnerDTO> getFilteredDebtNotes(String partnerName, Double minTotalAmount,
+                                                          Double maxTotalAmount, LocalDateTime fromDate,
+                                                          LocalDateTime toDate) {
+        String userCreate = UserUtils.getAuthenticatedUsername();
+        if (userCreate == null) {
+            throw new RuntimeException("User not found");
         }
-        
-        if (status != null && partner != null && fromDate != null && toDate != null) {
-            return debtNoteRepository.findByStatusAndPartnerAndDueDateBetween(status, partner, fromDate, toDate);
-        } else if (status != null && partner != null) {
-            return debtNoteRepository.findByStatusAndPartner(status, partner);
-        } else if (status != null && fromDate != null && toDate != null) {
-            return debtNoteRepository.findByStatusAndDueDateBetween(status, fromDate, toDate);
-        } else if (partner != null && fromDate != null && toDate != null) {
-            return debtNoteRepository.findByPartnerAndDueDateBetween(partner, fromDate, toDate);
-        } else if (status != null) {
-            return debtNoteRepository.findByStatus(status);
-        } else if (partner != null) {
-            return debtNoteRepository.findByPartner(partner);
-        } else if (fromDate != null && toDate != null) {
-            return debtNoteRepository.findByDueDateBetween(fromDate, toDate);
+        List<DebtNoteWithPartnerDTO> list = debtNoteRepository.findDebtNotesWithPartner(
+                partnerName, minTotalAmount, maxTotalAmount, fromDate, toDate, userCreate);
+
+        return list;
+    }
+
+    private DebtNoteResponseDTO mapToDTO(DebtNote debtNote) {
+        return DebtNoteResponseDTO.builder()
+                .id(debtNote.getId())
+                .partnerId(debtNote.getPartnerId())
+                .totalAmount(debtNote.getTotalAmount())
+                .createdAt(debtNote.getCreatedAt())
+                .status(debtNote.getStatus())
+                .source(debtNote.getSource())
+                .description(debtNote.getDescription())
+                .build();
+    }
+
+
+
+    public void createDebtNote(CreateDebtNoteDTO request) {
+        String username = UserUtils.getAuthenticatedUsername();
+
+        Optional<DebtNote> existingDebtNote = debtNoteRepository.findByPartnerIdAndCreatedBy(request.getPartnerId(), username);
+        if (existingDebtNote.isPresent()) {
+            throw new RuntimeException("Thông tin người nợ đã tồn tại trong danh sách cho người dùng " + username);
         } else {
-            return debtNoteRepository.findAll();
+            DebtNote debtNote = new DebtNote();
+            debtNote.setPartnerId(request.getPartnerId());
+            debtNote.setTotalAmount(request.getTotalAmount());
+            debtNote.setSource(request.getSource());
+            debtNote.setDescription(request.getDescription());
+            debtNote.setCreatedBy(UserUtils.getAuthenticatedUsername());
+
+            debtNoteRepository.save(debtNote);
         }
+
+
     }
-    
-    public Optional<DebtNote> getDebtNoteById(Long id) {
-        return debtNoteRepository.findById(id);
-    }
-    
-    @Transactional
-    public DebtNote createDebtNote(CreateDebtNoteDTO dto) {
-        DebtNote debtNote = new DebtNote();
-        
-        Partner partner = partnerRepository.findById(dto.getPartnerId())
-                .orElseThrow(() -> new RuntimeException("Partner not found"));
-        debtNote.setPartner(partner);
-        
-        debtNote.setAmount(dto.getAmount());
-        debtNote.setDueDate(dto.getDueDate());
-        debtNote.setSource(dto.getSource());
-        debtNote.setDescription(dto.getDescription());
-        debtNote.setAttachments(dto.getAttachments());
-        debtNote.setNotes(dto.getNotes());
-        
-        if (dto.getOrderId() != null) {
-            Order order = orderRepository.findById(dto.getOrderId())
-                    .orElseThrow(() -> new RuntimeException("Order not found"));
-            debtNote.setOrder(order);
-        }
-        
-        // Check if due date is in the past
-        if (dto.getDueDate().isBefore(LocalDate.now())) {
-            debtNote.setStatus(DebtStatus.OVERDUE);
-        }
-        
-        return debtNoteRepository.save(debtNote);
-    }
-    
-    @Transactional
-    public DebtNote updateDebtNote(Long id, UpdateDebtNoteDTO dto) {
+
+    public DebtNoteResponseDTO getDebtNoteById(Long id) {
         DebtNote debtNote = debtNoteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Debt note not found"));
-        
-        if (dto.getPartnerId() != null) {
-            Partner partner = partnerRepository.findById(dto.getPartnerId())
-                    .orElseThrow(() -> new RuntimeException("Partner not found"));
-            debtNote.setPartner(partner);
-        }
-        
-        if (dto.getAmount() != null) {
-            debtNote.setAmount(dto.getAmount());
-            updateDebtStatus(debtNote);
-        }
-        
-        if (dto.getDueDate() != null) {
-            debtNote.setDueDate(dto.getDueDate());
-            // Check if due date is in the past and not PAID
-            if (dto.getDueDate().isBefore(LocalDate.now()) && debtNote.getStatus() != DebtStatus.PAID) {
-                debtNote.setStatus(DebtStatus.OVERDUE);
-            }
-        }
-        
-        if (dto.getStatus() != null) {
-            debtNote.setStatus(dto.getStatus());
-        }
-        
-        if (dto.getDescription() != null) {
-            debtNote.setDescription(dto.getDescription());
-        }
-        
-        if (dto.getAttachments() != null) {
-            debtNote.setAttachments(dto.getAttachments());
-        }
-        
-        if (dto.getNotes() != null) {
-            debtNote.setNotes(dto.getNotes());
-        }
-        
-        return debtNoteRepository.save(debtNote);
+                .orElseThrow(() -> new RuntimeException("DebtNote not found"));
+
+        return mapToDTO(debtNote);
     }
-    
-    @Transactional
-    public void deleteDebtNote(Long id) {
-        debtNoteRepository.deleteById(id);
+
+    public void updateDebtNote(Long id, UpdateDebtNoteDTO request) {
+        DebtNote existingDebtNote = debtNoteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("DebtNote not found"));
+
+        existingDebtNote.setPartnerId(request.getPartnerId());
+        existingDebtNote.setTotalAmount(request.getTotalAmount());
+        existingDebtNote.setSource(request.getSource());
+        existingDebtNote.setDescription(request.getDescription());
+        existingDebtNote.setStatus(request.getStatus());
+
+        debtNoteRepository.save(existingDebtNote);
+
+
     }
-    
-    public List<DebtPayment> getDebtPayments(Long debtNoteId) {
-        DebtNote debtNote = debtNoteRepository.findById(debtNoteId)
-                .orElseThrow(() -> new RuntimeException("Debt note not found"));
-        
-        return debtPaymentRepository.findByDebtNoteOrderByPaymentDateDesc(debtNote);
-    }
-    
-    @Transactional
-    public DebtPayment createDebtPayment(Long debtNoteId, CreateDebtPaymentDTO dto) {
-        DebtNote debtNote = debtNoteRepository.findById(debtNoteId)
-                .orElseThrow(() -> new RuntimeException("Debt note not found"));
-        
-        DebtPayment payment = new DebtPayment();
-        payment.setDebtNote(debtNote);
-        payment.setAmount(dto.getAmount());
-        payment.setPaymentDate(dto.getPaymentDate());
-        payment.setPaymentMethod(dto.getPaymentMethod());
-        payment.setReceiptNumber(dto.getReceiptNumber());
-        payment.setNotes(dto.getNotes());
-        
-        DebtPayment savedPayment = debtPaymentRepository.save(payment);
-        
-        // Update debt note paid amount and status
-        debtNote.setPaidAmount(debtNote.getPaidAmount() + dto.getAmount());
-        updateDebtStatus(debtNote);
-        debtNoteRepository.save(debtNote);
-        
-        return savedPayment;
-    }
-    
-    private void updateDebtStatus(DebtNote debtNote) {
-        if (debtNote.getPaidAmount() >= debtNote.getAmount()) {
-            debtNote.setStatus(DebtStatus.PAID);
-        } else if (debtNote.getPaidAmount() > 0) {
-            debtNote.setStatus(DebtStatus.PARTIALLY_PAID);
-        } else if (debtNote.getDueDate().isBefore(LocalDate.now())) {
-            debtNote.setStatus(DebtStatus.OVERDUE);
-        } else {
-            debtNote.setStatus(DebtStatus.PENDING);
-        }
-    }
-    
-    public DebtStatisticsDTO getDebtStatistics() {
-        Double totalOutstanding = debtNoteRepository.getTotalOutstandingAmount();
-        if (totalOutstanding == null) totalOutstanding = 0.0;
-        
-        Double overdueAmount = debtNoteRepository.getOverdueAmount();
-        if (overdueAmount == null) overdueAmount = 0.0;
-        
-        Double upcomingPayments = debtNoteRepository.getUpcomingPayments(LocalDate.now().plusDays(30));
-        if (upcomingPayments == null) upcomingPayments = 0.0;
-        
-        return new DebtStatisticsDTO(totalOutstanding, overdueAmount, upcomingPayments);
-    }
+
 } 

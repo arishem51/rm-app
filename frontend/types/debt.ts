@@ -3,20 +3,12 @@ export type DebtStatus = 'PENDING' | 'PARTIALLY_PAID' | 'PAID' | 'OVERDUE';
 export interface DebtNote {
     id: number;
     partnerId: number;
-    partnerName: string;
-    partnerPhone: string;
-    amount: number;
-    paidAmount: number;
-    dueDate: string;
     createdAt: string;
     status: DebtStatus;
+    totalAmount: number;
     source: string;
     orderId?: number;
-    orderAmount?: number;
     description?: string;
-    attachments: string[];
-    notes?: string;
-    payments: DebtPayment[];
 }
 
 export interface DebtPayment {
