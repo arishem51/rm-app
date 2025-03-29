@@ -142,23 +142,27 @@ export interface BaseResponseShopDTO {
 }
 
 export interface ShopDTO {
-  id: number;
-  name: string;
-  address: string;
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  address?: string;
+  users?: UserDTO[];
   createdBy?: UserDTO;
+  /** @format date-time */
   createdAt: string;
+  /** @format date-time */
   updatedAt?: string;
   bankAccount?: string;
   bankName?: string;
   postalCode?: string;
   socialMedia?: string;
   website?: string;
-  users?: UserDTO[];
 }
 
 export interface ProductRequestDTO {
   name: string;
   description?: string;
+  price?: number;
   /** @format int64 */
   categoryId?: number;
   /** @format int64 */
@@ -235,6 +239,11 @@ export interface Shop {
   users?: User[];
   /** @format date-time */
   createdAt?: string;
+  bankAccount?: string;
+  bankName?: string;
+  postalCode?: string;
+  socialMedia?: string;
+  website?: string;
   /** @format date-time */
   updatedAt?: string;
 }
@@ -1071,16 +1080,16 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -1089,12 +1098,12 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
-  unpaged?: boolean;
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
   pageNumber?: number;
+  paged?: boolean;
+  unpaged?: boolean;
 }
 
 export interface SortObject {

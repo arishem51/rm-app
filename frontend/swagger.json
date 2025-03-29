@@ -387,6 +387,86 @@
         }
       }
     },
+    "/api/debts/{id}": {
+      "get": {
+        "tags": ["debt-controller"],
+        "operationId": "getDebtNoteById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseDebtNoteResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["debt-controller"],
+        "operationId": "updateDebtNote",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateDebtNoteDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseDebtNoteResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["debt-controller"],
+        "operationId": "deleteDebtNote",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/categories/{id}": {
       "put": {
         "tags": ["Category Management"],
@@ -780,6 +860,135 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/BaseResponseOrderResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/debts": {
+      "get": {
+        "tags": ["debt-controller"],
+        "operationId": "getDebtNotes",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "PARTIALLY_PAID", "PAID", "OVERDUE"]
+            }
+          },
+          {
+            "name": "partnerId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "format": "date" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListDebtNoteResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["debt-controller"],
+        "operationId": "createDebtNote",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateDebtNoteDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseDebtNoteResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/debts/{id}/payments": {
+      "get": {
+        "tags": ["debt-controller"],
+        "operationId": "getDebtPayments",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListDebtPaymentResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["debt-controller"],
+        "operationId": "createDebtPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateDebtPaymentDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseDebtPaymentResponseDTO"
                 }
               }
             }
@@ -1439,6 +1648,24 @@
         }
       }
     },
+    "/api/debts/statistics": {
+      "get": {
+        "tags": ["debt-controller"],
+        "operationId": "getDebtStatistics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseDebtStatisticsDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/categories/all": {
       "get": {
         "tags": ["Category Management"],
@@ -1651,7 +1878,12 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "address": { "type": "string" }
+          "address": { "type": "string" },
+          "bankAccount": { "type": "string" },
+          "bankName": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "socialMedia": { "type": "string" },
+          "website": { "type": "string" }
         }
       },
       "BaseResponseShopDTO": {
@@ -1684,7 +1916,12 @@
           },
           "createdBy": { "$ref": "#/components/schemas/UserDTO" },
           "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "bankAccount": { "type": "string" },
+          "bankName": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "socialMedia": { "type": "string" },
+          "website": { "type": "string" }
         },
         "required": ["createdAt"]
       },
@@ -1693,6 +1930,7 @@
         "properties": {
           "name": { "type": "string" },
           "description": { "type": "string" },
+          "price": { "type": "number" },
           "categoryId": { "type": "integer", "format": "int64" },
           "supplierId": { "type": "integer", "format": "int64" },
           "shopId": { "type": "integer", "format": "int64" },
@@ -1742,6 +1980,7 @@
           "address": { "type": "string" },
           "website": { "type": "string" },
           "description": { "type": "string" },
+          "canHaveDebt": { "type": "boolean" },
           "shop": { "$ref": "#/components/schemas/Shop" },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }
@@ -1774,6 +2013,11 @@
             "uniqueItems": true
           },
           "createdAt": { "type": "string", "format": "date-time" },
+          "bankAccount": { "type": "string" },
+          "bankName": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "socialMedia": { "type": "string" },
+          "website": { "type": "string" },
           "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
@@ -1801,7 +2045,8 @@
           "email": { "type": "string" },
           "address": { "type": "string" },
           "website": { "type": "string" },
-          "description": { "type": "string" }
+          "description": { "type": "string" },
+          "canHaveDebt": { "type": "boolean" }
         }
       },
       "BaseResponsePartner": {
@@ -1863,6 +2108,78 @@
           "price": { "type": "string" },
           "warehouseName": { "type": "string" },
           "quantity": { "type": "integer", "format": "int32" }
+        }
+      },
+      "UpdateDebtNoteDTO": {
+        "type": "object",
+        "properties": {
+          "partnerId": { "type": "integer", "format": "int64" },
+          "amount": { "type": "number", "format": "double" },
+          "dueDate": { "type": "string", "format": "date" },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "PARTIALLY_PAID", "PAID", "OVERDUE"]
+          },
+          "description": { "type": "string" },
+          "attachments": { "type": "array", "items": { "type": "string" } },
+          "notes": { "type": "string" }
+        }
+      },
+      "BaseResponseDebtNoteResponseDTO": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/DebtNoteResponseDTO" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "DebtNoteResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "partnerId": { "type": "integer", "format": "int64" },
+          "partnerName": { "type": "string" },
+          "partnerPhone": { "type": "string" },
+          "amount": { "type": "number", "format": "double" },
+          "paidAmount": { "type": "number", "format": "double" },
+          "dueDate": { "type": "string", "format": "date" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "PARTIALLY_PAID", "PAID", "OVERDUE"]
+          },
+          "source": { "type": "string" },
+          "orderId": { "type": "integer", "format": "int64" },
+          "orderAmount": { "type": "number", "format": "double" },
+          "description": { "type": "string" },
+          "attachments": { "type": "array", "items": { "type": "string" } },
+          "notes": { "type": "string" },
+          "payments": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DebtPaymentResponseDTO" }
+          }
+        }
+      },
+      "DebtPaymentResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "amount": { "type": "number", "format": "double" },
+          "paymentDate": { "type": "string", "format": "date" },
+          "paymentMethod": { "type": "string" },
+          "receiptNumber": { "type": "string" },
+          "notes": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
         }
       },
       "UpdateCategoryDTO": {
@@ -1991,7 +2308,8 @@
           "email": { "type": "string" },
           "address": { "type": "string" },
           "website": { "type": "string" },
-          "description": { "type": "string" }
+          "description": { "type": "string" },
+          "canHaveDebt": { "type": "boolean" }
         },
         "required": ["contactName", "name", "phone"]
       },
@@ -2049,6 +2367,47 @@
           "totalAmount": { "type": "number" },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateDebtNoteDTO": {
+        "type": "object",
+        "properties": {
+          "partnerId": { "type": "integer", "format": "int64" },
+          "amount": { "type": "number", "format": "double" },
+          "dueDate": { "type": "string", "format": "date" },
+          "source": { "type": "string" },
+          "orderId": { "type": "integer", "format": "int64" },
+          "description": { "type": "string" },
+          "attachments": { "type": "array", "items": { "type": "string" } },
+          "notes": { "type": "string" }
+        }
+      },
+      "CreateDebtPaymentDTO": {
+        "type": "object",
+        "properties": {
+          "amount": { "type": "number", "format": "double" },
+          "paymentDate": { "type": "string", "format": "date" },
+          "paymentMethod": { "type": "string" },
+          "receiptNumber": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      },
+      "BaseResponseDebtPaymentResponseDTO": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/DebtPaymentResponseDTO" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
         }
       },
       "CreateCategoryDTO": {
@@ -2605,6 +2964,7 @@
           "phone": { "type": "string" },
           "email": { "type": "string" },
           "address": { "type": "string" },
+          "canHaveDept": { "type": "boolean" },
           "website": { "type": "string" },
           "description": { "type": "string" },
           "shopId": { "type": "integer", "format": "int64" },
@@ -2709,6 +3069,7 @@
           "totalPages": { "type": "integer", "format": "int32" },
           "first": { "type": "boolean" },
           "last": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
           "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
@@ -2716,7 +3077,6 @@
           },
           "number": { "type": "integer", "format": "int32" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
-          "numberOfElements": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
           "empty": { "type": "boolean" }
         }
@@ -2792,6 +3152,74 @@
               "INTERNAL_SERVER_ERROR"
             ]
           }
+        }
+      },
+      "BaseResponseListDebtNoteResponseDTO": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DebtNoteResponseDTO" }
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "BaseResponseListDebtPaymentResponseDTO": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DebtPaymentResponseDTO" }
+          },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "BaseResponseDebtStatisticsDTO": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/DebtStatisticsDTO" },
+          "message": { "type": "string" },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "AUTH_MISSING",
+              "TOKEN_EXPIRED",
+              "TOKEN_INVALID",
+              "ACCESS_DENIED",
+              "BAD_REQUEST",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          }
+        }
+      },
+      "DebtStatisticsDTO": {
+        "type": "object",
+        "properties": {
+          "totalOutstanding": { "type": "number", "format": "double" },
+          "overdueAmount": { "type": "number", "format": "double" },
+          "upcomingPayments": { "type": "number", "format": "double" }
         }
       },
       "BaseResponseListCategory": {
