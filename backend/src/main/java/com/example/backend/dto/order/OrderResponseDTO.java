@@ -35,6 +35,7 @@ public class OrderResponseDTO {
                 .shopId(order.getShop() != null ? order.getShop().getId() : null)
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
+                .totalAmount(order.getAmount())
                 .build();
     }
 

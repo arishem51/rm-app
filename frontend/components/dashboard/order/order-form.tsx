@@ -13,10 +13,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { appearanceNone, ToastTitle } from "@/lib/constants";
 import { useCreateOrder } from "@/hooks/mutations/order";
+import { useCreateDebtNote } from "@/hooks/mutations/debt";
 import { toast } from "@/hooks/use-toast";
 import { CreateOrderDTO, OrderResponseDTO } from "@/types/Api";
+import { CreateDebtNoteDTO } from "@/types/Debt";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import EmptyState from "../empty-state";
@@ -95,6 +98,9 @@ const OrderForm = ({ onClose, order }: Props) => {
           )
       )
       .min(1, "Phải có ít nhất một sản phẩm"),
+    createDebt: z.boolean().optional(),
+    debtDueDate: z.string().optional(),
+    debtDescription: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -103,12 +109,18 @@ const OrderForm = ({ onClose, order }: Props) => {
       ? {
           ...order,
           orderItems: [],
+          createDebt: false,
+          debtDueDate: "",
+          debtDescription: "",
         }
       : {
           partnerName: "",
           partnerPhone: "",
           amount: 0,
           orderItems: [],
+          createDebt: false,
+          debtDueDate: "",
+          debtDescription: "",
         },
   });
   const {
@@ -120,12 +132,14 @@ const OrderForm = ({ onClose, order }: Props) => {
     name: "orderItems",
   });
   const orderItemsWatch = form.watch("orderItems");
+  const createDebtWatch = form.watch("createDebt");
   const selectedInventories = uniqBy(orderItemsWatch, "inventoryId").map(
     (item) => +item.inventoryId
   );
   const { mutate: createOrder, isPending: isCreating } = useCreateOrder();
+  const { mutate: createDebtNote, isPending: isCreatingDebt } = useCreateDebtNote();
 
-  const isPending = isCreating;
+  const isPending = isCreating || isCreatingDebt;
 
   const onSubmit = form.handleSubmit((data) => {
     const mutateData: CreateOrderDTO = {
@@ -139,10 +153,11 @@ const OrderForm = ({ onClose, order }: Props) => {
         quantity: item.quantity,
       })),
       partnerId: Number(data?.partnerId) || undefined,
+      amount:data.amount
     };
 
     createOrder(mutateData, {
-      onSuccess: () => {
+      onSuccess: (orderResponse) => {
         toast({
           title: ToastTitle.success,
           description: `Tạo đơn hàng thành công`,
@@ -150,6 +165,33 @@ const OrderForm = ({ onClose, order }: Props) => {
         queryClient.invalidateQueries({
           queryKey: ApiQuery.orders.getOrders().queryKey,
         });
+
+        if (data.createDebt && data.debtDueDate) {
+          const mutateDebtData: CreateDebtNoteDTO = {
+            partnerId: Number(data.partnerId) || 6,
+            amount: data.amount,
+            dueDate: data.debtDueDate,
+            orderId: orderResponse.data.data?.id,
+            description: data.debtDescription || "Nợ từ đơn hàng",
+          };
+
+          createDebtNote(mutateDebtData, {
+            onSuccess: () => {
+              toast({
+                title: ToastTitle.success,
+                description: `Tạo khoản nợ thành công`,
+              });
+              queryClient.invalidateQueries({ queryKey: ["debts"] });
+            },
+            onError: (error: Error) => {
+              toast({
+                title: ToastTitle.error,
+                description: `Lỗi khi tạo khoản nợ: ${error.message}`,
+              });
+            },
+          });
+        }
+
         router.push("/dashboard/orders");
         onClose?.();
       },
@@ -486,6 +528,67 @@ const OrderForm = ({ onClose, order }: Props) => {
                   )}
                 />
               </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Phần tạo khoản nợ */}
+        <div className="mt-4">
+          <span className="text-2xl font-bold">Tùy chọn khoản nợ</span>
+          <Card className="mt-2">
+            <CardContent className="pt-6">
+              <FormField
+                control={form.control}
+                name="createDebt"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>Tạo khoản nợ cho đơn hàng này</FormLabel>
+                  </FormItem>
+                )}
+              />
+              {createDebtWatch && (
+                <div className="mt-4 space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="debtDueDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ngày đến hạn</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            {...field}
+                            placeholder="Chọn ngày đến hạn"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="debtDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mô tả khoản nợ (tùy chọn)</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Ví dụ: Nợ từ đơn hàng ngày 29/03/2025"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
