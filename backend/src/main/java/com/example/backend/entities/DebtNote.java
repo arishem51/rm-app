@@ -16,40 +16,28 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "debt_note")
 public class DebtNote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "partner_id")
-    private Partner partner;
-
-    private Double amount;
-    private Double paidAmount = 0.0;
-    private LocalDate dueDate;
+    @Column
+    private Long partnerId;
+    private Double totalAmount;
     private LocalDateTime createdAt;
-    
     @Enumerated(EnumType.STRING)
     private DebtStatus status = DebtStatus.PENDING;
-    
     private String source; // ORDER or MANUAL
     
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-    
     private String description;
-    
-    @ElementCollection
-    private List<String> attachments = new ArrayList<>();
-    
-    private String notes;
-    
-    @OneToMany(mappedBy = "debtNote", cascade = CascadeType.ALL)
+
+    private String createdBy;
+
+    @OneToMany(mappedBy = "debtNote", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<DebtPayment> payments = new ArrayList<>();
-    
+    private List<DebtDetail> debtDetails;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();

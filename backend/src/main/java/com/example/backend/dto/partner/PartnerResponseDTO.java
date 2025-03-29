@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PartnerRepsponseDTO {
+public class PartnerResponseDTO implements Serializable {
     private long id;
     private String name;
     private String contactName;
@@ -25,8 +27,8 @@ public class PartnerRepsponseDTO {
     private String createdAt;
     private String updatedAt;
 
-    public static PartnerRepsponseDTO fromEntity(Partner partner) {
-        return PartnerRepsponseDTO.builder()
+    public static PartnerResponseDTO fromEntity(Partner partner) {
+        return PartnerResponseDTO.builder()
                 .id(partner.getId())
                 .name(partner.getName())
                 .contactName(partner.getContactName())

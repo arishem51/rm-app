@@ -17,8 +17,7 @@ import {
   MoreHorizontal, 
   Search, 
   Trash, 
-  CreditCard,
-  X 
+  X
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -42,7 +41,6 @@ import { ApiQuery } from "@/services/query";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import DebtPaymentDialog from "./debt-payment-dialog";
 import DeleteDebtDialog from "./delete-debt-dialog";
 import EditDebtDialog from "./edit-debt-dialog";
 import { DebtNote, DebtStatus } from "@/types/debt";
@@ -66,7 +64,6 @@ export default function DebtList({
   onDebtUpdated
 }: DebtListProps) {
   const [selectedDebt, setSelectedDebt] = useState<DebtNote | null>(null);
-  const [openPayment, setOpenPayment] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [searchPartner, setSearchPartner] = useState("");
@@ -157,10 +154,6 @@ export default function DebtList({
     onFilterChange(undefined, undefined, undefined, undefined);
   };
 
-  const handlePayment = (debt: DebtNote) => {
-    setSelectedDebt(debt);
-    setOpenPayment(true);
-  };
 
   const handleEdit = (debt: DebtNote) => {
     setSelectedDebt(debt);
@@ -269,14 +262,9 @@ export default function DebtList({
                 <TableRow key={debt.id}>
                   <TableCell>#{debt.id}</TableCell>
                   <TableCell>
-                    <div className="font-medium">{debt.partnerName}</div>
-                    <div className="text-sm text-muted-foreground">{debt.partnerPhone}</div>
+                    <div className="font-medium">{debt.partnerId}</div>
                   </TableCell>
-                  <TableCell>{toCurrency(debt.amount || 0)}</TableCell>
-                  <TableCell>{toCurrency(debt.paidAmount || 0)}</TableCell>
-                  <TableCell>
-                    {debt.dueDate ? format(new Date(debt.dueDate), 'dd/MM/yyyy', { locale: vi }) : 'N/A'}
-                  </TableCell>
+                  <TableCell>{toCurrency(debt.totalAmount || 0)}</TableCell>
                   <TableCell>
                     <Badge className={getStatusColor(debt.status)}>
                       {getStatusText(debt.status)}
@@ -298,13 +286,6 @@ export default function DebtList({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-                        <DropdownMenuItem 
-                          onClick={() => handlePayment(debt)}
-                          disabled={debt.status === "PAID"}
-                        >
-                          <CreditCard className="mr-2 h-4 w-4" />
-                          Thanh toán
-                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => handleEdit(debt)}>
                           <Edit className="mr-2 h-4 w-4" />
@@ -329,12 +310,6 @@ export default function DebtList({
 
       {selectedDebt && (
         <>
-          <DebtPaymentDialog
-            open={openPayment}
-            onOpenChange={setOpenPayment}
-            debt={selectedDebt}
-            onPaymentAdded={onDebtUpdated}
-          />
           
           <DeleteDebtDialog
             open={openDelete}

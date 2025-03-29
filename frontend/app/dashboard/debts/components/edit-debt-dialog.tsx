@@ -28,23 +28,16 @@ export default function EditDebtDialog({
 }: EditDebtDialogProps) {
   const [formData, setFormData] = useState<UpdateDebtNoteDTO>({
     partnerId: debt.partnerId,
-    amount: debt.amount,
-    dueDate: debt.dueDate,
     status: debt.status,
     description: debt.description,
-    attachments: debt.attachments,
-    notes: debt.notes
+
   });
 
   useEffect(() => {
     setFormData({
       partnerId: debt.partnerId,
-      amount: debt.amount,
-      dueDate: debt.dueDate,
       status: debt.status,
       description: debt.description,
-      attachments: debt.attachments,
-      notes: debt.notes
     });
   }, [debt]);
 
