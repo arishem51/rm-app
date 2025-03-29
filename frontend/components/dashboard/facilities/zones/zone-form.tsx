@@ -46,7 +46,6 @@ const ZoneForm = ({ zone, onClose, warehouse }: Props) => {
 
   const { mutate: createZone, isPending: isCreating } = useCreateZone();
   const { mutate: updateZone, isPending: isUpdating } = useUpdateZone();
-
   const queryClient = useQueryClient();
 
   const callbackSuccess = async (type: "create" | "update") => {
@@ -75,6 +74,7 @@ const ZoneForm = ({ zone, onClose, warehouse }: Props) => {
       form.reset({
         name: zone.name,
         warehouseId: zone.warehouseId,
+        description: zone?.description || "",
       });
     }
   }, [form, zone]);
@@ -108,6 +108,18 @@ const ZoneForm = ({ zone, onClose, warehouse }: Props) => {
     <Form {...form}>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 mb-4">
+          <FormField
+            control={form.control}
+            name="warehouseId"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input type="hidden" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="name"

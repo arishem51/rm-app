@@ -13,7 +13,6 @@ import {
   Users,
   Warehouse,
 } from "lucide-react";
-import { BadgeCent } from "lucide-react";
 import Link from "next/link";
 import {
   Collapsible,
@@ -108,11 +107,11 @@ const Content = () => {
       //   ssssssssssssssssssssssssssssssssssssssssssssssssss
       {
         title: "Đối tác",
-        url: '/dashboard/suppliers',
+        url: "/dashboard/suppliers",
         // url: AppRoutes.dashboard.products.index.url,
         icon: Briefcase,
       }
-        //   ssssssssssssssssssssssssssssssssssssssssssssssssss
+      //   ssssssssssssssssssssssssssssssssssssssssssssssssss
     );
   }
 
@@ -141,11 +140,6 @@ const Content = () => {
             url: AppRoutes.dashboard.orders.index.url,
           },
         ],
-      },
-      {
-        title: "Hóa đơn",
-        url: AppRoutes.dashboard.invoices.index.url,
-        icon: BadgeCent,
       },
       {
         title: "Kho hàng",

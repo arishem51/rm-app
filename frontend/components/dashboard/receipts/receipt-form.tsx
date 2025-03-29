@@ -47,7 +47,6 @@ import { ApiQuery } from "@/services/query";
 import { useRouter } from "next/navigation";
 import EmptyState from "../empty-state";
 import { format } from "date-fns";
-import InputCurrency from "@/components/input-currency";
 import { cn, toCurrency } from "@/lib/utils";
 import { uniqBy } from "lodash";
 
@@ -60,9 +59,7 @@ const schema = z.object({
         productId: z.coerce.number(),
         quantity: z.coerce.number().min(1, { message: "Không hợp lệ" }),
         zoneId: z.coerce.number(),
-        price: z.coerce
-          .number()
-          .min(1000, { message: "Giá phải lớn hơn 1000vnđ" }),
+        price: z.coerce.number(),
       })
     )
     .min(1, "Vui lòng thêm ít nhất một sản phẩm."),
@@ -235,7 +232,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                         productId: product.id!,
                         quantity: 1,
                         zoneId,
-                        price: 0,
+                        price: product.price ?? 0,
                       });
                     } else {
                       toast({
@@ -298,25 +295,16 @@ const ReceiptForm = ({ receipt }: Props) => {
                           )}
                         />
                       </TableCell>
-                      <TableCell className="align-top">
-                        {isCreateReceipt ? (
-                          <InputCurrency
-                            name={`items.${index}.price`}
-                            className={appearanceNone}
-                            readOnly={!isCreateReceipt}
-                            placeholder="Ví dụ: 10000"
-                          />
-                        ) : (
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.price`}
-                            render={({ field }) => (
-                              <FormControl>
-                                <span>{toCurrency(field.value)}</span>
-                              </FormControl>
-                            )}
-                          />
-                        )}
+                      <TableCell className="align-middle">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.price`}
+                          render={({ field }) => (
+                            <FormControl>
+                              <span>{toCurrency(field.value)}</span>
+                            </FormControl>
+                          )}
+                        />
                       </TableCell>
                       <TableCell className="align-top">
                         <FormField

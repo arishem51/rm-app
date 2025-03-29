@@ -1,5 +1,7 @@
 package com.example.backend.dto.inventory;
 
+import java.math.BigDecimal;
+
 import com.example.backend.dto.UserDTO;
 import com.example.backend.entities.Inventory;
 
@@ -24,14 +26,14 @@ public class InventoryResponseDTO {
     private UserDTO createdBy;
     private String createdAt;
     private String updatedAt;
-    private String price;
+    private BigDecimal price;
     private String warehouseName;
     private Integer quantity;
 
     public static InventoryResponseDTO fromEntity(Inventory inventory) {
         return InventoryResponseDTO.builder()
                 .id(inventory.getId())
-                .price(inventory.getProductPrice().toString())
+                .price(inventory.getProduct().getPrice())
                 .productId(inventory.getProduct().getId())
                 .zoneId(inventory.getZone().getId())
                 .zoneName(inventory.getZone().getName())

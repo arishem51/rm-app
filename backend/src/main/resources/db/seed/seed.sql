@@ -150,8 +150,6 @@ where id = (select  id from users where username = 'danganh')
 
 
 
-
-
    INSERT INTO partners (name, contact_name, phone, email, address, website, description, shop_id, created_at, can_have_debt)
 VALUES 
 (N'Công Ty TNHH An Phát', N'Nguyễn Văn An', N'0901234567', N'an.nguyen@anphat.vn', N'123 Đường Lê Lợi, Quận 1, TP.HCM', N'http://www.anphat.vn', N'Nhà cung cấp thiết bị văn phòng.',
@@ -166,5 +164,46 @@ VALUES
     (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')), GETDATE(), 0),
 (N'Công Ty CP Vina Trade', N'Trần Vina', N'0990011223', N'vina.tran@vinatrade.vn', N'203 Đường Phan Đình Phùng, TP.HCM', N'http://www.vinatrade.vn', N'Chuyên cung cấp giải pháp thương mại.',
     (SELECT id FROM shops WHERE create_by = (SELECT id FROM users WHERE username = 'danganh')), GETDATE(), 0);
+
+
+    DECLARE @price DECIMAL(10,2);
+DECLARE @i INT = 1;
+
+WHILE @i <= 10
+BEGIN
+    SET @price = 10000 + (15000 - 10000) * RAND();
+
+    INSERT INTO dbo.products 
+        (name, description, price, created_at, category_id, shop_id, partner_id)
+    VALUES 
+        (N'Gạo nếp ' + CAST(@i AS NVARCHAR(10)),  -- Tên sản phẩm (thêm số để phân biệt)
+         N'Một gói gạo nếp chất lượng ' + CAST(@i AS NVARCHAR(10)),  -- Mô tả sản phẩm (thêm số để phân biệt)
+         @price,  -- Giá ngẫu nhiên từ 10000 đến 15000
+         GETDATE(),  -- Thời gian tạo sản phẩm
+         1,  -- category_id là 1
+         (SELECT id FROM dbo.shops WHERE create_by = (SELECT id FROM dbo.users WHERE username = 'danganh')),  -- Shop của user 'danganh'
+         NULL);  -- Partner ID có thể là NULL nếu không có đối tác
+
+    SET @i = @i + 1;
+END
+
+DECLARE @image_url NVARCHAR(255) = N'https://thitngonnhapkhau.vn/wp-content/uploads/2022/12/thanh-phan-dinh-duong-gao-st25.png';  -- Đường dẫn ảnh thực tế
+DECLARE @ii INT = 1;
+
+WHILE @ii <= 10
+BEGIN
+    INSERT INTO dbo.product_image_urls 
+        (product_id, image_url)
+    VALUES 
+        ((SELECT id FROM dbo.products WHERE name = N'Gạo nếp ' + CAST(@ii AS NVARCHAR(10))),  -- Lấy ID của sản phẩm "Gạo nếp X"
+         @image_url);  -- Đường dẫn đến ảnh thực tế
+
+    SET @ii = @ii + 1;
+END
+
+
+
+
+
 
 
