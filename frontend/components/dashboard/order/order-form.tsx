@@ -115,6 +115,7 @@ const OrderForm = ({ onClose, order }: Props) => {
     fields: orderItems,
     append,
     remove,
+    update,
   } = useFieldArray({
     control: form.control,
     name: "orderItems",
@@ -246,9 +247,24 @@ const OrderForm = ({ onClose, order }: Props) => {
                                     <FormControl>
                                       {isCreateOrder ? (
                                         <ComboboxInventories
-                                          onSelect={(value) =>
-                                            field.onChange(value ? value : null)
-                                          }
+                                          onSelect={(value) => {
+                                            field.onChange(
+                                              value ? value : null
+                                            );
+                                            const inventory =
+                                              allInventories.find(
+                                                (item) => item.id === +value
+                                              );
+                                            const { product } = inventory ?? {};
+                                            update(index, {
+                                              inventoryId: inventory!.id!,
+                                              quantity: 1,
+                                              productId: product!.id!,
+                                              productName: product!.name!,
+                                              productPrice: +product!.price!,
+                                              zoneId: inventory!.zoneId!,
+                                            });
+                                          }}
                                           formValue={field.value?.toString()}
                                         />
                                       ) : (

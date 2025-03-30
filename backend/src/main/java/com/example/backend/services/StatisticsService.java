@@ -1,6 +1,9 @@
 package com.example.backend.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -38,8 +41,12 @@ public class StatisticsService {
                                         .totalDebt(0)
                                         .build();
                 }
-
                 Long shopId = currentUser.getShop().getId();
+
+                LocalDate firstDayOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+                LocalDate lastDayOfMonth = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+                LocalDateTime startOfMonth = firstDayOfMonth.atStartOfDay();
+                LocalDateTime endOfMonth = lastDayOfMonth.atTime(23, 59, 59, 999999999); // End of day
 
                 return StatisticsOverviewResponse.builder()
                                 .totalStaff(
@@ -52,13 +59,11 @@ public class StatisticsService {
                                                                 .map(Long::intValue)
                                                                 .orElse(0))
                                 .totalRevenue(
-                                                Optional.ofNullable(orderRepository.getTotalAmount())
+                                                Optional.ofNullable(orderRepository.getTotalAmountForCurrentMonth(
+                                                                startOfMonth, endOfMonth))
                                                                 .map(BigDecimal::intValue)
                                                                 .orElse(0))
                                 .totalDebt(
-                                                // Optional.ofNullable(paymentHistoryRepository.getTotalDebt())
-                                                // .map(BigDecimal::intValue)
-                                                // .orElse(0))
                                                 0)
                                 .build();
 
