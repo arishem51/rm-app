@@ -40,7 +40,7 @@ export type FacilityFilterSearchType = {
 
 const Facilities = () => {
   const { data: currentUser } = useMe();
-  const { isOwner, isStaff } = checkRole(currentUser);
+  const { isOwner } = checkRole(currentUser);
   const [filter, setFilter] = useState<
     { page: number } & FacilityFilterSearchType
   >({
