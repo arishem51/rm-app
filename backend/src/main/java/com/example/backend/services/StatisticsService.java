@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class StatisticsService {
         private final UserRepository userRepository;
         private final ProductRepository productRepository;
-        private final PaymentHistoryRepository paymentHistoryRepository;
         private final OrderRepository orderRepository;
 
         public StatisticsOverviewResponse getOverviewStatistics(User currentUser) {
@@ -54,13 +53,14 @@ public class StatisticsService {
                                                                 .map(Long::intValue)
                                                                 .orElse(0))
                                 .totalRevenue(
-                                                Optional.ofNullable(paymentHistoryRepository.getTotalRevenue())
+                                                Optional.ofNullable(orderRepository.getTotalAmount())
                                                                 .map(BigDecimal::intValue)
                                                                 .orElse(0))
                                 .totalDebt(
-                                                Optional.ofNullable(paymentHistoryRepository.getTotalDebt())
-                                                                .map(BigDecimal::intValue)
-                                                                .orElse(0))
+                                                // Optional.ofNullable(paymentHistoryRepository.getTotalDebt())
+                                                // .map(BigDecimal::intValue)
+                                                // .orElse(0))
+                                                0)
                                 .build();
 
         }
@@ -70,8 +70,8 @@ public class StatisticsService {
                         return new ArrayList<>();
                 }
 
-                List<Object[]> results = paymentHistoryRepository
-                                .getRevenueByMonthForShop(currentUser.getShop().getId());
+                List<Object[]> results = orderRepository
+                                .getAmountByMonthForShop(currentUser.getShop().getId());
 
                 int currentYear = Calendar.getInstance().get(Calendar.YEAR);
                 List<String> allMonths = new ArrayList<>();
