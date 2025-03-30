@@ -26,6 +26,7 @@ public class PartnerResponseDTO implements Serializable {
     private String shopName;
     private String createdAt;
     private String updatedAt;
+    private Double totalDebtAmount;
 
     public static PartnerResponseDTO fromEntity(Partner partner) {
         return PartnerResponseDTO.builder()
@@ -41,6 +42,7 @@ public class PartnerResponseDTO implements Serializable {
                 .shopId(partner.getShop().getId())
                 .shopName(partner.getShop().getName())
                 .createdAt(partner.getCreatedAt().toString())
+                .totalDebtAmount(partner.getTotalDebtAmount())
                 .updatedAt(partner.getUpdatedAt() != null ? partner.getUpdatedAt().toString() : null)
                 .build();
     }

@@ -1,16 +1,14 @@
 package com.example.backend.entities;
 
 import com.example.backend.enums.DebtStatus;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 @Data
@@ -33,10 +31,6 @@ public class DebtNote {
     private String description;
 
     private String createdBy;
-
-    @OneToMany(mappedBy = "debtNote", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<DebtDetail> debtDetails;
 
     @PrePersist
     public void prePersist() {

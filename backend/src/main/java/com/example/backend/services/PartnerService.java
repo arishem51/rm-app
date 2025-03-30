@@ -85,6 +85,7 @@ public class PartnerService {
                 .website(partnerDto.getWebsite())
                 .description(partnerDto.getDescription())
                 .canHaveDebt(partnerDto.isCanHaveDebt())
+                .totalDebtAmount(0.0)
                 .shop(shop)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())

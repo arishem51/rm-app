@@ -204,6 +204,7 @@ export interface Partner {
   website?: string;
   description?: string;
   canHaveDebt?: boolean;
+  totalDebtAmount?: number;
   shop?: Shop;
   /** @format date-time */
   createdAt?: string;
@@ -966,6 +967,7 @@ export interface PartnerRepsponseDTO {
   address?: string;
   canHaveDept?: boolean;
   website?: string;
+  totalDebtAmount: number;
   description?: string;
   /** @format int64 */
   shopId?: number;

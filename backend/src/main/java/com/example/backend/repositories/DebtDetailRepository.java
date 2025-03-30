@@ -17,11 +17,10 @@ import java.time.LocalDateTime;
 @Repository
 public interface DebtDetailRepository extends JpaRepository<DebtDetail, Long> {
 
-    @Query("SELECT d FROM DebtDetail d WHERE (:debtNoteId IS NULL OR d.debtNote.id = :debtNoteId) " +
+    @Query("SELECT d FROM DebtDetail d WHERE ( d.partnerId = :partnerId ) " +
             "AND (:fromDate IS NULL OR :toDate IS NULL OR d.createdAt BETWEEN :fromDate AND :toDate)")
     Page<DebtDetail> findDebtDetailsByDynamicCriteria(
-            @Param("debtNoteId") Long debtNoteId,
-            @Param("status") DebtStatus status,
+            Long partnerId,
             @Param("fromDate") LocalDateTime fromDate,
             @Param("toDate") LocalDateTime toDate,
             Pageable pageable

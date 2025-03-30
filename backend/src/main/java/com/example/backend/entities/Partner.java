@@ -30,6 +30,9 @@ public class Partner implements Serializable {
     private String phone;
 
     @Column()
+    private Double totalDebtAmount;
+
+    @Column()
     private String email;
 
     @Column(columnDefinition = "NVARCHAR(255)")

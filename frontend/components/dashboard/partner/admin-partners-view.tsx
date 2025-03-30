@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ApiQuery } from "@/services/query";
-import { Fragment, useCallback, useState } from "react";
+import React, { Fragment, useCallback, useState } from "react";
 import useAppQuery from "@/hooks/use-app-query";
 import EmptyState from "../empty-state";
 import { UserPen } from "lucide-react";
@@ -20,6 +20,8 @@ import HeaderListSearch from "../search/header-list-search";
 import CreatePartnersModal from "./create-partners-modal";
 import PartnersUpdateModal from "./update-partners-modal";
 import UserPagination from "../../dashboard/pagination";
+import DebtDetailsDialog from "@/components/dashboard/partner/debt-details-dialog";
+import CreateDebtDetailDialog from "@/components/dashboard/partner/create-debt-detail-dialog";
 
 const AdminPartnersView = () => {
   const createFilterValue = useCallback(
@@ -33,7 +35,7 @@ const AdminPartnersView = () => {
   const [updatedPartner, setUpdatedPartner] = useState<Partner>();
   const [filter, setFilter] = useState(createFilterValue(0, ""));
 
-  const { data } = useAppQuery(ApiQuery.partners.getPartners(filter));
+  const { data, refetch } = useAppQuery(ApiQuery.partners.getPartners(filter));
 
   const pageData = data?.data;
   const partners = pageData?.data || [];
@@ -50,6 +52,13 @@ const AdminPartnersView = () => {
       )
     );
   };
+  function formatCurrency(amount: number): string {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    }).format(amount);
+  }
 
   const handleSearch = (search: string) => {
     setFilter(createFilterValue(0, search));
@@ -74,6 +83,7 @@ const AdminPartnersView = () => {
                 <TableHead>Email</TableHead>
                 <TableHead>Address</TableHead>
                 <TableHead>Description</TableHead>
+                <TableHead>Total Debt Amount</TableHead>
                 <TableHead>Website</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
@@ -88,6 +98,7 @@ const AdminPartnersView = () => {
                     <TableCell>{partner.email}</TableCell>
                     <TableCell>{partner.address}</TableCell>
                     <TableCell>{partner.description}</TableCell>
+                    <TableCell>{formatCurrency(partner.totalDebtAmount)}</TableCell>
                     <TableCell>{partner.website}</TableCell>
                     <TableCell className="flex justify-end w-full">
                       <DialogTrigger asChild>
@@ -102,6 +113,15 @@ const AdminPartnersView = () => {
                           <UserPen />
                         </Button>
                       </DialogTrigger>
+                      <DebtDetailsDialog partner={partner} onDebtUpdated={refetch}>
+                        <Button variant="secondary" size="sm">
+                          View Debt
+                        </Button>
+                      </DebtDetailsDialog>
+
+                      <CreateDebtDetailDialog partnerId={partner.id!}>
+                        <Button variant="outline" size="sm" className="ml-2">Create Debt</Button>
+                      </CreateDebtDetailDialog>
                     </TableCell>
                   </TableRow>
                 );

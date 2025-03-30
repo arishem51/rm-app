@@ -26,16 +26,15 @@ public class DebtDetailController {
         this.debtDetailService = debtDetailService;
     }
 
-    @GetMapping("/debt-note/{debtNoteId}")
+    @GetMapping("/{partnerId}")
     public ResponseEntity<BaseResponse<Page<DebtDetailResponseDTO>>> getDebtDetails(
-            @PathVariable Long debtNoteId,
-            @RequestParam(required = false) DebtStatus status,
+            @PathVariable Long partnerId,
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate,
             Pageable pageable) {
-        // Gọi service để lấy kết quả phân trang và lọc
+
         Page<DebtDetailResponseDTO> debtDetailPage = debtDetailService.getDebtDetailsByDebtNoteIdAndFilter(
-                debtNoteId, status, fromDate, toDate, pageable);
+                partnerId, fromDate, toDate, pageable);
 
         return ResponseEntity.ok(new BaseResponse<>(debtDetailPage, "DebtDetails found successfully"));
     }

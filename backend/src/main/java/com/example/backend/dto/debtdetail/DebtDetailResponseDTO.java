@@ -13,11 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DebtDetailResponseDTO {
     private Long id;
-    private LocalDate dueDate;
     private LocalDateTime createdAt;
     private Boolean isPlus;
     private Double amount;
     private String description;
-    private Long debtNoteId;
+    private Long partnerId;
 }
 
