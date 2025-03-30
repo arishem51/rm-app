@@ -7,7 +7,6 @@ import {
   Home,
   LucideIcon,
   ShoppingBag,
-  Store,
   TagIcon,
   User2,
   Users,
@@ -82,37 +81,12 @@ const Content = () => {
   };
 
   if (isAdmin) {
-    itemGroups.application.items.push(
-      {
-        title: "Tài khoản",
-        icon: Users,
-        url: AppRoutes.dashboard.users.url,
-        children: [],
-      },
-      {
-        title: "Cửa hàng",
-        url: AppRoutes.dashboard.shops.url,
-        icon: Store,
-      },
-      {
-        title: "Danh mục",
-        url: AppRoutes.dashboard.categories.url,
-        icon: TagIcon,
-      },
-      {
-        title: "Sản phẩm",
-        url: AppRoutes.dashboard.products.index.url,
-        icon: Box,
-      },
-      //   ssssssssssssssssssssssssssssssssssssssssssssssssss
-      {
-        title: "Đối tác",
-        url: "/dashboard/suppliers",
-        // url: AppRoutes.dashboard.products.index.url,
-        icon: Briefcase,
-      }
-      //   ssssssssssssssssssssssssssssssssssssssssssssssssss
-    );
+    itemGroups.application.items.push({
+      title: "Tài khoản",
+      icon: Users,
+      url: AppRoutes.dashboard.users.url,
+      children: [],
+    });
   }
 
   if (user?.shopId && isOwner) {
@@ -126,6 +100,11 @@ const Content = () => {
         title: "Sản phẩm",
         url: AppRoutes.dashboard.products.index.url,
         icon: Box,
+      },
+      {
+        title: "Danh mục",
+        url: AppRoutes.dashboard.categories.url,
+        icon: TagIcon,
       },
       {
         title: "Nhập/Xuất",

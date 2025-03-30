@@ -78,7 +78,7 @@ export const AppRoutes = {
     },
     categories: {
       url: "/dashboard/categories",
-      accessRoles: [UserRole.ADMIN],
+      accessRoles: [UserRole.OWNER],
     },
     products: {
       index: {
