@@ -845,6 +845,8 @@ export interface StatisticsOverviewResponse {
   totalRevenue?: number;
   /** @format int32 */
   totalDebt?: number;
+  /** @format int32 */
+  totalOrders?: number;
 }
 
 export interface BaseResponsePaginateResponseShopDTO {
@@ -1096,6 +1098,8 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
@@ -1105,8 +1109,6 @@ export interface PageOrder {
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -1114,11 +1116,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  /** @format int32 */
-  pageNumber?: number;
+  paged?: boolean;
   /** @format int32 */
   pageSize?: number;
-  paged?: boolean;
+  /** @format int32 */
+  pageNumber?: number;
   unpaged?: boolean;
 }
 
@@ -1914,6 +1916,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         pageSize?: number;
         /** @default "" */
         search?: string;
+        /** @format int64 */
+        categoryId?: number;
       },
       params: RequestParams = {},
     ) =>

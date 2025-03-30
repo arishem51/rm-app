@@ -737,6 +737,12 @@
             "in": "query",
             "required": false,
             "schema": { "type": "string", "default": "" }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -2744,7 +2750,8 @@
           "totalStaff": { "type": "integer", "format": "int32" },
           "totalProduct": { "type": "integer", "format": "int32" },
           "totalRevenue": { "type": "integer", "format": "int32" },
-          "totalDebt": { "type": "integer", "format": "int32" }
+          "totalDebt": { "type": "integer", "format": "int32" },
+          "totalOrders": { "type": "integer", "format": "int32" }
         }
       },
       "BaseResponsePaginateResponseShopDTO": {
@@ -3083,6 +3090,8 @@
         "properties": {
           "totalElements": { "type": "integer", "format": "int64" },
           "totalPages": { "type": "integer", "format": "int32" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
           "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
@@ -3092,8 +3101,6 @@
           "sort": { "$ref": "#/components/schemas/SortObject" },
           "numberOfElements": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
-          "first": { "type": "boolean" },
-          "last": { "type": "boolean" },
           "empty": { "type": "boolean" }
         }
       },
@@ -3102,9 +3109,9 @@
         "properties": {
           "offset": { "type": "integer", "format": "int64" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
-          "pageNumber": { "type": "integer", "format": "int32" },
-          "pageSize": { "type": "integer", "format": "int32" },
           "paged": { "type": "boolean" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" },
           "unpaged": { "type": "boolean" }
         }
       },

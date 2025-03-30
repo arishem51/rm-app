@@ -39,6 +39,7 @@ public class StatisticsService {
                                         .totalProduct(0)
                                         .totalRevenue(0)
                                         .totalDebt(0)
+                                        .totalOrders(0)
                                         .build();
                 }
                 Long shopId = currentUser.getShop().getId();
@@ -46,7 +47,10 @@ public class StatisticsService {
                 LocalDate firstDayOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
                 LocalDate lastDayOfMonth = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
                 LocalDateTime startOfMonth = firstDayOfMonth.atStartOfDay();
-                LocalDateTime endOfMonth = lastDayOfMonth.atTime(23, 59, 59, 999999999); // End of day
+                LocalDateTime endOfMonth = lastDayOfMonth.atTime(23, 59, 59, 999999999);
+                LocalDate today = LocalDate.now();
+                LocalDateTime startOfDay = today.atStartOfDay();
+                LocalDateTime endOfDay = today.atTime(23, 59, 59, 999999999);
 
                 return StatisticsOverviewResponse.builder()
                                 .totalStaff(
@@ -65,6 +69,10 @@ public class StatisticsService {
                                                                 .orElse(0))
                                 .totalDebt(
                                                 0)
+                                .totalOrders(Optional.ofNullable(orderRepository.countOrdersForToday(
+                                                startOfDay,
+                                                endOfDay))
+                                                .orElse(Integer.valueOf(0)))
                                 .build();
 
         }

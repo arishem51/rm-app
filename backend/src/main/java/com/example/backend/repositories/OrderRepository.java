@@ -30,4 +30,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                         "ORDER BY month DESC")
         List<Object[]> getAmountByMonthForShop(@Param("shopId") Long shopId);
 
+        @Query("SELECT COUNT(o) FROM Order o WHERE o.createdAt >= :startOfDay AND o.createdAt < :endOfDay")
+        Integer countOrdersForToday(@Param("startOfDay") LocalDateTime startOfDay,
+                        @Param("endOfDay") LocalDateTime endOfDay);
+
 }

@@ -54,7 +54,7 @@ const OwnerStatisticsOverview = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-1">
             <DollarSign size={16} />
-            <span>Tổng doanh thu</span>
+            <span>Doanh thu trong ngày</span>
           </CardTitle>
           <CardDescription className="text-2xl">
             {isLoading ? (
@@ -69,13 +69,13 @@ const OwnerStatisticsOverview = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-1">
             <CreditCard size={16} />
-            <span>Tổng nợ</span>
+            <span>Số lượng đơn hàng trong ngày</span>
           </CardTitle>
           <CardDescription className="text-2xl">
             {isLoading ? (
               <Skeleton className="h-6 w-[100px] mt-1" />
             ) : (
-              toCurrency(overviewStatistics?.totalDebt ?? 0)
+              (overviewStatistics?.totalOrders ?? 0) + " đơn hàng"
             )}
           </CardDescription>
         </CardHeader>

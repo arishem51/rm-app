@@ -47,7 +47,7 @@ public class PartnerService {
         if (UserRoleUtils.isAdmin(currentUser)) {
             return partnerRepository.findAll();
         }
-        if (!UserRoleUtils.isOwner(currentUser) || currentUser.getShop() == null) {
+        if (currentUser.getShop() == null) {
             throw new IllegalArgumentException("Unauthorized access");
         }
         return partnerRepository.findByShopId(currentUser.getShop().getId());
