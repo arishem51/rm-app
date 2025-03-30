@@ -107,9 +107,6 @@ public class WarehouseService {
 
     public Page<Warehouse> findShops(int page, int pageSize, String search, User user, String address, String startDate,
             String endDate) {
-        if (UserRoleUtils.isStaff(user)) {
-            throw new IllegalArgumentException("Bạn không có quyền truy cập trang này!");
-        }
         boolean isSearchEmpty = search.isEmpty() && address.isEmpty();
         LocalDateTime startLocalDate = null;
         LocalDateTime endLocalDate = null;

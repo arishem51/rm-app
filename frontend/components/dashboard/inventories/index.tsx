@@ -16,8 +16,12 @@ import HeaderListSearch from "../search/header-list-search";
 import Link from "next/link";
 import ListPagination from "../pagination";
 import { toCurrency } from "@/lib/utils";
+import { useMe } from "@/hooks/mutations/user";
+import { checkRole } from "@/lib/helpers";
 
 const Inventories = () => {
+  const { data: currentUser } = useMe();
+  const { isStaff } = checkRole(currentUser);
   const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.inventories.getInventories(filter)
@@ -62,13 +66,17 @@ const Inventories = () => {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell>
                 <TableCell>
-                  <Link
-                    prefetch
-                    href={`/dashboard/products/${item.product?.id}`}
-                    className="hover:underline"
-                  >
-                    {item.product?.name}
-                  </Link>
+                  {isStaff ? (
+                    item.product?.name
+                  ) : (
+                    <Link
+                      prefetch
+                      href={`/dashboard/products/${item.product?.id}`}
+                      className="hover:underline"
+                    >
+                      {item.product?.name}
+                    </Link>
+                  )}
                 </TableCell>
                 <TableCell>{toCurrency(+(item.product?.price || 0))}</TableCell>
                 <TableCell>{item.quantity}</TableCell>

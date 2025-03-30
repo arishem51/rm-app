@@ -148,20 +148,36 @@ const Content = () => {
   }
 
   if (user?.shopId && isStaff) {
-    itemGroups.shop.items.push({
-      title: "Đơn hàng",
-      icon: ShoppingBasket,
-      children: [
-        {
-          title: "Phiếu nhập",
-          url: AppRoutes.dashboard.receipts.index.url,
-        },
-        {
-          title: "Đơn hàng",
-          url: AppRoutes.dashboard.orders.index.url,
-        },
-      ],
-    });
+    itemGroups.shop.items.push(
+      {
+        title: "Đơn hàng",
+        icon: ShoppingBasket,
+        children: [
+          {
+            title: "Phiếu nhập",
+            url: AppRoutes.dashboard.receipts.index.url,
+          },
+          {
+            title: "Đơn hàng",
+            url: AppRoutes.dashboard.orders.index.url,
+          },
+        ],
+      },
+      {
+        title: "Kho hàng",
+        icon: Warehouse,
+        children: [
+          {
+            title: "Kho",
+            url: AppRoutes.dashboard.warehouses.facilities.index.url,
+          },
+          {
+            title: "Hàng hóa",
+            url: AppRoutes.dashboard.warehouses.inventories.index.url,
+          },
+        ],
+      }
+    );
   }
 
   const groups = Object.keys(itemGroups).map(
