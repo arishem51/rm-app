@@ -14,8 +14,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByShopIdOrderByCreatedAtDesc(Long shopId);
 
-    @Query("SELECT o FROM Order o JOIN PaymentHistory p ON p.order.id = o.id WHERE o.shop.id = :shopId AND p.isDebt = false ORDER BY o.createdAt DESC")
-    List<Order> findTop5OrdersByShopIdAndPaymentHistoriesIsDebtFalse(@Param("shopId") Long shopId, Pageable pageable);
+    List<Order> findTop5ByShopIdOrderByCreatedAtDesc(
+            @Param("shopId") Long shopId, Pageable pageable);;
 
     @Query("SELECT SUM(o.amount) from Order o")
     BigDecimal getTotalAmount();

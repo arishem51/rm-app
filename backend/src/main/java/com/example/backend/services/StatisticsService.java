@@ -17,7 +17,6 @@ import com.example.backend.dto.statistics.StatisticsOverviewResponse;
 import com.example.backend.entities.User;
 import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.OrderRepository;
-import com.example.backend.repositories.PaymentHistoryRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.repositories.UserRepository;
 
@@ -101,7 +100,8 @@ public class StatisticsService {
                 }
 
                 return orderRepository
-                                .findTop5OrdersByShopIdAndPaymentHistoriesIsDebtFalse(currentUser.getShop().getId(),
+                                .findTop5ByShopIdOrderByCreatedAtDesc(
+                                                currentUser.getShop().getId(),
                                                 PageRequest.of(0, 5))
                                 .stream()
                                 .map(RecentOrder::fromEntity).toList();
