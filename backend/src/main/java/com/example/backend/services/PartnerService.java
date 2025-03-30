@@ -91,7 +91,7 @@ public class PartnerService {
     }
 
     public Partner update(Long id, PartnerUpdateDTO partnerDto, @CurrentUser User currentUser) {
-        if (!UserRoleUtils.isAdmin(currentUser) || !UserRoleUtils.isOwner(currentUser)) {
+        if (!UserRoleUtils.isOwner(currentUser)) {
             throw new IllegalArgumentException("You are not authorized to perform this action");
         }
         Partner partner = partnerRepository.findById(id)
