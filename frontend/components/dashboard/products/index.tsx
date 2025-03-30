@@ -14,7 +14,6 @@ import { ApiQuery } from "@/services/query";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
-import HeaderListSearch from "../search/header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -23,18 +22,24 @@ import ListPagination from "../pagination";
 import Image from "next/image";
 import defaultPic from "../../../public/images/default-product.png";
 import { checkRole } from "@/lib/helpers";
+import ProductHeader from "./product-header";
+
+export type FilterSearchType = {
+  search: string;
+  categoryId?: string;
+};
 
 const Products = () => {
-  const [filter, setFilter] = useState({ page: 0, search: "" });
+  const [filter, setFilter] = useState<{ page: number } & FilterSearchType>({
+    page: 0,
+    search: "",
+  });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.products.getProducts(filter)
   );
   const { data: currentUser } = useMe();
 
   const { isAdmin, isOwner } = checkRole(currentUser);
-  const handleSearch = (search: string) => {
-    setFilter({ page: 0, search });
-  };
   const handleNavigatePage = (page: number) => {
     setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
   };
@@ -49,9 +54,11 @@ const Products = () => {
   return (
     <Fragment>
       <div className="flex justify-between">
-        <HeaderListSearch
-          filterSearch={filter.search}
-          onSearch={handleSearch}
+        <ProductHeader
+          filter={filter}
+          onFilter={(filter) =>
+            setFilter({ ...filter, page: 0, search: filter.search })
+          }
         />
         {isOwner && (
           <Link href="/dashboard/products/create" prefetch>

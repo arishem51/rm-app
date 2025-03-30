@@ -51,22 +51,23 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
-        if (UserRoleUtils.isAdmin(currentUser)) {
-            return search.isEmpty()
-                    ? productRepository.findAll(PageRequest.of(page, pageSize))
-                    : productRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
-        }
-
+    public Page<Product> findProducts(int page, int pageSize, String search, Long categoryId, User currentUser) {
         Shop shop = currentUser.getShop();
-
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage products!");
+        }
+        if (categoryId != null) {
+            return productRepository.findByShopIdAndNameContainingIgnoreCaseAndCategoryId(
+                    shop.getId(),
+                    search,
+                    categoryId,
+                    PageRequest.of(page, pageSize));
         }
         return search.isEmpty()
                 ? productRepository.findByShopId(currentUser.getShop().getId(), PageRequest.of(page, pageSize))
                 : productRepository.findByShopIdAndNameContainingIgnoreCase(currentUser.getShop().getId(), search,
                         PageRequest.of(page, pageSize));
+
     }
 
     public List<Product> findAllProductsFromShop(User currentUser) {

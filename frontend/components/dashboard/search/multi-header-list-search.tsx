@@ -20,6 +20,7 @@ type Props = {
   items: Item[];
   onSearchClick: (items: { search: string; name: string }[]) => void;
   children?: React.ReactNode;
+  className?: string;
 };
 
 const InputSearch = ({

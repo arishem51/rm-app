@@ -38,9 +38,10 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") Long categoryId,
             @CurrentUser User user) {
         try {
-            Page<Product> products = productService.findProducts(page, pageSize, search, user);
+            Page<Product> products = productService.findProducts(page, pageSize, search, categoryId, user);
             PaginateResponse<ResponseProductDTO> response = new PaginateResponse<>(
                     products.map(ResponseProductDTO::fromEntity));
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
