@@ -247,6 +247,14 @@ const OrderForm = ({ onClose, order }: Props) => {
                                     <FormControl>
                                       {isCreateOrder ? (
                                         <ComboboxInventories
+                                          filterOptions={(option) => {
+                                            return (
+                                              +option.value === field.value ||
+                                              selectedInventories.indexOf(
+                                                +option.value
+                                              ) === -1
+                                            );
+                                          }}
                                           onSelect={(value) => {
                                             field.onChange(
                                               value ? value : null

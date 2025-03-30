@@ -42,7 +42,11 @@ const StaffStatisticsOverview = () => {
             <span>Tổng đơn hàng trong ngày</span>
           </CardTitle>
           <CardDescription className="text-2xl">
-            {isLoading ? <Skeleton className="h-6 w-[100px] mt-1" /> : 0}
+            {isLoading ? (
+              <Skeleton className="h-6 w-[100px] mt-1" />
+            ) : (
+              overviewStatistics?.totalOrders
+            )}
           </CardDescription>
         </CardHeader>
       </Card>

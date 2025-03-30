@@ -10,10 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.dto.statistics.RecentOrder;
 import com.example.backend.dto.statistics.RevenueByMonthResponse;
 import com.example.backend.dto.statistics.StatisticsOverviewResponse;
@@ -22,6 +20,7 @@ import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.OrderRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.utils.UserRoleUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -63,15 +62,24 @@ public class StatisticsService {
                                                                 .map(Long::intValue)
                                                                 .orElse(0))
                                 .totalRevenue(
-                                                Optional.ofNullable(orderRepository.getTotalAmountForCurrentMonth(
-                                                                startOfMonth, endOfMonth))
+                                                Optional.ofNullable(UserRoleUtils.isOwner(currentUser)
+                                                                ? orderRepository.getTotalAmountForCurrentMonth(
+                                                                                startOfMonth, endOfMonth)
+                                                                : orderRepository.getTotalAmountForTodayByUser(
+                                                                                currentUser.getId(), startOfDay,
+                                                                                endOfDay))
                                                                 .map(BigDecimal::intValue)
                                                                 .orElse(0))
                                 .totalDebt(
                                                 0)
-                                .totalOrders(Optional.ofNullable(orderRepository.countOrdersForToday(
-                                                startOfDay,
-                                                endOfDay))
+                                .totalOrders(Optional.ofNullable(UserRoleUtils.isOwner(
+                                                currentUser) ? orderRepository.countOrdersForToday(
+                                                                startOfDay,
+                                                                endOfDay)
+                                                                : orderRepository.countOrdersForTodayByUser(
+                                                                                currentUser.getId(),
+                                                                                startOfDay,
+                                                                                endOfDay))
                                                 .orElse(Integer.valueOf(0)))
                                 .build();
 
@@ -82,8 +90,9 @@ public class StatisticsService {
                         return new ArrayList<>();
                 }
 
-                List<Object[]> results = orderRepository
-                                .getAmountByMonthForShop(currentUser.getShop().getId());
+                List<Object[]> results = UserRoleUtils.isOwner(currentUser)
+                                ? orderRepository.getAmountByMonthForShop(currentUser.getShop().getId())
+                                : orderRepository.getAmountByMonthForUser(currentUser.getId());
 
                 int currentYear = Calendar.getInstance().get(Calendar.YEAR);
                 List<String> allMonths = new ArrayList<>();

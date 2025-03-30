@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RevenueChart } from "./revenue-chart";
-import { RecentOrders } from "./recent-orders";
 import StaffStatisticsOverview from "./staff-statistics-overview";
 
 const StaffOverview = () => {
@@ -18,14 +17,14 @@ const StaffOverview = () => {
             <RevenueChart />
           </CardContent>
         </Card>
-        <Card className="col-span-3">
+        {/* <Card className="col-span-3">
           <CardHeader>
             <CardTitle>Đơn gần đây</CardTitle>
           </CardHeader>
           <CardContent>
             <RecentOrders />
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

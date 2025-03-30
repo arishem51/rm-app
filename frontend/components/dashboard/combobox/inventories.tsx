@@ -7,17 +7,24 @@ import Image from "next/image";
 type Props = {
   onSelect: (value: string) => void;
   formValue?: string;
+  filterOptions?: (option: { label: string; value: string }) => boolean;
 };
 
-export function ComboboxInventories({ onSelect, formValue }: Props) {
+export function ComboboxInventories({
+  onSelect,
+  formValue,
+  filterOptions,
+}: Props) {
   const { data: { data: items = [] } = {} } = useAllInventories();
 
   const options =
     items.length > 0
-      ? items.map((item) => ({
-          label: item.product?.name ?? "",
-          value: item.id?.toString() ?? "",
-        }))
+      ? items
+          .map((item) => ({
+            label: item.product?.name ?? "",
+            value: item.id?.toString() ?? "",
+          }))
+          .filter(filterOptions ?? (() => true))
       : [];
 
   const inventoryMap = new Map(items.map((item) => [item.id, item]));
