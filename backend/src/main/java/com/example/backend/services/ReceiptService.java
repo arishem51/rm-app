@@ -35,7 +35,6 @@ public class ReceiptService {
         if (currentUser.getShop() == null) {
             throw new IllegalArgumentException("Bạn phải là chủ cửa hàng hoặc nhân viên của cửa hàng");
         }
-
         Receipt receipt = Receipt.builder().createdBy(currentUser).build();
         List<ReceiptItem> receiptItems = new ArrayList<>();
         List<Inventory> inventoriesToSave = new ArrayList<>();
@@ -55,23 +54,11 @@ public class ReceiptService {
                 Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(item.getZoneId(), currentUser.getShop().getId())
                         .orElseThrow(() -> new IllegalArgumentException(
                                 "Khu vực trong kho không tồn tại"));
-                List<Inventory> inventories = inventoryRepository.findByZone_IdAndProduct_Id(zone.getId(),
-                        item.getProductId());
-
-                Inventory inventory = null;
-
-                if (!inventories.isEmpty()) {
-                    for (Inventory inv : inventories) {
-                        if (inv.getProductPrice().compareTo(item.getPrice()) == 0) {
-                            inventory = inv;
-                            break;
-                        }
-                    }
-                }
+                Inventory inventory = inventoryRepository.findByZone_Id(zone.getId()).orElse(null);
 
                 if (inventory != null) {
                     if (inventory.getProduct().getId() != item.getProductId()) {
-                        throw new IllegalArgumentException("Sản phẩm không tồn tại trong kho");
+                        throw new IllegalArgumentException("Kho đã có sản phẩm khác");
                     }
                     Integer quantity = inventory.getQuantity() + item.getQuantity();
                     inventory.setQuantity(quantity);
@@ -80,7 +67,6 @@ public class ReceiptService {
                             .product(productRepository.findById(item.getProductId())
                                     .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại")))
                             .quantity(item.getQuantity())
-                            .productPrice(item.getPrice())
                             .createdBy(currentUser)
                             .build();
                 }

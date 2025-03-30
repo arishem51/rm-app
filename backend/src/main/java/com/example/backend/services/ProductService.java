@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -42,6 +43,7 @@ public class ProductService {
                 .category(category)
                 .supplier(partner)
                 .shop(shop)
+                .price(dto.getPrice())
                 .description(dto.getDescription())
                 .imageUrls(dto.getImageUrls() != null ? dto.getImageUrls() : List.of())
                 .build();
@@ -84,19 +86,25 @@ public class ProductService {
         if (product.getShop().getId() != user.getShop().getId()) {
             throw new IllegalArgumentException("You can only update product from your own shop!");
         }
+
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
         Partner supplier = Optional.ofNullable(dto.getSupplierId()).flatMap(partnerService::findById).orElse(null);
+        String name = Optional.ofNullable(dto.getName()).orElse(product.getName());
+        String description = Optional.ofNullable(dto.getDescription()).orElse(product.getDescription());
+        BigDecimal price = Optional.ofNullable(dto.getPrice()).orElse(product.getPrice());
+
+        System.out.println("price " + dto.getPrice() + " a: " + price);
+
         product.setCategory(category);
         product.setSupplier(supplier);
-
-        if (dto.getName() != null)
-            product.setName(dto.getName());
-        if (dto.getDescription() != null)
-            product.setDescription(dto.getDescription());
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
         if (dto.getImageUrls() != null) {
             product.getImageUrls().clear();
             product.getImageUrls().addAll(dto.getImageUrls());
         }
+
         return productRepository.save(product);
     }
 

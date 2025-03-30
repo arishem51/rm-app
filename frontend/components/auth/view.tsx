@@ -87,6 +87,7 @@ const AuthView: FC<Props> = ({
                     title: ToastTitle.error,
                     description: e.message || ToastTitle.somethingWentWrong,
                     variant: "destructive",
+                    className: "toast-login-error-test",
                   });
                   config?.onError?.();
                 },
@@ -94,6 +95,7 @@ const AuthView: FC<Props> = ({
                   toast({
                     title: ToastTitle.success,
                     description: "Đăng ký thành công!",
+                    className: "toast-login-success-test",
                   });
                   config?.onSuccess?.();
                   setTimeout(() => {

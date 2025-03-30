@@ -28,6 +28,7 @@ public class ResponseProductDTO {
         return ResponseProductDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
+                .price(product.getPrice())
                 .description(product.getDescription())
                 .category(product.getCategory())
                 .supplier(product.getSupplier())

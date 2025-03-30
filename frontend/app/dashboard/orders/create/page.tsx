@@ -15,7 +15,7 @@ const Page = () => {
       <div className="px-4">
         <h1 className="text-3xl font-bold mt-2">Đơn hàng</h1>
         <p className="text-sm text-muted-foreground">Thêm thông tin đơn hàng</p>
-        <div className="w-5/6">
+        <div className="w-5/6 pb-12">
           <Separator className="my-4" />
           <OrderForm />
         </div>

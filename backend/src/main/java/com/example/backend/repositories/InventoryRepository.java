@@ -16,7 +16,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     Optional<Inventory> findByIdAndZoneId(Long id, Long zoneId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<Inventory> findByZone_IdAndProduct_Id(Long zoneId, Long productId);
+    Optional<Inventory> findByZone_Id(Long zoneId);
 
     Page<Inventory> findByZone_Warehouse_Shop_Id(Long shopId, Pageable pageable);
 

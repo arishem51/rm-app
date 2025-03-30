@@ -29,15 +29,19 @@ public class PartnerService {
         Pageable pageable = PageRequest.of(page, pageSize);
         if (UserRoleUtils.isAdmin(currentUser)) {
             return search.isEmpty()
-                    ? partnerRepository.findAll(pageable).map(PartnerResponseDTO::fromEntity)
-                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable).map(PartnerResponseDTO::fromEntity);
+
+                    ? partnerRepository.findAll(pageable).map(PartnerRepsponseDTO::fromEntity)
+                    : partnerRepository.findByNameContainingIgnoreCase(search, pageable)
+                            .map(PartnerRepsponseDTO::fromEntity);
         } else {
             return search.isEmpty()
-                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable).map(PartnerResponseDTO::fromEntity)
+                    ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable)
+                            .map(PartnerRepsponseDTO::fromEntity)
                     : partnerRepository.findByShopIdAndNameContainingIgnoreCase(
-                    currentUser.getShop().getId(),
-                    search,
-                    pageable).map(PartnerResponseDTO::fromEntity);
+                            currentUser.getShop().getId(),
+                            search,
+                            pageable).map(PartnerRepsponseDTO::fromEntity);
+
         }
     }
 
@@ -73,8 +77,8 @@ public class PartnerService {
     }
 
     public Partner create(PartnerCreateDTO partnerDto, User currentUser) {
-        var shop = shopRepository.findById(currentUser.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Shop not found"));
+        var shop = shopRepository.findById(currentUser.getShop().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy cửa hàng!"));
 
         Partner partner = Partner.builder()
                 .name(partnerDto.getName())

@@ -47,7 +47,7 @@ public class Partner implements Serializable {
     @Column(name = "can_have_debt", nullable = false)
     private boolean canHaveDebt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 

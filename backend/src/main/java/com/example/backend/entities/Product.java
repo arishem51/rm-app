@@ -1,5 +1,6 @@
 package com.example.backend.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,6 +45,9 @@ public class Product {
 
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
+
+    @Column(name = "price")
+    private BigDecimal price;
 
     @ElementCollection
     @CollectionTable(name = "product_image_urls", joinColumns = @JoinColumn(name = "product_id"))

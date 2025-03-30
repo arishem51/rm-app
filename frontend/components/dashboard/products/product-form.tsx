@@ -26,6 +26,7 @@ import { ComboboxPartners } from "../combobox/partner";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
+import InputCurrency from "@/components/input-currency";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
@@ -34,7 +35,9 @@ const schema = z.object({
     .array(z.object({ url: z.string().url({ message: "URL phải hợp lệ" }) }))
     .default([]),
   categoryId: z.string().nullable().optional(),
+  supplierId: z.string().nullable().optional(),
   partnerId: z.string().nullable().optional(),
+  price: z.coerce.number({ message: "Giá là bắt buộc" }),
   shopId: z.coerce.number(),
 });
 
@@ -52,6 +55,7 @@ const ProductForm = ({ onClose, product }: Props) => {
     defaultValues: product
       ? {
           ...product,
+          price: product.price || 0,
           categoryId: product.category?.id?.toString(),
           partnerId: product.supplier?.id?.toString(),
           imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
@@ -61,6 +65,7 @@ const ProductForm = ({ onClose, product }: Props) => {
           description: "",
           imageUrls: [],
           shopId: 1,
+          price: 0,
         },
   });
   const {
@@ -85,6 +90,7 @@ const ProductForm = ({ onClose, product }: Props) => {
     if (product) {
       reset({
         ...product,
+        price: product.price || 0,
         categoryId: product.category?.id?.toString(),
         partnerId: product.supplier?.id?.toString(),
         imageUrls: product.imageUrls?.map((url) => ({ url })) || [],
@@ -109,6 +115,7 @@ const ProductForm = ({ onClose, product }: Props) => {
         toast({
           title: ToastTitle.error,
           description: error.message,
+          variant: "destructive",
         });
       },
     };
@@ -124,6 +131,7 @@ const ProductForm = ({ onClose, product }: Props) => {
 
       const mutateData: ProductRequestDTO = {
         ...payload,
+        supplierId: payload.partnerId,
         imageUrls: payload.imageUrls.map((image) => image.url),
         shopId: currentUser?.shopId,
       };
@@ -172,6 +180,12 @@ const ProductForm = ({ onClose, product }: Props) => {
                 <FormMessage />
               </FormItem>
             )}
+          />
+          <InputCurrency
+            label="Giá"
+            name="price"
+            readOnly={!isOwner}
+            placeholder="Ví dụ: 100000"
           />
           <div className="flex justify-between gap-2">
             <div className="flex-1">

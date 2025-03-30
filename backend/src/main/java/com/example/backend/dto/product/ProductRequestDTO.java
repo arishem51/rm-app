@@ -1,5 +1,6 @@
 package com.example.backend.dto.product;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +18,7 @@ public class ProductRequestDTO {
     @NotBlank(message = "Name is required!")
     private String name;
     private String description;
+    private BigDecimal price;
     private Long categoryId;
     private Long supplierId;
 

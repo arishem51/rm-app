@@ -3,7 +3,6 @@
 import { useAllInventories } from "@/services/hooks/inventories";
 import { Combobox } from "./index";
 import Image from "next/image";
-import { useAllProducts } from "@/services/hooks/products";
 
 type Props = {
   onSelect: (value: string) => void;
@@ -12,23 +11,23 @@ type Props = {
 
 export function ComboboxInventories({ onSelect, formValue }: Props) {
   const { data: { data: items = [] } = {} } = useAllInventories();
-  const { data: { data: products = [] } = {} } = useAllProducts();
 
   const options =
     items.length > 0
       ? items.map((item) => ({
-          label: item.productName ?? "",
+          label: item.product?.name ?? "",
           value: item.id?.toString() ?? "",
         }))
       : [];
 
-  const productsMap = new Map(products.map((item) => [item.id, item]));
+  const inventoryMap = new Map(items.map((item) => [item.id, item]));
 
   return (
     <Combobox
       popoverClassname="w-80"
       renderLabel={(option) => {
-        const product = productsMap.get(parseInt(option.value));
+        const inventory = inventoryMap.get(parseInt(option.value));
+        const { product } = inventory ?? {};
         return (
           <div className="flex items-center">
             <div className=" w-8 h-8 flex p-1">
@@ -41,7 +40,10 @@ export function ComboboxInventories({ onSelect, formValue }: Props) {
               />
             </div>
             <span className="mx-1">-</span>
-            <span className="text-xs whitespace-nowrap">{product?.name}</span>
+            <span className="text-xs whitespace-nowrap">
+              {product?.name} - {inventory?.warehouseName} -{" "}
+              {inventory?.zoneName}
+            </span>
             {product?.supplier?.name ? (
               <>
                 <span className="mx-1">-</span>

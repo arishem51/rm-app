@@ -64,13 +64,13 @@ const Inventories = () => {
                 <TableCell>
                   <Link
                     prefetch
-                    href={`/dashboard/products/${item.productId}`}
+                    href={`/dashboard/products/${item.product?.id}`}
                     className="hover:underline"
                   >
-                    {item.productName}
+                    {item.product?.name}
                   </Link>
                 </TableCell>
-                <TableCell>{toCurrency(+(item.price || 0))}</TableCell>
+                <TableCell>{toCurrency(+(item.product?.price || 0))}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell>{item.warehouseName}</TableCell>
                 <TableCell>{item.zoneName}</TableCell>

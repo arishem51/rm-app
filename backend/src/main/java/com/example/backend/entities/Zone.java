@@ -14,7 +14,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,7 +45,7 @@ public class Zone {
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "warehouse_id", nullable = false)
     @JsonIgnore
     private Warehouse warehouse;
