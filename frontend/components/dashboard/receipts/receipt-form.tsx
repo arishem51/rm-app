@@ -62,7 +62,7 @@ const schema = z.object({
         quantity: z.coerce.number().min(1, { message: "Không hợp lệ" }),
         zoneId: z.coerce.number(),
         price: z.coerce.number(),
-        packageValue: z.coerce.number(),
+        packageValue: z.coerce.number().min(1, { message: "Không hợp lệ" }),
       })
     )
     .min(1, "Vui lòng thêm ít nhất một sản phẩm."),
@@ -380,19 +380,20 @@ const ReceiptForm = ({ receipt }: Props) => {
                                   <SelectContent>
                                     {Object.entries(groupZoneByWarehouseId).map(
                                       ([key, value]) => {
+                                        const filteredZones =
+                                          value.zones.filter((zone) =>
+                                            filterZoneBySelect(
+                                              zone,
+                                              field.value
+                                            )
+                                          ) ?? [];
                                         return (
                                           <SelectGroup key={key}>
                                             <SelectLabel>
                                               Tên Kho: {value.warehouseName}
                                             </SelectLabel>
-                                            {value.zones
-                                              .filter((zone) =>
-                                                filterZoneBySelect(
-                                                  zone,
-                                                  field.value
-                                                )
-                                              )
-                                              .map((zone) => {
+                                            {filteredZones.length > 0 ? (
+                                              filteredZones.map((zone) => {
                                                 const id = zone.id!.toString();
                                                 return (
                                                   <SelectItem
@@ -404,7 +405,13 @@ const ReceiptForm = ({ receipt }: Props) => {
                                                     {zone.name}
                                                   </SelectItem>
                                                 );
-                                              })}
+                                              })
+                                            ) : (
+                                              <span className="ml-3 text-xs text-gray-600">
+                                                Kho hàng này không còn khu vực
+                                                nào khả dụng
+                                              </span>
+                                            )}
                                           </SelectGroup>
                                         );
                                       }
