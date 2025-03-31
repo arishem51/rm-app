@@ -126,8 +126,6 @@ const ReceiptForm = ({ receipt }: Props) => {
   const selectedZones = uniqBy(receiptItems, "zoneId").map(
     (item) => item.zoneId
   );
-  const filterZoneBySelect = (zone: ZoneDTO, currentSelectZoneId: number) =>
-    currentSelectZoneId === zone.id || !selectedZones.includes(zone.id!);
 
   useEffect(() => {
     if (receipt) {
@@ -288,7 +286,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                             <FormControl>
                               {isCreateReceipt ? (
                                 <ComboboxProducts
-                                  onSelect={field.onChange}
+                                  onSelect={(value) => field.onChange(+value)}
                                   formValue={field.value?.toString()}
                                 />
                               ) : (
@@ -380,13 +378,25 @@ const ReceiptForm = ({ receipt }: Props) => {
                                   <SelectContent>
                                     {Object.entries(groupZoneByWarehouseId).map(
                                       ([key, value]) => {
+                                        const filterAvailableZone = (
+                                          zone: ZoneDTO
+                                        ) => {
+                                          const selectedZoneId = field.value;
+                                          const renderZoneId = zone.id!;
+                                          const isRenderZoneSelected =
+                                            selectedZoneId === renderZoneId ||
+                                            !selectedZones.includes(
+                                              renderZoneId
+                                            );
+
+                                          return isRenderZoneSelected;
+                                        };
+
                                         const filteredZones =
-                                          value.zones.filter((zone) =>
-                                            filterZoneBySelect(
-                                              zone,
-                                              field.value
-                                            )
+                                          value.zones.filter(
+                                            filterAvailableZone
                                           ) ?? [];
+
                                         return (
                                           <SelectGroup key={key}>
                                             <SelectLabel>

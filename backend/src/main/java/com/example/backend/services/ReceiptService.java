@@ -59,10 +59,12 @@ public class ReceiptService {
 
                 if (inventory != null) {
                     if (inventory.getProduct().getId() != item.getProductId()) {
-                        throw new IllegalArgumentException("Kho đã có sản phẩm khác");
+                        throw new IllegalArgumentException(
+                                "Khu vực là: " + zone.getName() + " đã có sản phẩm khác");
                     }
                     if (inventory.getPackageValue() != item.getPackageValue()) {
-                        throw new IllegalArgumentException("Quy cách sản phẩm khác với kho đang có");
+                        throw new IllegalArgumentException(
+                                "Khu vực là: " + zone.getName() + " đã có quy cách sản phẩm khác");
                     }
                     Integer quantity = inventory.getQuantity() + item.getQuantity();
                     inventory.setQuantity(quantity);
@@ -88,15 +90,9 @@ public class ReceiptService {
             receipt.setShop(currentUser.getShop());
             receiptRepository.save(receipt);
             System.out.println(e + " message: " + e.getMessage());
-            throw new IllegalArgumentException("Lỗi khi tạo phiếu nhập: " + e.getMessage());
+            throw new IllegalArgumentException("Lỗi khi tạo phiếu nhập. " + e.getMessage());
         }
         inventoryRepository.saveAll(inventoriesToSave);
-        inventoryRepository.flush();
-        for (Zone zone : zonesToSave) {
-            System.out.println(
-                    " inventory: " + zone.getInventory().getId());
-        }
-
         zoneRepository.saveAll(zonesToSave);
         receipt.setStatus(ReceiptStatus.SUCCESS);
         receipt.setItems(receiptItems);
