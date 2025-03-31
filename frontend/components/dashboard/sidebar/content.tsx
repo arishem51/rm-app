@@ -205,7 +205,11 @@ const Content = () => {
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                           asChild
-                          isActive={pathname.includes(item.url)}
+                          isActive={
+                            pathname === item.url ||
+                            (item.url !== "/dashboard" &&
+                              pathname.includes(item.url))
+                          }
                         >
                           <Link href={item.url} prefetch>
                             {item.icon && <item.icon />}
@@ -234,9 +238,10 @@ const Content = () => {
                                   <SidebarMenuSubItem>
                                     <SidebarMenuButton
                                       asChild
-                                      isActive={pathname.includes(
-                                        child.url as string
-                                      )}
+                                      isActive={
+                                        item.url !== "/dashboard" &&
+                                        pathname.includes(child.url as string)
+                                      }
                                     >
                                       <Link href={child.url as string} prefetch>
                                         <span>{child.title}</span>
