@@ -18,7 +18,6 @@ public class OrderService {
 
         private final OrderRepository orderRepository;
         private final PartnerService partnerService;
-        private final PaymentHistoryRepository paymentHistoryRepository;
         private final InventoryRepository inventoryRepository;
 
         public Page<Order> findOrders(int page, int pageSize) {

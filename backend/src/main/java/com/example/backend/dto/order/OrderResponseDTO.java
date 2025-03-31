@@ -29,6 +29,7 @@ public class OrderResponseDTO {
     public static OrderResponseDTO fromEntity(Order order) {
         return OrderResponseDTO.builder()
                 .id(order.getId())
+                .totalAmount(order.getAmount())
                 .partnerName(order.getPartner().getName())
                 .partnerPhone(order.getPartner().getPhone())
                 .userName(order.getCreatedBy().getUsername())
