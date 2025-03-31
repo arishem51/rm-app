@@ -57,7 +57,7 @@ const Inventories = () => {
               <TableHead>ID</TableHead>
               <TableHead>Sản phẩm</TableHead>
               <TableHead>Giá niêm yết</TableHead>
-              <TableHead>Số lượng</TableHead>
+              <TableHead>Số lượng bao</TableHead>
               <TableHead>
                 <PackagingTooltip />
               </TableHead>

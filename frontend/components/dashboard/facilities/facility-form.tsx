@@ -38,7 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Check, CheckCircle2, Edit, X, XIcon } from "lucide-react";
+import { Check, Edit, X } from "lucide-react";
 import EmptyState from "../empty-state";
 import ZoneForm from "./zones/zone-form";
 import { useRouter } from "next/navigation";
