@@ -41,6 +41,7 @@ export interface ZoneDTO {
   warehouseId?: number;
   warehouseName?: string;
   status?: "ACTIVE" | "INACTIVE";
+  hasInventory?: boolean;
 }
 
 export interface WarehouseUpdateDTO {
@@ -1052,14 +1053,14 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
@@ -1070,9 +1071,9 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
+  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
-  paged?: boolean;
   /** @format int32 */
   pageSize?: number;
   unpaged?: boolean;

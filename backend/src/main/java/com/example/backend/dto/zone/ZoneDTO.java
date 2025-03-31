@@ -24,14 +24,15 @@ public class ZoneDTO {
     private LocalDateTime updatedAt;
     private Long warehouseId;
     private String warehouseName;
-
     private ActionStatus status;
+    private boolean hasInventory;
 
     public static ZoneDTO fromEntity(Zone zone) {
         return ZoneDTO.builder()
                 .id(zone.getId())
                 .name(zone.getName())
                 .description(zone.getDescription())
+                .hasInventory(zone.getInventory() == null)
                 .createdAt(zone.getCreatedAt())
                 .updatedAt(zone.getUpdatedAt())
                 .warehouseId(zone.getWarehouse().getId())

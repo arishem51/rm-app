@@ -23,7 +23,7 @@ public class ZoneService {
     public List<Zone> findAllZonesByShopId(User currentUser) {
         Shop shop = shopService.getShopById(currentUser.getShop().getId());
         if (shop == null) {
-            throw new IllegalArgumentException("You must have a shop to manage zones!");
+            throw new IllegalArgumentException("Bạn phải có cửa hàng để thực hiện chức năng này.");
         }
         return zoneRepository.findByWarehouse_ShopId(shop.getId());
     }
