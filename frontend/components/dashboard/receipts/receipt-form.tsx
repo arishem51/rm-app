@@ -49,7 +49,8 @@ import EmptyState from "../empty-state";
 import { format } from "date-fns";
 import { cn, toCurrency } from "@/lib/utils";
 import { uniqBy } from "lodash";
-import PackagingTooltip from "../inventories/packaging";
+import PackagingTooltip from "../inventories/packaging-tooltip";
+import ZoneTooltip from "../inventories/zone-tooltip";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -265,7 +266,9 @@ const ReceiptForm = ({ receipt }: Props) => {
                     <TableHead>
                       <PackagingTooltip />
                     </TableHead>
-                    <TableHead>Khu vực</TableHead>
+                    <TableHead>
+                      <ZoneTooltip />
+                    </TableHead>
                     {isCreateReceipt && (
                       <TableHead className="text-right">Hành động</TableHead>
                     )}
@@ -397,6 +400,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                                                     value={id.toString()}
                                                     className="ml-2"
                                                   >
+                                                    {zone.warehouseName} -{" "}
                                                     {zone.name}
                                                   </SelectItem>
                                                 );

@@ -21,7 +21,7 @@ public class OrderItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id")
     private Long productId;
 
     @Column(name = "product_name", columnDefinition = "NVARCHAR(255)")

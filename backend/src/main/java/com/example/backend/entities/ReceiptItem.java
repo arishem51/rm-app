@@ -29,7 +29,7 @@ public class ReceiptItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id")
     private Long productId;
 
     @Column(name = "product_name", columnDefinition = "NVARCHAR(255)")
@@ -42,7 +42,7 @@ public class ReceiptItem {
     @JoinColumn(name = "receipt_id", nullable = false)
     private Receipt receipt;
 
-    @Column(name = "zone_id", nullable = false)
+    @Column(name = "zone_id")
     private Long zoneId;
     @Column(name = "zone_name", columnDefinition = "NVARCHAR(255)", nullable = false)
     private String zoneName;

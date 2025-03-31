@@ -60,6 +60,9 @@ public class ReceiptService {
                     if (inventory.getProduct().getId() != item.getProductId()) {
                         throw new IllegalArgumentException("Kho đã có sản phẩm khác");
                     }
+                    if (inventory.getPackageValue() != item.getPackageValue()) {
+                        throw new IllegalArgumentException("Quy cách sản phẩm khác với kho đang có");
+                    }
                     Integer quantity = inventory.getQuantity() + item.getQuantity();
                     inventory.setQuantity(quantity);
                 } else {
@@ -67,6 +70,7 @@ public class ReceiptService {
                             .product(productRepository.findById(item.getProductId())
                                     .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại")))
                             .quantity(item.getQuantity())
+                            .packageValue(item.getPackageValue())
                             .createdBy(currentUser)
                             .build();
                 }

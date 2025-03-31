@@ -17,7 +17,7 @@ import EmptyState from "../empty-state";
 import HeaderListSearch from "../search/header-list-search";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { createSttNumber, toCurrency } from "@/lib/utils";
+import { createSttNumber } from "@/lib/utils";
 import ListPagination from "../pagination";
 import { generateReceiptCode } from "@/lib/helpers";
 import { format } from "date-fns";
@@ -79,7 +79,7 @@ const Receipts = () => {
               <TableHead>STT</TableHead>
               <TableHead>Mã phiếu</TableHead>
               <TableHead>Ngày tạo</TableHead>
-              <TableHead>Sản phẩm đã nhập</TableHead>
+              <TableHead>Sản phẩm</TableHead>
               <TableHead>Trạng thái</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>

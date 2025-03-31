@@ -18,7 +18,7 @@ import ListPagination from "../pagination";
 import { toCurrency } from "@/lib/utils";
 import { useMe } from "@/hooks/mutations/user";
 import { checkRole } from "@/lib/helpers";
-import PackagingTooltip from "./packaging";
+import PackagingTooltip from "./packaging-tooltip";
 
 const Inventories = () => {
   const { data: currentUser } = useMe();
