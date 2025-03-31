@@ -76,7 +76,7 @@ const Products = () => {
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Ảnh</TableHead>
-              <TableHead>Giá</TableHead>
+              <TableHead>Giá niêm yết</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead>Nhà cung cấp</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}

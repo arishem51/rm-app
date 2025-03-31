@@ -257,7 +257,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                   <TableRow>
                     <TableHead>STT</TableHead>
                     <TableHead>Tên sản phẩm</TableHead>
-                    <TableHead>Giá</TableHead>
+                    <TableHead>Giá niêm yết</TableHead>
                     <TableHead>Số lượng</TableHead>
                     <TableHead>Khu vực</TableHead>
                     {isCreateReceipt && (

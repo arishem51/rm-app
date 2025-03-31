@@ -182,7 +182,7 @@ const ProductForm = ({ onClose, product }: Props) => {
             )}
           />
           <InputCurrency
-            label="Giá"
+            label="Giá niêm yết"
             name="price"
             readOnly={!isOwner}
             placeholder="Ví dụ: 100000"

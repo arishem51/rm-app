@@ -217,7 +217,7 @@ const OrderForm = ({ onClose, order }: Props) => {
                         <TableRow>
                           <TableHead>STT</TableHead>
                           <TableHead>Sản phẩm</TableHead>
-                          <TableHead>Giá nhập</TableHead>
+                          <TableHead>Giá niêm yết</TableHead>
                           <TableHead>Số lượng/Tồn kho</TableHead>
                           <TableHead>Khu vực</TableHead>
                           <TableHead>Giá tiền</TableHead>
