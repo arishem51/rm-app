@@ -26,7 +26,7 @@ import ProductHeader from "./product-header";
 
 export type FilterSearchType = {
   search: string;
-  categoryId?: string;
+  categoryId?: number;
 };
 
 const Products = () => {
@@ -57,7 +57,12 @@ const Products = () => {
         <ProductHeader
           filter={filter}
           onFilter={(filter) =>
-            setFilter({ ...filter, page: 0, search: filter.search })
+            setFilter({
+              ...filter,
+              page: 0,
+              search: filter.search,
+              categoryId: +filter.categoryId,
+            })
           }
         />
         {isOwner && (
