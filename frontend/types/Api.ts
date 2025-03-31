@@ -512,7 +512,7 @@ export interface ReceiptResponseDTO {
 }
 
 export interface PartnerCreateDTO {
-  name: string;
+  name?: string;
   contactName: string;
   /** @pattern ^(\+?\d{1,3})?\d{10}$ */
   phone: string;
@@ -933,59 +933,6 @@ export interface BaseResponseListResponseProductDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface BaseResponsePaymentHistoryDetailDTO {
-  data?: PaymentHistoryDetailDTO;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface PaymentHistoryDetailDTO {
-  /** @format int64 */
-  id?: number;
-  partnerName?: string;
-  partnerPhone?: string;
-  orderAmount?: number;
-  discount?: number;
-  shippingFee?: number;
-  totalAmount?: number;
-  orderItems?: OrderItemDTO[];
-  /** @format date-time */
-  createdAt?: string;
-  debt?: boolean;
-}
-
-export interface BaseResponseListPaymentHistoryResponseDTO {
-  data?: PaymentHistoryResponseDTO[];
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface PaymentHistoryResponseDTO {
-  /** @format int64 */
-  id?: number;
-  partnerName?: string;
-  partnerPhone?: string;
-  orderAmount?: number;
-  discount?: number;
-  shippingFee?: number;
-  totalAmount?: number;
-  /** @format date-time */
-  createdAt?: string;
-  debt?: boolean;
-}
-
 export interface BaseResponsePaginateResponsePartnerRepsponseDTO {
   data?: PaginateResponsePartnerRepsponseDTO;
   message?: string;
@@ -1098,14 +1045,14 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  first?: boolean;
-  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
@@ -1116,11 +1063,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
+  /** @format int32 */
+  pageNumber?: number;
   paged?: boolean;
   /** @format int32 */
   pageSize?: number;
-  /** @format int32 */
-  pageNumber?: number;
   unpaged?: boolean;
 }
 
@@ -2423,38 +2370,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getAllProducts: (params: RequestParams = {}) =>
       this.request<BaseResponseListResponseProductDTO, any>({
         path: `/api/products/all`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags payment-history-controller
-     * @name GetPaymentById
-     * @request GET:/api/payment-histories/{id}
-     * @secure
-     */
-    getPaymentById: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponsePaymentHistoryDetailDTO, any>({
-        path: `/api/payment-histories/${id}`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags payment-history-controller
-     * @name GetAllPayment
-     * @request GET:/api/payment-histories/all
-     * @secure
-     */
-    getAllPayment: (params: RequestParams = {}) =>
-      this.request<BaseResponseListPaymentHistoryResponseDTO, any>({
-        path: `/api/payment-histories/all`,
         method: "GET",
         secure: true,
         ...params,

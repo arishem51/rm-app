@@ -1448,50 +1448,6 @@
         }
       }
     },
-    "/api/payment-histories/{id}": {
-      "get": {
-        "tags": ["payment-history-controller"],
-        "operationId": "getPaymentById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponsePaymentHistoryDetailDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/payment-histories/all": {
-      "get": {
-        "tags": ["payment-history-controller"],
-        "operationId": "getAllPayment",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BaseResponseListPaymentHistoryResponseDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/partners/all": {
       "get": {
         "tags": ["Partner Management"],
@@ -2333,7 +2289,7 @@
           "description": { "type": "string" },
           "canHaveDebt": { "type": "boolean" }
         },
-        "required": ["contactName", "name", "phone"]
+        "required": ["contactName", "phone"]
       },
       "CreateOrderDTO": {
         "type": "object",
@@ -2872,79 +2828,6 @@
           }
         }
       },
-      "BaseResponsePaymentHistoryDetailDTO": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/PaymentHistoryDetailDTO" },
-          "message": { "type": "string" },
-          "errorCode": {
-            "type": "string",
-            "enum": [
-              "AUTH_MISSING",
-              "TOKEN_EXPIRED",
-              "TOKEN_INVALID",
-              "ACCESS_DENIED",
-              "BAD_REQUEST",
-              "INTERNAL_SERVER_ERROR"
-            ]
-          }
-        }
-      },
-      "PaymentHistoryDetailDTO": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "partnerName": { "type": "string" },
-          "partnerPhone": { "type": "string" },
-          "orderAmount": { "type": "number" },
-          "discount": { "type": "number" },
-          "shippingFee": { "type": "number" },
-          "totalAmount": { "type": "number" },
-          "orderItems": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/OrderItemDTO" }
-          },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "debt": { "type": "boolean" }
-        }
-      },
-      "BaseResponseListPaymentHistoryResponseDTO": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PaymentHistoryResponseDTO"
-            }
-          },
-          "message": { "type": "string" },
-          "errorCode": {
-            "type": "string",
-            "enum": [
-              "AUTH_MISSING",
-              "TOKEN_EXPIRED",
-              "TOKEN_INVALID",
-              "ACCESS_DENIED",
-              "BAD_REQUEST",
-              "INTERNAL_SERVER_ERROR"
-            ]
-          }
-        }
-      },
-      "PaymentHistoryResponseDTO": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "partnerName": { "type": "string" },
-          "partnerPhone": { "type": "string" },
-          "orderAmount": { "type": "number" },
-          "discount": { "type": "number" },
-          "shippingFee": { "type": "number" },
-          "totalAmount": { "type": "number" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "debt": { "type": "boolean" }
-        }
-      },
       "BaseResponsePaginateResponsePartnerRepsponseDTO": {
         "type": "object",
         "properties": {
@@ -3090,8 +2973,6 @@
         "properties": {
           "totalElements": { "type": "integer", "format": "int64" },
           "totalPages": { "type": "integer", "format": "int32" },
-          "first": { "type": "boolean" },
-          "last": { "type": "boolean" },
           "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
@@ -3099,6 +2980,8 @@
           },
           "number": { "type": "integer", "format": "int32" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
           "numberOfElements": { "type": "integer", "format": "int32" },
           "pageable": { "$ref": "#/components/schemas/PageableObject" },
           "empty": { "type": "boolean" }
@@ -3109,9 +2992,9 @@
         "properties": {
           "offset": { "type": "integer", "format": "int64" },
           "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageNumber": { "type": "integer", "format": "int32" },
           "paged": { "type": "boolean" },
           "pageSize": { "type": "integer", "format": "int32" },
-          "pageNumber": { "type": "integer", "format": "int32" },
           "unpaged": { "type": "boolean" }
         }
       },

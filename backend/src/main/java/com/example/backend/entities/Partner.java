@@ -16,7 +16,7 @@ public class Partner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String name;
 
     @Column(name = "contact_name", nullable = false, columnDefinition = "NVARCHAR(255)")

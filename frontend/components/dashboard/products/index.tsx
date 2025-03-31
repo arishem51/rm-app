@@ -66,7 +66,11 @@ const Products = () => {
           }
         />
         {isOwner && (
-          <Link href="/dashboard/products/create" prefetch>
+          <Link
+            href="/dashboard/products/create"
+            prefetch
+            className="mb-2 self-end"
+          >
             <Button>
               <Plus />
               Tạo sản phẩm

@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PartnerCreateDTO {
-    @NotEmpty(message = "Partner name is required")
     private String name;
 
     @NotEmpty(message = "Contact name is required")

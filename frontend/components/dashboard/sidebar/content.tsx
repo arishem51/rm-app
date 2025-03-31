@@ -137,7 +137,7 @@ const Content = () => {
       },
       {
         title: "Đối tác",
-        url: AppRoutes.dashboard.partners.url,
+        url: AppRoutes.dashboard.partners.index.url,
         icon: Briefcase,
       }
     );

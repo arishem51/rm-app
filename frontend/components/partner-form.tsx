@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -18,14 +18,15 @@ import {
   FormDescription,
 } from "./ui/form";
 import { cn } from "@/lib/utils";
-import { PartnerCreateDTO } from "@/types/Api";
+import { PartnerCreateDTO, PartnerRepsponseDTO } from "@/types/Api";
+import { Textarea } from "./ui/textarea";
 
 const partnerFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  contactName: z.string().min(1, "Contact name is required"),
-  phone: z.string().regex(/^(\+?\d{1,3})?\d{10}$/, "Invalid phone number format"),
-  email: z.string().email("Invalid email format"),
-  address: z.string().min(1, "Address is required"),
+  name: z.string().optional(),
+  contactName: z.string().min(1, "Bắt buộc"),
+  phone: z.string().regex(/^(\+?\d{1,3})?\d{10}$/, "Không hợp lệ"),
+  email: z.string().email("Không hợp lệ"),
+  address: z.string().optional(),
   website: z.string().optional(),
   description: z.string().optional(),
   canHaveDebt: z.boolean().default(false),
@@ -39,9 +40,16 @@ type Props = {
   className?: string;
   btnText?: string;
   onSubmit: (data: PartnerCreateDTO) => void;
+  partner?: PartnerRepsponseDTO;
 };
 
-const PartnerForm: FC<Props> = ({ children, className, onSubmit, btnText = "Create Partner" }) => {
+const PartnerForm: FC<Props> = ({
+  children,
+  className,
+  onSubmit,
+  btnText = "Create Partner",
+  partner,
+}) => {
   const form = useForm<FormDataPartnerType>({
     resolver: zodResolver(partnerFormSchema),
     defaultValues: {
@@ -56,139 +64,148 @@ const PartnerForm: FC<Props> = ({ children, className, onSubmit, btnText = "Crea
     },
   });
 
+  useEffect(() => {
+    if (partner) {
+      form.reset(partner);
+    }
+  }, [partner, form]);
+
   const handleSubmit = form.handleSubmit(async (formData) => {
     onSubmit(formData);
   });
 
   return (
     <Form {...form}>
-      <form className={cn(className, "space-y-6")} onSubmit={handleSubmit}>
+      <form
+        className={cn(className, "space-y-6 flex flex-col")}
+        onSubmit={handleSubmit}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Partner name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="contactName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contact Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Contact person name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input type="tel" placeholder="(+84) 123 456 78" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="contact@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Full address" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="website"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Website</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Brief description of the partner" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="canHaveDebt"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-6">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Allow Credit</FormLabel>
-                    <FormDescription>
-                      Partner can make purchases on credit
-                    </FormDescription>
-                  </div>
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tên</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: Công ty ABC" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="contactName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tên người đại diện</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: Nguyễn Văn A" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Số điện thoại</FormLabel>
+                <FormControl>
+                  <Input type="tel" placeholder="(+84) 123 456 78" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: contact@example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Địa chỉ</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: Hà Nội" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="website"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Website</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ví dụ: https://example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Mô tả</FormLabel>
+                <FormControl>
+                  <Textarea
+                    rows={3}
+                    placeholder="Ví dụ: Đối tác cung cấp hàng hóa cho cửa hàng"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="canHaveDebt"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center space-x-3">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="leading-none">
+                  <FormLabel>Nợ</FormLabel>
+                  <FormDescription>
+                    Cho phép đối tác này nợ tiền hàng hóa khi mua từ cửa hàng
+                  </FormDescription>
+                </div>
+              </FormItem>
+            )}
+          />
         </div>
-        
-        <Button type="submit" className="w-full mt-6">
+
+        <Button type="submit" className="mt-6 w-1/6 ml-auto">
           {btnText}
         </Button>
         {children}
