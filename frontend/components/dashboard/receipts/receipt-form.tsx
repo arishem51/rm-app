@@ -260,8 +260,8 @@ const ReceiptForm = ({ receipt }: Props) => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>STT</TableHead>
-                    <TableHead>Tên sản phẩm</TableHead>
-                    <TableHead>Giá niêm yết</TableHead>
+                    <TableHead>Sản phẩm</TableHead>
+                    <TableHead>Giá</TableHead>
                     <TableHead>Số lượng</TableHead>
                     <TableHead>
                       <PackagingTooltip />
@@ -348,7 +348,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                                 {isCreateReceipt ? (
                                   <Input
                                     {...field}
-                                    className={cn("w-[86px]", appearanceNone)}
+                                    className={cn("w-[124px]", appearanceNone)}
                                     type="number"
                                     placeholder="Ví dụ: 10"
                                   />
