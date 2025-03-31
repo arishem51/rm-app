@@ -33,6 +33,7 @@ import { AppRoutes } from "@/lib/constants";
 import { checkRole } from "@/lib/helpers";
 import { useMe } from "@/hooks/mutations/user";
 import { ShoppingBasket } from "lucide-react";
+import { usePathname } from "next/navigation";
 type Item = {
   title: string;
   url?: string;
@@ -184,6 +185,8 @@ const Content = () => {
     (key) => itemGroups[key as keyof typeof itemGroups]
   );
 
+  const pathname = usePathname();
+
   return (
     <SidebarContent>
       {groups.map((group) => {
@@ -200,7 +203,10 @@ const Content = () => {
                   if (item.url) {
                     return (
                       <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname.includes(item.url)}
+                        >
                           <Link href={item.url} prefetch>
                             {item.icon && <item.icon />}
                             <span>{item.title}</span>
@@ -226,7 +232,12 @@ const Content = () => {
                               return (
                                 <SidebarMenuSub key={child.title}>
                                   <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuButton
+                                      asChild
+                                      isActive={pathname.includes(
+                                        child.url as string
+                                      )}
+                                    >
                                       <Link href={child.url as string} prefetch>
                                         <span>{child.title}</span>
                                       </Link>
