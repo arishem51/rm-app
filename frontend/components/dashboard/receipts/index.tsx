@@ -49,8 +49,7 @@ const Receipts = () => {
         {items?.slice(0, 2).map((item) => (
           <div key={item.id} className="flex items-center">
             <div className="text-sm w-52 overflow-hidden text-ellipsis whitespace-nowrap">
-              {item.productName} - {toCurrency(item.productPrice ?? 0)} -{" "}
-              {item.quantity} bao
+              {item.productName} - {item.quantity} bao
             </div>
           </div>
         ))}

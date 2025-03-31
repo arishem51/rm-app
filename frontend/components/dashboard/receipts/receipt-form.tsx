@@ -49,6 +49,7 @@ import EmptyState from "../empty-state";
 import { format } from "date-fns";
 import { cn, toCurrency } from "@/lib/utils";
 import { uniqBy } from "lodash";
+import PackagingTooltip from "../inventories/packaging";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -60,6 +61,7 @@ const schema = z.object({
         quantity: z.coerce.number().min(1, { message: "Không hợp lệ" }),
         zoneId: z.coerce.number(),
         price: z.coerce.number(),
+        packageValue: z.coerce.number(),
       })
     )
     .min(1, "Vui lòng thêm ít nhất một sản phẩm."),
@@ -233,6 +235,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                         quantity: 1,
                         zoneId,
                         price: product.price ?? 0,
+                        packageValue: 5,
                       });
                     } else {
                       toast({
@@ -259,6 +262,9 @@ const ReceiptForm = ({ receipt }: Props) => {
                     <TableHead>Tên sản phẩm</TableHead>
                     <TableHead>Giá niêm yết</TableHead>
                     <TableHead>Số lượng</TableHead>
+                    <TableHead>
+                      <PackagingTooltip />
+                    </TableHead>
                     <TableHead>Khu vực</TableHead>
                     {isCreateReceipt && (
                       <TableHead className="text-right">Hành động</TableHead>
@@ -310,6 +316,29 @@ const ReceiptForm = ({ receipt }: Props) => {
                         <FormField
                           control={form.control}
                           name={`items.${index}.quantity`}
+                          render={({ field }) => (
+                            <>
+                              <FormControl>
+                                {isCreateReceipt ? (
+                                  <Input
+                                    {...field}
+                                    className={cn("w-[86px]", appearanceNone)}
+                                    type="number"
+                                    placeholder="Ví dụ: 10"
+                                  />
+                                ) : (
+                                  <span>{field.value}</span>
+                                )}
+                              </FormControl>
+                              <FormMessage className="whitespace-nowrap" />
+                            </>
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell className="align-top">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.packageValue`}
                           render={({ field }) => (
                             <>
                               <FormControl>

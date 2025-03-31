@@ -46,7 +46,7 @@ const schemaFields = {
 const InventoryForm = ({ inventory, onClose }: Props) => {
   const form = useForm<InventoryUpdateDTO>({
     defaultValues: {
-      productId: inventory?.productId,
+      productId: inventory?.product?.id,
       zoneId: inventory?.zoneId,
     },
     resolver: zodResolver(z.object(schemaFields)),

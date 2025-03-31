@@ -322,6 +322,8 @@ export interface InventoryResponseDTO {
   /** @format int32 */
   quantity?: number;
   product?: Product;
+  /** @format int32 */
+  packageValue?: number;
 }
 
 export interface Product {
@@ -464,6 +466,11 @@ export interface ReceiptRequestItemDTO {
    * @min 1
    */
   quantity?: number;
+  /**
+   * @format int32
+   * @min 1
+   */
+  packageValue?: number;
   /** @min 0 */
   price?: number;
   /** @format int64 */

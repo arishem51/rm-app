@@ -18,6 +18,7 @@ import ListPagination from "../pagination";
 import { toCurrency } from "@/lib/utils";
 import { useMe } from "@/hooks/mutations/user";
 import { checkRole } from "@/lib/helpers";
+import PackagingTooltip from "./packaging";
 
 const Inventories = () => {
   const { data: currentUser } = useMe();
@@ -57,6 +58,9 @@ const Inventories = () => {
               <TableHead>Sản phẩm</TableHead>
               <TableHead>Giá niêm yết</TableHead>
               <TableHead>Số lượng</TableHead>
+              <TableHead>
+                <PackagingTooltip />
+              </TableHead>
               <TableHead>Tên kho</TableHead>
               <TableHead>Khu vực trong kho</TableHead>
             </TableRow>
@@ -80,6 +84,7 @@ const Inventories = () => {
                 </TableCell>
                 <TableCell>{toCurrency(+(item.product?.price || 0))}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
+                <TableCell>{item.packageValue} kg/bao</TableCell>
                 <TableCell>{item.warehouseName}</TableCell>
                 <TableCell>{item.zoneName}</TableCell>
               </TableRow>

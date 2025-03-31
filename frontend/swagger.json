@@ -2067,7 +2067,8 @@
           "updatedAt": { "type": "string" },
           "warehouseName": { "type": "string" },
           "quantity": { "type": "integer", "format": "int32" },
-          "product": { "$ref": "#/components/schemas/Product" }
+          "product": { "$ref": "#/components/schemas/Product" },
+          "packageValue": { "type": "integer", "format": "int32" }
         }
       },
       "Product": {
@@ -2225,6 +2226,11 @@
         "properties": {
           "productId": { "type": "integer", "format": "int64" },
           "quantity": { "type": "integer", "format": "int32", "minimum": 1 },
+          "packageValue": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
           "price": { "type": "number", "minimum": 0.0 },
           "zoneId": { "type": "integer", "format": "int64" }
         }
