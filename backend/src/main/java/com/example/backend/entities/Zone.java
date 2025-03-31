@@ -46,8 +46,9 @@ public class Zone {
     @Column(columnDefinition = "NVARCHAR(255)")
     private String description;
 
-    @OneToOne
+    @OneToOne(optional = true, mappedBy = "zone")
     @JsonIgnore
+    @JoinColumn(name = "inventory_id")
     private Inventory inventory;
 
     @ManyToOne

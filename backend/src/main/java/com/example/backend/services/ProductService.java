@@ -94,8 +94,6 @@ public class ProductService {
         String description = Optional.ofNullable(dto.getDescription()).orElse(product.getDescription());
         BigDecimal price = Optional.ofNullable(dto.getPrice()).orElse(product.getPrice());
 
-        System.out.println("price " + dto.getPrice() + " a: " + price);
-
         product.setCategory(category);
         product.setSupplier(supplier);
         product.setName(name);

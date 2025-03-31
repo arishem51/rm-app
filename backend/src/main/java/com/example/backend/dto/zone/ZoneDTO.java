@@ -1,6 +1,7 @@
 package com.example.backend.dto.zone;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import com.example.backend.entities.Zone;
 import com.example.backend.enums.ActionStatus;
@@ -25,14 +26,14 @@ public class ZoneDTO {
     private Long warehouseId;
     private String warehouseName;
     private ActionStatus status;
-    private boolean hasInventory;
+    private Long inventoryId;
 
     public static ZoneDTO fromEntity(Zone zone) {
         return ZoneDTO.builder()
                 .id(zone.getId())
                 .name(zone.getName())
                 .description(zone.getDescription())
-                .hasInventory(zone.getInventory() == null)
+                .inventoryId(Optional.ofNullable(zone.getInventory()).map(inv -> inv.getId()).orElse(null))
                 .createdAt(zone.getCreatedAt())
                 .updatedAt(zone.getUpdatedAt())
                 .warehouseId(zone.getWarehouse().getId())

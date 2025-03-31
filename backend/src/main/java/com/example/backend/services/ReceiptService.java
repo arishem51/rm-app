@@ -38,6 +38,7 @@ public class ReceiptService {
         Receipt receipt = Receipt.builder().createdBy(currentUser).build();
         List<ReceiptItem> receiptItems = new ArrayList<>();
         List<Inventory> inventoriesToSave = new ArrayList<>();
+        List<Zone> zonesToSave = new ArrayList<>();
 
         List<ReceiptRequestItemDTO> items = dto.getItems();
         Set<Long> zoneIds = new HashSet<>();
@@ -74,10 +75,12 @@ public class ReceiptService {
                             .createdBy(currentUser)
                             .build();
                 }
+                zone.setInventory(inventory);
                 ReceiptItem receiptItem = ReceiptItem.builder().receipt(receipt).productId(item.getProductId())
                         .productName(inventory.getProduct().getName()).productPrice(item.getPrice())
                         .quantity(item.getQuantity()).zoneId(item.getZoneId()).zoneName(zone.getName()).build();
                 inventoriesToSave.add(inventory);
+                zonesToSave.add(zone);
                 receiptItems.add(receiptItem);
             }
         } catch (Exception e) {
@@ -87,10 +90,17 @@ public class ReceiptService {
             System.out.println(e + " message: " + e.getMessage());
             throw new IllegalArgumentException("Lỗi khi tạo phiếu nhập: " + e.getMessage());
         }
+        inventoryRepository.saveAll(inventoriesToSave);
+        inventoryRepository.flush();
+        for (Zone zone : zonesToSave) {
+            System.out.println(
+                    " inventory: " + zone.getInventory().getId());
+        }
+
+        zoneRepository.saveAll(zonesToSave);
         receipt.setStatus(ReceiptStatus.SUCCESS);
         receipt.setItems(receiptItems);
         receipt.setShop(currentUser.getShop());
-        inventoryRepository.saveAll(inventoriesToSave);
         return receiptRepository.save(receipt);
     }
 

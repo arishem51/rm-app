@@ -38,7 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit } from "lucide-react";
+import { Check, CheckCircle2, Edit, X, XIcon } from "lucide-react";
 import EmptyState from "../empty-state";
 import ZoneForm from "./zones/zone-form";
 import { useRouter } from "next/navigation";
@@ -255,6 +255,7 @@ const FacilityForm = ({
                       <TableHead>STT</TableHead>
                       <TableHead>Tên</TableHead>
                       <TableHead>Mô tả</TableHead>
+                      <TableHead>Có tồn tại hàng tồn</TableHead>
                       <TableHead className="text-right">Hành động</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -264,6 +265,15 @@ const FacilityForm = ({
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{zone.name}</TableCell>
                         <TableCell>{zone.description}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-6 w-6"
+                          >
+                            {zone.inventoryId ? <Check /> : <X />}
+                          </Button>
+                        </TableCell>
                         <TableCell className="text-right">
                           <Button
                             onClick={() => {

@@ -41,7 +41,8 @@ export interface ZoneDTO {
   warehouseId?: number;
   warehouseName?: string;
   status?: "ACTIVE" | "INACTIVE";
-  hasInventory?: boolean;
+  /** @format int64 */
+  inventoryId?: number;
 }
 
 export interface WarehouseUpdateDTO {

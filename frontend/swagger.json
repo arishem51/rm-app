@@ -1735,7 +1735,7 @@
           "warehouseId": { "type": "integer", "format": "int64" },
           "warehouseName": { "type": "string" },
           "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] },
-          "hasInventory": { "type": "boolean" }
+          "inventoryId": { "type": "integer", "format": "int64" }
         }
       },
       "WarehouseUpdateDTO": {
