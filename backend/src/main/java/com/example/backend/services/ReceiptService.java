@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import com.example.backend.dto.receipt.ReceiptCreateDTO;
 import com.example.backend.dto.receipt.ReceiptRequestItemDTO;
 import com.example.backend.entities.Inventory;
+import com.example.backend.entities.InventoryHistory;
 import com.example.backend.entities.Receipt;
 import com.example.backend.entities.ReceiptItem;
 import com.example.backend.entities.User;
 import com.example.backend.entities.Zone;
 import com.example.backend.enums.ReceiptStatus;
+import com.example.backend.repositories.InventoryHistoryRepository;
 import com.example.backend.repositories.InventoryRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.repositories.ReceiptRepository;
@@ -29,6 +31,7 @@ public class ReceiptService {
     private final ZoneRepository zoneRepository;
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
+    private final InventoryHistoryRepository inventoryHistoryRepository;
 
     @Transactional
     public Receipt create(ReceiptCreateDTO dto, User currentUser) {
@@ -96,6 +99,17 @@ public class ReceiptService {
             System.out.println(e + " message: " + e.getMessage());
             throw new IllegalArgumentException("Lỗi khi tạo phiếu nhập. " + e.getMessage());
         }
+        inventoryHistoryRepository.saveAll(inventoriesToSave.stream()
+                .map(inv -> InventoryHistory.builder()
+                        .inventory(inv)
+                        .createdBy(currentUser)
+                        .product(inv.getProduct())
+                        .zone(inv.getZone())
+                        .quantity(inv.getQuantity())
+                        .packageValue(inv.getPackageValue())
+                        .reason("Nhập hàng")
+                        .build())
+                .toList());
         inventoryRepository.saveAll(inventoriesToSave);
         zoneRepository.saveAll(zonesToSave);
         receipt.setStatus(ReceiptStatus.SUCCESS);

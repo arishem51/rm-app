@@ -38,12 +38,20 @@ public class InventoryHistory {
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
-    @Column(name = "reason", nullable = false)
+    @Column(name = "reason", nullable = false, columnDefinition = "NVARCHAR(255)")
     private String reason;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "zone_id", nullable = false)
+    private Zone zone;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
