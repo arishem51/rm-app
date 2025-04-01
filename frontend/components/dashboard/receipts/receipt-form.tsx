@@ -51,18 +51,9 @@ import { cn, toCurrency } from "@/lib/utils";
 import { uniqBy } from "lodash";
 import PackagingTooltip from "../inventories/packaging-tooltip";
 import ZoneTooltip from "../inventories/zone-tooltip";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import ProductTooltip from "../products/product-tooltip";
+import ConfirmSave from "@/components/confirm-save";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -171,53 +162,34 @@ const ReceiptForm = ({ receipt }: Props) => {
 
   return (
     <Form {...form}>
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Bạn có chắc chắn tạo phiếu nhập không?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Hãy kiểm tra lại thông tin phiếu nhập trước khi tạo. Nếu có thông
-              tin sai sót, bạn phải liên hệ với chủ cửa hàng để sửa đổi.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel
-              onClick={() => {
-                setDataSubmit(undefined);
-              }}
-            >
-              Hủy
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (!dataSubmit) return;
-                mutate(dataSubmit, {
-                  onSuccess: () => {
-                    toast({
-                      title: ToastTitle.success,
-                      description: `Phiếu nhập được tạo thành công.`,
-                    });
-                    queryClient.invalidateQueries({
-                      queryKey: ApiQuery.receipts.getReceipts().queryKey,
-                    });
-                    router.push("/dashboard/receipts");
-                  },
-                  onError: (error: Error) => {
-                    toast({
-                      title: ToastTitle.error,
-                      description: error.message,
-                    });
-                  },
-                });
-              }}
-            >
-              Tạo
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmSave
+        onCancel={() => {
+          setDataSubmit(undefined);
+        }}
+        onConfirm={() => {
+          if (!dataSubmit) return;
+          mutate(dataSubmit, {
+            onSuccess: () => {
+              toast({
+                title: ToastTitle.success,
+                description: `Phiếu nhập được tạo thành công.`,
+              });
+              queryClient.invalidateQueries({
+                queryKey: ApiQuery.receipts.getReceipts().queryKey,
+              });
+              router.push("/dashboard/receipts");
+            },
+            onError: (error: Error) => {
+              toast({
+                title: ToastTitle.error,
+                description: error.message,
+              });
+            },
+          });
+        }}
+        open={open}
+        setOpen={setOpen}
+      />
       <form onSubmit={onSubmit} className="mb-12">
         <div className="flex flex-col gap-3 mb-4">
           {!isCreateReceipt && (

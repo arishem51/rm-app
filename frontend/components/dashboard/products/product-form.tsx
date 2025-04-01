@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/mutations/user";
 import { cn } from "@/lib/utils";
 import InputCurrency from "@/components/input-currency";
+import ConfirmSave from "@/components/confirm-save";
 
 const schema = z.object({
   name: z.string().nonempty({ message: "Tên là bắt buộc" }),
@@ -37,7 +38,7 @@ const schema = z.object({
   categoryId: z.string().nullable().optional(),
   supplierId: z.string().nullable().optional(),
   partnerId: z.string().nullable().optional(),
-  price: z.coerce.number({ message: "Giá là bắt buộc" }),
+  price: z.coerce.number().min(1, { message: "Giá phải lớn hơn 0" }),
   shopId: z.coerce.number(),
 });
 
@@ -49,6 +50,8 @@ type Props = {
 };
 
 const ProductForm = ({ onClose, product }: Props) => {
+  const [open, setOpen] = useState(false);
+  const [dataSubmit, setDataSubmit] = useState<ProductFormDTO>();
   const { data: currentUser } = useMe();
   const form = useForm<ProductFormDTO>({
     resolver: zodResolver(schema),
@@ -123,31 +126,52 @@ const ProductForm = ({ onClose, product }: Props) => {
 
   const onSubmit = form.handleSubmit((data) => {
     if (currentUser?.shopId) {
-      const payload = {
-        ...data,
-        categoryId: data.categoryId ? Number(data.categoryId) : undefined,
-        partnerId: data.partnerId ? Number(data.partnerId) : undefined,
-      };
-
-      const mutateData: ProductRequestDTO = {
-        ...payload,
-        supplierId: payload.partnerId,
-        imageUrls: payload.imageUrls.map((image) => image.url),
-        shopId: currentUser?.shopId,
-      };
-      if (product?.id) {
-        updateProduct(
-          { id: product.id, ...mutateData },
-          factoryMutateConfig("update")
-        );
-      } else {
-        createProduct(mutateData, factoryMutateConfig("create"));
-      }
+      setOpen(true);
+      setDataSubmit(data);
     }
   });
 
   return (
     <Form {...form}>
+      <ConfirmSave
+        open={open}
+        setOpen={setOpen}
+        onCancel={() => setOpen(false)}
+        onConfirm={() => {
+          if (dataSubmit) {
+            const payload = {
+              ...dataSubmit,
+              categoryId: dataSubmit.categoryId
+                ? Number(dataSubmit.categoryId)
+                : undefined,
+              partnerId: dataSubmit.partnerId
+                ? Number(dataSubmit.partnerId)
+                : undefined,
+            };
+
+            const mutateData: ProductRequestDTO = {
+              ...payload,
+              supplierId: payload.partnerId,
+              imageUrls: payload.imageUrls.map((image) => image.url),
+              shopId: currentUser!.shopId!,
+            };
+            if (product?.id) {
+              updateProduct(
+                { id: product.id, ...mutateData },
+                factoryMutateConfig("update")
+              );
+            } else {
+              createProduct(mutateData, factoryMutateConfig("create"));
+            }
+          } else {
+            toast({
+              title: "Lỗi client",
+              description: "Không có dữ liệu để gửi",
+              variant: "destructive",
+            });
+          }
+        }}
+      />
       <form onSubmit={onSubmit} className="mb-12">
         <div className="flex flex-col gap-3 mb-4">
           <FormField
