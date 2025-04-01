@@ -22,6 +22,7 @@ import ListPagination from "../pagination";
 import { generateReceiptCode } from "@/lib/helpers";
 import { format } from "date-fns";
 import ReceiptItems from "./receipt-items";
+import PackagingTooltip from "../inventories/packaging-tooltip";
 
 const Receipts = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -64,8 +65,13 @@ const Receipts = () => {
               <TableHead>STT</TableHead>
               <TableHead>Mã phiếu</TableHead>
               <TableHead>Sản phẩm</TableHead>
+              <TableHead>Số lượng</TableHead>
+              <TableHead>
+                <PackagingTooltip />
+              </TableHead>
               <TableHead>Khu vực</TableHead>
               <TableHead>Ngày nhập</TableHead>
+              <TableHead>Người nhập</TableHead>
               <TableHead>Trạng thái</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -75,13 +81,22 @@ const Receipts = () => {
               <TableRow key={item.id}>
                 <TableCell>{createSttNumber(index, filter.page)}</TableCell>
                 <TableCell>{generateReceiptCode(item)}</TableCell>
-
                 <TableCell>
                   <ReceiptItems
                     items={item.receiptItems}
-                    renderItemLabel={(item) =>
-                      `${item.productName} - ${item.quantity} bao`
-                    }
+                    renderItemLabel={(item) => item.productName}
+                  />
+                </TableCell>
+                <TableCell>
+                  <ReceiptItems
+                    items={item.receiptItems}
+                    renderItemLabel={(item) => item.quantity + " bao"}
+                  />
+                </TableCell>
+                <TableCell>
+                  <ReceiptItems
+                    items={item.receiptItems}
+                    renderItemLabel={(item) => item.packageValue + " kg/bao"}
                   />
                 </TableCell>
                 <TableCell>
@@ -95,6 +110,7 @@ const Receipts = () => {
                 <TableCell>
                   {format(item.createdAt ?? new Date(), "yyyy-MM-dd hh:mm")}
                 </TableCell>
+                <TableCell>{item.createdBy?.username}</TableCell>
                 <TableCell>
                   <Badge
                     className="px-1 py-0.5"

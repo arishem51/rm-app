@@ -24,7 +24,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "receipt_items")
 public class ReceiptItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

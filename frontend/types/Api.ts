@@ -509,6 +509,8 @@ export interface ReceiptItemResponseDTO {
   /** @format int64 */
   warehouseId?: number;
   warehouseName?: string;
+  /** @format int32 */
+  packageValue?: number;
 }
 
 export interface ReceiptResponseDTO {
@@ -1057,14 +1059,14 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  first?: boolean;
-  last?: boolean;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
@@ -1085,8 +1087,8 @@ export interface PageableObject {
 
 export interface SortObject {
   empty?: boolean;
-  sorted?: boolean;
   unsorted?: boolean;
+  sorted?: boolean;
 }
 
 export interface BaseResponsePaginateResponseInventoryResponseDTO {
