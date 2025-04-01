@@ -55,4 +55,7 @@ public class ReceiptItem {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @Column(name = "package_value", nullable = false)
+    private Integer packageValue;
+
 }

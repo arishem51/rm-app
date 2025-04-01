@@ -82,7 +82,9 @@ public class ReceiptService {
                         .productName(inventory.getProduct().getName()).productPrice(item.getPrice())
                         .quantity(item.getQuantity()).zoneId(item.getZoneId()).zoneName(zone.getName())
                         .warehouseId(zone.getWarehouse().getId())
-                        .warehouseName(zone.getWarehouse().getName()).build();
+                        .warehouseName(zone.getWarehouse().getName())
+                        .packageValue(inventory.getPackageValue())
+                        .build();
                 inventoriesToSave.add(inventory);
                 zonesToSave.add(zone);
                 receiptItems.add(receiptItem);

@@ -25,6 +25,7 @@ public class ReceiptItemResponseDTO {
     private String zoneName;
     private Long warehouseId;
     private String warehouseName;
+    private Integer packageValue;
 
     public static ReceiptItemResponseDTO fromEntity(ReceiptItem receiptItem) {
         return ReceiptItemResponseDTO.builder()
@@ -38,6 +39,7 @@ public class ReceiptItemResponseDTO {
                 .zoneName(receiptItem.getZoneName())
                 .warehouseId(receiptItem.getWarehouseId())
                 .warehouseName(receiptItem.getWarehouseName())
+                .packageValue(receiptItem.getPackageValue())
                 .build();
     }
 
