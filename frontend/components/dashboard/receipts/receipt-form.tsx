@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,6 +51,18 @@ import { cn, toCurrency } from "@/lib/utils";
 import { uniqBy } from "lodash";
 import PackagingTooltip from "../inventories/packaging-tooltip";
 import ZoneTooltip from "../inventories/zone-tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import Link from "next/link";
+import ProductTooltip from "../products/product-tooltip";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -58,6 +70,7 @@ const schema = z.object({
   items: z
     .array(
       z.object({
+        productName: z.string().optional(),
         productId: z.coerce.number(),
         quantity: z.coerce.number().min(1, { message: "Không hợp lệ" }),
         zoneId: z.coerce.number(),
@@ -88,6 +101,8 @@ const ReceiptForm = ({ receipt }: Props) => {
   const { data: products = [] } = productQuery;
   const { data: zoneQuery = {} } = useAllZonesByShop();
   const { data: zones = [] } = zoneQuery;
+  const [open, setOpen] = useState(false);
+  const [dataSubmit, setDataSubmit] = useState<ReceiptFormDTO>();
 
   const {
     fields: itemFields,
@@ -97,6 +112,7 @@ const ReceiptForm = ({ receipt }: Props) => {
     control: form.control,
     name: "items",
   });
+
   const { mutate, isPending } = useCreateReceipt();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -141,24 +157,8 @@ const ReceiptForm = ({ receipt }: Props) => {
   }, [receipt, reset]);
 
   const onSubmit = form.handleSubmit((data) => {
-    mutate(data, {
-      onSuccess: () => {
-        toast({
-          title: ToastTitle.success,
-          description: `Phiếu nhập được tạo thành công.`,
-        });
-        queryClient.invalidateQueries({
-          queryKey: ApiQuery.receipts.getReceipts().queryKey,
-        });
-        router.push("/dashboard/receipts");
-      },
-      onError: (error: Error) => {
-        toast({
-          title: ToastTitle.error,
-          description: error.message,
-        });
-      },
-    });
+    setOpen(true);
+    setDataSubmit(data);
   });
 
   const renderZone = (zoneId: number) => {
@@ -171,6 +171,53 @@ const ReceiptForm = ({ receipt }: Props) => {
 
   return (
     <Form {...form}>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Bạn có chắc chắn tạo phiếu nhập không?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Hãy kiểm tra lại thông tin phiếu nhập trước khi tạo. Nếu có thông
+              tin sai sót, bạn phải liên hệ với chủ cửa hàng để sửa đổi.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setDataSubmit(undefined);
+              }}
+            >
+              Hủy
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (!dataSubmit) return;
+                mutate(dataSubmit, {
+                  onSuccess: () => {
+                    toast({
+                      title: ToastTitle.success,
+                      description: `Phiếu nhập được tạo thành công.`,
+                    });
+                    queryClient.invalidateQueries({
+                      queryKey: ApiQuery.receipts.getReceipts().queryKey,
+                    });
+                    router.push("/dashboard/receipts");
+                  },
+                  onError: (error: Error) => {
+                    toast({
+                      title: ToastTitle.error,
+                      description: error.message,
+                    });
+                  },
+                });
+              }}
+            >
+              Tạo
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <form onSubmit={onSubmit} className="mb-12">
         <div className="flex flex-col gap-3 mb-4">
           {!isCreateReceipt && (
@@ -230,6 +277,7 @@ const ReceiptForm = ({ receipt }: Props) => {
                     const zoneId = different.values().next().value;
                     if (product && zoneId) {
                       append({
+                        productName: product.name,
                         productId: product.id!,
                         quantity: 1,
                         zoneId,
@@ -258,7 +306,9 @@ const ReceiptForm = ({ receipt }: Props) => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>STT</TableHead>
-                    <TableHead>Sản phẩm</TableHead>
+                    <TableHead>
+                      <ProductTooltip />
+                    </TableHead>
                     <TableHead>Giá</TableHead>
                     <TableHead>Số lượng bao</TableHead>
                     <TableHead>
@@ -282,21 +332,22 @@ const ReceiptForm = ({ receipt }: Props) => {
                         <FormField
                           control={form.control}
                           name={`items.${index}.productId`}
-                          render={({ field }) => (
+                          render={({ field: formField }) => (
                             <FormControl>
                               {isCreateReceipt ? (
                                 <ComboboxProducts
-                                  onSelect={(value) => field.onChange(+value)}
-                                  formValue={field.value?.toString()}
+                                  onSelect={(value) =>
+                                    formField.onChange(+value)
+                                  }
+                                  formValue={formField.value?.toString()}
                                 />
                               ) : (
-                                <span>
-                                  {
-                                    products.find(
-                                      (item) => item.id === field.value
-                                    )?.name
-                                  }
-                                </span>
+                                <Link
+                                  href={`/dashboard/products/${field.productId}`}
+                                  className="hover:underline"
+                                >
+                                  <span>{field.productName}</span>
+                                </Link>
                               )}
                             </FormControl>
                           )}

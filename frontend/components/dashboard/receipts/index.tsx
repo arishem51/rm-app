@@ -23,6 +23,7 @@ import { generateReceiptCode } from "@/lib/helpers";
 import { format } from "date-fns";
 import ReceiptItems from "./receipt-items";
 import PackagingTooltip from "../inventories/packaging-tooltip";
+import ProductTooltip from "../products/product-tooltip";
 
 const Receipts = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -64,7 +65,9 @@ const Receipts = () => {
             <TableRow>
               <TableHead>STT</TableHead>
               <TableHead>Mã phiếu</TableHead>
-              <TableHead>Sản phẩm</TableHead>
+              <TableHead>
+                <ProductTooltip />
+              </TableHead>
               <TableHead>Số lượng</TableHead>
               <TableHead>
                 <PackagingTooltip />
@@ -84,7 +87,14 @@ const Receipts = () => {
                 <TableCell>
                   <ReceiptItems
                     items={item.receiptItems}
-                    renderItemLabel={(item) => item.productName}
+                    renderItemLabel={(item) => (
+                      <Link
+                        href={`/dashboard/products/${item.productId}`}
+                        className="hover:underline"
+                      >
+                        {item.productName}
+                      </Link>
+                    )}
                   />
                 </TableCell>
                 <TableCell>
