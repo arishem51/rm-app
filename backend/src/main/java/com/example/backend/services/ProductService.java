@@ -81,11 +81,15 @@ public class ProductService {
         validateUserCanManageProduct(user);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
-            throw new IllegalArgumentException("Product not found!");
+            throw new IllegalArgumentException("Không tìm thấy sản phẩm");
         }
         Product product = optionalProduct.get();
         if (product.getShop().getId() != user.getShop().getId()) {
-            throw new IllegalArgumentException("You can only update product from your own shop!");
+            throw new IllegalArgumentException("Bạn chỉ có thể cập nhật sản phẩm của cửa hàng của bạn!");
+        }
+
+        if (product.getInventories().size() > 0) {
+            throw new IllegalArgumentException("Sản phẩm đã có hàng tồn kho, không thể cập nhật thông tin sản phẩm!");
         }
 
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
