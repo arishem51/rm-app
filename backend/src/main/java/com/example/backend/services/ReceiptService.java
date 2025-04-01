@@ -64,7 +64,7 @@ public class ReceiptService {
                     }
                     if (inventory.getPackageValue() != item.getPackageValue()) {
                         throw new IllegalArgumentException(
-                                "Khu vực là: " + zone.getName() + " đã có quy cách sản phẩm khác");
+                                "Khu vực là: " + zone.getName() + " đã có quy cách sản phẩm khác    ");
                     }
                     Integer quantity = inventory.getQuantity() + item.getQuantity();
                     inventory.setQuantity(quantity);

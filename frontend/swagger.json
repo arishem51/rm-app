@@ -1960,7 +1960,11 @@
           "shopId": { "type": "integer", "format": "int64" },
           "shopName": { "type": "string" },
           "price": { "type": "number" },
-          "imageUrls": { "type": "array", "items": { "type": "string" } }
+          "imageUrls": { "type": "array", "items": { "type": "string" } },
+          "inventoryIds": {
+            "type": "array",
+            "items": { "type": "integer", "format": "int64" }
+          }
         }
       },
       "Shop": {
@@ -2056,6 +2060,19 @@
           }
         }
       },
+      "Inventory": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "product": { "$ref": "#/components/schemas/Product" },
+          "zone": { "$ref": "#/components/schemas/Zone" },
+          "createdBy": { "$ref": "#/components/schemas/User" },
+          "packageValue": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "quantity": { "type": "integer", "format": "int32" }
+        }
+      },
       "InventoryResponseDTO": {
         "type": "object",
         "properties": {
@@ -2086,6 +2103,22 @@
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" },
           "deletedAt": { "type": "string", "format": "date-time" },
+          "inventories": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Inventory" }
+          },
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
+        },
+        "required": ["status"]
+      },
+      "Zone": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
           "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
         },
         "required": ["status"]

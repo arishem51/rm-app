@@ -11,13 +11,13 @@ import {
 } from "@/components/ui/table";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import { ArrowUpRight, Plus } from "lucide-react";
+import { ArrowUpRight, Check, Plus, X } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
 import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { createSttNumber, toCurrency } from "@/lib/utils";
+import { cn, createSttNumber, toCurrency } from "@/lib/utils";
 import ListPagination from "../pagination";
 import Image from "next/image";
 import defaultPic from "../../../public/images/default-product.png";
@@ -88,6 +88,7 @@ const Products = () => {
               <TableHead>Giá niêm yết</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead>Nhà cung cấp</TableHead>
+              <TableHead>Tồn kho</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -121,6 +122,22 @@ const Products = () => {
                   >
                     {product.supplier?.name || "Không tồn tại"}
                   </Badge>
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={cn(
+                      "h-4 w-4",
+                      (product.inventoryIds?.length ?? 0) > 0
+                        ? "text-green-500"
+                        : "text-red-500"
+                    )}
+                  >
+                    {(product.inventoryIds?.length ?? 0) > 0 ? (
+                      <Check />
+                    ) : (
+                      <X />
+                    )}
+                  </span>
                 </TableCell>
                 {isAdmin && <TableCell>{product.shopName}</TableCell>}
                 <TableCell className="text-right">

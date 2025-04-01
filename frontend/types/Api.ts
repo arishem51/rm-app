@@ -229,6 +229,7 @@ export interface ResponseProductDTO {
   shopName?: string;
   price?: number;
   imageUrls?: string[];
+  inventoryIds?: number[];
 }
 
 export interface Shop {
@@ -309,6 +310,22 @@ export interface BaseResponseInventoryResponseDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
+export interface Inventory {
+  /** @format int64 */
+  id?: number;
+  product?: Product;
+  zone?: Zone;
+  createdBy?: User;
+  /** @format int32 */
+  packageValue?: number;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
+  /** @format int32 */
+  quantity?: number;
+}
+
 export interface InventoryResponseDTO {
   /** @format int64 */
   id?: number;
@@ -344,6 +361,19 @@ export interface Product {
   updatedAt?: string;
   /** @format date-time */
   deletedAt?: string;
+  inventories?: Inventory[];
+  status: "ACTIVE" | "INACTIVE";
+}
+
+export interface Zone {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  description?: string;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
   status: "ACTIVE" | "INACTIVE";
 }
 
