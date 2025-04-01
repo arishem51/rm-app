@@ -506,6 +506,9 @@ export interface ReceiptItemResponseDTO {
   /** @format int64 */
   zoneId?: number;
   zoneName?: string;
+  /** @format int64 */
+  warehouseId?: number;
+  warehouseName?: string;
 }
 
 export interface ReceiptResponseDTO {

@@ -2264,7 +2264,9 @@
           "productPrice": { "type": "number", "format": "double" },
           "quantity": { "type": "integer", "format": "int32" },
           "zoneId": { "type": "integer", "format": "int64" },
-          "zoneName": { "type": "string" }
+          "zoneName": { "type": "string" },
+          "warehouseId": { "type": "integer", "format": "int64" },
+          "warehouseName": { "type": "string" }
         }
       },
       "ReceiptResponseDTO": {

@@ -47,6 +47,11 @@ public class ReceiptItem {
     @Column(name = "zone_name", columnDefinition = "NVARCHAR(255)", nullable = false)
     private String zoneName;
 
+    @Column(name = "warehouse_id")
+    private Long warehouseId;
+    @Column(name = "warehouse_name", columnDefinition = "NVARCHAR(255)", nullable = false)
+    private String warehouseName;
+
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 

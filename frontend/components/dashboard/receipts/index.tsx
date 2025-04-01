@@ -21,7 +21,7 @@ import { createSttNumber } from "@/lib/utils";
 import ListPagination from "../pagination";
 import { generateReceiptCode } from "@/lib/helpers";
 import { format } from "date-fns";
-import { ReceiptItemResponseDTO } from "@/types/Api";
+import ReceiptItems from "./receipt-items";
 
 const Receipts = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -41,21 +41,6 @@ const Receipts = () => {
       page: isRight ? (data?.totalPages ?? 0) - 1 : 0,
       search: filter.search,
     });
-  };
-
-  const renderReceiptItems = (items?: ReceiptItemResponseDTO[]) => {
-    return (
-      <div className="flex flex-col">
-        {items?.slice(0, 2).map((item) => (
-          <div key={item.id} className="flex items-center">
-            <div className="text-sm w-52 overflow-hidden text-ellipsis whitespace-nowrap">
-              {item.productName} - {item.quantity} bao
-            </div>
-          </div>
-        ))}
-        {(items?.length ?? 0) > 2 && <div>...</div>}
-      </div>
-    );
   };
 
   return (
@@ -78,8 +63,9 @@ const Receipts = () => {
             <TableRow>
               <TableHead>STT</TableHead>
               <TableHead>Mã phiếu</TableHead>
-              <TableHead>Ngày tạo</TableHead>
               <TableHead>Sản phẩm</TableHead>
+              <TableHead>Khu vực</TableHead>
+              <TableHead>Ngày nhập</TableHead>
               <TableHead>Trạng thái</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -89,10 +75,26 @@ const Receipts = () => {
               <TableRow key={item.id}>
                 <TableCell>{createSttNumber(index, filter.page)}</TableCell>
                 <TableCell>{generateReceiptCode(item)}</TableCell>
+
+                <TableCell>
+                  <ReceiptItems
+                    items={item.receiptItems}
+                    renderItemLabel={(item) =>
+                      `${item.productName} - ${item.quantity} bao`
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <ReceiptItems
+                    items={item.receiptItems}
+                    renderItemLabel={(item) =>
+                      `${item.warehouseName} - ${item.zoneName}`
+                    }
+                  />
+                </TableCell>
                 <TableCell>
                   {format(item.createdAt ?? new Date(), "yyyy-MM-dd hh:mm")}
                 </TableCell>
-                <TableCell>{renderReceiptItems(item.receiptItems)}</TableCell>
                 <TableCell>
                   <Badge
                     className="px-1 py-0.5"
