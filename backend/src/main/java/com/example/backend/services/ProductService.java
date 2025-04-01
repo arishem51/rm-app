@@ -24,11 +24,8 @@ public class ProductService {
     private final CategoryService categoryService;
 
     public void validateUserCanManageProduct(User user) {
-        if (!UserRoleUtils.isOwner(user)) {
-            throw new IllegalArgumentException("You are not authorized to manage products!");
-        }
-        if (user.getShop() == null) {
-            throw new IllegalArgumentException("You must have a shop to manage products!");
+        if (!UserRoleUtils.isOwner(user) || user.getShop() == null) {
+            throw new IllegalArgumentException("Bạn phải là chủ cửa hàng và có cửa hàng để quản lý sản phẩm!");
         }
     }
 
@@ -86,10 +83,6 @@ public class ProductService {
         Product product = optionalProduct.get();
         if (product.getShop().getId() != user.getShop().getId()) {
             throw new IllegalArgumentException("Bạn chỉ có thể cập nhật sản phẩm của cửa hàng của bạn!");
-        }
-
-        if (product.getInventories().size() > 0) {
-            throw new IllegalArgumentException("Sản phẩm đã có hàng tồn kho, không thể cập nhật thông tin sản phẩm!");
         }
 
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);

@@ -62,6 +62,8 @@ const schema = z.object({
     .array(
       z.object({
         productName: z.string().optional(),
+        warehouseName: z.string().optional(),
+        zoneName: z.string().optional(),
         productId: z.coerce.number(),
         quantity: z.coerce.number().min(1, { message: "Không hợp lệ" }),
         zoneId: z.coerce.number(),
@@ -151,14 +153,6 @@ const ReceiptForm = ({ receipt }: Props) => {
     setOpen(true);
     setDataSubmit(data);
   });
-
-  const renderZone = (zoneId: number) => {
-    const zone = zones.find((zone) => zone.id === zoneId);
-    if (!zone) {
-      return "";
-    }
-    return `${zone.name}/${zone.warehouseName}`;
-  };
 
   return (
     <Form {...form}>
@@ -386,14 +380,14 @@ const ReceiptForm = ({ receipt }: Props) => {
                         <FormField
                           control={form.control}
                           name={`items.${index}.zoneId`}
-                          render={({ field }) => (
+                          render={({ field: formField }) => (
                             <FormControl>
                               {isCreateReceipt ? (
                                 <Select
                                   onValueChange={(value) => {
-                                    field.onChange(parseInt(value));
+                                    formField.onChange(parseInt(value));
                                   }}
-                                  value={field.value?.toString()}
+                                  value={formField.value?.toString()}
                                 >
                                   <SelectTrigger>
                                     <SelectValue placeholder="Chọn kho - khu trong kho" />
@@ -404,7 +398,8 @@ const ReceiptForm = ({ receipt }: Props) => {
                                         const filterAvailableZone = (
                                           zone: ZoneDTO
                                         ) => {
-                                          const selectedZoneId = field.value;
+                                          const selectedZoneId =
+                                            formField.value;
                                           const renderZoneId = zone.id!;
                                           const isRenderZoneSelected =
                                             selectedZoneId === renderZoneId ||
@@ -452,7 +447,9 @@ const ReceiptForm = ({ receipt }: Props) => {
                                   </SelectContent>
                                 </Select>
                               ) : (
-                                <span>{renderZone(field.value)}</span>
+                                <span>
+                                  {field.warehouseName} - {field.zoneName}
+                                </span>
                               )}
                             </FormControl>
                           )}

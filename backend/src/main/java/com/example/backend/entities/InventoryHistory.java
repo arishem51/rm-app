@@ -46,8 +46,10 @@ public class InventoryHistory {
     private LocalDateTime createdAt;
 
     @Column(name = "quantity", nullable = false)
-    @Builder.Default
-    private Integer quantity = 0;
+    private Integer quantity;
+
+    @Column(name = "package_value", nullable = false)
+    private Integer packageValue;
 
     @PrePersist
     protected void onCreate() {

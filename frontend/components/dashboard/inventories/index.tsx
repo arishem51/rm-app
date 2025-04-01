@@ -19,6 +19,7 @@ import { toCurrency } from "@/lib/utils";
 import { useMe } from "@/hooks/mutations/user";
 import { checkRole } from "@/lib/helpers";
 import PackagingTooltip from "./packaging-tooltip";
+import ProductTooltip from "../products/product-tooltip";
 
 const Inventories = () => {
   const { data: currentUser } = useMe();
@@ -55,7 +56,9 @@ const Inventories = () => {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Sản phẩm</TableHead>
+              <TableHead>
+                <ProductTooltip />
+              </TableHead>
               <TableHead>Giá niêm yết</TableHead>
               <TableHead>Số lượng bao</TableHead>
               <TableHead>

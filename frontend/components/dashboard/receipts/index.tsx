@@ -24,6 +24,7 @@ import { format } from "date-fns";
 import ReceiptItems from "./receipt-items";
 import PackagingTooltip from "../inventories/packaging-tooltip";
 import ProductTooltip from "../products/product-tooltip";
+import ZoneTooltip from "../inventories/zone-tooltip";
 
 const Receipts = () => {
   const [filter, setFilter] = useState({ page: 0, search: "" });
@@ -72,7 +73,9 @@ const Receipts = () => {
               <TableHead>
                 <PackagingTooltip />
               </TableHead>
-              <TableHead>Khu vực</TableHead>
+              <TableHead>
+                <ZoneTooltip />
+              </TableHead>
               <TableHead>Ngày nhập</TableHead>
               <TableHead>Người nhập</TableHead>
               <TableHead>Trạng thái</TableHead>
