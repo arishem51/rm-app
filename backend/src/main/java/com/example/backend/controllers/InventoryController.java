@@ -18,11 +18,9 @@ import com.example.backend.dto.inventory.InventoryUpdateDTO;
 import com.example.backend.entities.Inventory;
 import com.example.backend.entities.User;
 import com.example.backend.services.InventoryService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 
 @RestController
@@ -89,7 +87,7 @@ public class InventoryController {
         try {
             Inventory item = inventoryService.update(id, dto, currentUser);
             return ResponseEntity
-                    .ok(BaseResponse.success(InventoryResponseDTO.fromEntity(item), "Shop updated successfully!"));
+                    .ok(BaseResponse.success(InventoryResponseDTO.fromEntity(item), "Inventory updated successfully!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new BaseResponse<>(null, e.getMessage()));

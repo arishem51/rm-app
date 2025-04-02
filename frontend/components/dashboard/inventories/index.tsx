@@ -20,6 +20,8 @@ import { useMe } from "@/hooks/mutations/user";
 import { checkRole } from "@/lib/helpers";
 import PackagingTooltip from "./packaging-tooltip";
 import ProductTooltip from "../products/product-tooltip";
+import { Button } from "@/components/ui/button";
+import { Edit } from "lucide-react";
 
 const Inventories = () => {
   const { data: currentUser } = useMe();
@@ -66,6 +68,7 @@ const Inventories = () => {
               </TableHead>
               <TableHead>Tên kho</TableHead>
               <TableHead>Khu vực trong kho</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -90,6 +93,13 @@ const Inventories = () => {
                 <TableCell>{item.packageValue} kg/bao</TableCell>
                 <TableCell>{item.warehouseName}</TableCell>
                 <TableCell>{item.zoneName}</TableCell>
+                <TableCell className="text-right">
+                  <Link href={`/dashboard/warehouses/inventories/${item!.id!}`}>
+                    <Button variant="outline" className="w-6 h-6" size="icon">
+                      <Edit />
+                    </Button>
+                  </Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

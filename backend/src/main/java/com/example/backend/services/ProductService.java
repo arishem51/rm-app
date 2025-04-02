@@ -120,4 +120,6 @@ public class ProductService {
         }
         return product;
     }
+
+    // FIXME: block delete when it have inventory
 }

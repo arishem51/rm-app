@@ -25,4 +25,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     Page<Inventory> findByZone_Warehouse_Shop_IdAndProduct_NameContainingIgnoreCase(Long shopId,
             String name,
             Pageable pageable);
+
+    Optional<Inventory> findByProduct_IdAndZone_Warehouse_Shop_Id(Long productId, Long shopId);
 }

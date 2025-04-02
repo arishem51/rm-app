@@ -27,18 +27,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { generateReceiptCode } from "@/lib/helpers";
-import { ReceiptResponseDTO, ZoneDTO } from "@/types/Api";
+import { ReceiptResponseDTO } from "@/types/Api";
 import { ComboboxProducts } from "../combobox/product";
 import { useAllZonesByShop } from "@/services/hooks/warehouses";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectLabel,
-  SelectItem,
-} from "@/components/ui/select";
 import { useAllProducts } from "@/services/hooks/products";
 import { useCreateReceipt } from "@/hooks/mutations/receipt";
 import { appearanceNone, ToastTitle } from "@/lib/constants";
@@ -54,6 +45,7 @@ import ZoneTooltip from "../inventories/zone-tooltip";
 import Link from "next/link";
 import ProductTooltip from "../products/product-tooltip";
 import ConfirmSave from "@/components/confirm-save";
+import SelectAvailableZones from "../select-available-zones";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -109,25 +101,6 @@ const ReceiptForm = ({ receipt }: Props) => {
   const { mutate, isPending } = useCreateReceipt();
   const queryClient = useQueryClient();
   const router = useRouter();
-
-  const groupZoneByWarehouseId = zones.reduce(
-    (acc, zone) => {
-      if (!acc[zone.warehouseId!]) {
-        acc[zone.warehouseId!] = {
-          warehouseId: zone.warehouseId!,
-          warehouseName: zone.warehouseName,
-          zones: [zone],
-        };
-      } else {
-        acc[zone.warehouseId!].zones.push(zone);
-      }
-      return acc;
-    },
-    {} as Record<
-      number,
-      { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
-    >
-  );
 
   const isCreateReceipt = !receipt;
   const { reset, watch } = form;
@@ -383,69 +356,12 @@ const ReceiptForm = ({ receipt }: Props) => {
                           render={({ field: formField }) => (
                             <FormControl>
                               {isCreateReceipt ? (
-                                <Select
-                                  onValueChange={(value) => {
-                                    formField.onChange(parseInt(value));
-                                  }}
-                                  value={formField.value?.toString()}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Chọn kho - khu trong kho" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {Object.entries(groupZoneByWarehouseId).map(
-                                      ([key, value]) => {
-                                        const filterAvailableZone = (
-                                          zone: ZoneDTO
-                                        ) => {
-                                          const selectedZoneId =
-                                            formField.value;
-                                          const renderZoneId = zone.id!;
-                                          const isRenderZoneSelected =
-                                            selectedZoneId === renderZoneId ||
-                                            !selectedZones.includes(
-                                              renderZoneId
-                                            );
-
-                                          return isRenderZoneSelected;
-                                        };
-
-                                        const filteredZones =
-                                          value.zones.filter(
-                                            filterAvailableZone
-                                          ) ?? [];
-
-                                        return (
-                                          <SelectGroup key={key}>
-                                            <SelectLabel>
-                                              Tên Kho: {value.warehouseName}
-                                            </SelectLabel>
-                                            {filteredZones.length > 0 ? (
-                                              filteredZones.map((zone) => {
-                                                const id = zone.id!.toString();
-                                                return (
-                                                  <SelectItem
-                                                    key={id}
-                                                    value={id.toString()}
-                                                    className="ml-2"
-                                                  >
-                                                    {zone.warehouseName} -{" "}
-                                                    {zone.name}
-                                                  </SelectItem>
-                                                );
-                                              })
-                                            ) : (
-                                              <span className="ml-3 text-xs text-gray-600">
-                                                Kho hàng này không còn khu vực
-                                                nào khả dụng
-                                              </span>
-                                            )}
-                                          </SelectGroup>
-                                        );
-                                      }
-                                    )}
-                                  </SelectContent>
-                                </Select>
+                                <SelectAvailableZones
+                                  zones={zones}
+                                  selectedZones={selectedZones}
+                                  onChange={formField.onChange}
+                                  value={formField.value}
+                                />
                               ) : (
                                 <span>
                                   {field.warehouseName} - {field.zoneName}
