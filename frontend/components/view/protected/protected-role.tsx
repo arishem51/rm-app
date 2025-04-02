@@ -17,8 +17,14 @@ const ProtectedRole = ({ children, user }: Props) => {
 
   const checkUrlAndPathname = (url: string) => {
     if (url.includes("[") && url.includes("]")) {
-      url = url.substring(0, url.lastIndexOf("/"));
-      return url === pathname.substring(0, pathname.lastIndexOf("/"));
+      const splitUrl = url.split("/");
+      const splitPathname = pathname.split("/");
+      const lastIndexHaveDynamicSegment = splitUrl.findLastIndex((item) =>
+        item.startsWith("[")
+      );
+      splitUrl[lastIndexHaveDynamicSegment] =
+        splitPathname[lastIndexHaveDynamicSegment];
+      return splitUrl.join("/") === splitPathname.join("/");
     }
     return url === pathname;
   };
