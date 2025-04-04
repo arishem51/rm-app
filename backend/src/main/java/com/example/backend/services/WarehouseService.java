@@ -6,6 +6,7 @@ import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.entities.Warehouse;
 import com.example.backend.enums.ActionStatus;
+import com.example.backend.repositories.InventoryRepository;
 import com.example.backend.repositories.WarehouseRepository;
 import com.example.backend.repositories.ZoneRepository;
 import com.example.backend.utils.UserRoleUtils;
@@ -27,13 +28,14 @@ import org.springframework.stereotype.Service;
 public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
     private final ZoneRepository zoneRepository;
+    private final InventoryRepository inventoryRepository;
 
     public void validateUserCanManageWarehouse(User user) {
         if (!UserRoleUtils.isOwner(user)) {
-            throw new IllegalArgumentException("You are not authorized to manage warehouses!");
+            throw new IllegalArgumentException("Bạn không có đủ quyền để thực hiện chức năng này.");
         }
         if (user.getShop() == null) {
-            throw new IllegalArgumentException("You must have a shop to manage warehouses!");
+            throw new IllegalArgumentException("Bạn phải có cửa hàng để thực hiện chức năng này.");
         }
     }
 
@@ -58,7 +60,7 @@ public class WarehouseService {
         validateUserCanManageWarehouse(user);
         Shop shop = user.getShop();
         if (!shop.getId().equals(shopId)) {
-            throw new IllegalArgumentException("You do not have permission to create a warehouse for this shop.");
+            throw new IllegalArgumentException("Bạn chỉ có thể tạo kho hàng cho cửa hàng của bạn!");
         }
 
         Warehouse warehouse = Warehouse.builder()
@@ -82,14 +84,15 @@ public class WarehouseService {
     public Warehouse updateWarehouse(Long warehouseId, WarehouseUpdateDTO dto, User user) {
         validateUserCanManageWarehouse(user);
         Warehouse warehouse = warehouseRepository.findById(warehouseId)
-                .orElseThrow(() -> new IllegalArgumentException("Warehouse not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy kho hàng."));
+
+        if (inventoryRepository.findByZone_WarehouseId(warehouseId).size() > 0) {
+            throw new IllegalArgumentException("Không thể cập nhật kho hàng đã có hàng tồn kho.");
+        }
 
         Shop shop = user.getShop();
-        if (shop == null) {
-            throw new IllegalArgumentException("You must have a shop to manage warehouses!");
-        }
         if (!warehouse.getShop().getId().equals(shop.getId())) {
-            throw new IllegalArgumentException("You can only update warehouses from your own shop!");
+            throw new IllegalArgumentException("Bạn chỉ có thể cập nhật kho hàng của cửa hàng của bạn!");
         }
         if (dto.getName() != null) {
             warehouse.setName(dto.getName());
@@ -177,7 +180,6 @@ public class WarehouseService {
                                 PageRequest.of(page, pageSize));
     }
 
-    // Lấy kho theo warehouseId và shopId
     public Warehouse findWarehouseById(Long warehouseId) {
         return warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new IllegalArgumentException("Warehouse not found with ID: " + warehouseId));

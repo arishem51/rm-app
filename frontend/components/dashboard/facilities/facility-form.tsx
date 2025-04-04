@@ -95,10 +95,10 @@ const FacilityForm = ({
     router.push("/dashboard/warehouses/facilities");
   };
 
-  const callbackFailed = (type: "create" | "update") => {
+  const callbackFailed = (message: string) => {
     toast({
       title: ToastTitle.error,
-      description: `${type === "create" ? "Tạo" : "Sửa"} kho thất bại`,
+      description: message,
     });
     onClose?.();
   };
@@ -119,8 +119,8 @@ const FacilityForm = ({
           onSuccess: () => {
             callbackSuccess("update");
           },
-          onError: () => {
-            callbackFailed("update");
+          onError: (e) => {
+            callbackFailed(e.message);
           },
         }
       );
@@ -134,8 +134,8 @@ const FacilityForm = ({
           onSuccess: () => {
             callbackSuccess("create");
           },
-          onError: () => {
-            callbackFailed("create");
+          onError: (e) => {
+            callbackFailed(e.message);
           },
         }
       );
