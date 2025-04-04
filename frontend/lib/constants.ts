@@ -125,8 +125,14 @@ export const AppRoutes = {
           accessRoles: [UserRole.OWNER, UserRole.STAFF],
         },
         detail: {
-          url: "/dashboard/warehouses/inventories/[id]",
-          accessRoles: [UserRole.OWNER, UserRole.STAFF],
+          index: {
+            url: "/dashboard/warehouses/inventories/[id]",
+            accessRoles: [UserRole.OWNER, UserRole.STAFF],
+          },
+          history: {
+            url: "/dashboard/warehouses/inventories/[id]/history",
+            accessRoles: [UserRole.OWNER, UserRole.STAFF],
+          },
         },
         create: {
           url: "/dashboard/warehouses/inventories/create",

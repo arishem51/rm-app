@@ -296,6 +296,8 @@ export interface InventoryUpdateDTO {
   zoneId?: number;
   /** @format int32 */
   quantity?: number;
+  /** @format int32 */
+  packageValue?: number;
 }
 
 export interface BaseResponseInventoryResponseDTO {
@@ -308,22 +310,6 @@ export interface BaseResponseInventoryResponseDTO {
     | "ACCESS_DENIED"
     | "BAD_REQUEST"
     | "INTERNAL_SERVER_ERROR";
-}
-
-export interface Inventory {
-  /** @format int64 */
-  id?: number;
-  product?: Product;
-  zone?: Zone;
-  createdBy?: User;
-  /** @format int32 */
-  packageValue?: number;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
-  /** @format int32 */
-  quantity?: number;
 }
 
 export interface InventoryResponseDTO {
@@ -361,19 +347,6 @@ export interface Product {
   updatedAt?: string;
   /** @format date-time */
   deletedAt?: string;
-  inventories?: Inventory[];
-  status: "ACTIVE" | "INACTIVE";
-}
-
-export interface Zone {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  description?: string;
-  /** @format date-time */
-  createdAt?: string;
-  /** @format date-time */
-  updatedAt?: string;
   status: "ACTIVE" | "INACTIVE";
 }
 
@@ -1107,18 +1080,18 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
+  paged?: boolean;
   unpaged?: boolean;
 }
 
 export interface SortObject {
   empty?: boolean;
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
 }
 
 export interface BaseResponsePaginateResponseInventoryResponseDTO {
@@ -1143,6 +1116,46 @@ export interface PaginateResponseInventoryResponseDTO {
   /** @format int32 */
   totalPages?: number;
   data?: InventoryResponseDTO[];
+}
+
+export interface BaseResponsePaginateResponseInventoryHistoryResponseDTO {
+  data?: PaginateResponseInventoryHistoryResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface InventoryHistoryResponseDTO {
+  /** @format int64 */
+  id?: number;
+  reason?: string;
+  createdBy?: UserDTO;
+  /** @format date-time */
+  createdAt?: string;
+  productName?: string;
+  zoneName?: string;
+  warehouseName?: string;
+  /** @format int32 */
+  quantity?: number;
+  /** @format int32 */
+  packageValue?: number;
+}
+
+export interface PaginateResponseInventoryHistoryResponseDTO {
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: InventoryHistoryResponseDTO[];
 }
 
 export interface BaseResponseListInventoryResponseDTO {
@@ -1619,11 +1632,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Update a inventory by its ID.
+     * @description Lấy chi tiết hàng hóa trong kho
      *
-     * @tags Inventories Management
+     * @tags Quản lý hàng hóa
      * @name GetInventoryById
-     * @summary Get a inventory
+     * @summary Lấy hàng hóa
      * @request GET:/api/inventories/{id}
      * @secure
      */
@@ -1636,11 +1649,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Update a inventory by its ID.
+     * @description Cập nhật thông tin hàng hóa trong kho
      *
-     * @tags Inventories Management
+     * @tags Quản lý hàng hóa
      * @name UpdateInventory
-     * @summary Update a inventory
+     * @summary Cập nhật thông tin hàng hóa
      * @request PUT:/api/inventories/{id}
      * @secure
      */
@@ -2503,11 +2516,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of the registered inventories.
+     * @description Lấy danh sách hàng hóa trong kho với phân trang, lọc
      *
-     * @tags Inventories Management
+     * @tags Quản lý hàng hóa
      * @name GetInventory
-     * @summary Get the inventories
+     * @summary Lấy danh sách hàng hóa
      * @request GET:/api/inventories
      * @secure
      */
@@ -2537,11 +2550,46 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of all registered inventories.
+     * @description Lấy danh sách lịch sử chỉnh sửa hàng hóa trong kho với phân trang, lọc
      *
-     * @tags Inventories Management
+     * @tags Quản lý hàng hóa
+     * @name GetInventoryHistories
+     * @summary Lấy danh sách lịch sử chỉnh sửa hàng hóa
+     * @request GET:/api/inventories/{id}/history
+     * @secure
+     */
+    getInventoryHistories: (
+      id: number,
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseInventoryHistoryResponseDTO, any>({
+        path: `/api/inventories/${id}/history`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Lấy tất cả hàng hóa trong kho
+     *
+     * @tags Quản lý hàng hóa
      * @name GetAllInventory
-     * @summary Get all inventories
+     * @summary Lấy tất cả hàng hóa
      * @request GET:/api/inventories/all
      * @secure
      */

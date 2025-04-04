@@ -21,6 +21,7 @@ public class InventoryHistoryResponseDTO {
     private LocalDateTime createdAt;
     private String productName;
     private String zoneName;
+    private String warehouseName;
     private Integer quantity;
     private Integer packageValue;
 
@@ -32,6 +33,7 @@ public class InventoryHistoryResponseDTO {
                 .reason(dto.getReason())
                 .productName(dto.getProduct().getName())
                 .zoneName(dto.getZone().getName())
+                .warehouseName(dto.getZone().getWarehouse().getName())
                 .quantity(dto.getQuantity())
                 .packageValue(dto.getPackageValue())
                 .build();

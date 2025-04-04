@@ -8,3 +8,7 @@ export const useAllInventories = () => {
 export const useInventory = (id: number) => {
   return useAppQuery(ApiQuery.inventories.getDetails(id));
 };
+
+export const useInventoryHistory = (id: number) => {
+  return useAppQuery(ApiQuery.inventories.getHistory(id));
+};

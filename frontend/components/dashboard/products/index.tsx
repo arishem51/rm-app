@@ -61,7 +61,7 @@ const Products = () => {
               ...filter,
               page: 0,
               search: filter.search,
-              categoryId: +filter.categoryId,
+              categoryId: +filter.categoryId || undefined,
             })
           }
         />
