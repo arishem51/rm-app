@@ -41,6 +41,8 @@ export interface ZoneDTO {
   warehouseId?: number;
   warehouseName?: string;
   status?: "ACTIVE" | "INACTIVE";
+  /** @format int64 */
+  inventoryId?: number;
 }
 
 export interface WarehouseUpdateDTO {
@@ -228,6 +230,7 @@ export interface ResponseProductDTO {
   shopName?: string;
   price?: number;
   imageUrls?: string[];
+  inventoryIds?: number[];
 }
 
 export interface Shop {
@@ -294,6 +297,8 @@ export interface InventoryUpdateDTO {
   zoneId?: number;
   /** @format int32 */
   quantity?: number;
+  /** @format int32 */
+  packageValue?: number;
 }
 
 export interface BaseResponseInventoryResponseDTO {
@@ -323,6 +328,8 @@ export interface InventoryResponseDTO {
   /** @format int32 */
   quantity?: number;
   product?: Product;
+  /** @format int32 */
+  packageValue?: number;
 }
 
 export interface Product {
@@ -449,6 +456,11 @@ export interface ReceiptRequestItemDTO {
    * @min 1
    */
   quantity?: number;
+  /**
+   * @format int32
+   * @min 1
+   */
+  packageValue?: number;
   /** @min 0 */
   price?: number;
   /** @format int64 */
@@ -482,6 +494,11 @@ export interface ReceiptItemResponseDTO {
   /** @format int64 */
   zoneId?: number;
   zoneName?: string;
+  /** @format int64 */
+  warehouseId?: number;
+  warehouseName?: string;
+  /** @format int32 */
+  packageValue?: number;
 }
 
 export interface ReceiptResponseDTO {
@@ -497,7 +514,7 @@ export interface ReceiptResponseDTO {
 }
 
 export interface PartnerCreateDTO {
-  name: string;
+  name?: string;
   contactName: string;
   /** @pattern ^(\+?\d{1,3})?\d{10}$ */
   phone: string;
@@ -819,6 +836,8 @@ export interface StatisticsOverviewResponse {
   totalRevenue?: number;
   /** @format int32 */
   totalDebt?: number;
+  /** @format int32 */
+  totalOrders?: number;
 }
 
 export interface BaseResponsePaginateResponseShopDTO {
@@ -903,59 +922,6 @@ export interface BaseResponseListResponseProductDTO {
     | "ACCESS_DENIED"
     | "BAD_REQUEST"
     | "INTERNAL_SERVER_ERROR";
-}
-
-export interface BaseResponsePaymentHistoryDetailDTO {
-  data?: PaymentHistoryDetailDTO;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface PaymentHistoryDetailDTO {
-  /** @format int64 */
-  id?: number;
-  partnerName?: string;
-  partnerPhone?: string;
-  orderAmount?: number;
-  discount?: number;
-  shippingFee?: number;
-  totalAmount?: number;
-  orderItems?: OrderItemDTO[];
-  /** @format date-time */
-  createdAt?: string;
-  debt?: boolean;
-}
-
-export interface BaseResponseListPaymentHistoryResponseDTO {
-  data?: PaymentHistoryResponseDTO[];
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
-
-export interface PaymentHistoryResponseDTO {
-  /** @format int64 */
-  id?: number;
-  partnerName?: string;
-  partnerPhone?: string;
-  orderAmount?: number;
-  discount?: number;
-  shippingFee?: number;
-  totalAmount?: number;
-  /** @format date-time */
-  createdAt?: string;
-  debt?: boolean;
 }
 
 export interface BaseResponsePaginateResponsePartnerRepsponseDTO {
@@ -1077,11 +1043,11 @@ export interface PageOrder {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -1125,6 +1091,46 @@ export interface PaginateResponseInventoryResponseDTO {
   /** @format int32 */
   totalPages?: number;
   data?: InventoryResponseDTO[];
+}
+
+export interface BaseResponsePaginateResponseInventoryHistoryResponseDTO {
+  data?: PaginateResponseInventoryHistoryResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface InventoryHistoryResponseDTO {
+  /** @format int64 */
+  id?: number;
+  reason?: string;
+  createdBy?: UserDTO;
+  /** @format date-time */
+  createdAt?: string;
+  productName?: string;
+  zoneName?: string;
+  warehouseName?: string;
+  /** @format int32 */
+  quantity?: number;
+  /** @format int32 */
+  packageValue?: number;
+}
+
+export interface PaginateResponseInventoryHistoryResponseDTO {
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  data?: InventoryHistoryResponseDTO[];
 }
 
 export interface BaseResponseListInventoryResponseDTO {
@@ -1590,11 +1596,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Update a inventory by its ID.
+     * @description Lấy chi tiết hàng hóa trong kho
      *
-     * @tags Inventories Management
+     * @tags Quản lý hàng hóa
      * @name GetInventoryById
-     * @summary Get a inventory
+     * @summary Lấy hàng hóa
      * @request GET:/api/inventories/{id}
      * @secure
      */
@@ -1607,11 +1613,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Update a inventory by its ID.
+     * @description Cập nhật thông tin hàng hóa trong kho
      *
-     * @tags Inventories Management
+     * @tags Quản lý hàng hóa
      * @name UpdateInventory
-     * @summary Update a inventory
+     * @summary Cập nhật thông tin hàng hóa
      * @request PUT:/api/inventories/{id}
      * @secure
      */
@@ -1878,6 +1884,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         pageSize?: number;
         /** @default "" */
         search?: string;
+        /** @format int64 */
+        categoryId?: number;
       },
       params: RequestParams = {},
     ) =>
@@ -2367,38 +2375,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
-     *
-     * @tags payment-history-controller
-     * @name GetPaymentById
-     * @request GET:/api/payment-histories/{id}
-     * @secure
-     */
-    getPaymentById: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponsePaymentHistoryDetailDTO, any>({
-        path: `/api/payment-histories/${id}`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags payment-history-controller
-     * @name GetAllPayment
-     * @request GET:/api/payment-histories/all
-     * @secure
-     */
-    getAllPayment: (params: RequestParams = {}) =>
-      this.request<BaseResponseListPaymentHistoryResponseDTO, any>({
-        path: `/api/payment-histories/all`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
      * @description Fetch all Partners.
      *
      * @tags Partner Management
@@ -2482,11 +2458,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of the registered inventories.
+     * @description Lấy danh sách hàng hóa trong kho với phân trang, lọc
      *
-     * @tags Inventories Management
+     * @tags Quản lý hàng hóa
      * @name GetInventory
-     * @summary Get the inventories
+     * @summary Lấy danh sách hàng hóa
      * @request GET:/api/inventories
      * @secure
      */
@@ -2516,11 +2492,46 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Fetch a list of all registered inventories.
+     * @description Lấy danh sách lịch sử chỉnh sửa hàng hóa trong kho với phân trang, lọc
      *
-     * @tags Inventories Management
+     * @tags Quản lý hàng hóa
+     * @name GetInventoryHistories
+     * @summary Lấy danh sách lịch sử chỉnh sửa hàng hóa
+     * @request GET:/api/inventories/{id}/history
+     * @secure
+     */
+    getInventoryHistories: (
+      id: number,
+      query?: {
+        /**
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+        /**
+         * @format int32
+         * @default 10
+         */
+        pageSize?: number;
+        /** @default "" */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePaginateResponseInventoryHistoryResponseDTO, any>({
+        path: `/api/inventories/${id}/history`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Lấy tất cả hàng hóa trong kho
+     *
+     * @tags Quản lý hàng hóa
      * @name GetAllInventory
-     * @summary Get all inventories
+     * @summary Lấy tất cả hàng hóa
      * @request GET:/api/inventories/all
      * @secure
      */

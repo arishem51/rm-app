@@ -115,6 +115,7 @@ const OrderForm = ({ onClose, order }: Props) => {
     fields: orderItems,
     append,
     remove,
+    update,
   } = useFieldArray({
     control: form.control,
     name: "orderItems",
@@ -216,7 +217,7 @@ const OrderForm = ({ onClose, order }: Props) => {
                         <TableRow>
                           <TableHead>STT</TableHead>
                           <TableHead>Sản phẩm</TableHead>
-                          <TableHead>Giá nhập</TableHead>
+                          <TableHead>Giá niêm yết</TableHead>
                           <TableHead>Số lượng/Tồn kho</TableHead>
                           <TableHead>Khu vực</TableHead>
                           <TableHead>Giá tiền</TableHead>
@@ -246,9 +247,32 @@ const OrderForm = ({ onClose, order }: Props) => {
                                     <FormControl>
                                       {isCreateOrder ? (
                                         <ComboboxInventories
-                                          onSelect={(value) =>
-                                            field.onChange(value ? value : null)
-                                          }
+                                          filterOptions={(option) => {
+                                            return (
+                                              +option.value === field.value ||
+                                              selectedInventories.indexOf(
+                                                +option.value
+                                              ) === -1
+                                            );
+                                          }}
+                                          onSelect={(value) => {
+                                            field.onChange(
+                                              value ? value : null
+                                            );
+                                            const inventory =
+                                              allInventories.find(
+                                                (item) => item.id === +value
+                                              );
+                                            const { product } = inventory ?? {};
+                                            update(index, {
+                                              inventoryId: inventory!.id!,
+                                              quantity: 1,
+                                              productId: product!.id!,
+                                              productName: product!.name!,
+                                              productPrice: +product!.price!,
+                                              zoneId: inventory!.zoneId!,
+                                            });
+                                          }}
                                           formValue={field.value?.toString()}
                                         />
                                       ) : (

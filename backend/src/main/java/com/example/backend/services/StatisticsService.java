@@ -1,25 +1,26 @@
 package com.example.backend.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.dto.statistics.RecentOrder;
 import com.example.backend.dto.statistics.RevenueByMonthResponse;
 import com.example.backend.dto.statistics.StatisticsOverviewResponse;
 import com.example.backend.entities.User;
 import com.example.backend.enums.ActionStatus;
 import com.example.backend.repositories.OrderRepository;
-import com.example.backend.repositories.PaymentHistoryRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.utils.UserRoleUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 public class StatisticsService {
         private final UserRepository userRepository;
         private final ProductRepository productRepository;
-        private final PaymentHistoryRepository paymentHistoryRepository;
         private final OrderRepository orderRepository;
 
         public StatisticsOverviewResponse getOverviewStatistics(User currentUser) {
@@ -38,10 +38,18 @@ public class StatisticsService {
                                         .totalProduct(0)
                                         .totalRevenue(0)
                                         .totalDebt(0)
+                                        .totalOrders(0)
                                         .build();
                 }
-
                 Long shopId = currentUser.getShop().getId();
+
+                LocalDate firstDayOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+                LocalDate lastDayOfMonth = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+                LocalDateTime startOfMonth = firstDayOfMonth.atStartOfDay();
+                LocalDateTime endOfMonth = lastDayOfMonth.atTime(23, 59, 59, 999999999);
+                LocalDate today = LocalDate.now();
+                LocalDateTime startOfDay = today.atStartOfDay();
+                LocalDateTime endOfDay = today.atTime(23, 59, 59, 999999999);
 
                 return StatisticsOverviewResponse.builder()
                                 .totalStaff(
@@ -54,13 +62,25 @@ public class StatisticsService {
                                                                 .map(Long::intValue)
                                                                 .orElse(0))
                                 .totalRevenue(
-                                                Optional.ofNullable(paymentHistoryRepository.getTotalRevenue())
+                                                Optional.ofNullable(UserRoleUtils.isOwner(currentUser)
+                                                                ? orderRepository.getTotalAmountForCurrentMonth(
+                                                                                startOfMonth, endOfMonth)
+                                                                : orderRepository.getTotalAmountForTodayByUser(
+                                                                                currentUser.getId(), startOfDay,
+                                                                                endOfDay))
                                                                 .map(BigDecimal::intValue)
                                                                 .orElse(0))
                                 .totalDebt(
-                                                Optional.ofNullable(paymentHistoryRepository.getTotalDebt())
-                                                                .map(BigDecimal::intValue)
-                                                                .orElse(0))
+                                                0)
+                                .totalOrders(Optional.ofNullable(UserRoleUtils.isOwner(
+                                                currentUser) ? orderRepository.countOrdersForToday(
+                                                                startOfDay,
+                                                                endOfDay)
+                                                                : orderRepository.countOrdersForTodayByUser(
+                                                                                currentUser.getId(),
+                                                                                startOfDay,
+                                                                                endOfDay))
+                                                .orElse(Integer.valueOf(0)))
                                 .build();
 
         }
@@ -70,8 +90,9 @@ public class StatisticsService {
                         return new ArrayList<>();
                 }
 
-                List<Object[]> results = paymentHistoryRepository
-                                .getRevenueByMonthForShop(currentUser.getShop().getId());
+                List<Object[]> results = UserRoleUtils.isOwner(currentUser)
+                                ? orderRepository.getAmountByMonthForShop(currentUser.getShop().getId())
+                                : orderRepository.getAmountByMonthForUser(currentUser.getId());
 
                 int currentYear = Calendar.getInstance().get(Calendar.YEAR);
                 List<String> allMonths = new ArrayList<>();
@@ -101,7 +122,8 @@ public class StatisticsService {
                 }
 
                 return orderRepository
-                                .findTop5OrdersByShopIdAndPaymentHistoriesIsDebtFalse(currentUser.getShop().getId(),
+                                .findTop5ByShopIdOrderByCreatedAtDesc(
+                                                currentUser.getShop().getId(),
                                                 PageRequest.of(0, 5))
                                 .stream()
                                 .map(RecentOrder::fromEntity).toList();

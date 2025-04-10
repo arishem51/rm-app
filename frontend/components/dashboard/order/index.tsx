@@ -19,6 +19,7 @@ import ListPagination from "../pagination";
 import { OrderResponseDTO } from "@/types/Api";
 import Link from "next/link";
 
+//FIXME: fix orders page
 const Orders = () => {
   const [filter, setFilter] = useState({ page: 0, search: "", createdAt: "" });
   const { data } = useAppQuery(ApiQuery.orders.getAllOrders());
@@ -26,23 +27,23 @@ const Orders = () => {
 
   const filteredData = useMemo(() => {
     if (!data) return [];
-    return data?.data.filter((order: OrderResponseDTO) =>
-      order?.partnerName.toLowerCase().includes(filter.search.toLowerCase())
+    return data?.data?.filter((order: OrderResponseDTO) =>
+      order?.partnerName?.toLowerCase().includes(filter.search.toLowerCase())
     );
   }, [data, filter.search]);
 
   const paginatedData = useMemo(() => {
     const start = filter.page * itemsPerPage;
-    return filteredData.slice(start, start + itemsPerPage);
+    return filteredData?.slice(start, start + itemsPerPage);
   }, [filteredData, filter.page]);
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = Math.ceil((filteredData?.length ?? 0) / itemsPerPage);
 
-  const handleSearch = (search) => {
+  const handleSearch = (search: string) => {
     setFilter({ ...filter, page: 0, search });
   };
 
-  const handleNavigateFullPage = (page) => {
+  const handleNavigateFullPage = (page: number) => {
     setFilter({
       page: page > 0 ? totalPages - 1 : 0,
       search: filter.search,
@@ -50,7 +51,7 @@ const Orders = () => {
     });
   };
 
-  const handleNavigatePage = (page) => {
+  const handleNavigatePage = (page: number) => {
     setFilter((prev) => ({ ...prev, page: prev.page + page }));
   };
   return (
@@ -69,7 +70,7 @@ const Orders = () => {
           </Button>
         </Link>
       </div>
-      {paginatedData.length > 0 ? (
+      {(paginatedData?.length ?? 0) > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -84,7 +85,7 @@ const Orders = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((order) => (
+            {paginatedData?.map((order) => (
               <TableRow key={order.id}>
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.userName}</TableCell>

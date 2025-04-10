@@ -1,6 +1,7 @@
 package com.example.backend.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAllByShopId(Long shopId);
 
+    Optional<Product> findByIdAndShopId(Long id, Long shopId);
+
     Page<Product> findByShopIdAndNameContainingIgnoreCase(Long shopId, String name, Pageable pageable);
+
+    Page<Product> findByShopIdAndNameContainingIgnoreCaseAndCategoryId(
+            Long shopId,
+            String name,
+            Long categoryId,
+            Pageable pageable);
 
     Long countByShopId(Long shopId);
 }

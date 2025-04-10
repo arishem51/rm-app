@@ -44,6 +44,9 @@ public class Inventory {
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
+    @Column(name = "package_value", nullable = false)
+    private Integer packageValue;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

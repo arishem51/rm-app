@@ -78,7 +78,7 @@ export const AppRoutes = {
     },
     categories: {
       url: "/dashboard/categories",
-      accessRoles: [UserRole.ADMIN],
+      accessRoles: [UserRole.OWNER],
     },
     products: {
       index: {
@@ -112,7 +112,7 @@ export const AppRoutes = {
       facilities: {
         index: {
           url: "/dashboard/warehouses/facilities",
-          accessRoles: [UserRole.OWNER],
+          accessRoles: [UserRole.OWNER, UserRole.STAFF],
         },
         detail: {
           url: "/dashboard/warehouses/facilities/[id]",
@@ -122,11 +122,17 @@ export const AppRoutes = {
       inventories: {
         index: {
           url: "/dashboard/warehouses/inventories",
-          accessRoles: [UserRole.OWNER],
+          accessRoles: [UserRole.OWNER, UserRole.STAFF],
         },
         detail: {
-          url: "/dashboard/warehouses/inventories/[id]",
-          accessRoles: [UserRole.OWNER],
+          index: {
+            url: "/dashboard/warehouses/inventories/[id]",
+            accessRoles: [UserRole.OWNER, UserRole.STAFF],
+          },
+          history: {
+            url: "/dashboard/warehouses/inventories/[id]/history",
+            accessRoles: [UserRole.OWNER, UserRole.STAFF],
+          },
         },
         create: {
           url: "/dashboard/warehouses/inventories/create",
@@ -135,8 +141,18 @@ export const AppRoutes = {
       },
     },
     partners: {
-      url: "/dashboard/partners",
-      accessRoles: [UserRole.ADMIN, UserRole.OWNER],
+      index: {
+        url: "/dashboard/partners",
+        accessRoles: [UserRole.OWNER],
+      },
+      create: {
+        url: "/dashboard/partners/create",
+        accessRoles: [UserRole.OWNER],
+      },
+      detail: {
+        url: "/dashboard/partners/[id]",
+        accessRoles: [UserRole.OWNER],
+      },
     },
     setting: {
       profile: {

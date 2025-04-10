@@ -23,7 +23,6 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, CharSequenc
         if (value == null || value.length() == 0) {
             return false;
         }
-        System.out.println("AA + " + acceptedValues + " " + value.toString().toUpperCase());
         return acceptedValues.contains(value.toString().toUpperCase());
     }
 }

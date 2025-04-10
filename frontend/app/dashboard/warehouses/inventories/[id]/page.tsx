@@ -1,6 +1,5 @@
 import HydrationPrefetchQuery from "@/components/dashboard/hydration-prefetch-query";
-//FIXME: ? wtf is this
-import PaymentDetail from "@/components/dashboard/payment/detail";
+import InventoryDetails from "@/components/dashboard/inventories/details";
 import AlertInvalidId from "@/components/view/alert/alert-invalid-id";
 import { ApiQuery } from "@/services/query";
 
@@ -16,10 +15,18 @@ export default async function Page({
   }
 
   return (
-    <HydrationPrefetchQuery query={ApiQuery.products.getProduct(id)} awaitQuery>
+    <HydrationPrefetchQuery
+      queries={[
+        ApiQuery.inventories.getDetails(id),
+        ApiQuery.products.getAllProducts(),
+        ApiQuery.zones.getAllByShop(),
+      ]}
+      awaitQuery
+    >
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Hóa đơn thanh toán</h1>
-        <PaymentDetail id={id} />
+        <h1 className="text-3xl font-bold mt-2">Hàng hóa</h1>
+        <p className="text-sm text-muted-foreground">Xem thông tin hàng hóa</p>
+        <InventoryDetails id={id} />
       </div>
     </HydrationPrefetchQuery>
   );

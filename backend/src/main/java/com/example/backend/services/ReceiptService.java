@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import com.example.backend.dto.receipt.ReceiptCreateDTO;
 import com.example.backend.dto.receipt.ReceiptRequestItemDTO;
 import com.example.backend.entities.Inventory;
+import com.example.backend.entities.InventoryHistory;
 import com.example.backend.entities.Receipt;
 import com.example.backend.entities.ReceiptItem;
 import com.example.backend.entities.User;
 import com.example.backend.entities.Zone;
 import com.example.backend.enums.ReceiptStatus;
+import com.example.backend.repositories.InventoryHistoryRepository;
 import com.example.backend.repositories.InventoryRepository;
 import com.example.backend.repositories.ProductRepository;
 import com.example.backend.repositories.ReceiptRepository;
@@ -29,6 +31,7 @@ public class ReceiptService {
     private final ZoneRepository zoneRepository;
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
+    private final InventoryHistoryRepository inventoryHistoryRepository;
 
     @Transactional
     public Receipt create(ReceiptCreateDTO dto, User currentUser) {
@@ -38,6 +41,7 @@ public class ReceiptService {
         Receipt receipt = Receipt.builder().createdBy(currentUser).build();
         List<ReceiptItem> receiptItems = new ArrayList<>();
         List<Inventory> inventoriesToSave = new ArrayList<>();
+        List<Zone> zonesToSave = new ArrayList<>();
 
         List<ReceiptRequestItemDTO> items = dto.getItems();
         Set<Long> zoneIds = new HashSet<>();
@@ -58,7 +62,12 @@ public class ReceiptService {
 
                 if (inventory != null) {
                     if (inventory.getProduct().getId() != item.getProductId()) {
-                        throw new IllegalArgumentException("Kho đã có sản phẩm khác");
+                        throw new IllegalArgumentException(
+                                "Khu vực là: " + zone.getName() + " đã có sản phẩm khác");
+                    }
+                    if (inventory.getPackageValue() != item.getPackageValue()) {
+                        throw new IllegalArgumentException(
+                                "Khu vực là: " + zone.getName() + " đã có quy cách sản phẩm khác    ");
                     }
                     Integer quantity = inventory.getQuantity() + item.getQuantity();
                     inventory.setQuantity(quantity);
@@ -67,13 +76,20 @@ public class ReceiptService {
                             .product(productRepository.findById(item.getProductId())
                                     .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại")))
                             .quantity(item.getQuantity())
+                            .packageValue(item.getPackageValue())
                             .createdBy(currentUser)
                             .build();
                 }
+                zone.setInventory(inventory);
                 ReceiptItem receiptItem = ReceiptItem.builder().receipt(receipt).productId(item.getProductId())
                         .productName(inventory.getProduct().getName()).productPrice(item.getPrice())
-                        .quantity(item.getQuantity()).zoneId(item.getZoneId()).zoneName(zone.getName()).build();
+                        .quantity(item.getQuantity()).zoneId(item.getZoneId()).zoneName(zone.getName())
+                        .warehouseId(zone.getWarehouse().getId())
+                        .warehouseName(zone.getWarehouse().getName())
+                        .packageValue(inventory.getPackageValue())
+                        .build();
                 inventoriesToSave.add(inventory);
+                zonesToSave.add(zone);
                 receiptItems.add(receiptItem);
             }
         } catch (Exception e) {
@@ -81,12 +97,24 @@ public class ReceiptService {
             receipt.setShop(currentUser.getShop());
             receiptRepository.save(receipt);
             System.out.println(e + " message: " + e.getMessage());
-            throw new IllegalArgumentException("Lỗi khi tạo phiếu nhập: " + e.getMessage());
+            throw new IllegalArgumentException("Lỗi khi tạo phiếu nhập. " + e.getMessage());
         }
+        inventoryHistoryRepository.saveAll(inventoriesToSave.stream()
+                .map(inv -> InventoryHistory.builder()
+                        .inventory(inv)
+                        .createdBy(currentUser)
+                        .product(inv.getProduct())
+                        .zone(inv.getZone())
+                        .quantity(inv.getQuantity())
+                        .packageValue(inv.getPackageValue())
+                        .reason("Nhập hàng")
+                        .build())
+                .toList());
+        inventoryRepository.saveAll(inventoriesToSave);
+        zoneRepository.saveAll(zonesToSave);
         receipt.setStatus(ReceiptStatus.SUCCESS);
         receipt.setItems(receiptItems);
         receipt.setShop(currentUser.getShop());
-        inventoryRepository.saveAll(inventoriesToSave);
         return receiptRepository.save(receipt);
     }
 

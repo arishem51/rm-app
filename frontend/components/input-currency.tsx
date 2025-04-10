@@ -29,7 +29,7 @@ function InputCurrency<T extends FieldValues>({
 
   const [value, setValue] = useReducer((_: string, next: string) => {
     if (!next) return "";
-    const numericValue = Number(next.replace(/\D/g, ""));
+    const numericValue = Number(next.replace(/[^\d.]/g, ""));
     return numericValue ? toCurrency(numericValue) : "";
   }, "");
 

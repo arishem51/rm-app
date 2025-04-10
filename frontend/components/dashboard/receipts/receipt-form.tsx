@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,18 +27,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { generateReceiptCode } from "@/lib/helpers";
-import { ReceiptResponseDTO, ZoneDTO } from "@/types/Api";
+import { ReceiptResponseDTO } from "@/types/Api";
 import { ComboboxProducts } from "../combobox/product";
 import { useAllZonesByShop } from "@/services/hooks/warehouses";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectLabel,
-  SelectItem,
-} from "@/components/ui/select";
 import { useAllProducts } from "@/services/hooks/products";
 import { useCreateReceipt } from "@/hooks/mutations/receipt";
 import { appearanceNone, ToastTitle } from "@/lib/constants";
@@ -49,6 +40,12 @@ import EmptyState from "../empty-state";
 import { format } from "date-fns";
 import { cn, toCurrency } from "@/lib/utils";
 import { uniqBy } from "lodash";
+import PackagingTooltip from "../inventories/packaging-tooltip";
+import ZoneTooltip from "../inventories/zone-tooltip";
+import Link from "next/link";
+import ProductTooltip from "../products/product-tooltip";
+import ConfirmSave from "@/components/confirm-save";
+import SelectAvailableZones from "../select-available-zones";
 
 const schema = z.object({
   receiptCode: z.string().optional(),
@@ -56,10 +53,14 @@ const schema = z.object({
   items: z
     .array(
       z.object({
+        productName: z.string().optional(),
+        warehouseName: z.string().optional(),
+        zoneName: z.string().optional(),
         productId: z.coerce.number(),
         quantity: z.coerce.number().min(1, { message: "Không hợp lệ" }),
         zoneId: z.coerce.number(),
         price: z.coerce.number(),
+        packageValue: z.coerce.number().min(1, { message: "Không hợp lệ" }),
       })
     )
     .min(1, "Vui lòng thêm ít nhất một sản phẩm."),
@@ -85,6 +86,8 @@ const ReceiptForm = ({ receipt }: Props) => {
   const { data: products = [] } = productQuery;
   const { data: zoneQuery = {} } = useAllZonesByShop();
   const { data: zones = [] } = zoneQuery;
+  const [open, setOpen] = useState(false);
+  const [dataSubmit, setDataSubmit] = useState<ReceiptFormDTO>();
 
   const {
     fields: itemFields,
@@ -94,28 +97,10 @@ const ReceiptForm = ({ receipt }: Props) => {
     control: form.control,
     name: "items",
   });
+
   const { mutate, isPending } = useCreateReceipt();
   const queryClient = useQueryClient();
   const router = useRouter();
-
-  const groupZoneByWarehouseId = zones.reduce(
-    (acc, zone) => {
-      if (!acc[zone.warehouseId!]) {
-        acc[zone.warehouseId!] = {
-          warehouseId: zone.warehouseId!,
-          warehouseName: zone.warehouseName,
-          zones: [zone],
-        };
-      } else {
-        acc[zone.warehouseId!].zones.push(zone);
-      }
-      return acc;
-    },
-    {} as Record<
-      number,
-      { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
-    >
-  );
 
   const isCreateReceipt = !receipt;
   const { reset, watch } = form;
@@ -123,8 +108,6 @@ const ReceiptForm = ({ receipt }: Props) => {
   const selectedZones = uniqBy(receiptItems, "zoneId").map(
     (item) => item.zoneId
   );
-  const filterZoneBySelect = (zone: ZoneDTO, currentSelectZoneId: number) =>
-    currentSelectZoneId === zone.id || !selectedZones.includes(zone.id!);
 
   useEffect(() => {
     if (receipt) {
@@ -140,36 +123,40 @@ const ReceiptForm = ({ receipt }: Props) => {
   }, [receipt, reset]);
 
   const onSubmit = form.handleSubmit((data) => {
-    mutate(data, {
-      onSuccess: () => {
-        toast({
-          title: ToastTitle.success,
-          description: `Phiếu nhập được tạo thành công.`,
-        });
-        queryClient.invalidateQueries({
-          queryKey: ApiQuery.receipts.getReceipts().queryKey,
-        });
-        router.push("/dashboard/receipts");
-      },
-      onError: (error: Error) => {
-        toast({
-          title: ToastTitle.error,
-          description: error.message,
-        });
-      },
-    });
+    setOpen(true);
+    setDataSubmit(data);
   });
-
-  const renderZone = (zoneId: number) => {
-    const zone = zones.find((zone) => zone.id === zoneId);
-    if (!zone) {
-      return "";
-    }
-    return `${zone.name}/${zone.warehouseName}`;
-  };
 
   return (
     <Form {...form}>
+      <ConfirmSave
+        onCancel={() => {
+          setDataSubmit(undefined);
+        }}
+        onConfirm={() => {
+          if (!dataSubmit) return;
+          mutate(dataSubmit, {
+            onSuccess: () => {
+              toast({
+                title: ToastTitle.success,
+                description: `Phiếu nhập được tạo thành công.`,
+              });
+              queryClient.invalidateQueries({
+                queryKey: ApiQuery.receipts.getReceipts().queryKey,
+              });
+              router.push("/dashboard/receipts");
+            },
+            onError: (error: Error) => {
+              toast({
+                title: ToastTitle.error,
+                description: error.message,
+              });
+            },
+          });
+        }}
+        open={open}
+        setOpen={setOpen}
+      />
       <form onSubmit={onSubmit} className="mb-12">
         <div className="flex flex-col gap-3 mb-4">
           {!isCreateReceipt && (
@@ -229,10 +216,12 @@ const ReceiptForm = ({ receipt }: Props) => {
                     const zoneId = different.values().next().value;
                     if (product && zoneId) {
                       append({
+                        productName: product.name,
                         productId: product.id!,
                         quantity: 1,
                         zoneId,
                         price: product.price ?? 0,
+                        packageValue: 5,
                       });
                     } else {
                       toast({
@@ -256,10 +245,17 @@ const ReceiptForm = ({ receipt }: Props) => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>STT</TableHead>
-                    <TableHead>Tên sản phẩm</TableHead>
+                    <TableHead>
+                      <ProductTooltip />
+                    </TableHead>
                     <TableHead>Giá</TableHead>
-                    <TableHead>Số lượng</TableHead>
-                    <TableHead>Khu vực</TableHead>
+                    <TableHead>Số lượng bao</TableHead>
+                    <TableHead>
+                      <PackagingTooltip />
+                    </TableHead>
+                    <TableHead>
+                      <ZoneTooltip />
+                    </TableHead>
                     {isCreateReceipt && (
                       <TableHead className="text-right">Hành động</TableHead>
                     )}
@@ -275,21 +271,22 @@ const ReceiptForm = ({ receipt }: Props) => {
                         <FormField
                           control={form.control}
                           name={`items.${index}.productId`}
-                          render={({ field }) => (
+                          render={({ field: formField }) => (
                             <FormControl>
                               {isCreateReceipt ? (
                                 <ComboboxProducts
-                                  onSelect={field.onChange}
-                                  formValue={field.value?.toString()}
+                                  onSelect={(value) =>
+                                    formField.onChange(+value)
+                                  }
+                                  formValue={formField.value?.toString()}
                                 />
                               ) : (
-                                <span>
-                                  {
-                                    products.find(
-                                      (item) => item.id === field.value
-                                    )?.name
-                                  }
-                                </span>
+                                <Link
+                                  href={`/dashboard/products/${field.productId}`}
+                                  className="hover:underline"
+                                >
+                                  <span>{field.productName}</span>
+                                </Link>
                               )}
                             </FormControl>
                           )}
@@ -332,54 +329,43 @@ const ReceiptForm = ({ receipt }: Props) => {
                       <TableCell className="align-top">
                         <FormField
                           control={form.control}
-                          name={`items.${index}.zoneId`}
+                          name={`items.${index}.packageValue`}
                           render={({ field }) => (
+                            <>
+                              <FormControl>
+                                {isCreateReceipt ? (
+                                  <Input
+                                    {...field}
+                                    className={cn("w-[124px]", appearanceNone)}
+                                    type="number"
+                                    placeholder="Ví dụ: 10"
+                                  />
+                                ) : (
+                                  <span>{field.value}</span>
+                                )}
+                              </FormControl>
+                              <FormMessage className="whitespace-nowrap" />
+                            </>
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell className="align-top">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.zoneId`}
+                          render={({ field: formField }) => (
                             <FormControl>
                               {isCreateReceipt ? (
-                                <Select
-                                  onValueChange={(value) => {
-                                    field.onChange(parseInt(value));
-                                  }}
-                                  value={field.value?.toString()}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Chọn kho - khu trong kho" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {Object.entries(groupZoneByWarehouseId).map(
-                                      ([key, value]) => {
-                                        return (
-                                          <SelectGroup key={key}>
-                                            <SelectLabel>
-                                              Tên Kho: {value.warehouseName}
-                                            </SelectLabel>
-                                            {value.zones
-                                              .filter((zone) =>
-                                                filterZoneBySelect(
-                                                  zone,
-                                                  field.value
-                                                )
-                                              )
-                                              .map((zone) => {
-                                                const id = zone.id!.toString();
-                                                return (
-                                                  <SelectItem
-                                                    key={id}
-                                                    value={id.toString()}
-                                                    className="ml-2"
-                                                  >
-                                                    {zone.name}
-                                                  </SelectItem>
-                                                );
-                                              })}
-                                          </SelectGroup>
-                                        );
-                                      }
-                                    )}
-                                  </SelectContent>
-                                </Select>
+                                <SelectAvailableZones
+                                  zones={zones}
+                                  selectedZones={selectedZones}
+                                  onChange={formField.onChange}
+                                  value={formField.value}
+                                />
                               ) : (
-                                <span>{renderZone(field.value)}</span>
+                                <span>
+                                  {field.warehouseName} - {field.zoneName}
+                                </span>
                               )}
                             </FormControl>
                           )}

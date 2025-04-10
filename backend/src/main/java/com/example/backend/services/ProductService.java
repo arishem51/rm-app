@@ -24,11 +24,8 @@ public class ProductService {
     private final CategoryService categoryService;
 
     public void validateUserCanManageProduct(User user) {
-        if (!UserRoleUtils.isOwner(user)) {
-            throw new IllegalArgumentException("You are not authorized to manage products!");
-        }
-        if (user.getShop() == null) {
-            throw new IllegalArgumentException("You must have a shop to manage products!");
+        if (!UserRoleUtils.isOwner(user) || user.getShop() == null) {
+            throw new IllegalArgumentException("Bạn phải là chủ cửa hàng và có cửa hàng để quản lý sản phẩm!");
         }
     }
 
@@ -51,22 +48,23 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Page<Product> findProducts(int page, int pageSize, String search, User currentUser) {
-        if (UserRoleUtils.isAdmin(currentUser)) {
-            return search.isEmpty()
-                    ? productRepository.findAll(PageRequest.of(page, pageSize))
-                    : productRepository.findByNameContainingIgnoreCase(search, PageRequest.of(page, pageSize));
-        }
-
+    public Page<Product> findProducts(int page, int pageSize, String search, Long categoryId, User currentUser) {
         Shop shop = currentUser.getShop();
-
         if (shop == null) {
             throw new IllegalArgumentException("You must have a shop to manage products!");
+        }
+        if (categoryId != null) {
+            return productRepository.findByShopIdAndNameContainingIgnoreCaseAndCategoryId(
+                    shop.getId(),
+                    search,
+                    categoryId,
+                    PageRequest.of(page, pageSize));
         }
         return search.isEmpty()
                 ? productRepository.findByShopId(currentUser.getShop().getId(), PageRequest.of(page, pageSize))
                 : productRepository.findByShopIdAndNameContainingIgnoreCase(currentUser.getShop().getId(), search,
                         PageRequest.of(page, pageSize));
+
     }
 
     public List<Product> findAllProductsFromShop(User currentUser) {
@@ -80,11 +78,11 @@ public class ProductService {
         validateUserCanManageProduct(user);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
-            throw new IllegalArgumentException("Product not found!");
+            throw new IllegalArgumentException("Không tìm thấy sản phẩm");
         }
         Product product = optionalProduct.get();
         if (product.getShop().getId() != user.getShop().getId()) {
-            throw new IllegalArgumentException("You can only update product from your own shop!");
+            throw new IllegalArgumentException("Bạn chỉ có thể cập nhật sản phẩm của cửa hàng của bạn!");
         }
 
         Category category = Optional.ofNullable(dto.getCategoryId()).flatMap(categoryService::findById).orElse(null);
@@ -92,8 +90,6 @@ public class ProductService {
         String name = Optional.ofNullable(dto.getName()).orElse(product.getName());
         String description = Optional.ofNullable(dto.getDescription()).orElse(product.getDescription());
         BigDecimal price = Optional.ofNullable(dto.getPrice()).orElse(product.getPrice());
-
-        System.out.println("price " + dto.getPrice() + " a: " + price);
 
         product.setCategory(category);
         product.setSupplier(supplier);
@@ -124,4 +120,6 @@ public class ProductService {
         }
         return product;
     }
+
+    // FIXME: block delete when it have inventory
 }

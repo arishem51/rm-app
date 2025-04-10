@@ -1,11 +1,8 @@
 package com.example.backend.dto.inventory;
 
-import java.math.BigDecimal;
-
 import com.example.backend.dto.UserDTO;
 import com.example.backend.entities.Inventory;
 import com.example.backend.entities.Product;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +25,7 @@ public class InventoryResponseDTO {
     private String warehouseName;
     private Integer quantity;
     private Product product;
+    private Integer packageValue;
 
     public static InventoryResponseDTO fromEntity(Inventory inventory) {
         return InventoryResponseDTO.builder()
@@ -41,6 +39,7 @@ public class InventoryResponseDTO {
                 .createdAt(inventory.getCreatedAt().toString())
                 .updatedAt(inventory.getUpdatedAt() != null ? inventory.getUpdatedAt().toString() : null)
                 .quantity(inventory.getQuantity())
+                .packageValue(inventory.getPackageValue())
                 .build();
     }
 }

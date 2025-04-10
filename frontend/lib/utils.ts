@@ -51,36 +51,66 @@ export const { api: apiClient } = new Api({
   },
 });
 
-const serialize = <T>(record?: Record<string, string | number | T>) => {
-  const result: Record<string, string> = {};
-  for (const key in record) {
-    result[key] = String(record[key]);
+function getArgumentNames<K extends unknown[]>(
+  func: (...args: K) => unknown
+): string[] {
+  const functionString = func.toString();
+  const match = functionString.match(/\(([^)]*)\)/);
+  if (!match) {
+    return [];
   }
+  const args = match[1].split(",").reduce((acc: string[], arg: string) => {
+    const trimmedArg = arg.trim();
+    const isArgHaveDefaultValue = trimmedArg.includes("=");
+
+    if (trimmedArg) {
+      acc.push(
+        isArgHaveDefaultValue ? trimmedArg.split("=")[0].trim() : trimmedArg
+      );
+    }
+    return acc;
+  }, []);
+
+  return args;
+}
+
+const mapParamsFromFunc = <K extends unknown[]>(
+  params: K,
+  func: (...args: K) => unknown
+) => {
+  const args = getArgumentNames(func);
+  const result: Record<string, unknown> = {};
+
+  for (const param in params) {
+    const paramValue = params[param];
+    const paramKey = args[param];
+    result[paramKey] = paramValue;
+  }
+
   return result;
 };
 
-export const createQuery = <T, K>(
-  method: (args: K) => Promise<{ data: T }>,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const createQuery = <T, K extends any[]>(
+  method: (...args: K) => Promise<{ data: T }>,
   queryConfig?: ((params: K) => QueryConfigType<T>) | QueryConfigType<T>
 ) => {
-  return (params: K = {} as K) => {
+  return (...params: K) => {
     const config =
       typeof queryConfig === "function" ? queryConfig(params) : queryConfig;
-    const queryKey: (string | K | Record<string, string>)[] = [method.name];
+    const queryKey: (string | K | Record<string, unknown>)[] = [method.name];
     if (
       (typeof params !== "object" && params) ||
       Object.keys(params ?? {}).length > 0
     ) {
       queryKey.push(
-        typeof params === "object"
-          ? serialize(params as Record<string, string>)
-          : String(params)
+        typeof params === "object" ? mapParamsFromFunc(params, method) : params
       );
     }
     return queryOptions<T>({
       queryKey,
       queryFn: async () => {
-        const { data } = await method(params);
+        const { data } = await method(...params);
         return data;
       },
       ...config,

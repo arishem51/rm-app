@@ -17,19 +17,12 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiQuery } from "@/services/query";
 import { ToastTitle } from "@/lib/constants";
-import { InventoryUpdateDTO, InventoryResponseDTO, ZoneDTO } from "@/types/Api";
+import { InventoryUpdateDTO, InventoryResponseDTO } from "@/types/Api";
 import { useUpdateInventory } from "@/hooks/mutations/inventory";
 import { ComboboxProducts } from "../combobox/product";
 import { useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import PackagingTooltip from "./packaging-tooltip";
+import SelectAvailableZones from "../select-available-zones";
 import { useAllZonesByShop } from "@/services/hooks/warehouses";
 
 type Props = {
@@ -37,30 +30,37 @@ type Props = {
   inventory?: InventoryResponseDTO;
 };
 
-const schemaFields = {
-  productId: z.coerce.number({ message: "Sản phẩm là bắt buộc" }),
-  warehouseId: z.coerce.number({ message: "Kho là bắt buộc" }),
-  quantity: z.coerce.number({ message: "Số không hợp lệ" }),
-};
+const schemaFields = z.object({
+  productId: z.coerce.number(),
+  warehouseId: z.coerce.number(),
+  zoneId: z.coerce.number(),
+  quantity: z.coerce.number(),
+  packageValue: z.coerce.number(),
+});
 
 const InventoryForm = ({ inventory, onClose }: Props) => {
-  const form = useForm<InventoryUpdateDTO>({
+  const form = useForm<z.infer<typeof schemaFields>>({
     defaultValues: {
-      productId: inventory?.productId,
+      productId: inventory!.product!.id!,
+      warehouseId: inventory?.warehouseId,
       zoneId: inventory?.zoneId,
+      quantity: inventory?.quantity,
+      packageValue: inventory?.packageValue,
     },
-    resolver: zodResolver(z.object(schemaFields)),
+    resolver: zodResolver(schemaFields),
   });
 
   const { mutate: updateInventory, isPending: isUpdating } =
     useUpdateInventory();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { data: zoneQuery = {} } = useAllZonesByShop();
+  const { data: zones = [] } = zoneQuery;
 
   const callbackSuccess = async (type: "create" | "update") => {
     toast({
       title: ToastTitle.success,
-      description: `${type === "create" ? "Tạo" : "Sửa"} hàng thành công`,
+      description: `${type === "create" ? "Tạo" : "Cập nhật"} kho hàng thành công!`,
     });
     onClose?.();
     queryClient.invalidateQueries({
@@ -72,13 +72,10 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
   const callbackFailed = (type: "create" | "update") => {
     toast({
       title: ToastTitle.error,
-      description: `${type === "create" ? "Tạo" : "Sửa"} hàng thất bại`,
+      description: `${type === "create" ? "Tạo" : "Cập nhật"} kho hàng thất bại!`,
     });
     onClose?.();
   };
-
-  const { data = {} } = useAllZonesByShop();
-  const { data: zones = [] } = data;
 
   const isPending = isUpdating;
 
@@ -87,25 +84,6 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
       form.reset(inventory);
     }
   }, [form, inventory]);
-
-  const groupZoneByWarehouseId = zones.reduce(
-    (acc, zone) => {
-      if (!acc[zone.warehouseId!]) {
-        acc[zone.warehouseId!] = {
-          warehouseId: zone.warehouseId!,
-          warehouseName: zone.warehouseName,
-          zones: [zone],
-        };
-      } else {
-        acc[zone.warehouseId!].zones.push(zone);
-      }
-      return acc;
-    },
-    {} as Record<
-      number,
-      { warehouseId: number; warehouseName?: string; zones: ZoneDTO[] }
-    >
-  );
 
   const handleSubmit = form.handleSubmit((data: InventoryUpdateDTO) => {
     if (inventory?.id) {
@@ -120,18 +98,27 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
           },
         }
       );
+    } else {
+      //   createInventory(data, {
+      //     onSuccess: () => {
+      //       callbackSuccess("create");
+      //     },
+      //     onError: () => {
+      //       callbackFailed("create");
+      //     },
+      //   });
     }
   });
 
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-2 mb-4">
+        <div className="grid grid-cols-2 gap-2 mb-4">
           <FormField
             control={form.control}
             name="productId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2">
                 <FormLabel>Sản phẩm</FormLabel>
                 <FormControl>
                   <ComboboxProducts
@@ -146,43 +133,15 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
           <FormField
             control={form.control}
             name="zoneId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Kho</FormLabel>
+            render={({ field: formField }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Khu vực</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value?.toString()}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn kho - khu trong kho" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(groupZoneByWarehouseId).map(
-                        ([key, value]) => {
-                          return (
-                            <SelectGroup key={key}>
-                              <SelectLabel>
-                                Tên Kho: {value.warehouseName}
-                              </SelectLabel>
-                              {value.zones.map((zone) => {
-                                const id = zone.id!.toString();
-                                return (
-                                  <SelectItem
-                                    key={id}
-                                    value={id}
-                                    className="ml-2"
-                                  >
-                                    {zone.name}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectGroup>
-                          );
-                        }
-                      )}
-                    </SelectContent>
-                  </Select>
+                  <SelectAvailableZones
+                    zones={zones}
+                    onChange={formField.onChange}
+                    value={formField.value}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -195,13 +154,28 @@ const InventoryForm = ({ inventory, onClose }: Props) => {
               <FormItem>
                 <FormLabel>Số lượng</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Số lượng" {...field} />
+                  <Input type="number" placeholder="Ví dụ: 10" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <DialogFooter className="mt-2">
+          <FormField
+            control={form.control}
+            name="packageValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <PackagingTooltip />
+                </FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="Ví dụ: 10" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <DialogFooter className="mt-2 col-span-2">
             <Button type="submit" disabled={isPending}>
               Lưu
             </Button>

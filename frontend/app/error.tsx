@@ -7,11 +7,13 @@ import { redirect } from "next/navigation";
 export default function ErrorPage({ error }: { error: Error }) {
   console.log("error", error);
   const queryClient = useQueryClient();
-  queryClient.clear();
-  globalStore.set(authAtom, {
-    token: "",
-    user: undefined,
-    showToastErrorSignIn: true,
-  });
-  redirect("/auth/sign-in");
+  if (process.env.NODE_ENV === "production") {
+    queryClient.clear();
+    globalStore.set(authAtom, {
+      token: "",
+      user: undefined,
+      showToastErrorSignIn: true,
+    });
+    redirect("/auth/sign-in");
+  }
 }

@@ -15,7 +15,8 @@ const CategoriesPage = async () => {
       <div className="px-4">
         <h1 className="text-3xl font-bold mt-2">Quản lý danh mục</h1>
         <p className="text-sm  text-neutral-400 my-1">
-          Thay đổi thông tin của danh mục ở đây
+          Danh mục giúp bạn phân loại sản phẩm của mình theo các nhóm khác nhau.
+          Bạn có thể thêm, sửa đổi hoặc xóa danh mục tại đây
         </p>
         <Categories />
       </div>

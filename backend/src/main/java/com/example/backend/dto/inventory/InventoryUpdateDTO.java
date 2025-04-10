@@ -14,4 +14,5 @@ public class InventoryUpdateDTO {
     private Long productId;
     private Long zoneId;
     private Integer quantity;
+    private Integer packageValue;
 }

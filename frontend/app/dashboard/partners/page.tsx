@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 const PartnersPage = async () => {
   const query = await getMe();
   const user = query?.data?.data;
-  const { isAdmin, isOwner, isStaff } = checkRole(user);
+  const { isOwner, isStaff } = checkRole(user);
 
   if (isStaff) {
     redirect("/dashboard");
@@ -19,22 +19,16 @@ const PartnersPage = async () => {
     return <CreateShopView />;
   }
 
-  const getQuery = () => {
-    if (isAdmin) {
-      return ApiQuery.users.getUsers({ page: 0, search: "" });
-    }
-    if (isOwner) {
-      return ApiQuery.partners.getPartners({ page: 0, search: "" });
-    }
-    return null;
-  };
-
   return (
-    <HydrationPrefetchQuery query={getQuery()} awaitQuery>
+    <HydrationPrefetchQuery
+      queries={[ApiQuery.partners.getPartners({ page: 0 })]}
+      awaitQuery
+    >
       <div className="px-4">
-        <h1 className="text-3xl font-bold mt-2">Partners management</h1>
+        <h1 className="text-3xl font-bold mt-2">Quản lý đối tác</h1>
         <p className="text-sm  text-muted-foreground my-1">
-          Manage partners and their information here.
+          Đối tác, khách hàng là nhà cung cấp hoặc người tiêu dùng của bạn. Bạn
+          có thể thêm, sửa đổi hoặc xóa đối tác tại đây.
         </p>
         <AdminPartnersView />
       </div>

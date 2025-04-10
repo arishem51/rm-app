@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "partners")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Partner implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String name;
 
     @Column(name = "contact_name", nullable = false, columnDefinition = "NVARCHAR(255)")
@@ -30,7 +30,8 @@ public class Partner implements Serializable {
     private String phone;
 
     @Column()
-    private Double totalDebtAmount;
+    @Builder.Default
+    private Double totalDebtAmount = (double) 0;
 
     @Column()
     private String email;

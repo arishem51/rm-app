@@ -7,7 +7,6 @@ import {
   Home,
   LucideIcon,
   ShoppingBag,
-  Store,
   TagIcon,
   User2,
   Users,
@@ -34,6 +33,7 @@ import { AppRoutes } from "@/lib/constants";
 import { checkRole } from "@/lib/helpers";
 import { useMe } from "@/hooks/mutations/user";
 import { ShoppingBasket } from "lucide-react";
+import { usePathname } from "next/navigation";
 type Item = {
   title: string;
   url?: string;
@@ -82,37 +82,12 @@ const Content = () => {
   };
 
   if (isAdmin) {
-    itemGroups.application.items.push(
-      {
-        title: "Tài khoản",
-        icon: Users,
-        url: AppRoutes.dashboard.users.url,
-        children: [],
-      },
-      {
-        title: "Cửa hàng",
-        url: AppRoutes.dashboard.shops.url,
-        icon: Store,
-      },
-      {
-        title: "Danh mục",
-        url: AppRoutes.dashboard.categories.url,
-        icon: TagIcon,
-      },
-      {
-        title: "Sản phẩm",
-        url: AppRoutes.dashboard.products.index.url,
-        icon: Box,
-      },
-      //   ssssssssssssssssssssssssssssssssssssssssssssssssss
-      {
-        title: "Đối tác",
-        url: "/dashboard/suppliers",
-        // url: AppRoutes.dashboard.products.index.url,
-        icon: Briefcase,
-      }
-      //   ssssssssssssssssssssssssssssssssssssssssssssssssss
-    );
+    itemGroups.application.items.push({
+      title: "Tài khoản",
+      icon: Users,
+      url: AppRoutes.dashboard.users.url,
+      children: [],
+    });
   }
 
   if (user?.shopId && isOwner) {
@@ -126,6 +101,11 @@ const Content = () => {
         title: "Sản phẩm",
         url: AppRoutes.dashboard.products.index.url,
         icon: Box,
+      },
+      {
+        title: "Danh mục",
+        url: AppRoutes.dashboard.categories.url,
+        icon: TagIcon,
       },
       {
         title: "Nhập/Xuất",
@@ -157,7 +137,7 @@ const Content = () => {
       },
       {
         title: "Đối tác",
-        url: AppRoutes.dashboard.partners.url,
+        url: AppRoutes.dashboard.partners.index.url,
         icon: Briefcase,
       }
     );
@@ -169,25 +149,43 @@ const Content = () => {
   }
 
   if (user?.shopId && isStaff) {
-    itemGroups.shop.items.push({
-      title: "Đơn hàng",
-      icon: ShoppingBasket,
-      children: [
-        {
-          title: "Phiếu nhập",
-          url: AppRoutes.dashboard.receipts.index.url,
-        },
-        {
-          title: "Đơn hàng",
-          url: AppRoutes.dashboard.orders.index.url,
-        },
-      ],
-    });
+    itemGroups.shop.items.push(
+      {
+        title: "Đơn hàng",
+        icon: ShoppingBasket,
+        children: [
+          {
+            title: "Phiếu nhập",
+            url: AppRoutes.dashboard.receipts.index.url,
+          },
+          {
+            title: "Đơn hàng",
+            url: AppRoutes.dashboard.orders.index.url,
+          },
+        ],
+      },
+      {
+        title: "Kho hàng",
+        icon: Warehouse,
+        children: [
+          {
+            title: "Kho",
+            url: AppRoutes.dashboard.warehouses.facilities.index.url,
+          },
+          {
+            title: "Hàng hóa",
+            url: AppRoutes.dashboard.warehouses.inventories.index.url,
+          },
+        ],
+      }
+    );
   }
 
   const groups = Object.keys(itemGroups).map(
     (key) => itemGroups[key as keyof typeof itemGroups]
   );
+
+  const pathname = usePathname();
 
   return (
     <SidebarContent>
@@ -205,7 +203,14 @@ const Content = () => {
                   if (item.url) {
                     return (
                       <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={
+                            pathname === item.url ||
+                            (item.url !== "/dashboard" &&
+                              pathname.includes(item.url))
+                          }
+                        >
                           <Link href={item.url} prefetch>
                             {item.icon && <item.icon />}
                             <span>{item.title}</span>
@@ -231,7 +236,13 @@ const Content = () => {
                               return (
                                 <SidebarMenuSub key={child.title}>
                                   <SidebarMenuSubItem>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuButton
+                                      asChild
+                                      isActive={
+                                        item.url !== "/dashboard" &&
+                                        pathname.includes(child.url as string)
+                                      }
+                                    >
                                       <Link href={child.url as string} prefetch>
                                         <span>{child.title}</span>
                                       </Link>

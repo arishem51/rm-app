@@ -1,16 +1,13 @@
 package com.example.backend.services;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import com.example.backend.dto.zone.ZoneRequestDTO;
 import com.example.backend.entities.Shop;
 import com.example.backend.entities.User;
 import com.example.backend.entities.Warehouse;
 import com.example.backend.entities.Zone;
 import com.example.backend.repositories.ZoneRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,7 +20,7 @@ public class ZoneService {
     public List<Zone> findAllZonesByShopId(User currentUser) {
         Shop shop = shopService.getShopById(currentUser.getShop().getId());
         if (shop == null) {
-            throw new IllegalArgumentException("You must have a shop to manage zones!");
+            throw new IllegalArgumentException("Bạn phải có cửa hàng để thực hiện chức năng này.");
         }
         return zoneRepository.findByWarehouse_ShopId(shop.getId());
     }
@@ -44,10 +41,12 @@ public class ZoneService {
         Warehouse warehouse = warehouseService.findWarehouseByIdAndShopId(dto.getWarehouseId(),
                 currentUser);
         Zone zone = zoneRepository.findByIdAndWarehouse_ShopId(id, warehouse.getShop().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Zone not found!"));
-        if (zone == null) {
-            throw new IllegalArgumentException("Zone not found.");
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khu vực."));
+
+        if (zone.getInventory() != null) {
+            throw new IllegalArgumentException("Không thể cập nhật khu vực đã có hàng tồn kho.");
         }
+
         if (dto.getName() != null) {
             zone.setName(dto.getName());
         }

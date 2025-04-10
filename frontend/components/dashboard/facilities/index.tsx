@@ -27,6 +27,8 @@ import FacilityForm from "./facility-form";
 import { format } from "date-fns";
 import Link from "next/link";
 import FacilityHeader from "./facility-header";
+import { useMe } from "@/hooks/mutations/user";
+import { checkRole } from "@/lib/helpers";
 
 export type FacilityFilterSearchType = {
   search: string;
@@ -37,6 +39,8 @@ export type FacilityFilterSearchType = {
 };
 
 const Facilities = () => {
+  const { data: currentUser } = useMe();
+  const { isOwner } = checkRole(currentUser);
   const [filter, setFilter] = useState<
     { page: number } & FacilityFilterSearchType
   >({
@@ -72,15 +76,17 @@ const Facilities = () => {
         filter={filter}
         onFilter={(items) => setFilter({ page: 0, ...items })}
       >
-        <Button
-          onClick={() => {
-            setUpdateWarehouse({} as WarehouseDTO);
-          }}
-          className="self-end"
-        >
-          <Plus />
-          Tạo kho
-        </Button>
+        {isOwner && (
+          <Button
+            onClick={() => {
+              setUpdateWarehouse({} as WarehouseDTO);
+            }}
+            className="self-end"
+          >
+            <Plus />
+            Tạo kho
+          </Button>
+        )}
       </FacilityHeader>
       <Dialog
         open={!!updateWarehouse}
@@ -115,7 +121,9 @@ const Facilities = () => {
               <TableHead>Địa chỉ</TableHead>
               <TableHead>Số lượng khu vực trong kho</TableHead>
               <TableHead>Thời điểm tạo</TableHead>
-              <TableHead className="text-right">Hành động</TableHead>
+              {isOwner && (
+                <TableHead className="text-right">Hành động</TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -128,16 +136,18 @@ const Facilities = () => {
                 <TableCell>
                   {format(warehouse.createdAt!, "yyyy-MM-dd hh:mm")}
                 </TableCell>
-                <TableCell className="text-right">
-                  <Link
-                    prefetch
-                    href={`/dashboard/warehouses/facilities/${warehouse.id}`}
-                  >
-                    <Button size="icon" variant="outline" className="w-6 h-6">
-                      <ArrowUpRight />
-                    </Button>
-                  </Link>
-                </TableCell>
+                {isOwner && (
+                  <TableCell className="text-right">
+                    <Link
+                      prefetch
+                      href={`/dashboard/warehouses/facilities/${warehouse.id}`}
+                    >
+                      <Button size="icon" variant="outline" className="w-6 h-6">
+                        <ArrowUpRight />
+                      </Button>
+                    </Link>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

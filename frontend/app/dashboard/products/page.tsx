@@ -11,7 +11,9 @@ const Page = () => {
       <div className="px-4 pb-8">
         <h1 className="text-3xl font-bold mt-2">Quản lý sản phẩm</h1>
         <p className="text-sm text-neutral-400 my-1">
-          Quản lý sản phẩm và thay đổi thông tin sản phẩm ở đây
+          Sản phẩm chứa thông tin về sản phẩm của bạn, bao gồm tên, giá niêm
+          yết, danh mục và nhà cung cấp. Bạn có thể thêm, sửa đổi hoặc xóa sản
+          phẩm tại đây.
         </p>
         <Products />
       </div>

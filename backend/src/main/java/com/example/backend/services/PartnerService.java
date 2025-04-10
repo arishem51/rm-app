@@ -30,17 +30,17 @@ public class PartnerService {
         if (UserRoleUtils.isAdmin(currentUser)) {
             return search.isEmpty()
 
-                    ? partnerRepository.findAll(pageable).map(PartnerRepsponseDTO::fromEntity)
+                    ? partnerRepository.findAll(pageable).map(PartnerResponseDTO::fromEntity)
                     : partnerRepository.findByNameContainingIgnoreCase(search, pageable)
-                            .map(PartnerRepsponseDTO::fromEntity);
+                            .map(PartnerResponseDTO::fromEntity);
         } else {
             return search.isEmpty()
                     ? partnerRepository.findByShopId(currentUser.getShop().getId(), pageable)
-                            .map(PartnerRepsponseDTO::fromEntity)
+                            .map(PartnerResponseDTO::fromEntity)
                     : partnerRepository.findByShopIdAndNameContainingIgnoreCase(
                             currentUser.getShop().getId(),
                             search,
-                            pageable).map(PartnerRepsponseDTO::fromEntity);
+                            pageable).map(PartnerResponseDTO::fromEntity);
 
         }
     }
@@ -49,7 +49,7 @@ public class PartnerService {
         if (UserRoleUtils.isAdmin(currentUser)) {
             return partnerRepository.findAll();
         }
-        if (!UserRoleUtils.isOwner(currentUser) || currentUser.getShop() == null) {
+        if (currentUser.getShop() == null) {
             throw new IllegalArgumentException("Unauthorized access");
         }
         return partnerRepository.findByShopId(currentUser.getShop().getId());
@@ -100,7 +100,7 @@ public class PartnerService {
     }
 
     public Partner update(Long id, PartnerUpdateDTO partnerDto, @CurrentUser User currentUser) {
-        if (!UserRoleUtils.isAdmin(currentUser) || !UserRoleUtils.isOwner(currentUser)) {
+        if (!UserRoleUtils.isOwner(currentUser)) {
             throw new IllegalArgumentException("You are not authorized to perform this action");
         }
         Partner partner = partnerRepository.findById(id)

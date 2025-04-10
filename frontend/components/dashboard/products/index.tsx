@@ -11,30 +11,35 @@ import {
 } from "@/components/ui/table";
 import useAppQuery from "@/hooks/use-app-query";
 import { ApiQuery } from "@/services/query";
-import { ArrowUpRight, Plus } from "lucide-react";
+import { ArrowUpRight, Check, Plus, X } from "lucide-react";
 import { Fragment, useState } from "react";
 import EmptyState from "../empty-state";
-import HeaderListSearch from "../search/header-list-search";
 import { useMe } from "@/hooks/mutations/user";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { createSttNumber, toCurrency } from "@/lib/utils";
+import { cn, createSttNumber, toCurrency } from "@/lib/utils";
 import ListPagination from "../pagination";
 import Image from "next/image";
 import defaultPic from "../../../public/images/default-product.png";
 import { checkRole } from "@/lib/helpers";
+import ProductHeader from "./product-header";
+
+export type FilterSearchType = {
+  search: string;
+  categoryId?: number;
+};
 
 const Products = () => {
-  const [filter, setFilter] = useState({ page: 0, search: "" });
+  const [filter, setFilter] = useState<{ page: number } & FilterSearchType>({
+    page: 0,
+    search: "",
+  });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.products.getProducts(filter)
   );
   const { data: currentUser } = useMe();
 
   const { isAdmin, isOwner } = checkRole(currentUser);
-  const handleSearch = (search: string) => {
-    setFilter({ page: 0, search });
-  };
   const handleNavigatePage = (page: number) => {
     setFilter((prev) => ({ page: prev.page + page, search: prev.search }));
   };
@@ -49,12 +54,23 @@ const Products = () => {
   return (
     <Fragment>
       <div className="flex justify-between">
-        <HeaderListSearch
-          filterSearch={filter.search}
-          onSearch={handleSearch}
+        <ProductHeader
+          filter={filter}
+          onFilter={(filter) =>
+            setFilter({
+              ...filter,
+              page: 0,
+              search: filter.search,
+              categoryId: +filter.categoryId || undefined,
+            })
+          }
         />
         {isOwner && (
-          <Link href="/dashboard/products/create" prefetch>
+          <Link
+            href="/dashboard/products/create"
+            prefetch
+            className="mb-2 self-end"
+          >
             <Button>
               <Plus />
               Tạo sản phẩm
@@ -69,9 +85,10 @@ const Products = () => {
               <TableHead>STT</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Ảnh</TableHead>
-              <TableHead>Giá</TableHead>
+              <TableHead>Giá niêm yết</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead>Nhà cung cấp</TableHead>
+              <TableHead>Tồn kho</TableHead>
               {isAdmin && <TableHead>Cửa hàng</TableHead>}
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
@@ -105,6 +122,22 @@ const Products = () => {
                   >
                     {product.supplier?.name || "Không tồn tại"}
                   </Badge>
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={cn(
+                      "h-4 w-4",
+                      (product.inventoryIds?.length ?? 0) > 0
+                        ? "text-green-500"
+                        : "text-red-500"
+                    )}
+                  >
+                    {(product.inventoryIds?.length ?? 0) > 0 ? (
+                      <Check />
+                    ) : (
+                      <X />
+                    )}
+                  </span>
                 </TableCell>
                 {isAdmin && <TableCell>{product.shopName}</TableCell>}
                 <TableCell className="text-right">

@@ -4,7 +4,7 @@ import { UserDTO } from "@/types/Api";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import UnSupportRole from "../un-suppport/un-support-role";
-import { AppRoutes, UserRole } from "@/lib/constants";
+import { AppRoutes } from "@/lib/constants";
 import { AppRoutesType, RouteItem, UserRoleType } from "@/types";
 
 type Props = {
@@ -17,8 +17,14 @@ const ProtectedRole = ({ children, user }: Props) => {
 
   const checkUrlAndPathname = (url: string) => {
     if (url.includes("[") && url.includes("]")) {
-      url = url.substring(0, url.lastIndexOf("/"));
-      return url === pathname.substring(0, pathname.lastIndexOf("/"));
+      const splitUrl = url.split("/");
+      const splitPathname = pathname.split("/");
+      const lastIndexHaveDynamicSegment = splitUrl.findLastIndex((item) =>
+        item.startsWith("[")
+      );
+      splitUrl[lastIndexHaveDynamicSegment] =
+        splitPathname[lastIndexHaveDynamicSegment];
+      return splitUrl.join("/") === splitPathname.join("/");
     }
     return url === pathname;
   };
@@ -48,7 +54,7 @@ const ProtectedRole = ({ children, user }: Props) => {
   };
   const isSupport = checkSupportRole();
 
-  if (user.role !== UserRole.ADMIN && !isSupport) {
+  if (!isSupport) {
     return <UnSupportRole />;
   }
 

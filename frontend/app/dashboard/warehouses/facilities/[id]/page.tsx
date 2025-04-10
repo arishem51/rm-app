@@ -19,6 +19,7 @@ export default async function Page({
       queries={[
         ApiQuery.warehouses.getDetails(id),
         ApiQuery.zones.getAllByWarehouse(id),
+        ApiQuery.zones.getAllByShop(),
       ]}
       awaitQuery
     >

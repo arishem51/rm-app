@@ -16,4 +16,5 @@ public class StatisticsOverviewResponse {
     private int totalProduct;
     private int totalRevenue;
     private int totalDebt;
+    private int totalOrders;
 }

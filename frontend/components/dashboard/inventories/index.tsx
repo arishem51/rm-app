@@ -16,8 +16,16 @@ import HeaderListSearch from "../search/header-list-search";
 import Link from "next/link";
 import ListPagination from "../pagination";
 import { toCurrency } from "@/lib/utils";
+import { useMe } from "@/hooks/mutations/user";
+import { checkRole } from "@/lib/helpers";
+import PackagingTooltip from "./packaging-tooltip";
+import ProductTooltip from "../products/product-tooltip";
+import { Button } from "@/components/ui/button";
+import { Edit } from "lucide-react";
 
 const Inventories = () => {
+  const { data: currentUser } = useMe();
+  const { isStaff } = checkRole(currentUser);
   const [filter, setFilter] = useState({ page: 0, search: "" });
   const { data: { data } = {} } = useAppQuery(
     ApiQuery.inventories.getInventories(filter)
@@ -50,11 +58,17 @@ const Inventories = () => {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Sản phẩm</TableHead>
-              <TableHead>Giá</TableHead>
-              <TableHead>Số lượng</TableHead>
+              <TableHead>
+                <ProductTooltip />
+              </TableHead>
+              <TableHead>Giá niêm yết</TableHead>
+              <TableHead>Số lượng bao</TableHead>
+              <TableHead>
+                <PackagingTooltip />
+              </TableHead>
               <TableHead>Tên kho</TableHead>
               <TableHead>Khu vực trong kho</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -62,18 +76,30 @@ const Inventories = () => {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell>
                 <TableCell>
-                  <Link
-                    prefetch
-                    href={`/dashboard/products/${item.product?.id}`}
-                    className="hover:underline"
-                  >
-                    {item.product?.name}
-                  </Link>
+                  {isStaff ? (
+                    item.product?.name
+                  ) : (
+                    <Link
+                      prefetch
+                      href={`/dashboard/products/${item.product?.id}`}
+                      className="hover:underline"
+                    >
+                      {item.product?.name}
+                    </Link>
+                  )}
                 </TableCell>
                 <TableCell>{toCurrency(+(item.product?.price || 0))}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
+                <TableCell>{item.packageValue} kg/bao</TableCell>
                 <TableCell>{item.warehouseName}</TableCell>
                 <TableCell>{item.zoneName}</TableCell>
+                <TableCell className="text-right">
+                  <Link href={`/dashboard/warehouses/inventories/${item!.id!}`}>
+                    <Button variant="outline" className="w-6 h-6" size="icon">
+                      <Edit />
+                    </Button>
+                  </Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

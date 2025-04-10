@@ -4,7 +4,6 @@ import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.order.CreateOrderDTO;
 import com.example.backend.dto.order.OrderResponseDTO;
-import com.example.backend.dto.order.UpdateOrderDTO;
 import com.example.backend.entities.Order;
 import com.example.backend.entities.User;
 import com.example.backend.services.OrderService;

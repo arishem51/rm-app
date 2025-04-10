@@ -18,11 +18,11 @@ public class ResponseProductDTO {
     private String description;
     private Category category;
     private Partner supplier;
-
     private Long shopId;
     private String shopName;
     private BigDecimal price;
     private List<String> imageUrls;
+    private List<Long> inventoryIds;
 
     public static ResponseProductDTO fromEntity(Product product) {
         return ResponseProductDTO.builder()
@@ -35,6 +35,9 @@ public class ResponseProductDTO {
                 .shopId(product.getShop().getId())
                 .shopName(product.getShop().getName())
                 .imageUrls(product.getImageUrls())
+                .inventoryIds(product.getInventories().stream()
+                        .map(inventory -> inventory.getId())
+                        .toList())
                 .build();
     }
 

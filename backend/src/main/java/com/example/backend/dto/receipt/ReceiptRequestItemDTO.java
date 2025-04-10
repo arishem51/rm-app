@@ -15,11 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ReceiptRequestItemDTO {
-
     private Long productId;
-    @Min(value = 1, message = "Quantity must be greater than zero")
+    @Min(value = 1, message = "Số lượng phải lớn hơn 0")
     private Integer quantity;
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
+    @Min(value = 1, message = "Quy cách phải lớn hơn 0")
+    private Integer packageValue;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Giá trị phải lớn hơn 0")
     private BigDecimal price;
     private Long zoneId;
 }
