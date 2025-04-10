@@ -210,6 +210,7 @@ export interface Partner {
   website?: string;
   description?: string;
   canHaveDebt?: boolean;
+  totalDebtAmount?: number;
   shop?: Shop;
   /** @format date-time */
   createdAt?: string;
@@ -376,45 +377,29 @@ export interface BaseResponseDebtNoteResponseDTO {
 }
 
 export interface DebtNoteResponseDTO {
-  /** @format int64 */
-  id?: number;
-  /** @format int64 */
-  partnerId?: number;
-  partnerName?: string;
-  partnerPhone?: string;
-  /** @format double */
-  amount?: number;
-  /** @format double */
-  paidAmount?: number;
-  /** @format date */
-  dueDate?: string;
-  /** @format date-time */
-  createdAt?: string;
-  status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
-  source?: string;
-  /** @format int64 */
-  orderId?: number;
-  /** @format double */
-  orderAmount?: number;
-  description?: string;
-  attachments?: string[];
-  notes?: string;
-  payments?: DebtPaymentResponseDTO[];
+  id: number;
+  partnerId: number;
+  totalAmount: number;
+  createdAt: string;
+  status: 'PENDING' | 'PAID' | 'PARTIALLY_PAID' | 'OVERDUE';
+  source: string;
+  description: string;
+  orderId: number | undefined;
 }
 
-export interface DebtPaymentResponseDTO {
-  /** @format int64 */
-  id?: number;
-  /** @format double */
-  amount?: number;
-  /** @format date */
-  paymentDate?: string;
-  paymentMethod?: string;
-  receiptNumber?: string;
-  notes?: string;
-  /** @format date-time */
-  createdAt?: string;
+export interface DebtDetailResponseDTO {
+  id: number;
+  orderId: number;
+  orderAmount: number;
+  dueDate: string;
+  createdAt: string;
+  paidAmount: number;
+  description: string;
+  status: 'PENDING' | 'PAID' | 'PARTIALLY_PAID' | 'OVERDUE';
+  notes: string;
+  debtNoteId: number;
 }
+
 
 export interface UpdateCategoryDTO {
   name?: string;
@@ -615,17 +600,6 @@ export interface CreateDebtPaymentDTO {
   notes?: string;
 }
 
-export interface BaseResponseDebtPaymentResponseDTO {
-  data?: DebtPaymentResponseDTO;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
 
 export interface CreateCategoryDTO {
   name?: string;
@@ -984,6 +958,7 @@ export interface PartnerRepsponseDTO {
   address?: string;
   canHaveDept?: boolean;
   website?: string;
+  totalDebtAmount: number;
   description?: string;
   /** @format int64 */
   shopId?: number;
@@ -1182,17 +1157,6 @@ export interface BaseResponseListDebtNoteResponseDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface BaseResponseListDebtPaymentResponseDTO {
-  data?: DebtPaymentResponseDTO[];
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
-}
 
 export interface BaseResponseDebtStatisticsDTO {
   data?: DebtStatisticsDTO;
@@ -2068,21 +2032,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
 
-    /**
-     * No description
-     *
-     * @tags debt-controller
-     * @name GetDebtPayments
-     * @request GET:/api/debts/{id}/payments
-     * @secure
-     */
-    getDebtPayments: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseListDebtPaymentResponseDTO, any>({
-        path: `/api/debts/${id}/payments`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
+
 
     /**
      * No description
@@ -2092,15 +2042,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/debts/{id}/payments
      * @secure
      */
-    createDebtPayment: (id: number, data: CreateDebtPaymentDTO, params: RequestParams = {}) =>
-      this.request<BaseResponseDebtPaymentResponseDTO, any>({
-        path: `/api/debts/${id}/payments`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
+
 
     /**
      * @description Create a new category under a specific shop.

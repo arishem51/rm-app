@@ -1,26 +1,22 @@
-package com.example.backend.dto.debt;
+package com.example.backend.dto.debtdetail;
 
 import com.example.backend.enums.DebtStatus;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DebtNoteResponseDTO implements Serializable {
-
+public class DebtDetailResponseDTO {
     private Long id;
-    private Long partnerId;
-    private Double totalAmount;
     private LocalDateTime createdAt;
-    private DebtStatus status;
-    private String source;
+    private Boolean isPlus;
+    private Double amount;
     private String description;
-
+    private Long partnerId;
 }
+

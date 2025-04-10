@@ -6,7 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { ToastTitle } from "@/lib/constants";
 import { ApiQuery } from "@/services/query";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const PartnerCreate = () => {
   const { mutate } = useCreatePartner();

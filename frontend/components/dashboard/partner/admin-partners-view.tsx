@@ -9,19 +9,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ApiQuery } from "@/services/query";
-import { Fragment, useState } from "react";
+import React, { Fragment, useCallback, useState } from "react";
 import useAppQuery from "@/hooks/use-app-query";
 import EmptyState from "../empty-state";
-import { Plus, UserPen } from "lucide-react";
+import { UserPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeaderListSearch from "../search/header-list-search";
 import UserPagination from "../../dashboard/pagination";
-import Link from "next/link";
-import { createSttNumber } from "@/lib/utils";
+import DebtDetailsDialog from "@/components/dashboard/partner/debt-details-dialog";
+import CreateDebtDetailDialog from "@/components/dashboard/partner/create-debt-detail-dialog";
+import { DialogTrigger } from "@/components/ui/dialog";
 
 const AdminPartnersView = () => {
-  const [filter, setFilter] = useState({ page: 0 });
-  const { data } = useAppQuery(ApiQuery.partners.getPartners(filter));
+  const createFilterValue = useCallback(
+    (page: number, search: string) => ({
+      page,
+      pageSize: 10,
+      search,
+    }),
+    []
+  );
+  const [filter, setFilter] = useState(createFilterValue(0, ""));
+
+  const { data, refetch } = useAppQuery(ApiQuery.partners.getPartners(filter));
 
   const pageData = data?.data;
   const partners = pageData?.data || [];
@@ -39,54 +49,71 @@ const AdminPartnersView = () => {
       page: isRight ? (pageData?.totalPages ?? 0) - 1 : 0,
     }));
   };
+  function formatCurrency(amount: number): string {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    }).format(amount);
+  }
 
   const handleSearch = () => {};
 
   return (
     <Fragment>
-      <div className="flex justify-between items-center">
-        <HeaderListSearch filterSearch="" onSearch={handleSearch} />
-        <Button asChild>
-          <Link href="/dashboard/partners/create">
-            <Plus className="mr-1" />
-            <span>Tạo đối tác</span>
-          </Link>
-        </Button>
-      </div>
+      <HeaderListSearch filterSearch={filter.search} onSearch={handleSearch} />
       {(partners.length || 0) > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>STT</TableHead>
-              <TableHead>Tên</TableHead>
-              <TableHead>Tên người đại diện</TableHead>
-              <TableHead>Số điện thoại</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Contact name</TableHead>
+              <TableHead>Phone</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Địa chỉ</TableHead>
-              <TableHead className="text-right">Hành Động</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Total Debt Amount</TableHead>
+              <TableHead>Website</TableHead>
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {partners.map((partner, index) => {
+            {partners.map((partner) => {
               return (
                 <TableRow key={partner.id}>
-                  <TableCell>{createSttNumber(index, filter.page)}</TableCell>
                   <TableCell>{partner.name}</TableCell>
                   <TableCell>{partner.contactName}</TableCell>
                   <TableCell>{partner.phone}</TableCell>
                   <TableCell>{partner.email}</TableCell>
                   <TableCell>{partner.address}</TableCell>
+                  <TableCell>{partner.description}</TableCell>
+                  <TableCell>
+                    {formatCurrency(partner.totalDebtAmount)}
+                  </TableCell>
+                  <TableCell>{partner.website}</TableCell>
                   <TableCell className="flex justify-end w-full">
                     <Button
                       size="icon"
                       className="w-6 h-6"
                       variant="outline"
-                      asChild
+                      onClick={() => {}}
                     >
-                      <Link href={`/dashboard/partners/${partner.id}`}>
-                        <UserPen />
-                      </Link>
+                      <UserPen />
                     </Button>
+                    <DebtDetailsDialog
+                      partner={partner}
+                      onDebtUpdated={refetch}
+                    >
+                      <Button variant="secondary" size="sm">
+                        View Debt
+                      </Button>
+                    </DebtDetailsDialog>
+
+                    <CreateDebtDetailDialog partnerId={partner.id!}>
+                      <Button variant="outline" size="sm" className="ml-2">
+                        Create Debt
+                      </Button>
+                    </CreateDebtDetailDialog>
                   </TableCell>
                 </TableRow>
               );

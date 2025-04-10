@@ -1,7 +1,10 @@
 package com.example.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Setter
@@ -11,7 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "partners")
-public class Partner {
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+public class Partner implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -24,6 +28,10 @@ public class Partner {
 
     @Column(nullable = false)
     private String phone;
+
+    @Column()
+    @Builder.Default
+    private Double totalDebtAmount = (double) 0;
 
     @Column()
     private String email;

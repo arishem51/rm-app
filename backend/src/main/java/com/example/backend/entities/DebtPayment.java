@@ -27,7 +27,7 @@ public class DebtPayment {
     private LocalDate paymentDate;
     private String paymentMethod;
     private String receiptNumber;
-    private String notes;
+
     private LocalDateTime createdAt;
 
     @PrePersist

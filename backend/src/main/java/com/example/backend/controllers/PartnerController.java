@@ -4,7 +4,7 @@ import com.example.backend.config.CurrentUser;
 import com.example.backend.dto.BaseResponse;
 import com.example.backend.dto.PaginateResponse;
 import com.example.backend.dto.partner.PartnerCreateDTO;
-import com.example.backend.dto.partner.PartnerRepsponseDTO;
+import com.example.backend.dto.partner.PartnerResponseDTO;
 import com.example.backend.dto.partner.PartnerUpdateDTO;
 import com.example.backend.entities.Partner;
 import com.example.backend.entities.User;
@@ -31,14 +31,14 @@ public class PartnerController {
     private final PartnerService partnerService;
 
     @GetMapping
-    public ResponseEntity<BaseResponse<PaginateResponse<PartnerRepsponseDTO>>> getPartners(
+    public ResponseEntity<BaseResponse<PaginateResponse<PartnerResponseDTO>>> getPartners(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "") String search,
             @CurrentUser User currentUser) {
         try {
-            Page<PartnerRepsponseDTO> partners = partnerService.findPartners(page, pageSize, search, currentUser);
-            PaginateResponse<PartnerRepsponseDTO> response = new PaginateResponse<>(partners);
+            Page<PartnerResponseDTO> partners = partnerService.findPartners(page, pageSize, search, currentUser);
+            PaginateResponse<PartnerResponseDTO> response = new PaginateResponse<>(partners);
             return ResponseEntity.ok(new BaseResponse<>(response, "Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
@@ -60,6 +60,20 @@ public class PartnerController {
     public ResponseEntity<BaseResponse<Partner>> getPartnerById(@PathVariable Long id, @CurrentUser User currentUser) {
         try {
             Partner partner = partnerService.getPartnerById(id, currentUser);
+            if (partner == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new BaseResponse<>(null, "Partner not found", ErrorCode.BAD_REQUEST));
+            }
+            return ResponseEntity.ok(new BaseResponse<>(partner, "Success!"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new BaseResponse<>(null, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<BaseResponse<PartnerResponseDTO>> getPartnerById(@PathVariable Long id) {
+        try {
+            PartnerResponseDTO partner = partnerService.getPartnerById(id);
             if (partner == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new BaseResponse<>(null, "Partner not found", ErrorCode.BAD_REQUEST));

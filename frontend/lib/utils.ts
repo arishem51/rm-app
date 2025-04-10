@@ -133,3 +133,58 @@ export const createSttNumber = (
 ) => {
   return page * pageSize + index + 1;
 };
+
+// utils/numberToWords.ts
+
+const units = ["", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+const teens = ["mười", "mười một", "mười hai", "mười ba", "mười bốn", "mười lăm", "mười sáu", "mười bảy", "mười tám", "mười chín"];
+const tens = ["", "", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi"];
+const thousands = ["", "nghìn", "triệu", "tỷ"];
+
+export function numberToVietnameseWords(num: number): string {
+  if (num === 0) return "không";
+  if (num < 0) return "âm " + numberToVietnameseWords(-num);
+
+  let words: string[] = [];
+  let parts: string[] = [];
+  let i = 0;
+
+  while (num > 0) {
+    const part = num % 1000;
+    if (part !== 0) {
+      parts.unshift(readThreeDigits(part) + " " + thousands[i]);
+    }
+    num = Math.floor(num / 1000);
+    i++;
+  }
+
+  return parts.join(" ").replace(/\s+/g, " ").trim();
+}
+
+function readThreeDigits(num: number): string {
+  const hundred = Math.floor(num / 100);
+  const tenUnit = num % 100;
+  const ten = Math.floor(tenUnit / 10);
+  const unit = tenUnit % 10;
+  let result = "";
+
+  if (hundred > 0) {
+    result += `${units[hundred]} trăm`;
+    if (tenUnit === 0) return result;
+    if (ten === 0) result += " linh";
+  }
+
+  if (ten === 1) {
+    result += ` ${teens[unit]}`;
+  } else if (ten > 1) {
+    result += ` ${tens[ten]}`;
+    if (unit === 1) result += " mốt";
+    else if (unit === 5) result += " lăm";
+    else if (unit > 0) result += ` ${units[unit]}`;
+  } else if (ten === 0 && unit > 0) {
+    result += ` ${units[unit]}`;
+  }
+
+  return result.trim();
+}
+
