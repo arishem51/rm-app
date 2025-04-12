@@ -35,9 +35,9 @@ public class ResponseProductDTO {
                 .shopId(product.getShop().getId())
                 .shopName(product.getShop().getName())
                 .imageUrls(product.getImageUrls())
-                .inventoryIds(product.getInventories().stream()
-                        .map(inventory -> inventory.getId())
-                        .toList())
+                .inventoryIds(product.getInventories() != null
+                        ? product.getInventories().stream().map(i -> i.getId()).toList()
+                        : List.of())
                 .build();
     }
 
