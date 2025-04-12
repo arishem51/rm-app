@@ -3,19 +3,14 @@ package com.example.backend.services;
 import com.example.backend.dto.debtdetail.CreateDebtDetailDTO;
 import com.example.backend.dto.debtdetail.DebtDetailResponseDTO;
 import com.example.backend.entities.DebtDetail;
-import com.example.backend.entities.DebtNote;
 import com.example.backend.entities.Partner;
-import com.example.backend.enums.DebtStatus;
 import com.example.backend.repositories.DebtDetailRepository;
-import com.example.backend.repositories.DebtNoteRepository;
 import com.example.backend.repositories.PartnerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,8 +47,7 @@ public class DebtDetailService {
                 debtDetail.getIsPlus(),
                 debtDetail.getAmount(),
                 debtDetail.getDescription(),
-                debtDetail.getPartnerId()
-        );
+                debtDetail.getPartnerId());
     }
 
     public DebtDetailResponseDTO createDebtDetail(CreateDebtDetailDTO request) {
@@ -90,4 +84,3 @@ public class DebtDetailService {
         return mapToDTO(debtDetail);
     }
 }
-

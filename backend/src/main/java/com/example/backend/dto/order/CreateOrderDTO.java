@@ -2,7 +2,6 @@ package com.example.backend.dto.order;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -20,4 +19,7 @@ public class CreateOrderDTO {
     private String partnerPhone;
     private BigDecimal amount;
     private List<OrderItemDTO> orderItems;
+
+    @Builder.Default
+    private boolean isDept = false;
 }

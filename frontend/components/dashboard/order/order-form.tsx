@@ -66,6 +66,7 @@ const OrderForm = ({ onClose, order }: Props) => {
       .string()
       .regex(/^[0-9]{10,12}$/, "Số điện thoại không hợp lệ"),
     amount: z.number().min(0, "Giá bán là bắt buộc"),
+    isDept: z.boolean().optional(),
     orderItems: z
       .array(
         z

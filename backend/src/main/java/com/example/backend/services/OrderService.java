@@ -36,6 +36,7 @@ public class OrderService {
         @Transactional
         public Order createOrder(CreateOrderDTO orderDTO, User user) {
                 List<Inventory> inventories = new ArrayList<>();
+
                 Partner partner = orderDTO.getPartnerId() != null ? partnerService.findById(orderDTO.getPartnerId())
                                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng!"))
                                 : partnerService.create(
@@ -45,6 +46,10 @@ public class OrderService {
                                                                 .phone(orderDTO.getPartnerPhone())
                                                                 .build(),
                                                 user);
+                if (orderDTO.isDept()) {
+                        Double oldDebt = partner.getTotalDebtAmount() == null ? 0.0 : partner.getTotalDebtAmount();
+                        partner.setTotalDebtAmount(oldDebt + orderDTO.getAmount().doubleValue());
+                }
                 Order order = Order.builder()
                                 .createdBy(user)
                                 .partner(

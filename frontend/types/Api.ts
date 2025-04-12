@@ -205,12 +205,13 @@ export interface Partner {
   name?: string;
   contactName?: string;
   phone?: string;
+  /** @format double */
+  totalDebtAmount?: number;
   email?: string;
   address?: string;
   website?: string;
   description?: string;
   canHaveDebt?: boolean;
-  totalDebtAmount?: number;
   shop?: Shop;
   /** @format date-time */
   createdAt?: string;
@@ -355,13 +356,12 @@ export interface UpdateDebtNoteDTO {
   /** @format int64 */
   partnerId?: number;
   /** @format double */
-  amount?: number;
-  /** @format date */
-  dueDate?: string;
-  status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
+  totalAmount?: number;
+  source?: string;
   description?: string;
-  attachments?: string[];
-  notes?: string;
+  /** @format int64 */
+  orderId?: number;
+  status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
 }
 
 export interface BaseResponseDebtNoteResponseDTO {
@@ -377,29 +377,18 @@ export interface BaseResponseDebtNoteResponseDTO {
 }
 
 export interface DebtNoteResponseDTO {
-  id: number;
-  partnerId: number;
-  totalAmount: number;
-  createdAt: string;
-  status: 'PENDING' | 'PAID' | 'PARTIALLY_PAID' | 'OVERDUE';
-  source: string;
-  description: string;
-  orderId: number | undefined;
+  /** @format int64 */
+  id?: number;
+  /** @format int64 */
+  partnerId?: number;
+  /** @format double */
+  totalAmount?: number;
+  /** @format date-time */
+  createdAt?: string;
+  status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
+  source?: string;
+  description?: string;
 }
-
-export interface DebtDetailResponseDTO {
-  id: number;
-  orderId: number;
-  orderAmount: number;
-  dueDate: string;
-  createdAt: string;
-  paidAmount: number;
-  description: string;
-  status: 'PENDING' | 'PAID' | 'PARTIALLY_PAID' | 'OVERDUE';
-  notes: string;
-  debtNoteId: number;
-}
-
 
 export interface UpdateCategoryDTO {
   name?: string;
@@ -523,6 +512,8 @@ export interface PartnerCreateDTO {
   website?: string;
   description?: string;
   canHaveDebt?: boolean;
+  /** @format double */
+  totalDebtAmount?: number;
 }
 
 export interface CreateOrderDTO {
@@ -533,6 +524,7 @@ export interface CreateOrderDTO {
   partnerPhone?: string;
   amount?: number;
   orderItems?: OrderItemDTO[];
+  dept?: boolean;
 }
 
 export interface OrderItemDTO {
@@ -579,27 +571,61 @@ export interface CreateDebtNoteDTO {
   /** @format int64 */
   partnerId?: number;
   /** @format double */
-  amount?: number;
-  /** @format date */
-  dueDate?: string;
+  totalAmount?: number;
   source?: string;
+  description?: string;
   /** @format int64 */
   orderId?: number;
-  description?: string;
-  attachments?: string[];
-  notes?: string;
+  status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
 }
 
-export interface CreateDebtPaymentDTO {
+export interface BaseResponseVoid {
+  data?: object;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface CreateDebtDetailDTO {
+  /** @format int64 */
+  partnerId?: number;
+  /** @format date-time */
+  createdAt?: string;
+  isPlus?: boolean;
   /** @format double */
   amount?: number;
-  /** @format date */
-  paymentDate?: string;
-  paymentMethod?: string;
-  receiptNumber?: string;
-  notes?: string;
+  description?: string;
 }
 
+export interface BaseResponseDebtDetailResponseDTO {
+  data?: DebtDetailResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
+}
+
+export interface DebtDetailResponseDTO {
+  /** @format int64 */
+  id?: number;
+  /** @format date-time */
+  createdAt?: string;
+  isPlus?: boolean;
+  /** @format double */
+  amount?: number;
+  description?: string;
+  /** @format int64 */
+  partnerId?: number;
+}
 
 export interface CreateCategoryDTO {
   name?: string;
@@ -662,18 +688,6 @@ export interface ResetPasswordRequest {
    */
   password: string;
   token: string;
-}
-
-export interface BaseResponseVoid {
-  data?: object;
-  message?: string;
-  errorCode?:
-    | "AUTH_MISSING"
-    | "TOKEN_EXPIRED"
-    | "TOKEN_INVALID"
-    | "ACCESS_DENIED"
-    | "BAD_REQUEST"
-    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface ForgotPasswordRequest {
@@ -924,8 +938,8 @@ export interface BaseResponseListResponseProductDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface BaseResponsePaginateResponsePartnerRepsponseDTO {
-  data?: PaginateResponsePartnerRepsponseDTO;
+export interface BaseResponsePaginateResponsePartnerResponseDTO {
+  data?: PaginateResponsePartnerResponseDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -936,7 +950,7 @@ export interface BaseResponsePaginateResponsePartnerRepsponseDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface PaginateResponsePartnerRepsponseDTO {
+export interface PaginateResponsePartnerResponseDTO {
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
@@ -945,10 +959,10 @@ export interface PaginateResponsePartnerRepsponseDTO {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
-  data?: PartnerRepsponseDTO[];
+  data?: PartnerResponseDTO[];
 }
 
-export interface PartnerRepsponseDTO {
+export interface PartnerResponseDTO {
   /** @format int64 */
   id?: number;
   name?: string;
@@ -958,13 +972,26 @@ export interface PartnerRepsponseDTO {
   address?: string;
   canHaveDept?: boolean;
   website?: string;
-  totalDebtAmount: number;
   description?: string;
   /** @format int64 */
   shopId?: number;
   shopName?: string;
   createdAt?: string;
   updatedAt?: string;
+  /** @format double */
+  totalDebtAmount?: number;
+}
+
+export interface BaseResponsePartnerResponseDTO {
+  data?: PartnerResponseDTO;
+  message?: string;
+  errorCode?:
+    | "AUTH_MISSING"
+    | "TOKEN_EXPIRED"
+    | "TOKEN_INVALID"
+    | "ACCESS_DENIED"
+    | "BAD_REQUEST"
+    | "INTERNAL_SERVER_ERROR";
 }
 
 export interface BaseResponseListPartner {
@@ -1037,16 +1064,16 @@ export interface PageOrder {
   totalElements?: number;
   /** @format int32 */
   totalPages?: number;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   /** @format int32 */
   size?: number;
   content?: Order[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  /** @format int32 */
-  numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
 }
@@ -1056,10 +1083,10 @@ export interface PageableObject {
   offset?: number;
   sort?: SortObject;
   /** @format int32 */
-  pageNumber?: number;
-  /** @format int32 */
   pageSize?: number;
   paged?: boolean;
+  /** @format int32 */
+  pageNumber?: number;
   unpaged?: boolean;
 }
 
@@ -1145,8 +1172,20 @@ export interface BaseResponseListInventoryResponseDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface BaseResponseListDebtNoteResponseDTO {
-  data?: DebtNoteResponseDTO[];
+export interface DebtNoteFilterDTO {
+  partnerName?: string;
+  /** @format double */
+  minTotalAmount?: number;
+  /** @format double */
+  maxTotalAmount?: number;
+  /** @format date-time */
+  fromDate?: string;
+  /** @format date-time */
+  toDate?: string;
+}
+
+export interface BaseResponseListDebtNoteWithPartnerDTO {
+  data?: DebtNoteWithPartnerDTO[];
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -1157,9 +1196,37 @@ export interface BaseResponseListDebtNoteResponseDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
+export interface DebtNoteWithPartnerDTO {
+  /** @format int64 */
+  id?: number;
+  /** @format double */
+  totalAmount?: number;
+  status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
+  source?: string;
+  description?: string;
+  partnerName?: string;
+  partnerAddress?: string;
+  partnerPhone?: string;
+  /** @format date-time */
+  createdAt?: string;
+}
 
-export interface BaseResponseDebtStatisticsDTO {
-  data?: DebtStatisticsDTO;
+export interface Pageable {
+  /**
+   * @format int32
+   * @min 0
+   */
+  page?: number;
+  /**
+   * @format int32
+   * @min 1
+   */
+  size?: number;
+  sort?: string[];
+}
+
+export interface BaseResponsePageDebtDetailResponseDTO {
+  data?: PageDebtDetailResponseDTO;
   message?: string;
   errorCode?:
     | "AUTH_MISSING"
@@ -1170,13 +1237,23 @@ export interface BaseResponseDebtStatisticsDTO {
     | "INTERNAL_SERVER_ERROR";
 }
 
-export interface DebtStatisticsDTO {
-  /** @format double */
-  totalOutstanding?: number;
-  /** @format double */
-  overdueAmount?: number;
-  /** @format double */
-  upcomingPayments?: number;
+export interface PageDebtDetailResponseDTO {
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
+  /** @format int32 */
+  size?: number;
+  content?: DebtDetailResponseDTO[];
+  /** @format int32 */
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  empty?: boolean;
 }
 
 export interface BaseResponseListCategory {
@@ -1666,22 +1743,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
-     *
-     * @tags debt-controller
-     * @name DeleteDebtNote
-     * @request DELETE:/api/debts/{id}
-     * @secure
-     */
-    deleteDebtNote: (id: number, params: RequestParams = {}) =>
-      this.request<BaseResponseVoid, any>({
-        path: `/api/debts/${id}`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
-
-    /**
      * @description Update an existing category by ID.
      *
      * @tags Category Management
@@ -1941,7 +2002,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponsePaginateResponsePartnerRepsponseDTO, any>({
+      this.request<BaseResponsePaginateResponsePartnerResponseDTO, any>({
         path: `/api/partners`,
         method: "GET",
         query: query,
@@ -1995,18 +2056,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     getDebtNotes: (
-      query?: {
-        status?: "PENDING" | "PARTIALLY_PAID" | "PAID" | "OVERDUE";
-        /** @format int64 */
-        partnerId?: number;
-        /** @format date */
-        fromDate?: string;
-        /** @format date */
-        toDate?: string;
+      query: {
+        request: DebtNoteFilterDTO;
       },
       params: RequestParams = {},
     ) =>
-      this.request<BaseResponseListDebtNoteResponseDTO, any>({
+      this.request<BaseResponseListDebtNoteWithPartnerDTO, any>({
         path: `/api/debts`,
         method: "GET",
         query: query,
@@ -2023,7 +2078,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     createDebtNote: (data: CreateDebtNoteDTO, params: RequestParams = {}) =>
-      this.request<BaseResponseDebtNoteResponseDTO, any>({
+      this.request<BaseResponseVoid, any>({
         path: `/api/debts`,
         method: "POST",
         body: data,
@@ -2032,17 +2087,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
 
-
-
     /**
      * No description
      *
-     * @tags debt-controller
-     * @name CreateDebtPayment
-     * @request POST:/api/debts/{id}/payments
+     * @tags debt-detail-controller
+     * @name CreateDebtDetail
+     * @request POST:/api/debt-details
      * @secure
      */
-
+    createDebtDetail: (data: CreateDebtDetailDTO, params: RequestParams = {}) =>
+      this.request<BaseResponseDebtDetailResponseDTO, any>({
+        path: `/api/debt-details`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
 
     /**
      * @description Create a new category under a specific shop.
@@ -2375,6 +2436,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags Partner Management
+     * @name GetPartnerById1
+     * @request GET:/api/partners/get-by-id/{id}
+     * @secure
+     */
+    getPartnerById1: (id: number, params: RequestParams = {}) =>
+      this.request<BaseResponsePartnerResponseDTO, any>({
+        path: `/api/partners/get-by-id/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Fetch all Partners.
      *
      * @tags Partner Management
@@ -2546,15 +2623,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags debt-controller
-     * @name GetDebtStatistics
-     * @request GET:/api/debts/statistics
+     * @tags debt-detail-controller
+     * @name GetDebtDetails
+     * @request GET:/api/debt-details/{partnerId}
      * @secure
      */
-    getDebtStatistics: (params: RequestParams = {}) =>
-      this.request<BaseResponseDebtStatisticsDTO, any>({
-        path: `/api/debts/statistics`,
+    getDebtDetails: (
+      partnerId: number,
+      query: {
+        /** @format date-time */
+        fromDate?: string;
+        /** @format date-time */
+        toDate?: string;
+        pageable: Pageable;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BaseResponsePageDebtDetailResponseDTO, any>({
+        path: `/api/debt-details/${partnerId}`,
         method: "GET",
+        query: query,
         secure: true,
         ...params,
       }),
