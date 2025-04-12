@@ -145,9 +145,9 @@ export function numberToVietnameseWords(num: number): string {
   if (num === 0) return "không";
   if (num < 0) return "âm " + numberToVietnameseWords(-num);
 
-  let words: string[] = [];
-  let parts: string[] = [];
+  const parts: string[] = [];
   let i = 0;
+
 
   while (num > 0) {
     const part = num % 1000;

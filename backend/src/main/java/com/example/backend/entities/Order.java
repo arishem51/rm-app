@@ -43,6 +43,9 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
+    @Column(name = "pdf_path")
+    private String pdfPath;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
