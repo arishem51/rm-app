@@ -19,6 +19,7 @@ public class OrderService {
         private final OrderRepository orderRepository;
         private final PartnerService partnerService;
         private final InventoryRepository inventoryRepository;
+        private final PDFService pdfService;
 
         public Page<Order> findOrders(int page, int pageSize) {
                 PageRequest pageRequest = PageRequest.of(page, pageSize);
