@@ -21,7 +21,7 @@ export const { api: apiClient } = new Api({
       ...options.headers,
       format: "json",
     };
-    let token;
+    let token: string | undefined;
 
     if (typeof window === "undefined") {
       const { cookies } = await import("next/headers");
@@ -37,11 +37,11 @@ export const { api: apiClient } = new Api({
     }
     const response = await fetch(url, options);
     if (
-      !response.ok &&
       response.status === 401 &&
       token &&
       typeof window !== "undefined"
     ) {
+      // Gỡ token khi bị 401 (Unauthorized)
       globalStore.set(authAtom, {
         token: "",
         showToastErrorSignIn: true,
@@ -145,8 +145,8 @@ export function numberToVietnameseWords(num: number): string {
   if (num === 0) return "không";
   if (num < 0) return "âm " + numberToVietnameseWords(-num);
 
-  let words: string[] = [];
-  let parts: string[] = [];
+  const parts: string[] = [];
+
   let i = 0;
 
   while (num > 0) {

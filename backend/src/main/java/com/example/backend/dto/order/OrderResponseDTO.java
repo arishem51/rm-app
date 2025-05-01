@@ -22,9 +22,12 @@ public class OrderResponseDTO {
     private String partnerPhone;
     private String userName;
     private Long shopId;
+    private String shopName;
     private BigDecimal totalAmount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String pdfPath;
+    private List<OrderItemDTO> orderItems;
 
     public static OrderResponseDTO fromEntity(Order order) {
         return OrderResponseDTO.builder()

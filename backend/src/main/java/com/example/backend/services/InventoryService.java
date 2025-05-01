@@ -96,8 +96,13 @@ public class InventoryService {
                                                 : zoneRepository.findByIdAndWarehouse_ShopId(dto.getZoneId(),
                                                                 dto.getZoneId())
                                                                 .orElseThrow(() -> new IllegalArgumentException(
-                                                                                "Không tìm thấy kho hàng!"));
-
+                
+                                                                "Không tìm thấy kho hàng!"));
+                inventory.setProduct(updateProduct);
+                inventory.setZone(updateZone);
+                inventory.setQuantity(updateQuantity);
+                inventory.setPackageValue(updatePackageValue);
+                
                 InventoryHistory inventoryHistory = InventoryHistory.builder()
                                 .createdBy(currentUser)
                                 .inventory(inventory)
