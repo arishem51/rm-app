@@ -18,6 +18,11 @@ import EmptyState from "../empty-state";
 import ListPagination from "../pagination";
 import { OrderResponseDTO } from "@/types/Api";
 import Link from "next/link";
+import { authAtom } from "@/store/auth";
+import { globalStore } from '@/store';
+
+
+
 
 //FIXME: fix orders page
 const Orders = () => {
@@ -97,12 +102,46 @@ const Orders = () => {
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end space-x-2">
                     <Button
-                      onClick={() => console.log("Xem đơn hàng:", order)}
                       size="sm"
-                      variant="secondary"
+                      variant="outline"
+                      onClick={async () => {
+                        const token = globalStore.get(authAtom)?.token;
+                        if (!token) {
+                          alert("Vui lòng đăng nhập lại!");
+                          return;
+                        }
+
+                        try {
+                          const res = await fetch(`http://localhost:8080/api/orders/${order.id}/export-pdf`, {
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                            },
+                          });
+
+                          if (!res.ok) {
+                            throw new Error("Export thất bại. Kiểm tra lại quyền truy cập.");
+                          }
+
+                          const blob = await res.blob();
+                          const url = window.URL.createObjectURL(blob);
+                          const a = document.createElement("a");
+                          a.href = url;
+                          a.download = `order_${order.id}.pdf`;
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          window.URL.revokeObjectURL(url);
+                        } catch (err) {
+                          console.error(err);
+                          alert("Lỗi khi tải file PDF!");
+                        }
+                      }}
                     >
-                      Xem
+                      Export PDF
                     </Button>
+
+
+
                   </div>
                 </TableCell>
               </TableRow>
