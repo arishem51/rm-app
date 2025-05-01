@@ -19,6 +19,7 @@ public class OrderService {
         private final OrderRepository orderRepository;
         private final PartnerService partnerService;
         private final InventoryRepository inventoryRepository;
+        private final PDFService pdfService;
 
         public Page<Order> findOrders(int page, int pageSize) {
                 PageRequest pageRequest = PageRequest.of(page, pageSize);
@@ -86,6 +87,20 @@ public class OrderService {
                 }).toList();
                 order.setOrderItems(orderItems);
                 orderRepository.save(order);
+
+                // Generate PDF after saving the order
+                try {
+                        String pdfPath = pdfService.generateOrderPDF(order);
+                        order.setPdfPath(pdfPath);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+
+                orderRepository.save(order);
+
+                System.out.println("Đã tạo đơn hàng với ID: " + order.getId());
+                System.out.println("PDF path: " + order.getPdfPath());
+
                 return order;
         }
 

@@ -102,15 +102,15 @@ const OrderForm = ({ onClose, order }: Props) => {
     resolver: zodResolver(schema),
     defaultValues: order
       ? {
-          ...order,
-          orderItems: [],
-        }
+        ...order,
+        orderItems: [],
+      }
       : {
-          partnerName: "",
-          partnerPhone: "",
-          amount: 0,
-          orderItems: [],
-        },
+        partnerName: "",
+        partnerPhone: "",
+        amount: 0,
+        orderItems: [],
+      },
   });
   const {
     fields: orderItems,
@@ -130,6 +130,26 @@ const OrderForm = ({ onClose, order }: Props) => {
   const isPending = isCreating;
 
   const onSubmit = form.handleSubmit((data) => {
+    const totalOriginPrice = data.orderItems.reduce((acc, item) => {
+      return acc + item.productPrice * item.quantity;
+    }, 0);
+
+    const difference = Math.abs(data.amount - totalOriginPrice);
+
+    const formattedDiff = new Intl.NumberFormat("vi-VN", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(difference);
+
+    if (difference > 500) {
+      toast({
+        title: "Lỗi chênh lệch giá",
+        description: `Tổng tiền thực bán đang chênh lệch ${formattedDiff}đ so với tổng gốc. Chỉ được phép sai số trong 500đ.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const mutateData: CreateOrderDTO = {
       ...data,
       orderItems: data.orderItems.map((item) => ({
@@ -357,7 +377,7 @@ const OrderForm = ({ onClose, order }: Props) => {
                               <TableCell>
                                 {toCurrency(
                                   (itemChg?.quantity ?? 0) *
-                                    +(itemChg.productPrice ?? 0)
+                                  +(itemChg.productPrice ?? 0)
                                 )}
                               </TableCell>
                               {isCreateOrder && (
@@ -403,10 +423,10 @@ const OrderForm = ({ onClose, order }: Props) => {
                           {toCurrency(
                             orderItemsWatch.length > 0
                               ? orderItemsWatch.reduce((acc, prev) => {
-                                  return (acc +=
-                                    (prev.productPrice ?? 0) *
-                                    (prev.quantity ?? 0));
-                                }, 0)
+                                return (acc +=
+                                  (prev.productPrice ?? 0) *
+                                  (prev.quantity ?? 0));
+                              }, 0)
                               : 0
                           )}
                         </span>
