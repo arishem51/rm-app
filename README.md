@@ -1,3 +1,5 @@
+
+
 # **rm-app**
 
 A monorepo project with a **Spring Boot** backend and a **Next.js** frontend.
@@ -33,11 +35,15 @@ A monorepo project with a **Spring Boot** backend and a **Next.js** frontend.
 
 The backend will run on `http://localhost:8080` and the frontend on `http://localhost:3000`.
 
-Run migration
+### **Database Migration**
 
-mvn flyway:migrate \
+Run the following command from the `backend` folder to initialize the database:
+
+```bash
+./mvnw flyway:migrate \
 -Dflyway.url="jdbc:sqlserver://localhost:1433;databaseName=rm_management;encrypt=false" \
 -Dflyway.user="sa" \
 -Dflyway.password="123" \
 -Dflyway.baselineOnMigrate=true \
 -Dflyway.outOfOrder=true
+```
